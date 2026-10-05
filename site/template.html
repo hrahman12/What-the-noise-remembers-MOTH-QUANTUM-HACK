@@ -1,0 +1,314 @@
+<title>What the Noise Remembers</title>
+<style>
+/*BRAND*/
+/* Layout: thesis + live wipe, proof strip, qubit chart, then a challenge index (like the brief page) whose rows open to the pieces. */
+.wrap{max-width:76rem;margin-inline:auto}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,25rem);gap:clamp(1.5rem,4vw,3.5rem);align-items:end;padding-block:clamp(2rem,5vw,3.5rem) 2rem;border-bottom:1px solid var(--rule)}
+.kicker{font:500 .74rem/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+h1{font-size:clamp(3rem,8.5vw,6.6rem);line-height:.94;font-weight:300;letter-spacing:-.03em;margin-block:.9rem 1.2rem}
+.lede{font-size:clamp(1.05rem,1.5vw,1.2rem);color:var(--ink-2);max-width:54ch}
+.lede b{color:var(--ink);font-weight:500}
+.cta{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.5rem}
+.wipe{position:relative;aspect-ratio:1/1;overflow:hidden;border:1px solid var(--ink);touch-action:none;cursor:ew-resize;background:var(--panel)}
+.wipe img{position:absolute;inset:0;width:100%;height:100%}
+.wipe .over{clip-path:inset(0 0 0 var(--cut,50%))}
+.wipe .bar{position:absolute;top:0;bottom:0;left:var(--cut,50%);width:3px;transform:translateX(-1.5px);background:var(--paper)}
+.wipe .knob{position:absolute;top:50%;left:var(--cut,50%);transform:translate(-50%,-50%);width:40px;height:40px;border-radius:50%;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;font:500 .95rem/1 var(--mono);border:2px solid var(--paper)}
+.wipe .tag{position:absolute;bottom:.7rem;font:500 .66rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:.45rem .65rem;border-radius:999px;background:var(--paper);color:var(--ink);border:1px solid var(--ink)}
+.wipe .tl{left:.7rem}.wipe .tr{right:.7rem;background:var(--ink);color:var(--on-ink)}
+.cap{font:400 .72rem/1.5 var(--mono);color:var(--ink-2);margin-top:.5rem}
+.cap b{color:var(--ink);font-weight:500}
+.hi{display:inline-flex;align-items:center;gap:.5rem;font:500 .8rem/1 var(--mono);letter-spacing:.06em;color:var(--ink);background:var(--panel);border:1px solid var(--rule);border-radius:999px;padding:.55rem .9rem}
+.hi .wave{display:inline-block;width:.6rem;height:.6rem;border-radius:50%;background:var(--ink);font-size:0}
+.lede.story{font-size:1rem;margin-top:.9rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* meet the cast: every mascot, clickable */
+.cast,.starters,.how{margin-block:2.25rem}
+.cast-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:.4rem 1.5rem;margin-bottom:.9rem}
+.cast-head h2{font-size:clamp(1.5rem,2.6vw,2rem);font-weight:300}
+.cast-head p{color:var(--ink-2);font-size:.95rem;max-width:52ch}
+.parade{display:flex;gap:.5rem;overflow-x:auto;padding:.75rem;border:1px solid var(--rule);background:var(--panel);scrollbar-width:thin}
+.parade a{flex:none;display:grid;justify-items:center;gap:.35rem;width:84px;padding:.5rem .25rem;border-radius:12px;text-decoration:none;color:var(--ink);font:500 .62rem/1.2 var(--mono);text-align:center;letter-spacing:.02em}
+.parade a img{width:64px;height:64px;image-rendering:pixelated;object-fit:contain;transition:transform .18s}
+.parade a:hover,.parade a:focus-visible{background:var(--tint)}
+.parade a:hover img,.parade a:focus-visible img{transform:translateY(-6px) rotate(-3deg)}
+.parade a .nn{color:var(--ink-2)}
+.bubble{margin-top:.7rem;display:inline-block;background:var(--ink);color:var(--on-ink);border-radius:14px;padding:.7rem 1rem;font-size:.92rem;max-width:62ch;position:relative}
+.bubble b{font-weight:600}
+
+/* starters */
+.start-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+.starter{display:grid;grid-template-columns:72px minmax(0,1fr);gap:.4rem 1rem;align-items:center;background:var(--panel);border:1px solid var(--ink);padding:1rem 1.1rem;text-decoration:none;color:var(--ink);transition:background .15s}
+.starter:hover,.starter:focus-visible{background:var(--tint)}
+.starter img{grid-row:span 3;width:72px;height:72px;image-rendering:pixelated;object-fit:contain}
+.starter .label{color:var(--ink-2)}
+.starter strong{font:400 1.35rem/1.1 var(--display)}
+.starter span.go{font-size:.9rem;color:var(--ink-2)}
+
+/* how it works */
+.how-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;counter-reset:s}
+.how-steps li{background:var(--panel-2);border-radius:14px;padding:1rem 1.1rem 1.1rem;font-size:.93rem;color:var(--ink-2);display:grid;gap:.35rem;counter-increment:s}
+.how-steps li::before{content:counter(s);width:1.8rem;height:1.8rem;border-radius:50%;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;font:500 .85rem/1 var(--mono)}
+.how-steps b{color:var(--ink);font-weight:500;font-size:1rem}
+@media (max-width:900px){.start-grid,.how-steps{grid-template-columns:minmax(0,1fr)}}
+
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid var(--rule)}
+.stats div{padding:1.4rem 1rem 1.3rem;border-inline-start:1px solid var(--rule);display:grid;gap:.35rem}
+.stats div:first-child{border-inline-start:0;padding-inline-start:0}
+.stats b{font:300 clamp(2rem,4vw,3rem)/1 var(--display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+
+section{margin-block:3rem}
+.sec-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:.5rem 1.5rem;margin-bottom:1rem}
+.sec-head h2{font-size:clamp(1.7rem,3vw,2.3rem);font-weight:300}
+.sec-head p{color:var(--ink-2);max-width:52ch;font-size:.95rem}
+.chart{overflow-x:auto;border:1px solid var(--rule);background:var(--panel);padding:.75rem .75rem .25rem}
+.chart svg{display:block;min-width:52rem;width:100%;height:auto}
+.chart text{font-family:var(--mono)}
+.note{font:400 .74rem/1.5 var(--mono);color:var(--ink-2);margin-top:.6rem;min-height:1.2em}
+.row{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;justify-content:space-between;margin-bottom:.9rem}
+
+/* challenge index, like the brief page */
+.tier{display:flex;justify-content:space-between;gap:1rem;font:500 .74rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);padding:1.4rem 0 .6rem;border-bottom:1px solid var(--ink)}
+.chal{border-bottom:1px solid var(--rule)}
+.chal>summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:3rem minmax(0,1fr) auto;gap:1rem;align-items:baseline;padding:.95rem 0}
+.chal>summary::-webkit-details-marker{display:none}
+.chal>summary .n{font:500 .8rem/1 var(--mono);color:var(--ink)}
+.chal>summary .t{font:400 clamp(1.25rem,2.2vw,1.6rem)/1.15 var(--display);color:var(--ink)}
+.chal>summary .t small{display:block;font:400 .82rem/1.4 var(--body);color:var(--ink-2);margin-top:.25rem}
+.chal>summary .c{font:500 .7rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap}
+.chal>summary .c::after{content:" +";color:var(--ink)}
+.chal[open]>summary .c::after{content:" \2212"}
+.chal>summary:hover .t{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;padding:0 0 1.5rem 4rem}
+.card{background:var(--panel);border:1px solid var(--rule);padding:1.25rem;display:grid;gap:.8rem;align-content:start;min-width:0}
+.card{border-color:var(--ink)}
+.chal>summary .ms{display:inline-flex;gap:2px;align-items:center}
+.chal>summary .ms img{width:30px;height:30px;image-rendering:pixelated;object-fit:contain}
+.card .top{display:flex;justify-content:space-between;gap:.6rem;flex-wrap:wrap;align-items:center}
+.pill{font:500 .64rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:.42rem .6rem;border-radius:999px;border:1px solid var(--ink);color:var(--ink);white-space:nowrap}
+.pill.solid{background:var(--ink);color:var(--on-ink)}
+.pill.soft{border-color:var(--rule);color:var(--ink-2)}
+.card h3{font-size:1.6rem;font-weight:400;line-height:1.05}
+.card .head{display:flex;gap:.9rem;align-items:center}
+.mascot{width:72px;height:72px;flex:none;image-rendering:pixelated;object-fit:contain;background:var(--panel-2);border:1px solid var(--rule)}
+.chal>summary .m{width:40px;height:40px;image-rendering:pixelated;object-fit:contain}
+.chal>summary{grid-template-columns:3rem 98px minmax(0,1fr) auto}
+@media (max-width:520px){.chal>summary{grid-template-columns:2.2rem 98px minmax(0,1fr)}.chal>summary .c{grid-column:3}}
+.hook{font-size:1.02rem;color:var(--ink)}
+.sub{font-size:.9rem;color:var(--ink-2)}
+.you{border-top:1px solid var(--rule);padding-top:.7rem;display:grid;gap:.35rem}
+.you ul{margin:0;padding-inline-start:1.1rem;font-size:.88rem;display:grid;gap:.15rem}
+.facts{display:grid;grid-template-columns:5.5rem minmax(0,1fr);gap:.3rem .75rem;font-size:.84rem;margin:0}
+.facts dt{font:500 .66rem/1.8 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.facts dd{margin:0;min-width:0;overflow-wrap:anywhere}
+code{font:400 .8rem/1.4 var(--mono);color:var(--ink)}
+.qb{display:flex;align-items:center;gap:.6rem}
+.qb .track{flex:1;height:5px;background:var(--panel-2);border:1px solid var(--rule)}
+.qb .track i{display:block;height:100%;background:var(--ink)}
+.qb .n{font:500 .8rem/1 var(--mono);font-variant-numeric:tabular-nums}
+.honest{font-size:.8rem;color:var(--ink-2)}
+.card .btn{justify-self:start}
+.card .soon{font:500 .7rem/1.4 var(--mono);color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em}
+@media (max-width:900px){.hero{grid-template-columns:minmax(0,1fr)}.cards{grid-template-columns:minmax(0,1fr);padding-inline-start:0}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stats div:nth-child(3){border-inline-start:0;padding-inline-start:0}}
+
+</style>
+
+<div class="wrap">
+<nav class="wtnr-bar"><span>What the Noise Remembers</span><span class="count">Moth Hack 2026 &middot; <b id="n-pieces">22</b> pieces</span></nav>
+
+<header class="hero">
+  <div>
+    <p class="hi"><span class="wave" aria-hidden="true">&#9675;</span> Hello, and welcome to Moth Hack 2026</p>
+    <h1>What the noise remembers</h1>
+    <p class="lede">Twenty-two little quantum worlds you can play with, spread across all eleven Moth Hack challenges. Pick one, press play, and poke at it. No physics degree needed.</p>
+    <p class="lede story">Here's the thread that ties them together. A moth survives by staying unseen. A bat hunts by listening to echoes. A qubit can never be looked at directly, and every measurement of it is noisy. These pieces follow one signal through that chase: <b>it hides, noise eats it, and you rebuild it.</b> Every one runs on real Atlas quantum jobs at the most qubits its engine allows, and in every one you're the one at the controls.</p>
+    <div class="cta">
+      <a class="btn" id="cta-01" href="#">Start with 01: tear a hole in a Penrose tiling</a>
+      <a class="btn ghost" href="#index">Browse all challenges</a>
+    </div>
+  </div>
+  <div>
+    <div class="wipe" id="wipe" role="slider" tabindex="0" aria-label="Drag to compare the original tiling with the quantum-blurred hole" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+      <img src="img/intact.webp" alt="Intact Penrose tiling">
+      <img src="img/erased.webp" alt="Penrose tiling with a large hole rewritten by a 20-qubit quantum blur" class="over">
+      <div class="bar"></div><div class="knob" aria-hidden="true">&harr;</div>
+      <span class="tag tl">Original</span><span class="tag tr">20-qubit blur</span>
+    </div>
+    <p class="cap"><b>Try it:</b> drag across the picture. The right side is a real blur-v1 job (20 qubits, Atlas simulator).</p>
+  </div>
+</header>
+
+<section class="cast" aria-labelledby="cast-h">
+  <div class="cast-head"><h2 id="cast-h">Meet the cast</h2><p>Every piece has its own character. Hover or tap one to say hello, then click to play.</p></div>
+  <div class="parade" id="parade"></div>
+  <p class="bubble" id="bubble" aria-live="polite">Pick a character to see what they're up to.</p>
+</section>
+
+<section class="starters" aria-labelledby="start-h">
+  <div class="cast-head"><h2 id="start-h">New here? Start with one of these</h2><p>Three quick ways in. Each takes about a minute.</p></div>
+  <div class="start-grid" id="starters"></div>
+</section>
+
+<section class="how" aria-labelledby="how-h">
+  <h2 id="how-h" class="sr">How every piece works</h2>
+  <ol class="how-steps">
+    <li><b>Pick a world.</b> Use the cast above or the challenge list below. Every piece opens on its own page.</li>
+    <li><b>Play with it.</b> You drive everything. Nothing moves or makes a sound until you click.</li>
+    <li><b>Peek at the science.</b> Each page has drawers explaining what the quantum computer did, and what the piece does not claim.</li>
+  </ol>
+</section>
+
+<div class="stats" id="stats"></div>
+
+<section id="flight" aria-labelledby="flight-h">
+  <div class="sec-head"><h2 id="flight-h">Qubit flight path</h2><p>Each piece runs at its engine's ceiling. Outlined bars: the most qubits each piece used on Atlas simulators. Solid bars: qubits that ran on a real IBM chip.</p></div>
+  <div class="row">
+    <div class="seg" role="group" aria-label="Chart scale">
+      <button type="button" id="sc-log" data-scale="log" aria-pressed="true">Log scale</button>
+      <button type="button" id="sc-lin" data-scale="lin" aria-pressed="false">Linear</button>
+    </div>
+    <span class="label">Hover, tap or tab to a bar</span>
+  </div>
+  <div class="chart"><svg id="chart" viewBox="0 0 1040 300" role="img" aria-label="Qubits used per piece"></svg></div>
+  <p class="note" id="chart-note"></p>
+</section>
+
+<section id="index">
+  <div class="sec-head"><h2>Challenges</h2><p>Open a challenge to see every piece made for it. Every card links to a playable page.</p></div>
+  <div class="row">
+    <div class="seg" role="group" aria-label="Filter pieces">
+      <button type="button" id="f-all" data-f="all" aria-pressed="true">All pieces</button>
+      <button type="button" id="f-hw" data-f="hw" aria-pressed="false">On IBM hardware</button>
+    </div>
+    <div class="seg" role="group" aria-label="Open or close all">
+      <button type="button" id="open-all" aria-pressed="false">Open all</button>
+      <button type="button" id="close-all" aria-pressed="false">Close all</button>
+    </div>
+  </div>
+  <div id="chals"></div>
+</section>
+
+<div class="ink-bar"><span>How we kept it honest</span><span>&darr;</span></div>
+<details class="drawer"><summary>Real jobs only</summary><div class="body"><p>Every quantum-derived image, sound and number on these pages is a downloaded output of a completed Atlas job. The pages replay those cached outputs, because a published page can't call the API live. Each piece lists its job IDs.</p></div></details>
+<details class="drawer"><summary>Simulator or hardware, always labelled</summary><div class="body"><p>Most engines run on Atlas's classical simulators of quantum circuits. Pieces that ran on IBM hardware say which backend did the work. Hardware access was confirmed with a coin toss on ibm_fez (job 1736b3bb). Named backends: ibm_fez and ibm_marrakesh (Heron, 156 qubits) and ibm_miami (Nighthawk, 120 qubits).</p></div></details>
+<details class="drawer"><summary>Analogies are named as analogies</summary><div class="body"><p>A quantum blur over a LIGO spectrogram is not squeezed light. A reservoir trained on whale codas does not translate them. A disputed theory of smell stays disputed. Each piece has a "what this does not claim" drawer.</p></div></details>
+<details class="drawer"><summary>Data licences checked at the source</summary><div class="body"><p>We used only data whose licence we confirmed on its source page, or synthetic data labelled as synthetic. Where a licence was unclear (FlyWire, Herculaneum scrolls), we switched to an open alternative or a generated stand-in.</p></div></details>
+
+<p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
+</div>
+
+<script>
+const P = /*PIECES*/[];
+const CH = [
+ {n:'01',t:'One image, one engine',tier:'Beginner'},{n:'02',t:'Make it audible',tier:'Beginner'},{n:'03',t:'Three dimensions',tier:'Beginner'},
+ {n:'04',t:'Moving image',tier:'Intermediate'},{n:'05',t:'Quantum game',tier:'Intermediate'},{n:'06',t:'Daisy Chain',tier:'Intermediate'},
+ {n:'07',t:'Make a VST or AU',tier:'Intermediate'},{n:'08',t:'Make a web app',tier:'Intermediate'},
+ {n:'09',t:'Quantum-native 1',tier:'Expert'},{n:'10',t:'Quantum-native 2',tier:'Expert'},{n:'11',t:'FQxI Challenge',tier:'Guest challenge'}];
+const esc = s => String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+const hw = p => p.hardware && p.hardware !== 'None' ? String(p.hardware) : '';
+const short = s => s.length > 14 ? s.slice(0, 13) + '…' : s;
+
+// stats
+(function(){
+  const jobs = P.reduce((s,p)=>s+(+p.jobs||0),0), onHw = P.filter(hw).length, maxHw = Math.max(0,...P.map(p=>+p.hw_qubits||0));
+  const items = [[P.length,'Pieces to play'],[jobs,'Real Atlas quantum jobs'],[onHw,'Pieces that ran on IBM hardware'],[maxHw,'Most qubits used on one IBM chip']];
+  document.getElementById('stats').innerHTML = items.map(([v,l])=>`<div><b>${v}</b><span class="label">${l}</span></div>`).join('');
+  document.getElementById('n-pieces').textContent = P.length;
+  const p01 = P.find(p=>p.slug==='01-penrose-hole'); if (p01 && p01.url) document.getElementById('cta-01').href = p01.url;
+})();
+
+// meet the cast: one clickable mascot per piece, with a speech bubble
+(function(){
+  const parade = document.getElementById('parade'), bubble = document.getElementById('bubble');
+  const say = p => { bubble.innerHTML = `<b>${esc(p.title)}</b> (challenge ${p.challenge}): ${esc(p.hook)} Click to play.`; };
+  P.slice().sort((a,b)=>a.slug.localeCompare(b.slug)).filter(p=>p.mascot).forEach(p => {
+    const a = document.createElement('a');
+    a.href = p.url || ('#c' + p.challenge);
+    a.innerHTML = `<img src="${esc(p.mascot)}" alt="" width="64" height="64"><span>${esc(p.title)}</span><span class="nn">${p.slug.slice(0,2)}</span>`;
+    a.setAttribute('aria-label', `${p.title}: ${p.hook}`);
+    a.addEventListener('mouseenter', () => say(p)); a.addEventListener('focus', () => say(p));
+    parade.appendChild(a);
+  });
+})();
+
+// three easy starters
+(function(){
+  const picks = [['05-jam-the-bat','Play a game'],['19-frog-chorus','Make some sound'],['01-penrose-hole','Fix a pattern']];
+  document.getElementById('starters').innerHTML = picks.map(([slug, verb]) => {
+    const p = P.find(x => x.slug === slug); if (!p) return '';
+    return `<a class="starter" href="${esc(p.url || '#c' + p.challenge)}">${p.mascot ? `<img src="${esc(p.mascot)}" alt="" width="72" height="72">` : ''}<span class="label">${verb}</span><strong>${esc(p.title)}</strong><span class="go">${esc(p.hook)} &rarr;</span></a>`;
+  }).join('');
+})();
+
+// challenge index
+const root = document.getElementById('chals');
+let lastTier = '';
+CH.forEach(c => {
+  if (c.tier !== lastTier) { lastTier = c.tier; const t = document.createElement('div'); t.className = 'tier'; t.innerHTML = `<span>${c.tier}</span><span>${CH.filter(x=>x.tier===c.tier).length} challenge${CH.filter(x=>x.tier===c.tier).length>1?'s':''}</span>`; root.appendChild(t); }
+  const ps = P.filter(p => p.challenge === c.n).sort((a,b)=>a.slug.localeCompare(b.slug));
+  const d = document.createElement('details'); d.className = 'chal'; d.id = 'c' + c.n;
+  d.innerHTML = `<summary><span class="n">${c.n}</span><span class="ms">${ps.filter(p=>p.mascot).slice(0,3).map(p=>`<img src="${esc(p.mascot)}" alt="" width="30" height="30">`).join('')}</span><span class="t">${esc(c.t)}<small>${ps.map(p=>esc(p.title)).join(' · ')}</small></span><span class="c">${ps.length} piece${ps.length===1?'':'s'}</span></summary><div class="cards"></div>`;
+  const g = d.querySelector('.cards');
+  ps.forEach(p => {
+    const a = document.createElement('article'); a.className = 'card';
+    a.dataset.hw = hw(p) ? 1 : 0;
+    const pct = Math.min(100, Math.log2(Math.max(2,+p.qubits||2)) / Math.log2(256) * 100);
+    const you = (p.you_control || []).slice(0,4).map(x=>`<li>${esc(x)}</li>`).join('');
+    a.innerHTML = `<div class="top"><span class="pill solid">Challenge ${p.challenge}</span>${hw(p)?`<span class="pill">IBM · ${esc(hw(p))}${p.hw_qubits?' · '+p.hw_qubits+' qubits':''}</span>`:`<span class="pill soft">Atlas simulator</span>`}</div>
+      <div class="head">${p.mascot?`<img class="mascot" src="${esc(p.mascot)}" alt="" width="72" height="72">`:''}<h3>${esc(p.title)}</h3></div><p class="hook">${esc(p.hook)}</p>${p.sub?`<p class="sub">${esc(p.sub)}</p>`:''}
+      ${you?`<div class="you"><span class="label">You control</span><ul>${you}</ul></div>`:''}
+      <dl class="facts"><dt>Engines</dt><dd><code>${esc((p.engines||[]).join(', '))}</code></dd>
+      <dt>Qubits</dt><dd><div class="qb"><div class="track"><i style="width:${pct}%"></i></div><span class="n">${esc(p.qubits)}</span></div></dd>
+      <dt>Jobs</dt><dd>${esc(p.jobs)} real Atlas jobs</dd></dl>
+      <p class="honest">${esc(p.honesty)}</p>
+      ${p.url ? `<a class="btn" href="${esc(p.url)}">Play ${esc(p.title)}</a>` : `<span class="soon">Page publishing</span>`}`;
+    g.appendChild(a);
+  });
+  root.appendChild(d);
+});
+document.getElementById('c01').open = true;
+document.getElementById('open-all').addEventListener('click',()=>document.querySelectorAll('.chal').forEach(d=>d.open=true));
+document.getElementById('close-all').addEventListener('click',()=>document.querySelectorAll('.chal').forEach(d=>d.open=false));
+function filt(f){
+  document.querySelectorAll('[data-f]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.f===f)));
+  document.querySelectorAll('.card').forEach(c=>c.hidden = f==='hw' ? c.dataset.hw!=='1' : false);
+  document.querySelectorAll('.chal').forEach(d=>{ const any = d.querySelector('.card:not([hidden])'); d.hidden = !any; if (f!=='all' && any) d.open = true; });
+}
+document.querySelectorAll('[data-f]').forEach(b=>b.addEventListener('click',()=>filt(b.dataset.f)));
+
+// qubit chart
+const svg = document.getElementById('chart'), NS = 'http://www.w3.org/2000/svg';
+let scale = 'log';
+function chart(){
+  svg.innerHTML = '';
+  const W=1040,H=300,L=40,R=8,T=20,B=62, s = P.slice().sort((a,b)=>a.slug.localeCompare(b.slug)), max = Math.max(256,...s.map(p=>+p.qubits||0));
+  const y = v => scale==='log' ? T+(H-T-B)*(1-Math.log2(Math.max(v,1))/Math.log2(max)) : T+(H-T-B)*(1-v/max);
+  const mk=(tag,at)=>{const e=document.createElementNS(NS,tag);for(const k in at)e.setAttribute(k,at[k]);svg.appendChild(e);return e;};
+  (scale==='log'?[2,8,32,128]:[0,50,100,150,200,250]).forEach(t=>{const yy=y(Math.max(t,1));mk('line',{x1:L,x2:W-R,y1:yy,y2:yy,stroke:'#D3D3E6','stroke-width':1});
+    mk('text',{x:L-8,y:yy+4,'text-anchor':'end',fill:'#545BA9','font-size':11}).textContent=t;});
+  const yy=y(156); mk('line',{x1:L,x2:W-R,y1:yy,y2:yy,stroke:'#19238E','stroke-dasharray':'4 4','stroke-width':1});
+  mk('text',{x:W-R,y:yy-6,'text-anchor':'end',fill:'#19238E','font-size':11}).textContent='one IBM Heron chip · 156 qubits';
+  const bw=(W-L-R)/s.length;
+  s.forEach((p,i)=>{const x=L+i*bw+bw*.2,w=bw*.6,top=y(+p.qubits||1),h=!!hw(p);
+    const hq=+p.hw_qubits||0;
+    const r=mk('rect',{x,y:top,width:w,height:H-B-top,fill:'#FFFFFF',stroke:'#19238E','stroke-width':1.2,tabindex:0,role:'img','aria-label':`${p.title}: up to ${p.qubits} qubits${hq?', '+hq+' of them on IBM '+hw(p):h?', also ran on IBM '+hw(p):' on Atlas simulators'}`});
+    if(hq){const ht=y(hq);mk('rect',{x:x+1,y:ht,width:w-2,height:H-B-ht,fill:'#19238E','pointer-events':'none'});}
+    mk('text',{x:x+w/2,y:top-6,'text-anchor':'middle',fill:'#19238E','font-size':11}).textContent=p.qubits;
+    mk('text',{x:x+w/2,y:H-B+16,'text-anchor':'middle',fill:'#19238E','font-size':11}).textContent=p.slug.slice(0,2);
+    const lab=mk('text',{x:x+w/2,y:H-B+30,'text-anchor':'end',fill:'#545BA9','font-size':9,transform:`rotate(-35 ${x+w/2} ${H-B+30})`});lab.textContent=short(p.title);
+    const show=()=>{document.getElementById('chart-note').textContent=`${p.slug.slice(0,2)} · ${p.title} · up to ${p.qubits} qubits${hq?' · '+hq+' on IBM '+hw(p):h?' · also ran on IBM '+hw(p)+' (qubit count not reported)':' · Atlas simulator'} · ${p.qubits_note||''}`;svg.querySelectorAll('rect[tabindex]').forEach(z=>z.setAttribute('opacity',z===r?1:.45));};
+    r.addEventListener('mouseenter',show);r.addEventListener('focus',show);r.addEventListener('click',show);});
+}
+document.querySelectorAll('[data-scale]').forEach(b=>b.addEventListener('click',()=>{scale=b.dataset.scale;document.querySelectorAll('[data-scale]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));chart();}));
+chart();
+
+// hero wipe
+(function(){const w=document.getElementById('wipe');let down=false;
+  const set=p=>{p=Math.max(0,Math.min(100,p));w.style.setProperty('--cut',p+'%');w.setAttribute('aria-valuenow',Math.round(p));};
+  const at=e=>{const r=w.getBoundingClientRect();set((e.clientX-r.left)/r.width*100);};
+  w.addEventListener('pointerdown',e=>{down=true;w.setPointerCapture(e.pointerId);at(e);});
+  w.addEventListener('pointermove',e=>{if(down)at(e);});w.addEventListener('pointerup',()=>down=false);
+  w.addEventListener('keydown',e=>{const v=+w.getAttribute('aria-valuenow');if(e.key==='ArrowLeft'){set(v-5);e.preventDefault();}if(e.key==='ArrowRight'){set(v+5);e.preventDefault();}});
+  set(50);})();
+</script>

@@ -1,0 +1,40 @@
+# secrets: the Atlas API key lives only in .env (see .env.example)
+.env
+.env.*
+!.env.example
+
+# tooling
+__pycache__/
+*.pyc
+node_modules/
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+
+# regenerable or downloadable data (each piece's scripts fetch or rebuild these)
+cache/files/
+cache/pending/
+cache/archive*/
+cache/publish/
+cache/*.bak
+entries/*/inputs/
+entries/*/scratch/
+entries/*/out/frames/
+entries/*/data/raw/
+*.h5ad
+*.hdf5
+*.tar.gz
+
+# local QA output and working history
+entries/*/qa/*.png
+entries/*/qa/report.json
+entries/*/qa/deadcontrols.json
+entries/*/history/
+site/web/
+site/qa/
+site_check_report.json
+
+# third-party screenshots and reference copies (not ours to redistribute)
+Moth hack*.png
+reference/
