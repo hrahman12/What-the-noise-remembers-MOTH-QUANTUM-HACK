@@ -1,0 +1,24 @@
+[coin] coin-toss-v1  F=0.9998 (chance None)  job=83ad70dc-cb9c-4acf-9def-fbc0a15034d6
+[comet] comet-qrng-v1  F=0.9997 (chance None)  job=f7749ef9-75fe-47d2-8120-74cd86d36478
+[qrcimage] qrc-image-v1  F=0.998 (chance 0.0617)  job=da0814bc-0e38-4f37-9883-21c6dba6a40a
+[shader] entanglement-shader-v1  F=0.9904 (chance 0.2491)  job=743d08b4-4f6b-4bd5-9ce6-9bd135c362b6
+[blur] blur-v1  F=1.0 (chance 0.2465)  job=d612dc36-4f02-4d6c-820e-42f9b3a8ab24
+  deep-fryer-v1: resuming c60ddf89-7ce6-4b7a-9285-9c2ffbd262b8
+  deep-fryer-v1: done c60ddf89 in 3.7s
+[fryer] deep-fryer-v1  F=0.4985 (chance 0.4948)  job=c60ddf89-7ce6-4b7a-9285-9c2ffbd262b8
+[tessa] skipped: failed earlier (ca5e2709-ead8-49d7-b8fd-425422677d3d), not retried
+[qpixl] qpixl-v1  F=0.8432 (chance 0.3936)  job=c9f5292e-37f6-4cdf-84c9-9a955ce79eca
+[maze] labyrinth-v1  F=0.6748 (chance 0.5)  job=900b2088-fc88-4502-bb8b-37dd188faac2
+[telablur] telablur-v1  F=0.5299 (chance 0.4735)  job=a906c79c-ae77-43df-8d66-09bb56d52366
+[graph] graph-v1  F=0.5102 (chance 0.5)  job=e51a6ab6-b5b9-4a55-b500-adc5381f4424
+  tamagotchi-v1: submitted d0b80509-f70d-4f5f-942d-12f9768acca7
+[tamagotchi] still pending (d0b80509-f70d-4f5f-942d-12f9768acca7); continuing without it
+[blurmidi] blur-midi-v1  F=0.2847 (chance 0.1401)  job=d44e7ada-0857-4663-bc38-3e75e25a36d8
+[retro] retrocausal-echo-v1  F=0.9742 (chance 0.0191)  job=8b41ba8e-014b-4d47-b98b-43bc91ba8e78
+[otoc] otoc-echo-v1  F=0.9993 (chance 0.142)  job=5e851a8c-9469-47c6-9dde-e489f7a22f80
+[qdrive] qdrive-api-v1  F=0.9997 (chance 0.5)  job=d36275c5-17d8-43b0-bdc3-4e3da66bf1fc
+  tomography-api-v2: submitted a26d52ac-ba54-43c5-961e-69f4418da794
+[tomo] FAILED (recorded, will not retry): tomography-api-v2 a26d52ac-ba54-43c5-961e-69f4418da794 failed: {"$schema": "https://api.mothquantum.com/schemas/JobStatusOutputBody.json", "job_id": "a26d52ac-ba54-43c5-961e-69f4418da794", "engine_id": "tomography-api-v2", "status": "failed", "progress": {}, "error": {"message": "The engine did not 
+[blurcore] FAILED (recorded, will not retry): POST /engines/blur-core-v1/process -> 413: {"$schema":"https://api.mothquantum.com/schemas/ErrorModel.json","title":"Request Entity Too Large","status":413,"detail":"request body is too large limit=1048576 bytes"}
+
+spent (ledger): 48 of 50 credits; frozen=False

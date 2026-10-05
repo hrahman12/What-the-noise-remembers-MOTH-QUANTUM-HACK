@@ -1,0 +1,1286 @@
+{
+ "tested": 226,
+ "dead": [],
+ "sweep": [
+  {
+   "stage": "05:00 coin",
+   "mode": "scene",
+   "control": "button[button] \"IBM ibm_fez (this stage)\"",
+   "changed": true
+  },
+  {
+   "stage": "05:00 coin",
+   "mode": "scene",
+   "control": "button[button] \"Recorded: ibm_marrakesh (fed the day)\"",
+   "changed": true
+  },
+  {
+   "stage": "05:00 coin",
+   "mode": "scene",
+   "control": "canvas \"Two jars: 70 tosses came up heads (an atom caught)\"",
+   "changed": true
+  },
+  {
+   "stage": "05:00 coin",
+   "mode": "scene",
+   "control": "button[button] \"Toss the 144 coins again\"",
+   "changed": true
+  },
+  {
+   "stage": "05:00 coin",
+   "mode": "data",
+   "control": "button[button] \"IBM ibm_fez (this stage)\"",
+   "changed": true
+  },
+  {
+   "stage": "05:00 coin",
+   "mode": "data",
+   "control": "button[button] \"Recorded: ibm_marrakesh (fed the day)\"",
+   "changed": true
+  },
+  {
+   "stage": "05:00 coin",
+   "mode": "data",
+   "control": "canvas \"Binomial odds for 144 fair tosses, with the measur\"",
+   "changed": true
+  },
+  {
+   "stage": "05:30 comet",
+   "mode": "scene",
+   "control": "button[button] \"IBM ibm_fez (this stage)\"",
+   "changed": true
+  },
+  {
+   "stage": "05:30 comet",
+   "mode": "scene",
+   "control": "button[button] \"Recorded: ibm_marrakesh (fed the day)\"",
+   "changed": true
+  },
+  {
+   "stage": "05:30 comet",
+   "mode": "scene",
+   "control": "canvas \"The 12 by 12 tweezer array: an atom sits in every \"",
+   "changed": true
+  },
+  {
+   "stage": "05:30 comet",
+   "mode": "scene",
+   "control": "button[button] \"Load again\"",
+   "changed": true
+  },
+  {
+   "stage": "05:30 comet",
+   "mode": "scene",
+   "control": "input[range] \"Loading attempt\"",
+   "changed": true
+  },
+  {
+   "stage": "05:30 comet",
+   "mode": "data",
+   "control": "button[button] \"IBM ibm_fez (this stage)\"",
+   "changed": true
+  },
+  {
+   "stage": "05:30 comet",
+   "mode": "data",
+   "control": "button[button] \"Recorded: ibm_marrakesh (fed the day)\"",
+   "changed": true
+  },
+  {
+   "stage": "05:30 comet",
+   "mode": "data",
+   "control": "button[button] \"One attempt\"",
+   "changed": true
+  },
+  {
+   "stage": "05:30 comet",
+   "mode": "data",
+   "control": "button[button] \"Odds per tweezer\"",
+   "changed": true
+  },
+  {
+   "stage": "05:30 comet",
+   "mode": "data",
+   "control": "input[range] \"Loading attempt\"",
+   "changed": true
+  },
+  {
+   "stage": "05:30 comet",
+   "mode": "data",
+   "control": "canvas \"The 12 by 12 tweezer array for one loading attempt\"",
+   "changed": true
+  },
+  {
+   "stage": "06:00 qrcimage",
+   "mode": "scene",
+   "control": "canvas \"The tweezer array flickering through the frames th\"",
+   "changed": true
+  },
+  {
+   "stage": "06:00 qrcimage",
+   "mode": "scene",
+   "control": "button[button] \"▶ Play\"",
+   "changed": true
+  },
+  {
+   "stage": "06:00 qrcimage",
+   "mode": "scene",
+   "control": "input[range] \"Frame\"",
+   "changed": true
+  },
+  {
+   "stage": "06:00 qrcimage",
+   "mode": "data",
+   "control": "button[button] \"▶ Play\"",
+   "changed": true
+  },
+  {
+   "stage": "06:00 qrcimage",
+   "mode": "data",
+   "control": "input[range] \"Frame\"",
+   "changed": true
+  },
+  {
+   "stage": "06:00 qrcimage",
+   "mode": "data",
+   "control": "canvas \"One loading attempt from the reservoir-generated s\"",
+   "changed": true
+  },
+  {
+   "stage": "07:00 shader",
+   "mode": "scene",
+   "control": "canvas \"The tweezer array seen through the vacuum-cell gla\"",
+   "changed": true
+  },
+  {
+   "stage": "07:00 shader",
+   "mode": "data",
+   "control": "button[button] \"Transmitted\"",
+   "changed": true
+  },
+  {
+   "stage": "07:00 shader",
+   "mode": "data",
+   "control": "button[button] \"Reflected\"",
+   "changed": true
+  },
+  {
+   "stage": "07:00 shader",
+   "mode": "data",
+   "control": "input[range] \"Glass layer spacing in nanometres\"",
+   "changed": true
+  },
+  {
+   "stage": "07:00 shader",
+   "mode": "data",
+   "control": "canvas \"The vacuum-cell glass rendered with the engine’s l\"",
+   "changed": true
+  },
+  {
+   "stage": "07:00 shader",
+   "mode": "data",
+   "control": "canvas \"Tweezer array dimmed by the glass. Hover, tap or u\"",
+   "changed": true
+  },
+  {
+   "stage": "07:30 blur",
+   "mode": "scene",
+   "control": "canvas \"Camera viewfinder showing the engine’s blurred fra\"",
+   "changed": true
+  },
+  {
+   "stage": "07:30 blur",
+   "mode": "scene",
+   "control": "button[button] \"Snap\"",
+   "changed": true
+  },
+  {
+   "stage": "07:30 blur",
+   "mode": "scene",
+   "control": "button[button] \"In the tweezers\"",
+   "changed": true
+  },
+  {
+   "stage": "07:30 blur",
+   "mode": "scene",
+   "control": "button[button] \"Camera (blur-v1)\"",
+   "changed": true
+  },
+  {
+   "stage": "07:30 blur",
+   "mode": "data",
+   "control": "canvas \"Wipe comparison: ideal on the left, camera (blur-v\"",
+   "changed": true
+  },
+  {
+   "stage": "07:30 blur",
+   "mode": "data",
+   "control": "button[button] \"camera (blur-v1)\"",
+   "changed": true
+  },
+  {
+   "stage": "07:30 blur",
+   "mode": "data",
+   "control": "button[button] \"difference ×20\"",
+   "changed": true
+  },
+  {
+   "stage": "08:00 fryer",
+   "mode": "scene",
+   "control": "canvas \"The camera frame in a frying pan: raw or deep-frie\"",
+   "changed": true
+  },
+  {
+   "stage": "08:00 fryer",
+   "mode": "scene",
+   "control": "button[button] \"Camera frame\"",
+   "changed": true
+  },
+  {
+   "stage": "08:00 fryer",
+   "mode": "scene",
+   "control": "button[button] \"Fried (deep-fryer-v1)\"",
+   "changed": true
+  },
+  {
+   "stage": "08:00 fryer",
+   "mode": "data",
+   "control": "canvas \"Wipe comparison: camera on the left, fried (deep-f\"",
+   "changed": true
+  },
+  {
+   "stage": "08:30 qpixl",
+   "mode": "scene",
+   "control": "button[button] \"IBM ibm_fez (this stage)\"",
+   "changed": true
+  },
+  {
+   "stage": "08:30 qpixl",
+   "mode": "scene",
+   "control": "button[button] \"Recorded: fake_fez (fed the day)\"",
+   "changed": true
+  },
+  {
+   "stage": "08:30 qpixl",
+   "mode": "scene",
+   "control": "canvas \"Every tweezer called loaded or empty at the thresh\"",
+   "changed": true
+  },
+  {
+   "stage": "08:30 qpixl",
+   "mode": "scene",
+   "control": "input[range] \"Occupancy threshold\"",
+   "changed": true
+  },
+  {
+   "stage": "08:30 qpixl",
+   "mode": "scene",
+   "control": "button[button] \"Reset\"",
+   "changed": true
+  },
+  {
+   "stage": "08:30 qpixl",
+   "mode": "data",
+   "control": "button[button] \"IBM ibm_fez (this stage)\"",
+   "changed": true
+  },
+  {
+   "stage": "08:30 qpixl",
+   "mode": "data",
+   "control": "button[button] \"Recorded: fake_fez (fed the day)\"",
+   "changed": true
+  },
+  {
+   "stage": "08:30 qpixl",
+   "mode": "data",
+   "control": "input[range] \"Occupancy threshold\"",
+   "changed": true
+  },
+  {
+   "stage": "08:30 qpixl",
+   "mode": "data",
+   "control": "button[button] \"Reset\"",
+   "changed": true
+  },
+  {
+   "stage": "08:30 qpixl",
+   "mode": "data",
+   "control": "canvas \"Each tweezer: counts sent in (left half) and decod\"",
+   "changed": true
+  },
+  {
+   "stage": "08:30 qpixl",
+   "mode": "data",
+   "control": "canvas \"Histogram of decoded counts with the threshold. Ta\"",
+   "changed": true
+  },
+  {
+   "stage": "09:00 maze",
+   "mode": "scene",
+   "control": "button[button] \"IBM ibm_fez (this stage)\"",
+   "changed": true
+  },
+  {
+   "stage": "09:00 maze",
+   "mode": "scene",
+   "control": "button[button] \"Recorded: aer (fed the day)\"",
+   "changed": true
+  },
+  {
+   "stage": "09:00 maze",
+   "mode": "scene",
+   "control": "canvas \"Target zone: rooms are tweezer sites, open lanes j\"",
+   "changed": true
+  },
+  {
+   "stage": "09:00 maze",
+   "mode": "scene",
+   "control": "button[button] \"Run the moves\"",
+   "changed": true
+  },
+  {
+   "stage": "09:00 maze",
+   "mode": "scene",
+   "control": "button[button] \"Before the moves\"",
+   "changed": true
+  },
+  {
+   "stage": "09:00 maze",
+   "mode": "scene",
+   "control": "button[button] \"After the moves\"",
+   "changed": true
+  },
+  {
+   "stage": "09:00 maze",
+   "mode": "data",
+   "control": "button[button] \"IBM ibm_fez (this stage)\"",
+   "changed": true
+  },
+  {
+   "stage": "09:00 maze",
+   "mode": "data",
+   "control": "button[button] \"Recorded: aer (fed the day)\"",
+   "changed": true
+  },
+  {
+   "stage": "09:00 maze",
+   "mode": "data",
+   "control": "button[button] \"Lanes asked for\"",
+   "changed": true
+  },
+  {
+   "stage": "09:00 maze",
+   "mode": "data",
+   "control": "button[button] \"Sampled maze\"",
+   "changed": true
+  },
+  {
+   "stage": "09:00 maze",
+   "mode": "data",
+   "control": "button[button] \"After the moves\"",
+   "changed": true
+  },
+  {
+   "stage": "09:00 maze",
+   "mode": "data",
+   "control": "canvas \"Target zone: rooms are tweezer sites, lines are la\"",
+   "changed": true
+  },
+  {
+   "stage": "09:30 telablur",
+   "mode": "scene",
+   "control": "canvas \"The array during rearrangement: a bright tweezer d\"",
+   "changed": true
+  },
+  {
+   "stage": "09:30 telablur",
+   "mode": "scene",
+   "control": "button[button] \"Drag the atoms\"",
+   "changed": true
+  },
+  {
+   "stage": "09:30 telablur",
+   "mode": "scene",
+   "control": "input[range] \"Moves done\"",
+   "changed": true
+  },
+  {
+   "stage": "09:30 telablur",
+   "mode": "data",
+   "control": "input[range] \"Rearrangement progress\"",
+   "changed": true
+  },
+  {
+   "stage": "09:30 telablur",
+   "mode": "data",
+   "control": "button[button] \"Before\"",
+   "changed": true
+  },
+  {
+   "stage": "09:30 telablur",
+   "mode": "data",
+   "control": "button[button] \"Engine halfway\"",
+   "changed": true
+  },
+  {
+   "stage": "09:30 telablur",
+   "mode": "data",
+   "control": "button[button] \"After\"",
+   "changed": true
+  },
+  {
+   "stage": "09:30 telablur",
+   "mode": "data",
+   "control": "button[button] \"Frames\"",
+   "changed": true
+  },
+  {
+   "stage": "09:30 telablur",
+   "mode": "data",
+   "control": "button[button] \"Show moves\"",
+   "changed": true
+  },
+  {
+   "stage": "09:30 telablur",
+   "mode": "data",
+   "control": "canvas \"Rearrangement: before, the engine’s halfway frame,\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "scene",
+   "control": "button[button] \"IBM ibm_fez (this stage)\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "scene",
+   "control": "button[button] \"Recorded: aer (fed the day)\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "scene",
+   "control": "canvas \"The atoms of the target zone; glowing ones were ex\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "scene",
+   "control": "button[button] \"1 · 1.6% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "scene",
+   "control": "button[button] \"2 · 1.5% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "scene",
+   "control": "button[button] \"3 · 1.4% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "scene",
+   "control": "button[button] \"4 · 1.3% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "scene",
+   "control": "button[button] \"5 · 1.3% ✓\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "scene",
+   "control": "button[button] \"6 · 1.1% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "scene",
+   "control": "button[button] \"7 · 1.1% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "scene",
+   "control": "button[button] \"8 · 1.1% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "scene",
+   "control": "button[button] \"9 · 1.0% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "scene",
+   "control": "button[button] \"10 · 1.0% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "data",
+   "control": "button[button] \"IBM ibm_fez (this stage)\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "data",
+   "control": "button[button] \"Recorded: aer (fed the day)\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "data",
+   "control": "canvas \"Unit-disk graph of the atoms in the zone, with one\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "data",
+   "control": "button[button] \"1 · 1.6% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "data",
+   "control": "button[button] \"2 · 1.5% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "data",
+   "control": "button[button] \"3 · 1.4% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "data",
+   "control": "button[button] \"4 · 1.3% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "data",
+   "control": "button[button] \"5 · 1.3% ✓\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "data",
+   "control": "button[button] \"6 · 1.1% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "data",
+   "control": "button[button] \"7 · 1.1% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "data",
+   "control": "button[button] \"8 · 1.1% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "data",
+   "control": "button[button] \"9 · 1.0% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "mode": "data",
+   "control": "button[button] \"10 · 1.0% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "11:00 tamagotchi",
+   "mode": "scene",
+   "control": "canvas \"Thirty pets, one per logical qubit; their mood sho\"",
+   "changed": true
+  },
+  {
+   "stage": "11:00 tamagotchi",
+   "mode": "scene",
+   "control": "button[button] \"this morning's chip\"",
+   "changed": true
+  },
+  {
+   "stage": "11:00 tamagotchi",
+   "mode": "scene",
+   "control": "button[button] \"ten times better\"",
+   "changed": true
+  },
+  {
+   "stage": "11:00 tamagotchi",
+   "mode": "scene",
+   "control": "button[button] \"1 round\"",
+   "changed": true
+  },
+  {
+   "stage": "11:00 tamagotchi",
+   "mode": "scene",
+   "control": "button[button] \"4 rounds\"",
+   "changed": true
+  },
+  {
+   "stage": "11:00 tamagotchi",
+   "mode": "data",
+   "control": "button[button] \"this morning's chip\"",
+   "changed": true
+  },
+  {
+   "stage": "11:00 tamagotchi",
+   "mode": "data",
+   "control": "button[button] \"ten times better\"",
+   "changed": true
+  },
+  {
+   "stage": "11:00 tamagotchi",
+   "mode": "data",
+   "control": "button[button] \"1 round\"",
+   "changed": true
+  },
+  {
+   "stage": "11:00 tamagotchi",
+   "mode": "data",
+   "control": "button[button] \"4 rounds\"",
+   "changed": true
+  },
+  {
+   "stage": "11:00 tamagotchi",
+   "mode": "data",
+   "control": "canvas \"Logical qubits coloured by how often they read bac\"",
+   "changed": true
+  },
+  {
+   "stage": "16:00 blurmidi",
+   "mode": "scene",
+   "control": "canvas \"A xylophone with one bar per pitch; bars light up \"",
+   "changed": true
+  },
+  {
+   "stage": "16:00 blurmidi",
+   "mode": "scene",
+   "control": "button[button] \"Before the blur\"",
+   "changed": true
+  },
+  {
+   "stage": "16:00 blurmidi",
+   "mode": "scene",
+   "control": "button[button] \"After blur-midi\"",
+   "changed": true
+  },
+  {
+   "stage": "16:00 blurmidi",
+   "mode": "scene",
+   "control": "button[button] \"▶ Play\"",
+   "changed": true
+  },
+  {
+   "stage": "16:00 blurmidi",
+   "mode": "data",
+   "control": "button[button] \"Before the blur\"",
+   "changed": true
+  },
+  {
+   "stage": "16:00 blurmidi",
+   "mode": "data",
+   "control": "button[button] \"After blur-midi\"",
+   "changed": true
+  },
+  {
+   "stage": "16:00 blurmidi",
+   "mode": "data",
+   "control": "button[button] \"▶ Play\"",
+   "changed": true
+  },
+  {
+   "stage": "16:00 blurmidi",
+   "mode": "data",
+   "control": "canvas \"Piano roll: pitch against beat. Tap or press Enter\"",
+   "changed": true
+  },
+  {
+   "stage": "18:00 retro",
+   "mode": "scene",
+   "control": "button[button] \"IBM ibm_fez (this stage)\"",
+   "changed": true
+  },
+  {
+   "stage": "18:00 retro",
+   "mode": "scene",
+   "control": "button[button] \"Recorded: aer (fed the day)\"",
+   "changed": true
+  },
+  {
+   "stage": "18:00 retro",
+   "mode": "scene",
+   "control": "canvas \"A speaker sending sound waves at a cliff; with the\"",
+   "changed": true
+  },
+  {
+   "stage": "18:00 retro",
+   "mode": "scene",
+   "control": "button[button] \"▶ Dry score\"",
+   "changed": true
+  },
+  {
+   "stage": "18:00 retro",
+   "mode": "scene",
+   "control": "button[button] \"▶ Echoed\"",
+   "changed": true
+  },
+  {
+   "stage": "18:00 retro",
+   "mode": "data",
+   "control": "button[button] \"IBM ibm_fez (this stage)\"",
+   "changed": true
+  },
+  {
+   "stage": "18:00 retro",
+   "mode": "data",
+   "control": "button[button] \"Recorded: aer (fed the day)\"",
+   "changed": true
+  },
+  {
+   "stage": "18:00 retro",
+   "mode": "data",
+   "control": "button[button] \"▶ Play\"",
+   "changed": true
+  },
+  {
+   "stage": "18:00 retro",
+   "mode": "data",
+   "control": "canvas \"Waveform of Dry: the blurred score, synthesised. T\"",
+   "changed": true
+  },
+  {
+   "stage": "18:00 retro",
+   "mode": "data",
+   "control": "button[button] \"▶ Play\"",
+   "changed": true
+  },
+  {
+   "stage": "18:00 retro",
+   "mode": "data",
+   "control": "canvas \"Waveform of Echoed: retrocausal-echo-v1 output. Ta\"",
+   "changed": true
+  },
+  {
+   "stage": "18:00 retro",
+   "mode": "data",
+   "control": "canvas \"Echo taps: level per site and depth. Hover, tap or\"",
+   "changed": true
+  },
+  {
+   "stage": "20:00 otoc",
+   "mode": "scene",
+   "control": "button[button] \"IBM ibm_fez (this stage)\"",
+   "changed": true
+  },
+  {
+   "stage": "20:00 otoc",
+   "mode": "scene",
+   "control": "button[button] \"Recorded: aer (fed the day)\"",
+   "changed": true
+  },
+  {
+   "stage": "20:00 otoc",
+   "mode": "scene",
+   "control": "canvas \"A chain of 24 atoms; the ones the kick reached glo\"",
+   "changed": true
+  },
+  {
+   "stage": "20:00 otoc",
+   "mode": "scene",
+   "control": "button[button] \"▶ Run the echo\"",
+   "changed": true
+  },
+  {
+   "stage": "20:00 otoc",
+   "mode": "scene",
+   "control": "button[button] \"Clean (18:00)\"",
+   "changed": true
+  },
+  {
+   "stage": "20:00 otoc",
+   "mode": "scene",
+   "control": "button[button] \"Morning noise (0.04 rad)\"",
+   "changed": true
+  },
+  {
+   "stage": "20:00 otoc",
+   "mode": "scene",
+   "control": "input[range] \"Echo depth\"",
+   "changed": true
+  },
+  {
+   "stage": "20:00 otoc",
+   "mode": "data",
+   "control": "button[button] \"IBM ibm_fez (this stage)\"",
+   "changed": true
+  },
+  {
+   "stage": "20:00 otoc",
+   "mode": "data",
+   "control": "button[button] \"Recorded: aer (fed the day)\"",
+   "changed": true
+  },
+  {
+   "stage": "20:00 otoc",
+   "mode": "data",
+   "control": "canvas \"Echo maps: clean and with the morning noise. Hover\"",
+   "changed": true
+  },
+  {
+   "stage": "21:00 qdrive",
+   "mode": "scene",
+   "control": "canvas \"Twenty atoms with spin needles: solid = what QDriv\"",
+   "changed": true
+  },
+  {
+   "stage": "21:00 qdrive",
+   "mode": "scene",
+   "control": "button[button] \"Write the state\"",
+   "changed": true
+  },
+  {
+   "stage": "21:00 qdrive",
+   "mode": "data",
+   "control": "canvas \"Target and achieved per-qubit Z. Hover, tap or use\"",
+   "changed": true
+  },
+  {
+   "stage": "23:00 blurcore",
+   "mode": "scene",
+   "control": "canvas \"The day’s record as a tape between two reels: raw \"",
+   "changed": true
+  },
+  {
+   "stage": "23:00 blurcore",
+   "mode": "scene",
+   "control": "button[button] \"Run the tape\"",
+   "changed": true
+  },
+  {
+   "stage": "23:00 blurcore",
+   "mode": "scene",
+   "control": "button[button] \"Raw IBM bits\"",
+   "changed": true
+  },
+  {
+   "stage": "23:00 blurcore",
+   "mode": "scene",
+   "control": "button[button] \"Blurred (blur-core-v1)\"",
+   "changed": true
+  },
+  {
+   "stage": "23:00 blurcore",
+   "mode": "data",
+   "control": "canvas \"Wipe comparison: raw IBM bits on the left, blurred\"",
+   "changed": true
+  }
+ ],
+ "gallery": [
+  {
+   "stage": "05:00 coin",
+   "control": "canvas \"Binomial odds for 144 fair tosses, with the measur\"",
+   "changed": true
+  },
+  {
+   "stage": "05:00 coin",
+   "control": "button[button] \"Show 05:00 in the lab ↑\"",
+   "changed": true
+  },
+  {
+   "stage": "05:30 comet",
+   "control": "button[button] \"One attempt\"",
+   "changed": true
+  },
+  {
+   "stage": "05:30 comet",
+   "control": "button[button] \"Odds per tweezer\"",
+   "changed": true
+  },
+  {
+   "stage": "05:30 comet",
+   "control": "input[range] \"Loading attempt\"",
+   "changed": true
+  },
+  {
+   "stage": "05:30 comet",
+   "control": "canvas \"The 12 by 12 tweezer array for one loading attempt\"",
+   "changed": true
+  },
+  {
+   "stage": "05:30 comet",
+   "control": "button[button] \"Show 05:30 in the lab ↑\"",
+   "changed": true
+  },
+  {
+   "stage": "06:00 qrcimage",
+   "control": "button[button] \"▶ Play\"",
+   "changed": true
+  },
+  {
+   "stage": "06:00 qrcimage",
+   "control": "input[range] \"Frame\"",
+   "changed": true
+  },
+  {
+   "stage": "06:00 qrcimage",
+   "control": "canvas \"One loading attempt from the reservoir-generated s\"",
+   "changed": true
+  },
+  {
+   "stage": "06:00 qrcimage",
+   "control": "button[button] \"Show 06:00 in the lab ↑\"",
+   "changed": true
+  },
+  {
+   "stage": "07:00 shader",
+   "control": "button[button] \"Transmitted\"",
+   "changed": true
+  },
+  {
+   "stage": "07:00 shader",
+   "control": "button[button] \"Reflected\"",
+   "changed": true
+  },
+  {
+   "stage": "07:00 shader",
+   "control": "input[range] \"Glass layer spacing in nanometres\"",
+   "changed": true
+  },
+  {
+   "stage": "07:00 shader",
+   "control": "canvas \"The vacuum-cell glass rendered with the engine’s l\"",
+   "changed": true
+  },
+  {
+   "stage": "07:00 shader",
+   "control": "canvas \"Tweezer array dimmed by the glass. Hover, tap or u\"",
+   "changed": true
+  },
+  {
+   "stage": "07:00 shader",
+   "control": "button[button] \"Show 07:00 in the lab ↑\"",
+   "changed": true
+  },
+  {
+   "stage": "07:30 blur",
+   "control": "canvas \"Wipe comparison: ideal on the left, camera (blur-v\"",
+   "changed": true
+  },
+  {
+   "stage": "07:30 blur",
+   "control": "button[button] \"camera (blur-v1)\"",
+   "changed": true
+  },
+  {
+   "stage": "07:30 blur",
+   "control": "button[button] \"difference ×20\"",
+   "changed": true
+  },
+  {
+   "stage": "07:30 blur",
+   "control": "button[button] \"Show 07:30 in the lab ↑\"",
+   "changed": true
+  },
+  {
+   "stage": "08:00 fryer",
+   "control": "canvas \"Wipe comparison: camera on the left, fried (deep-f\"",
+   "changed": true
+  },
+  {
+   "stage": "08:00 fryer",
+   "control": "button[button] \"Show 08:00 in the lab ↑\"",
+   "changed": true
+  },
+  {
+   "stage": "08:15 tessa",
+   "control": "button[button] \"Show 08:15 in the lab ↑\"",
+   "changed": true
+  },
+  {
+   "stage": "08:30 qpixl",
+   "control": "input[range] \"Occupancy threshold\"",
+   "changed": true
+  },
+  {
+   "stage": "08:30 qpixl",
+   "control": "button[button] \"Reset\"",
+   "changed": true
+  },
+  {
+   "stage": "08:30 qpixl",
+   "control": "canvas \"Each tweezer: counts sent in (left half) and decod\"",
+   "changed": true
+  },
+  {
+   "stage": "08:30 qpixl",
+   "control": "canvas \"Histogram of decoded counts with the threshold. Ta\"",
+   "changed": true
+  },
+  {
+   "stage": "08:30 qpixl",
+   "control": "button[button] \"Show 08:30 in the lab ↑\"",
+   "changed": true
+  },
+  {
+   "stage": "09:00 maze",
+   "control": "button[button] \"Lanes asked for\"",
+   "changed": true
+  },
+  {
+   "stage": "09:00 maze",
+   "control": "button[button] \"Sampled maze\"",
+   "changed": true
+  },
+  {
+   "stage": "09:00 maze",
+   "control": "button[button] \"After the moves\"",
+   "changed": true
+  },
+  {
+   "stage": "09:00 maze",
+   "control": "canvas \"Target zone: rooms are tweezer sites, lines are la\"",
+   "changed": true
+  },
+  {
+   "stage": "09:00 maze",
+   "control": "button[button] \"Show 09:00 in the lab ↑\"",
+   "changed": true
+  },
+  {
+   "stage": "09:30 telablur",
+   "control": "input[range] \"Rearrangement progress\"",
+   "changed": true
+  },
+  {
+   "stage": "09:30 telablur",
+   "control": "button[button] \"Before\"",
+   "changed": true
+  },
+  {
+   "stage": "09:30 telablur",
+   "control": "button[button] \"Engine halfway\"",
+   "changed": true
+  },
+  {
+   "stage": "09:30 telablur",
+   "control": "button[button] \"After\"",
+   "changed": true
+  },
+  {
+   "stage": "09:30 telablur",
+   "control": "button[button] \"Frames\"",
+   "changed": true
+  },
+  {
+   "stage": "09:30 telablur",
+   "control": "button[button] \"Show moves\"",
+   "changed": true
+  },
+  {
+   "stage": "09:30 telablur",
+   "control": "canvas \"Rearrangement: before, the engine’s halfway frame,\"",
+   "changed": true
+  },
+  {
+   "stage": "09:30 telablur",
+   "control": "button[button] \"Show 09:30 in the lab ↑\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "control": "canvas \"Unit-disk graph of the atoms in the zone, with one\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "control": "button[button] \"1 · 0.3% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "control": "button[button] \"2 · 0.2% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "control": "button[button] \"3 · 0.2% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "control": "button[button] \"4 · 0.2% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "control": "button[button] \"5 · 0.1% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "control": "button[button] \"6 · 0.1% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "control": "button[button] \"7 · 0.1% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "control": "button[button] \"8 · 0.1% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "control": "button[button] \"9 · 0.1% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "control": "button[button] \"10 · 0.1% ✗\"",
+   "changed": true
+  },
+  {
+   "stage": "10:00 graph",
+   "control": "button[button] \"Show 10:00 in the lab ↑\"",
+   "changed": true
+  },
+  {
+   "stage": "11:00 tamagotchi",
+   "control": "button[button] \"this morning's chip\"",
+   "changed": true
+  },
+  {
+   "stage": "11:00 tamagotchi",
+   "control": "button[button] \"ten times better\"",
+   "changed": true
+  },
+  {
+   "stage": "11:00 tamagotchi",
+   "control": "button[button] \"1 round\"",
+   "changed": true
+  },
+  {
+   "stage": "11:00 tamagotchi",
+   "control": "button[button] \"4 rounds\"",
+   "changed": true
+  },
+  {
+   "stage": "11:00 tamagotchi",
+   "control": "canvas \"Logical qubits coloured by how often they read bac\"",
+   "changed": true
+  },
+  {
+   "stage": "11:00 tamagotchi",
+   "control": "button[button] \"Show 11:00 in the lab ↑\"",
+   "changed": true
+  },
+  {
+   "stage": "16:00 blurmidi",
+   "control": "button[button] \"Before the blur\"",
+   "changed": true
+  },
+  {
+   "stage": "16:00 blurmidi",
+   "control": "button[button] \"After blur-midi\"",
+   "changed": true
+  },
+  {
+   "stage": "16:00 blurmidi",
+   "control": "button[button] \"▶ Play\"",
+   "changed": true
+  },
+  {
+   "stage": "16:00 blurmidi",
+   "control": "canvas \"Piano roll: pitch against beat. Tap or press Enter\"",
+   "changed": true
+  },
+  {
+   "stage": "16:00 blurmidi",
+   "control": "button[button] \"Show 16:00 in the lab ↑\"",
+   "changed": true
+  },
+  {
+   "stage": "18:00 retro",
+   "control": "button[button] \"▶ Play\"",
+   "changed": true
+  },
+  {
+   "stage": "18:00 retro",
+   "control": "canvas \"Waveform of Dry: the blurred score, synthesised. T\"",
+   "changed": true
+  },
+  {
+   "stage": "18:00 retro",
+   "control": "button[button] \"▶ Play\"",
+   "changed": true
+  },
+  {
+   "stage": "18:00 retro",
+   "control": "canvas \"Waveform of Echoed: retrocausal-echo-v1 output. Ta\"",
+   "changed": true
+  },
+  {
+   "stage": "18:00 retro",
+   "control": "canvas \"Echo taps: level per site and depth. Hover, tap or\"",
+   "changed": true
+  },
+  {
+   "stage": "18:00 retro",
+   "control": "button[button] \"Show 18:00 in the lab ↑\"",
+   "changed": true
+  },
+  {
+   "stage": "20:00 otoc",
+   "control": "canvas \"Echo maps: clean and with the morning noise. Hover\"",
+   "changed": true
+  },
+  {
+   "stage": "20:00 otoc",
+   "control": "button[button] \"Show 20:00 in the lab ↑\"",
+   "changed": true
+  },
+  {
+   "stage": "21:00 qdrive",
+   "control": "canvas \"Target and achieved per-qubit Z. Hover, tap or use\"",
+   "changed": true
+  },
+  {
+   "stage": "21:00 qdrive",
+   "control": "button[button] \"Show 21:00 in the lab ↑\"",
+   "changed": true
+  },
+  {
+   "stage": "22:00 tomo",
+   "control": "button[button] \"Show 22:00 in the lab ↑\"",
+   "changed": true
+  },
+  {
+   "stage": "23:00 blurcore",
+   "control": "canvas \"Wipe comparison: raw IBM bits on the left, blurred\"",
+   "changed": true
+  },
+  {
+   "stage": "23:00 blurcore",
+   "control": "button[button] \"Show 23:00 in the lab ↑\"",
+   "changed": true
+  }
+ ]
+}

@@ -1,0 +1,1972 @@
+<title>Tweezer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/*BRAND*/
+.wtnr-bar .count{white-space:nowrap}
+/* Layout: a short header, then the hero: the lab path (one pixel-art station per stage, Tweezy walks it), then the
+   stage card (pixel scene by default, charts one click away) beside the sounds and the survival curve. */
+.wrap{max-width:80rem;margin-inline:auto}
+.top{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:clamp(1.25rem,3vw,2.5rem);align-items:end;padding-block:2rem 1.25rem}
+.lab{margin-bottom:clamp(1.25rem,3vw,2rem)}
+.labbox{border:1px solid var(--ink);border-top:0;background:var(--panel);padding:clamp(.6rem,1.6vw,1rem);display:grid;gap:.8rem;min-width:0}
+.labhead{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:.6rem 1rem;align-items:center}
+#clock{display:block;image-rendering:pixelated;cursor:pointer;touch-action:none}
+#clock:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+canvas.pix.still{cursor:default}
+.view canvas[tabindex]{cursor:pointer}
+.view canvas[tabindex]:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+.saybox{display:grid;gap:.35rem;min-width:0}
+.say{background:var(--panel-2);border:1px solid var(--ink);border-radius:14px 14px 14px 3px;padding:.55rem .85rem;font-size:.95rem;line-height:1.4;color:var(--ink);max-width:68ch}
+.labnav{display:flex;gap:.5rem;flex-wrap:wrap}
+.pathwrap{position:relative;min-width:0}
+#path{display:block;width:100%;image-rendering:pixelated}
+.stn{position:absolute;background:transparent;border:0;border-radius:8px;padding:0;margin:0;cursor:pointer}
+.stn:hover{background:rgba(25,35,142,.05)}
+.stn:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
+canvas.pix{display:block;width:100%;image-rendering:pixelated;background:var(--paper);outline:1px solid var(--rule);touch-action:manipulation;cursor:pointer}
+canvas.pix:focus-visible{outline:2px solid var(--ink)}
+.vhead{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center;justify-content:space-between}
+.vhead .note{max-width:44ch}
+.kicker{font:500 .74rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+h1{font-size:clamp(2.2rem,4.6vw,4rem);line-height:1.02;margin-block:.5rem .8rem}
+.sub{font-size:1.05rem;color:var(--ink-2);max-width:52ch}
+.side{display:grid;gap:1rem}
+.steps{display:grid;gap:.55rem;counter-reset:s;margin:0;padding:0;list-style:none}
+.steps li{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:.6rem;align-items:baseline;font-size:.93rem}
+.steps li::before{counter-increment:s;content:counter(s);font:500 .8rem/1.6 var(--mono);color:var(--on-ink);background:var(--ink);border-radius:99px;width:1.6rem;height:1.6rem;display:grid;place-items:center}
+.inst{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:clamp(1rem,2.5vw,2rem);align-items:start}
+.card{background:var(--panel);border:1px solid var(--ink);padding:clamp(.9rem,2vw,1.4rem);display:grid;gap:.9rem;min-width:0}
+.chead{display:grid;grid-template-columns:auto minmax(0,1fr);gap:1rem;align-items:center}
+.clock{font:300 clamp(2.2rem,5vw,3.4rem)/1 var(--display);color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.chead h2{font-size:clamp(1.3rem,2.4vw,1.8rem);line-height:1.1}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.45rem}
+.chip{font:500 .68rem/1 var(--mono);letter-spacing:.04em;padding:.4rem .6rem;border:1px solid var(--rule);border-radius:99px;color:var(--ink-2);background:var(--panel)}
+.chip.hw{border-color:var(--ink);background:var(--ink);color:var(--on-ink)}
+.chip b{color:var(--ink);font-weight:500}
+.chip.hw b{color:var(--on-ink)}
+.analogy{font-size:.86rem;color:var(--ink);background:var(--tint);border-inline-start:2px solid var(--ink);padding:.6rem .75rem}
+.analogy::before{content:"Analogy\00a0\2014\00a0";font:500 .7rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.role{color:var(--ink-2);font-size:.95rem;max-width:70ch}
+.view{display:grid;gap:.75rem;min-width:0}
+.view canvas{display:block;width:100%;height:auto;background:var(--paper);border:1px solid var(--rule);touch-action:none}
+.ctl{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.ctl input[type=range]{flex:1;min-width:8rem}
+.note{font:400 .76rem/1.45 var(--mono);color:var(--ink-2)}
+.note b{color:var(--ink);font-weight:500}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.hop{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.4rem 1rem;align-items:center;border-top:1px solid var(--rule);padding-top:.85rem}
+.hop .big{font:300 2rem/1 var(--display);color:var(--ink);font-variant-numeric:tabular-nums}
+.gauge{position:relative;height:10px;border-radius:99px;background:var(--panel-2);border:1px solid var(--rule)}
+.gauge i{position:absolute;inset:0 auto 0 0;border-radius:99px;background:var(--ink)}
+.gauge u{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--warn)}
+.stepper{display:flex;gap:.5rem;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.stepper .pos{font:500 .78rem/1 var(--mono);color:var(--ink-2)}
+.rail{display:grid;gap:1rem;min-width:0}
+.panel{background:var(--panel);border:1px solid var(--rule);padding:1rem 1.1rem;display:grid;gap:.6rem;min-width:0}
+.panel.well{background:var(--panel-2)}
+#dial,#curve{display:block;width:100%;height:auto}
+#dial{max-width:22rem;margin-inline:auto}
+#dial .mk{cursor:pointer}
+#dial .mk:focus-visible circle{stroke:var(--warn);stroke-width:3}
+#curve .pt{cursor:pointer}
+/* the titled sections under the lab: How to play, The data (every stage's charts), the film, The science,
+   What this does not claim, Jobs and credits */
+.sect{margin-top:2rem}
+.sect>.ink-bar h2{font:inherit;color:inherit;letter-spacing:inherit;text-transform:inherit;margin:0}
+.sectbox{border:1px solid var(--ink);border-top:0;background:var(--panel);padding:clamp(.9rem,2vw,1.4rem);display:grid;gap:1rem;min-width:0}
+.sectbox>p{margin:0}
+.lede{color:var(--ink-2);max-width:72ch}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,34rem),1fr));gap:clamp(1rem,2vw,1.5rem);align-items:start}
+.fig{margin:0;border:1px solid var(--rule);background:var(--panel);padding:clamp(.75rem,1.6vw,1.1rem);display:grid;gap:.75rem;min-width:0;scroll-margin-top:1rem}
+.fig.cur{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.fighead{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.35rem .9rem;align-items:baseline}
+.fighead .t{font:300 1.7rem/1 var(--display);color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.fighead h3{font-size:1.15rem;line-height:1.2}
+.fighead .chips{grid-column:1/-1;margin-top:0}
+.figfoot{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:.5rem}
+.figfoot .btn{padding:.55rem .9rem;font-size:.82rem}
+.tokens{display:flex;flex-wrap:wrap;gap:3px}
+.tokens span{font:500 .7rem/1 var(--mono);width:1.35rem;height:1.35rem;display:grid;place-items:center;border-radius:4px;background:var(--panel);border:1px solid var(--rule);color:var(--ink-2)}
+.tokens span.ok{border-color:var(--ink);color:var(--ink)}
+.tokens span.on{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
+.patterns{display:flex;flex-wrap:wrap;gap:.35rem}
+.patterns button{font:500 .7rem/1 var(--mono);padding:.45rem .6rem;border-radius:99px;border:1px solid var(--rule);background:var(--panel);color:var(--ink-2);cursor:pointer}
+.patterns button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--on-ink)}
+.status{border:1px dashed var(--ink-3);padding:1.2rem;display:grid;gap:.5rem;background:var(--panel-2)}
+.status h3{font-size:1.3rem}
+.fez{border:1px dashed var(--ink-3);background:var(--panel-2);padding:.6rem .75rem;display:grid;gap:.3rem;min-width:0}
+.fez .label{color:var(--ink)}
+.fez p{margin:0;overflow-wrap:anywhere}
+.fez:empty{display:none}
+.runsel{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.chip.fail{border-style:dashed;color:var(--ink-2)}
+.readout{display:grid;grid-template-columns:minmax(7rem,auto) minmax(0,1fr);gap:.35rem 1rem;font:400 .78rem/1.5 var(--mono);color:var(--ink-2);margin:0}
+.readout dd{margin:0;color:var(--ink);overflow-wrap:anywhere}
+.readout dt{color:var(--ink-2)}
+.tbl{width:100%;border-collapse:collapse;font:400 .74rem/1.4 var(--mono)}
+.tbl th,.tbl td{text-align:left;padding:.35rem .4rem;border-bottom:1px solid var(--rule);vertical-align:top}
+.tbl th{color:var(--ink-2);font-weight:500}
+.tbl td{color:var(--ink)}
+.tblwrap{overflow-x:auto}
+.sounds{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+.sounds li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.3rem .85rem;align-items:center;padding-top:.7rem}
+.sounds .t{font:500 .72rem/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
+.sounds .s{display:block;font:400 .72rem/1.4 var(--mono);color:var(--ink-2);overflow-wrap:anywhere}
+.sounds .bar{grid-column:1/-1;height:2px;background:var(--rule);margin-top:.35rem}
+.sounds .bar i{display:block;height:100%;width:0;background:var(--ink)}
+.btn.play{padding:.5rem .85rem;font-size:.8rem;min-width:5.4rem;justify-content:center}
+.film{margin-top:1.5rem}
+.filmbox{border:1px solid var(--ink);border-top:0;background:var(--panel);padding:clamp(.75rem,2vw,1.1rem);display:grid;gap:.6rem}
+.filmbox video{display:block;width:100%;height:auto;aspect-ratio:16/9;background:var(--paper);border:1px solid var(--rule)}
+.ink-bar span{min-width:0;overflow-wrap:anywhere}
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:var(--ink);color:var(--on-ink);font:500 .85rem/1 var(--body);padding:.75rem 1rem;border-radius:99px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (max-width:960px){.top,.inst{grid-template-columns:minmax(0,1fr)}.two{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:720px){.labhead{grid-template-columns:auto minmax(0,1fr)}.labnav{grid-column:1/-1;justify-content:space-between}}
+@media (max-width:560px){.chead{grid-template-columns:minmax(0,1fr);gap:.35rem}.hop{grid-template-columns:minmax(0,1fr)}
+  .lead{display:flex;flex-direction:column}.lead .top{display:contents}.lead .intro{order:1;padding-top:1.4rem;margin-bottom:1.1rem}
+  .lead .lab{order:2}.lead .side{order:3;margin-bottom:1.5rem}.labbox{padding:.5rem}.say{font-size:.9rem}
+  .stepper #share{order:3;width:100%;justify-content:center}
+  .labhead{grid-template-columns:auto minmax(0,1fr)}.labhead #clock{grid-row:1;grid-column:1}
+  .labnav{grid-row:1;grid-column:2;justify-content:flex-end;gap:.35rem}.labnav .btn{padding:.6rem .8rem;font-size:.84rem}
+  .saybox{grid-column:1/-1;grid-row:2}.ink-bar .wide{display:none}
+  .sectbox{padding:.65rem}.fig{padding:.6rem}.fighead .t{font-size:1.4rem}}
+</style>
+
+<div class="wrap">
+  <nav class="wtnr-bar"><a href="https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa">What the Noise Remembers</a><span class="count"><b>Challenge 06</b> &middot; Lose</span></nav>
+
+  <div class="lead">
+  <header class="top">
+    <div class="intro">
+      <p class="kicker">Challenge 06 &middot; Daisy Chain</p>
+      <h1>Walk one atom array through a day, engine by engine.</h1>
+      <p class="sub">A day in the life of a neutral-atom quantum computer, told by a chain of Atlas engines. Each stage takes an earlier stage's real output and hands on its own. At every hop you can see how much of the signal survived.</p>
+    </div>
+    <div class="side">
+      <div class="proof" id="proof"></div>
+      <ol class="steps">
+        <li><span><b>Walk</b> the lab: tap a station, turn the clock, or use Earlier / Later, and Tweezy goes there.</span></li>
+        <li><span><b>Play</b> each stage's scene, drawn from its real output; flip to Data for the charts.</span></li>
+        <li><span><b>Judge</b> each hop: survival F against chance, on Tweezy's face and on the curve.</span></li>
+      </ol>
+    </div>
+  </header>
+
+  <section class="lab" aria-label="The lab: one station per stage of the day">
+    <div class="ink-bar"><span>The lab<span class="wide"> &middot; one day, 05:00 to 23:00</span></span><span id="pos">stage 1</span></div>
+    <div class="labbox">
+      <div class="labhead">
+        <canvas id="clock" role="slider" tabindex="0" aria-label="Lab clock: tap or drag to an hour (or use the arrow keys) and Tweezy walks to that stage; tap the window to jump between day and night" aria-valuemin="5" aria-valuemax="23" aria-valuenow="5" title="Turn the clock: tap an hour, or the window for day / night"></canvas>
+        <div class="saybox">
+          <span class="label" id="say-label">Tweezy says</span>
+          <p class="say" id="say" aria-live="polite"></p>
+        </div>
+        <div class="labnav">
+          <button type="button" class="btn ghost" id="lab-prev" aria-label="Walk to the previous station">&larr; Earlier</button>
+          <button type="button" class="btn" id="lab-next" aria-label="Walk to the next station">Later &rarr;</button>
+        </div>
+      </div>
+      <div class="pathwrap" id="pathwrap">
+        <canvas id="path" aria-hidden="true"></canvas>
+        <div id="stns" role="group" aria-label="Stations of the day"></div>
+      </div>
+      <p class="note">One station per stage, in order of the day: tap a station, or drag along the path and let go, and Tweezy walks there. Tweezy's face is the hop's real result: <b>beaming</b> where survival F beats chance by 0.25 or more, <b>flat</b> where it beats chance by less, <b>dizzy</b> within 0.06 of chance, <b>sweating</b> where the engine's job failed (taped-off stations). A chip badge marks the stations that ran on IBM hardware. The clock is a dial too: tap or drag to an hour and Tweezy walks to the stage in progress then; tap its window to jump between day and night.</p>
+    </div>
+  </section>
+  </div>
+
+  <section class="inst" aria-label="Chain explorer">
+    <article class="card" id="card" aria-live="polite">
+      <div class="chead">
+        <span class="clock" id="c-clock">05:00</span>
+        <div><h2 id="c-title">&nbsp;</h2><div class="chips" id="c-chips"></div></div>
+      </div>
+      <div class="vhead">
+        <div class="seg" role="group" aria-label="Scene or data" id="mode"><button type="button" aria-pressed="true" data-m="scene">Scene</button><button type="button" aria-pressed="false" data-m="data">Data</button></div>
+        <span class="note" id="mode-note"></span>
+      </div>
+      <div class="view" id="view"></div>
+      <p class="analogy" id="c-analogy"></p>
+      <p class="role" id="c-role"></p>
+      <div class="fez" id="c-fez" role="note" aria-label="What happened when this stage was sent to IBM ibm_fez"></div>
+      <div class="hop" id="hop"></div>
+      <div class="stepper">
+        <button type="button" class="btn ghost" id="prev" aria-label="Previous stage">&larr; Earlier</button>
+        <span class="pos" id="c-pos"></span>
+        <button type="button" class="btn ghost" id="share">Copy link to this stage</button>
+        <button type="button" class="btn" id="next" aria-label="Next stage">Later &rarr;</button>
+      </div>
+    </article>
+
+    <div class="rail">
+      <div class="panel">
+        <span class="label">The day &middot; tap an hour</span>
+        <svg id="dial" viewBox="-14 -14 348 348" role="group" aria-label="24-hour dial: one marker per stage"></svg>
+      </div>
+      <div class="panel">
+        <span class="label">Every sound in the day &middot; press to hear</span>
+        <ul class="sounds" id="sounds" aria-label="Sound deliverables"></ul>
+        <p class="note">Nothing plays until you press. One sound at a time; press again to stop. The MIDI files are played by a simple sine synth in your browser (classical).</p>
+      </div>
+      <div class="panel">
+        <span class="label">Signal survival at each hop</span>
+        <svg id="curve" viewBox="0 0 560 262" role="group" aria-label="Survival F per hop, with the chance baseline"></svg>
+        <p class="note"><b>&#9679;</b> F, this stage vs the one it read from &nbsp; <b>&#8212;</b> chance (shuffled outcomes) &nbsp; &#215; did not complete</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sect" id="how" aria-labelledby="how-h">
+    <div class="ink-bar"><h2 id="how-h">How to play</h2><span class="wide">the lab, the charts, the sounds</span></div>
+    <div class="sectbox">
+      <p class="lede">Walk Tweezy, an atom in a tweezer beam, from station to station and see how much of the signal survived.</p>
+      <ol class="steps">
+        <li><span><b>Step</b> through the day, or jump to any hour on the dial or the curve.</span></li>
+        <li><span><b>Play</b> with each stage's real output: scrub, compare, move thresholds, listen.</span></li>
+        <li><span><b>Judge</b> each hop: survival F, set against what chance alone would score.</span></li>
+      </ol>
+      <details class="drawer"><summary>Who's who in the pixel lab</summary><div class="body">
+        <p><b>Tweezy</b> is an atom held in an optical-tweezer beam: the hourglass of light narrows to a focus, and the atom sits in it. Its face at each station is set by that hop's survival F against chance (rule under the lab path), never by hand.</p>
+        <p>In the scenes, a small hourglass is an <b>empty tweezer</b>; a round face in it is a <b>loaded tweezer</b>; a glowing ring is an atom the 10:00 pattern <b>excited</b>; a pale ghost is a site the camera <b>called loaded although it was empty</b>; a faded atom is one the camera <b>missed</b>. Every one of them is placed from the cached job data on this page (the comet bitstrings, the decoded photon counts, the planned moves, the measured patterns, the logical success rates, the score's notes, the echo maps, the circuit's &lt;Z&gt; values).</p>
+        <p>Motion is decoration on top of that: atoms falling into place, coins flipping, a pan sizzling, reels turning and sound waves rolling out are there to show what a step does, not to measure it. Where a scene replays something the engine did not record (the order the coin tosses landed, the order atoms dropped), its note says so. All sprites are drawn for this piece in the shared ink palette; orange appears only for light, glow and fire.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="sect" id="data" aria-labelledby="data-h">
+    <div class="ink-bar"><h2 id="data-h">The data</h2><span class="wide">every stage's charts, from its cached engine output</span></div>
+    <div class="sectbox">
+      <p class="lede">Every stage's charts and engine frames, side by side, each with its caption and its hop score. They are live: hover, drag, play and move thresholds here exactly as in the stage card's Data view. The 24-hour dial and the survival curve are beside the stage card above. &ldquo;Show in the lab&rdquo; walks Tweezy to that stage; the stage in the card is outlined here.</p>
+      <div class="gallery" id="gallery" aria-label="Every stage's charts"></div>
+    </div>
+  </section>
+
+  <section class="film" id="film-wrap" aria-label="The day as a film">
+    <div class="ink-bar"><span>The whole day as a film</span><span>tweezer_day.mp4 &middot; 60 s</span></div>
+    <div class="filmbox">
+      <video id="film" controls playsinline preload="metadata" poster="/*FILM_POSTER*/" aria-label="tweezer_day.mp4: a 60 second walk through the completed stages">
+        <source data-src="/*FILM_SRC*/" type="video/mp4">
+      </video>
+      <p class="note">Each completed stage for 4 seconds, drawn from the cached engine outputs (a classical rendering: engine images as returned, numbers drawn as plain charts). Soundtrack: the 18:00 retrocausal-echo-v1 output from IBM ibm_fez (the stage&rsquo;s primary run), looped. Each frame shows the stage&rsquo;s primary run (the ibm_fez run where it completed). It starts only when you press play.</p>
+    </div>
+  </section>
+
+  <section class="sect" id="science" aria-labelledby="sci-h">
+    <div class="ink-bar"><h2 id="sci-h">The science</h2><span class="wide">tweezers, Rydberg blockade, and the survival score</span></div>
+    <div class="sectbox">
+      <details class="drawer"><summary>Why a neutral-atom day?</summary><div class="body">
+        <p>Neutral-atom quantum computers hold single atoms in optical tweezers. Each run starts the same way: tweezers load at random, roughly half full; a camera images the array; moving tweezers drag spare atoms into the holes of a target zone; then lasers drive atoms to Rydberg states, where atoms closer than the blockade radius cannot both be excited. That rule turns an atom layout into a unit-disk graph (Ebadi et al., Science 376, 2022).</p>
+        <p>The stages here follow that routine, but every quantum step is an Atlas engine running gate-model circuits on IBM hardware or on simulators. No atoms were involved. Each stage label says what stood in for what.</p>
+      </div></details>
+      <details class="drawer"><summary>How survival is scored</summary><div class="body">
+        <p>Every hop compares what a stage received with what it handed on, on outcomes both sides share: tweezer sites, lanes, graph edges, frame transitions, beats, sound bands. Both are read as probability distributions and scored with the classical (Bhattacharyya) fidelity F = (&Sigma; &radic;(p&middot;q))&sup2;. F = 1 means nothing was lost.</p>
+        <p>For many independent yes/no outcomes (lanes, edges, logical qubits) F is averaged per outcome. Because F is generous to flat patterns, each hop also shows a chance line: the same F after shuffling which outcome each value belongs to (or 0.5 for a coin-flip per outcome). The hops measure different things, so they are not multiplied into one end-to-end number.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="sect" id="claims" aria-labelledby="claims-h">
+    <div class="ink-bar"><h2 id="claims-h">What this does not claim</h2></div>
+    <div class="sectbox">
+      <p class="honesty">Atlas runs gate-model circuits and simulators, not atoms. <span id="hw-honesty">Some stages ran on real IBM hardware (named on their cards); the rest ran on Atlas simulators or noise-model emulators, and each card says which.</span> No failed job is counted. Mapping choices (which qubit stands for which tweezer, how glass angle or loudness is assigned, the move rules, the threshold) are classical decisions made by this piece, and the cards say so. The Bell witness is a fidelity check on the chip, not certified randomness. Nothing here claims quantum advantage or simulates atom physics.</p>
+    </div>
+  </section>
+
+  <section class="sect" id="jobs-sec" aria-labelledby="jobs-h">
+    <div class="ink-bar"><h2 id="jobs-h">Jobs and credits</h2><span class="wide">what ran, where, and who made it possible</span></div>
+    <div class="sectbox">
+      <div class="panel well" role="region" aria-label="Job readout">
+        <span class="label">What actually ran</span>
+        <dl class="readout" id="readout"></dl>
+      </div>
+      <details class="drawer"><summary>Every engine, every job</summary><div class="body">
+        <div class="tblwrap"><table class="tbl" id="jobs"></table></div>
+        <p id="failnote"></p>
+      </div></details>
+      <p class="note">Credits: Moth Quantum&rsquo;s Atlas engines (every one is in the table above; graph-v1 is built on QuantumGraph and blur-v1 wraps the QuantumBlur library), with IBM Quantum hardware (<span id="hw-credits">named on each card</span>; every ibm_fez attempt is listed in the table above) reached through Atlas. Context: S. Ebadi et al., Science 376, 1209 (2022); D. Barredo et al. and M. Endres et al., Science 354 (2016). Fonts: Geist and IBM Plex Mono (SIL Open Font License). No third-party data; the full list is in CREDITS.md.</p>
+    </div>
+  </section>
+  <!--NAV-->
+  <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>/*INKSPRITE*/</script>
+<script>
+const CHAIN = /*CHAIN*/[];
+const SPRITES = /*SPRITES*/{};
+const META = /*META*/{};
+const SOUNDS = /*SOUNDS*/{};
+const tok = (n, f) => { try { return getComputedStyle(document.documentElement).getPropertyValue(n).trim() || f; } catch (e) { return f; } };
+// paper/ink palette from common/brand.css (night = paper, dusk = panel, line = rule, moon/wing = ink, haze = ink-2)
+const C = {night:tok('--paper', '#FBFAF9'), dusk:tok('--panel', '#FFFFFF'), line:tok('--rule', '#D3D3E6'), moon:tok('--ink', '#19238E'),
+           haze:tok('--ink-2', '#545BA9'), wing:tok('--ink', '#19238E'), faint:tok('--ink-3', '#A1A4CE'), warn:tok('--warn', '#B4541A')};
+const W = a => `rgba(25,35,142,${a})`, M = a => `rgba(84,91,169,${a})`;
+const $ = id => document.getElementById(id);
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+// canvas text scale: canvases are drawn at a fixed size and shrink on phones, so their labels grow to stay readable
+let FK = 1;
+const mono = px => `500 ${Math.round(px * FK)}px IBM Plex Mono, monospace`;
+
+function h(tag, attrs, ...kids){
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})){
+    if (k === 'class') e.className = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+    else if (v !== false && v != null) e.setAttribute(k, v === true ? '' : v);
+  }
+  for (const c of kids.flat()){ if (c == null) continue; e.append(c.nodeType ? c : document.createTextNode(String(c))); }
+  return e;
+}
+function seg(label, opts, val, on){
+  const g = h('div', {class:'seg', role:'group', 'aria-label':label});
+  opts.forEach(([v, t]) => {
+    const b = h('button', {type:'button', 'aria-pressed':String(v === val)}, t);
+    b.addEventListener('click', () => { [...g.children].forEach(x => x.setAttribute('aria-pressed', 'false')); b.setAttribute('aria-pressed', 'true'); on(v); });
+    g.append(b);
+  });
+  return g;
+}
+function canvas(w, hh, label){ return h('canvas', {width:w, height:hh, role:'img', 'aria-label':label, tabindex:'0'}); }
+// every chart canvas does something: hover, tap or drag reads it (fn gets canvas units), arrow keys step a cursor
+const cpos = (c, e) => { const r = c.getBoundingClientRect(); return [(e.clientX - r.left) / (r.width || 1) * c.width, (e.clientY - r.top) / (r.height || 1) * c.height]; };
+function probe(c, fn, key){
+  let down = false;
+  c.addEventListener('pointerdown', e => { down = true; try { c.setPointerCapture(e.pointerId); } catch (x) {} fn(...cpos(c, e), true); });
+  c.addEventListener('pointermove', e => fn(...cpos(c, e), down));
+  c.addEventListener('pointerup', () => { down = false; }); c.addEventListener('pointercancel', () => { down = false; });
+  if (key) c.addEventListener('keydown', e => { const d = {ArrowLeft:[-1, 0], ArrowRight:[1, 0], ArrowUp:[0, -1], ArrowDown:[0, 1]}[e.key]; if (d){ e.preventDefault(); key(...d); } });
+}
+// tap (or Enter / Space) on a picture runs that picture's main action; `what` is added to its label and tooltip
+function tapAct(c, fn, what){
+  c.addEventListener('click', () => fn());
+  c.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); fn(); } });
+  if (what){ c.title = 'Tap: ' + what; c.setAttribute('aria-label', (c.getAttribute('aria-label') || '') + '. Tap or press Enter: ' + what + '.'); }
+}
+const press = (g, i) => [...g.children].forEach((b, j) => b.setAttribute('aria-pressed', String(j === i)));
+function range(min, max, val, step, label, on){
+  const r = h('input', {type:'range', min, max, step:step || 1, 'aria-label':label});
+  r.value = val;           // after min/max/step, so the browser does not snap it to the default step
+  r.addEventListener('input', () => on(+r.value)); return r;
+}
+const IMG = {};
+function img(src, cb){
+  if (!IMG[src]){ const i = new Image(); i.decoding = 'async'; i.src = src; IMG[src] = i; }
+  const i = IMG[src];
+  if (cb){ if (i.complete && i.naturalWidth) cb(i); else i.addEventListener('load', () => cb(i), {once:true}); }
+  return i;
+}
+const byId = id => CHAIN.find(s => s.id === id);
+const f3 = x => x == null ? 'n/a' : (+x).toFixed(3);
+const fT = x => String(+(+x).toFixed(3));          // a threshold as set (0.275 stays 0.275, 0.3 stays 0.3)
+const pct = x => (100 * x).toFixed(1) + '%';
+
+// ---------- sound: one context, created on the first click; every source registers a stopper ----------
+// One sound at a time: starting any sound stops the others. Changing stage stops only the stage card's own players.
+let AC = null, stoppers = [];
+function ac(){ if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); return AC; }
+function onStop(f, o){ o = o || {}; if (o.key) stoppers = stoppers.filter(s => s.key !== o.key); stoppers.push({f, stage:!!o.stage, key:o.key || null}); }
+function stopAll(o){
+  o = o || {}; const run = [], keep = [];
+  stoppers.forEach(s => ((o.stageOnly && !s.stage) || (o.except && s.key === o.except) ? keep : run).push(s));
+  stoppers = keep; run.forEach(s => { try { s.f(); } catch (e) {} });
+}
+// timers and players owned by a chart in "The data" (#gallery) keep running when the stage card changes stage;
+// the card's own ones stop (pass the chart's element as `el` so every() knows who owns the timer)
+const inGal = el => !!(el && el.closest && el.closest('#gallery'));
+const timers = new Map();
+function every(ms, fn, el){ const t = setInterval(fn, ms); timers.set(t, el || null); return t; }
+function clearTimers(){ timers.forEach((el, t) => { if (inGal(el)) return; clearInterval(t); cancelAnimationFrame(t); timers.delete(t); }); }
+
+// ---------- drawing helpers ----------
+const ROWS = 12, COLS = 12;
+function drawArray(ctx, S, vals, opt){
+  opt = opt || {};
+  const p = S / COLS;
+  ctx.fillStyle = C.night; ctx.fillRect(0, 0, S, S);
+  for (let i = 0; i < 144; i++){
+    const x = (i % COLS + .5) * p, y = (Math.floor(i / COLS) + .5) * p, v = Math.max(0, Math.min(1, vals[i] || 0));
+    ctx.strokeStyle = C.line; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x, y, p * .34, 0, 2 * Math.PI); ctx.stroke();
+    if (v > 0){ ctx.fillStyle = W(Math.min(1, .12 + .88 * v)); ctx.beginPath(); ctx.arc(x, y, p * .3, 0, 2 * Math.PI); ctx.fill(); }
+    if (opt.mark && opt.mark[i]){ ctx.strokeStyle = C.warn; ctx.setLineDash([4, 3]); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x, y, p * .44, 0, 2 * Math.PI); ctx.stroke(); ctx.setLineDash([]); }
+  }
+  if (opt.zone){ ctx.strokeStyle = W(.7); ctx.setLineDash([6, 5]); ctx.lineWidth = 1.5; ctx.strokeRect(4 * p + 2, 4 * p + 2, 5 * p - 4, 4 * p - 4); ctx.setLineDash([]); }
+}
+function heat(ctx, x0, y0, w, hh, grid, max, label){
+  const R = grid.length, K = grid[0].length, cw = w / K, ch = hh / R;
+  for (let r = 0; r < R; r++) for (let k = 0; k < K; k++){
+    ctx.fillStyle = W(Math.min(1, grid[r][k] / (max || 1))); ctx.fillRect(x0 + k * cw, y0 + r * ch, cw - 1, ch - 1);
+  }
+  if (label){ ctx.fillStyle = C.haze; ctx.font = mono(13); ctx.fillText(label, x0, y0 - 8); }
+}
+function wipe(view, a, b, la, lb, extra, H){
+  const S = 640; H = H || S;
+  const c = canvas(S, H, `Wipe comparison: ${la} on the left, ${lb} on the right. Drag or use arrow keys.`);
+  let x = .5, down = false, B = b;
+  const draw = () => {
+    const ctx = c.getContext('2d'); ctx.imageSmoothingEnabled = H === S;
+    ctx.fillStyle = C.night; ctx.fillRect(0, 0, S, H);
+    const ia = img(a), ib = img(B);
+    if (ib.complete && ib.naturalWidth) ctx.drawImage(ib, 0, 0, S, H);
+    if (ia.complete && ia.naturalWidth){ ctx.save(); ctx.beginPath(); ctx.rect(0, 0, x * S, H); ctx.clip(); ctx.drawImage(ia, 0, 0, S, H); ctx.restore(); }
+    // divider: paper core with ink edges, so it reads on the black engine frames and on paper alike, plus a pill grip
+    const X = x * S; ctx.fillStyle = C.wing; ctx.fillRect(X - 2.5, 0, 5, H); ctx.fillStyle = C.night; ctx.fillRect(X - 1, 0, 2, H);
+    const gy = H / 2, gw = 34, gh = Math.min(22, H / 4); ctx.beginPath(); ctx.roundRect ? ctx.roundRect(X - gw / 2, gy - gh / 2, gw, gh, gh / 2) : ctx.rect(X - gw / 2, gy - gh / 2, gw, gh);
+    ctx.fillStyle = C.night; ctx.fill(); ctx.strokeStyle = C.wing; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.fillStyle = C.wing; [[-1, X - 5], [1, X + 5]].forEach(([d, ax]) => { ctx.beginPath(); ctx.moveTo(ax + d * 6, gy); ctx.lineTo(ax, gy - 4.5); ctx.lineTo(ax, gy + 4.5); ctx.fill(); });
+    ctx.font = mono(14); const lw = ctx.measureText(la).width, rt = B === b ? lb : (extra && extra.label) || lb, rw = ctx.measureText(rt).width;
+    ctx.fillStyle = 'rgba(251,250,249,.9)'; const bh = Math.round(24 * FK); ctx.fillRect(6, 8, (lw || 80) + 12, bh); ctx.fillRect(S - (rw || 120) - 18, 8, (rw || 120) + 12, bh);
+    ctx.fillStyle = C.moon; ctx.fillText(la, 12, 8 + bh * .72); ctx.textAlign = 'right'; ctx.fillText(rt, S - 12, 8 + bh * .72); ctx.textAlign = 'left';
+  };
+  img(a, draw); img(b, draw); if (extra) img(extra.src, draw);
+  const pt = e => { const r = c.getBoundingClientRect(); return Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)); };
+  c.addEventListener('pointerdown', e => { down = true; c.setPointerCapture(e.pointerId); x = pt(e); draw(); });
+  c.addEventListener('pointermove', e => { if (down){ x = pt(e); draw(); } });
+  c.addEventListener('pointerup', () => down = false);
+  c.addEventListener('keydown', e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight'){ e.preventDefault(); x = Math.max(0, Math.min(1, x + (e.key === 'ArrowLeft' ? -.05 : .05))); draw(); } });
+  view.append(c);
+  if (extra){
+    view.append(h('div', {class:'ctl'}, seg('Right-hand image', [['b', lb], ['x', extra.label]], 'b', v => { B = v === 'b' ? b : extra.src; draw(); }), h('span', {class:'note'}, extra.note)));
+  }
+  view.append(h('p', {class:'note'}, 'Drag across the frame (or use the arrow keys) to compare.'));
+  draw();
+}
+function statusCard(view, st){
+  const down = st.down, pend = st.pending && !down;
+  const msg = st.error ? ((st.error.match(/"message": "([^"]+)/) || [, st.error.slice(0, 160)])[1]).replace(/\\u([0-9a-fA-F]{4})/g, (m, c) => String.fromCharCode(parseInt(c, 16))) : null;
+  view.append(h('div', {class:'status'},
+    h('span', {class:'label'}, down ? 'Engine not responding' : pend ? 'Still queued at the server' : 'This hop did not complete'),
+    h('h3', {}, `${st.engine || ''}: ${down ? 'no result' : pend ? 'no result yet' : 'failed'}`),
+    h('p', {class:'note'}, down ? 'This engine costs 0 credits, so it was tried at several sizes (1 to 90 logical qubits). Every attempt failed with “engine did not respond in time”. The stage has no data and is not counted.' :
+      pend ? 'The job was submitted and is still waiting in the engine’s queue, so the chain went on without it. It is not counted in the totals.' :
+      st.attempts && st.attempts.length > 1 ? `The engine returned an error each time it was tried (${st.attempts.length} attempts, below). None is counted in the totals or in the survival curve.` :
+      'The engine returned an error. It was tried once and is not counted in the totals or in the survival curve.'),
+    st.attempts && st.attempts.length > 1 ? h('ul', {class:'note'}, st.attempts.map(t => h('li', {}, `${t.backend === 'ibm_fez' ? 'IBM hardware ibm_fez' : t.backend}: job `, h('b', {}, t.job_id), ` · ${t.error}${t.submitted_at ? ' · ' + fmtT(t.submitted_at) : ''}`))) :
+    st.job_id ? h('p', {class:'note'}, down ? 'Last attempt ' : 'Job ', h('b', {}, st.job_id)) : null,
+    msg && !down && !(st.attempts && st.attempts.length > 1) ? h('p', {class:'note'}, 'Server said: ', msg) : null));
+}
+// ---------- ibm_fez: every hardware-capable stage was also sent to IBM's ibm_fez, on the same input it had in the recorded day
+const fmtT = t => t ? String(t).replace('T', ' ').replace(/:\d\dZ$/, ' UTC') : '';
+const RUN = {};                                   // per stage: 'fez' (the ibm_fez run) or 'rec' (the recorded run)
+const runOf = st => (st.earlier && RUN[st.id] === 'rec') ? {...st, ...st.earlier} : st;
+function fezNote(st){
+  const f = st.fez, out = [];
+  if (!st.completed || (!f && !st.earlier)) return out;
+  const tries = (f && f.attempts) || [];
+  if (st.earlier){
+    out.push(h('span', {class:'label'}, `IBM ibm_fez, ${st.qubits ? st.qubits + ' qubits' : 'qubits not reported'}, job ${st.job_id}`),
+      h('p', {class:'note'}, `This stage ran on IBM hardware ibm_fez (job `, h('b', {}, st.job_id), `${st.qubits ? ', ' + st.qubits + ' qubits' : ''}) on the same input as the recorded run, and this card shows that run. The recorded run (${st.earlier.where}, job ${st.earlier.job_id}) is kept as a labelled comparison, because it is the run the day went on with (${st.earlier.fed || 'it fed the day'}). Switch Run to compare them.`));
+    tries.forEach(t => out.push(h('p', {class:'note'}, `An earlier ibm_fez try${t.submitted_at ? ' at ' + fmtT(t.submitted_at) : ''} (job `, h('b', {}, t.job_id), `) did not complete: ${t.type === 'engine_timeout' ? 'the engine' : 'IBM'} reported “${t.error}”. Not counted.`)));
+  } else {
+    out.push(h('span', {class:'label'}, 'IBM ibm_fez re-run · not completed'));
+    tries.forEach(t => out.push(h('p', {class:'note'}, `Sent to ibm_fez on the same input${t.submitted_at ? ' at ' + fmtT(t.submitted_at) : ''}: job `, h('b', {}, t.job_id), `. ${t.type === 'engine_timeout' ? 'The engine' : 'IBM'} reported: “${t.error}”. Not counted.`)));
+    if (f.status === 'pending') out.push(h('p', {class:'note'}, `Job ${f.job_id || ''} is still queued at IBM; not counted.`));
+    if (f.why && f.status !== 'pending') out.push(h('p', {class:'note'}, f.why.charAt(0).toUpperCase() + f.why.slice(1) + '.'));
+    out.push(h('p', {class:'note'}, `So this card shows the recorded run (${st.where}, job ${st.job_id}), the run the later stages read${st.fed ? ': ' + st.fed : ''}.`));
+  }
+  return out;
+}
+function runSel(st, rerender){
+  if (!st.earlier) return null;
+  const which = RUN[st.id] || 'fez';
+  return h('div', {class:'runsel'}, h('span', {class:'label'}, 'Run'),
+    seg('Which run', [['fez', 'IBM ibm_fez (this stage)'], ['rec', `Recorded: ${st.earlier.backend} (fed the day)`]], which, v => { RUN[st.id] = v; rerender(); }));
+}
+
+// ---------- audio helpers ----------
+function playNotes(notes, onEnd, stage){
+  const ctx = ac(), t0 = ctx.currentTime + .05, out = ctx.createGain(); out.gain.value = .18; out.connect(ctx.destination);
+  const nodes = [];
+  for (const [s, d, p, v] of notes){
+    const o = ctx.createOscillator(), g = ctx.createGain(), f = 440 * Math.pow(2, (p - 69) / 12);
+    o.type = 'sine'; o.frequency.value = f; o.connect(g); g.connect(out);
+    const a = t0 + s, vol = .12 + .88 * v / 127;
+    g.gain.setValueAtTime(0, a); g.gain.linearRampToValueAtTime(vol, a + .01); g.gain.exponentialRampToValueAtTime(.0005, a + Math.max(.2, d + .25));
+    o.start(a); o.stop(a + d + .3); nodes.push(o);
+  }
+  const end = Math.max(0, ...notes.map(n => n[0] + n[1])) + .4;
+  let done = false;
+  const tm = setTimeout(() => { onEnd && onEnd(); }, end * 1000);
+  const stop = () => { if (done) return; done = true; clearTimeout(tm); nodes.forEach(o => { try { o.stop(); } catch (e) {} }); try { out.disconnect(); } catch (e) {} onEnd && onEnd(); };
+  onStop(stop, {stage});
+  return {t0, stop, end};
+}
+// "Every sound in the day": all four sound deliverables, always visible, each with play/stop and a progress hairline
+function soundList(){
+  const box = $('sounds'), retro = byId('retro'), rows = [], mm = s => s == null ? '' : `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`;
+  const len = ns => ns && ns.length ? Math.max(...ns.map(n => n[0] + n[1])) : null;
+  if (SOUNDS.score_in && SOUNDS.score_in.length) rows.push({t:'16:00 · score, before', s:`readout_score.mid · ${SOUNDS.score_in.length} notes: the 16 most frequent Rydberg patterns, one per beat (classical) · ${mm(len(SOUNDS.score_in))}`, notes:SOUNDS.score_in});
+  if (SOUNDS.score_out && SOUNDS.score_out.length) rows.push({t:'16:00 · score, blurred', s:`readout_blurred.mid · ${SOUNDS.score_out.length} notes: blur-midi-v1 output (statevector simulator) · ${mm(len(SOUNDS.score_out))}`, notes:SOUNDS.score_out});
+  if (retro && retro.completed && retro.media){
+    if (retro.media.before) rows.push({t:'18:00 · dry', s:`echo_in.wav · the blurred score, synthesised classically: the echo engine’s input · ${mm(SOUNDS.dry_s)}`, src:retro.media.before});
+    if (retro.media.after) rows.push({t:'18:00 · echoed', s:`${retro.media.after.split('/').pop().replace('.mp3', '.wav')} · retrocausal-echo-v1 output (${retro.where.replace(/^Atlas simulator \((.*)\)$/, '$1')}) · ${mm(SOUNDS.wet_s)}`, src:retro.media.after, id:'tune-btn'});
+    if (retro.earlier && retro.earlier.media && retro.earlier.media.after) rows.push({t:'18:00 · echoed, recorded', s:`echo_out.wav · retrocausal-echo-v1 output (${retro.earlier.where}) · the recorded run`, src:retro.earlier.media.after});
+  }
+  rows.forEach((r, k) => {
+    const btn = h('button', {type:'button', class:'btn ghost play', id:r.id || null, 'aria-label':`Play: ${r.t}`}, '▶ Play');
+    const fill = h('i'), el = r.src ? h('audio', {src:r.src, preload:'none'}) : null;
+    let on = null, raf = 0;
+    const off = () => { if (!on) return; const o = on; on = null; cancelAnimationFrame(raf); fill.style.width = '0'; btn.textContent = '▶ Play'; btn.setAttribute('aria-label', `Play: ${r.t}`); o.stop(); };
+    const tick = () => { if (!on) return;
+      const p = el ? (el.duration ? el.currentTime / el.duration : 0) : (AC.currentTime - on.t0) / on.end;
+      fill.style.width = (100 * Math.max(0, Math.min(1, p))).toFixed(1) + '%'; raf = requestAnimationFrame(tick); };
+    if (el) el.addEventListener('ended', off);
+    btn.addEventListener('click', () => {
+      if (on){ off(); return; }
+      stopAll();
+      if (el){
+        on = {stop:() => { el.pause(); el.currentTime = 0; }}; onStop(off, {key:'list' + k});
+        const pr = el.play(); if (pr && pr.catch) pr.catch(off);
+      } else {
+        const p = playNotes(r.notes, off); on = {t0:p.t0, end:p.end, stop:p.stop};
+      }
+      btn.textContent = '■ Stop'; btn.setAttribute('aria-label', `Stop: ${r.t}`); tick();
+    });
+    box.append(h('li', {}, btn, h('span', {}, h('span', {class:'t'}, r.t), h('span', {class:'s'}, r.s)), h('span', {class:'bar', 'aria-hidden':'true'}, fill), el));
+  });
+}
+function wavRow(view, label, src, peaks){
+  const c = canvas(640, 90, `Waveform of ${label}`), btn = h('button', {type:'button', class:'btn ghost'}, '▶ Play');
+  let audio = null, raf = 0;
+  const el = h('audio', {src, preload:'none'});
+  const draw = (pos) => {
+    const ctx = c.getContext('2d'); ctx.fillStyle = C.night; ctx.fillRect(0, 0, 640, 90);
+    const n = peaks.length;
+    for (let i = 0; i < n; i++){ const v = peaks[i] * 40, x = i * 640 / n; ctx.fillStyle = pos != null && i / n < pos ? C.wing : C.faint; ctx.fillRect(x, 45 - v, Math.max(1, 640 / n - .5), 2 * v + 1); }
+  };
+  const stop = () => { if (audio){ audio.pause(); audio.currentTime = 0; audio = null; } cancelAnimationFrame(raf); btn.textContent = '▶ Play'; draw(); };
+  const start = from => {
+    stopAll(); audio = el; btn.textContent = '■ Stop';
+    audio.addEventListener('ended', stop);
+    if (from){ const seek = () => { try { if (el.duration) el.currentTime = from * el.duration; } catch (e) {} }; if (el.duration) seek(); else el.addEventListener('loadedmetadata', seek, {once:true}); }
+    const pr = audio.play(); if (pr && pr.catch) pr.catch(() => stop());
+    onStop(stop, {stage: !inGal(c)});
+    const tick = () => { if (!audio) return; draw(audio.duration ? audio.currentTime / audio.duration : 0); raf = requestAnimationFrame(tick); };
+    tick();
+  };
+  btn.addEventListener('click', () => { if (audio) stop(); else start(0); });
+  // tap the waveform: play from that point, or stop if it is playing
+  c.title = 'Tap: play from this point, or stop'; c.setAttribute('aria-label', `Waveform of ${label}. Tap to play from that point (Enter plays from the start); tap again to stop.`);
+  c.addEventListener('click', e => { if (audio){ stop(); return; } start(clamp(cpos(c, e)[0] / 640, 0, .98)); });
+  c.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); btn.click(); } });
+  draw();
+  view.append(h('div', {class:'ctl'}, btn, h('span', {class:'label'}, label)), c, el);
+}
+
+// ================================================================= stage renderers
+const R = {};
+
+R.coin = (v, st) => {
+  const d = st.data, n = d.shots, c = canvas(640, 220, 'Binomial odds for 144 fair tosses, with the measured heads count marked');
+  const pmf = []; let p = Math.pow(.5, n); for (let k = 0; k <= n; k++){ pmf.push(p); p = p * (n - k) / (k + 1); }
+  let hover = d.heads;
+  const lo = 44, hi = 100, mx = Math.max(...pmf), lab = h('p', {class:'note'});
+  const draw = () => {
+    const ctx = c.getContext('2d'); ctx.fillStyle = C.night; ctx.fillRect(0, 0, 640, 220);
+    const bw = 600 / (hi - lo + 1);
+    for (let k = lo; k <= hi; k++){
+      const bh = 160 * pmf[k] / mx, x = 20 + (k - lo) * bw;
+      ctx.fillStyle = k === d.heads ? C.wing : (k === hover ? C.haze : C.faint); ctx.fillRect(x, 180 - bh, bw - 1.5, bh);
+    }
+    ctx.fillStyle = C.haze; ctx.font = mono(12);
+    for (let k = 50; k <= hi; k += 10) ctx.fillText(k, 20 + (k - lo) * bw - 6 * FK, 180 + 18 * FK);
+    lab.innerHTML = `Measured: <b>${d.heads} heads, ${d.tails} tails</b> (ink bar). P(exactly <b>${hover}</b> heads | fair coin) = <b>${(100 * pmf[hover]).toFixed(2)}%</b>`;
+  };
+  c.addEventListener('pointermove', e => { const r = c.getBoundingClientRect(); const k = lo + Math.floor(((e.clientX - r.left) / r.width * 640 - 20) / (600 / (hi - lo + 1))); if (k >= lo && k <= hi){ hover = k; draw(); } });
+  c.addEventListener('keydown', e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight'){ e.preventDefault(); hover = Math.max(lo, Math.min(hi, hover + (e.key === 'ArrowLeft' ? -1 : 1))); draw(); } });
+  v.append(lab, c, h('p', {class:'note'}, 'Pale bars: the odds of each heads count for a fair coin tossed 144 times (classical binomial). The engine returns totals only, so there is no per-tweezer pattern here. Hover or use arrow keys to read any bar.'));
+  draw();
+};
+
+R.comet = (v, st) => {
+  const d = st.data, c = canvas(600, 600, 'The 12 by 12 tweezer array for one loading attempt. Hover, tap or use the arrow keys to read a tweezer');
+  let mode = 'shot', k = 0, sel = null;
+  const lab = h('span', {class:'note'}), pick = h('p', {class:'note'}, 'Hover or tap a tweezer (or focus the chart and use the arrow keys) to read it.');
+  const sl = range(0, d.frames.length - 1, 0, 1, 'Loading attempt', x => { k = x; draw(); });
+  const draw = () => {
+    const ctx = c.getContext('2d');
+    if (mode === 'shot'){
+      const bits = [...d.frames[k]].map(Number), fed = k === 0 && !st.earlier; drawArray(ctx, 600, bits, {zone: fed});
+      lab.innerHTML = `attempt ${k + 1} of ${d.frames.length} &middot; bitstring #${d.picks[k]} of the sorted counts &middot; <b>${bits.reduce((a, b) => a + b, 0)}</b> of 144 loaded${fed ? ' &middot; <b>this attempt is the one the day continues with</b>' : ''}`;
+    } else {
+      const mn = Math.min(...d.site_bias), mxb = Math.max(...d.site_bias);
+      drawArray(ctx, 600, d.site_bias.map(x => (x - mn) / (mxb - mn)));
+      lab.innerHTML = `odds of reading 1, per qubit, over 10,000 shots: <b>${mn.toFixed(3)}</b> (dimmest) to <b>${mxb.toFixed(3)}</b> (brightest). A perfect chip would show 0.500 everywhere.`;
+    }
+    if (sel != null){
+      ctx.strokeStyle = C.moon; ctx.lineWidth = 3; ctx.strokeRect((sel % 12) * 50 + 3, Math.floor(sel / 12) * 50 + 3, 44, 44);
+      pick.innerHTML = `Tweezer row ${Math.floor(sel / 12) + 1}, column ${sel % 12 + 1}: <b>${d.frames[k][sel] === '1' ? 'loaded' : 'empty'}</b> in attempt ${k + 1}; over all 10,000 shots it read 1 in <b>${(100 * d.site_bias[sel]).toFixed(1)}%</b> (a perfect chip: 50.0%).`;
+    }
+  };
+  probe(c, (x, y) => { const i = clamp(Math.floor(y / 50), 0, 11) * 12 + clamp(Math.floor(x / 50), 0, 11); if (i !== sel){ sel = i; draw(); } },
+    (dx, dy) => { sel = clamp((sel == null ? 0 : sel) + dx + 12 * dy, 0, 143); draw(); });
+  sl.disabled = false;
+  v.append(h('div', {class:'ctl'}, seg('View', [['shot', 'One attempt'], ['odds', 'Odds per tweezer']], 'shot', m => { mode = m; sl.disabled = m !== 'shot'; draw(); }), sl), c, lab, pick,
+    h('p', {class:'note'}, `comet returns counts per bitstring, not a shot-by-shot record, so there is no time order to replay. All ${d.distinct ? d.distinct.toLocaleString('en') : 'its'} bitstrings were distinct, and the counts arrive sorted. The ${d.picks.length} attempts here are the bitstrings at the positions given by comet’s own ${d.picks.length} conditioned random integers; the first eight also feed the 06:00 flicker.`));
+  const S = d.S, pos = x => (x / (2 * Math.SQRT2) * 100).toFixed(1) + '%';
+  v.append(h('div', {class:'panel well'},
+    h('span', {class:'label'}, 'Bell witness on 8 more qubits of the same chip (CHSH)'),
+    h('div', {class:'gauge', role:'img', 'aria-label':`S = ${S}; classical limit 2; quantum limit 2.83`}, h('i', {style:`width:${pos(S)}`}), h('u', {style:`left:${pos(2)}`})),
+    h('p', {class:'note'}, `S = `, h('b', {}, S), ` ± ${(+d.sigma_S || 0).toFixed(3)} (classical limit 2, marked; quantum limit 2√2 ≈ 2.83). A fidelity check on the entangling gates and readout, not certified randomness.`)));
+  draw();
+};
+
+R.qrcimage = (v, st) => {
+  const d = st.data, fr = st.media.frames, c = canvas(480, 480, 'One loading attempt from the reservoir-generated sequence');
+  let k = 0, timer = 0;
+  const taught = h('div', {class:'tokens', 'aria-label':'Taught sequence'}), played = h('div', {class:'tokens', 'aria-label':'Played sequence'});
+  d.train.forEach(t => taught.append(h('span', {}, t + 1)));
+  d.gen.forEach((t, i) => played.append(h('span', {class: i > 0 && t === (d.gen[i - 1] + 1) % 8 ? 'ok' : ''}, t + 1)));
+  const sl = range(0, d.gen.length - 1, 0, 1, 'Frame', x => { k = x; draw(); });
+  const btn = h('button', {type:'button', class:'btn'}, '▶ Play');
+  const draw = () => {
+    const ctx = c.getContext('2d'), im = img(fr[d.gen[k]]);
+    ctx.imageSmoothingEnabled = false; ctx.fillStyle = C.night; ctx.fillRect(0, 0, 480, 480);
+    if (im.complete && im.naturalWidth) ctx.drawImage(im, 0, 0, 480, 480); else img(fr[d.gen[k]], draw);
+    [...played.children].forEach((s, i) => s.classList.toggle('on', i === k)); sl.value = k;
+  };
+  const stop = () => { clearInterval(timer); timers.delete(timer); timer = 0; btn.textContent = '▶ Play'; };
+  btn.addEventListener('click', () => {
+    if (timer){ stop(); return; }
+    btn.textContent = '❚❚ Pause'; timer = every(1000 / d.fps, () => { k = (k + 1) % d.gen.length; draw(); }, c);
+  });
+  tapAct(c, () => btn.click(), 'play or pause the flicker');
+  fr.forEach(f => img(f));
+  v.append(h('div', {class:'ctl'}, btn, sl), c,
+    h('span', {class:'label'}, 'Taught: eight real loading attempts, in the order picked by comet’s conditioned random integers, three times'), taught,
+    h('span', {class:'label'}, 'Played by the reservoir (outlined = follows the taught order)'), played,
+    h('p', {class:'note'}, 'Each frame is one of the eight vocabulary images this piece rendered from comet’s bits (a classical render) and sent to the engine as its input. They keep the colours they were sent with, because the cached job is keyed on these exact images. The order is the one decoded from the engine’s GIF.'));
+  draw();
+};
+
+R.shader = (v, st) => {
+  const d = st.data, T = d.T, Rl = d.R, comet = byId('comet');
+  const occ = d.occ ? [...d.occ].map(Number) : comet ? [...(comet.earlier || comet).data.frames[0]].map(Number) : new Array(144).fill(1);
+  let which = 'T', spacing = d.spacing_nm;
+  const lutMax = L => Math.max(...L.map(r => Math.max(...r)));
+  const sample = (L, th, s) => {
+    const H = L.length, Wd = L[0].length, t = th / (Math.PI / 2) * (H - 1), x = ((s % 1) + 1) % 1 * Wd;
+    const r0 = Math.floor(t), c0 = Math.floor(x) % Wd, r1 = Math.min(r0 + 1, H - 1), c1 = (c0 + 1) % Wd, fr = t - r0, fc = x - Math.floor(x);
+    return (1 - fr) * ((1 - fc) * L[r0][c0] + fc * L[r0][c1]) + fr * ((1 - fc) * L[r1][c0] + fc * L[r1][c1]);
+  };
+  const phase = (th, lam) => { const D = -2 * 2 * Math.PI * spacing * Math.cos(th); return (((D / lam) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI) / (2 * Math.PI); };
+  const ball = canvas(320, 320, 'The vacuum-cell glass rendered with the engine’s lookup table'), arr = canvas(320, 320, 'Tweezer array dimmed by the glass. Hover, tap or use the arrow keys to read a tweezer');
+  const lab = h('p', {class:'note'}), pick = h('p', {class:'note'}, 'Hover or tap a tweezer on the right to read its transmission; tap the glass to switch tables.');
+  let TS = [], sel = null;
+  const cxs = 5.5, rms = Math.hypot(cxs, cxs), angle = i => 30 * Math.hypot(i % 12 - cxs, Math.floor(i / 12) - cxs) / rms;
+  const draw = () => {
+    const L = which === 'T' ? T : Rl, mx = lutMax(L), N = 160, ctx = ball.getContext('2d'), id = ctx.createImageData(N, N);
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++){
+      const u = (x + .5) / N * 2 - 1, w = (y + .5) / N * 2 - 1, r2 = u * u + w * w, o = 4 * (y * N + x);
+      if (r2 > 1){ id.data[o + 3] = 0; continue; }
+      const th = Math.acos(Math.sqrt(1 - r2));
+      [650, 530, 470].forEach((lam, ch) => { id.data[o + ch] = Math.min(255, 255 * sample(L, th, phase(th, lam)) / mx); });
+      id.data[o + 3] = 255;
+    }
+    const tmp = h('canvas', {width:N, height:N}); tmp.getContext('2d').putImageData(id, 0, 0);
+    ctx.fillStyle = C.night; ctx.fillRect(0, 0, 320, 320); ctx.imageSmoothingEnabled = true; ctx.drawImage(tmp, 0, 0, 320, 320);
+    const cx = 5.5, rmax = Math.hypot(cx, cx), ts = [];
+    for (let i = 0; i < 144; i++){ const th = (30 * Math.PI / 180) * Math.hypot(i % 12 - cx, Math.floor(i / 12) - cx) / rmax; ts.push(sample(T, th, phase(th, 780))); }
+    const tm = Math.max(...ts), ax = arr.getContext('2d'); TS = ts; drawArray(ax, 320, occ.map((o, i) => o * ts[i] / tm), {});
+    if (sel != null){
+      const q = 320 / 12; ax.strokeStyle = C.moon; ax.lineWidth = 2; ax.strokeRect((sel % 12) * q + 1.5, Math.floor(sel / 12) * q + 1.5, q - 3, q - 3);
+      pick.innerHTML = `Tweezer row ${Math.floor(sel / 12) + 1}, column ${sel % 12 + 1} (${occ[sel] ? 'loaded' : 'empty'}): transmission <b>${ts[sel].toFixed(3)}</b> at 780 nm and ${spacing} nm spacing, at <b>${angle(sel).toFixed(1)}°</b> incidence (the position-to-angle map is this piece’s assumption).`;
+    }
+    lab.innerHTML = `Glass spacing <b>${spacing} nm</b>${spacing === d.spacing_nm ? ' (the value the chain used)' : ' (exploring: the chain used ' + d.spacing_nm + ' nm)'}. Tweezer transmission at 780 nm: <b>${Math.min(...ts).toFixed(3)}</b> to <b>${tm.toFixed(3)}</b>. Left: a glass ball shaded with the engine’s ${which === 'T' ? 'transmission' : 'reflection'} table at 650/530/470 nm, using the formula in the engine’s own GLSL.`;
+  };
+  const tsg = seg('Table', [['T', 'Transmitted'], ['R', 'Reflected']], 'T', x => { which = x; draw(); });
+  tapAct(ball, () => { which = which === 'T' ? 'R' : 'T'; press(tsg, which === 'T' ? 0 : 1); draw(); }, 'switch between the transmitted and reflected tables');
+  probe(arr, (x, y) => { const q = 320 / 12, i = clamp(Math.floor(y / q), 0, 11) * 12 + clamp(Math.floor(x / q), 0, 11); if (i !== sel){ sel = i; draw(); } },
+    (dx, dy) => { sel = clamp((sel == null ? 0 : sel) + dx + 12 * dy, 0, 143); draw(); });
+  v.append(h('div', {class:'ctl'}, tsg,
+    h('span', {class:'label'}, 'Spacing'), range(200, 1000, spacing, 10, 'Glass layer spacing in nanometres', x => { spacing = x; draw(); })),
+    h('div', {class:'two'}, ball, arr), lab, pick,
+    h('p', {class:'note'}, 'Re-reading the table at other spacings is classical; only the 500 nm reading feeds the next stage.'));
+  draw();
+};
+
+R.blur = (v, st) => wipe(v, st.media.before, st.media.after, 'ideal', 'camera (blur-v1)', st.media.diff ? {src:st.media.diff, label:'difference ×20', note:'Absolute difference, amplified 20× (classical), to show where the blur moved light.'} : null);
+R.fryer = (v, st) => st.completed ? wipe(v, st.media.before, st.media.after, 'camera', 'fried (deep-fryer-v1)') : statusCard(v, st);
+R.tessa = (v, st) => st.completed ? wipe(v, st.media.before, st.media.after, 'frame', 'after round trip') : statusCard(v, st);
+
+R.qpixl = (v, st) => {
+  const d = st.data, c = canvas(600, 600, 'Each tweezer: counts sent in (left half) and decoded (right half). Hover, tap or use the arrow keys to read a tweezer'),
+    hc = canvas(600, 120, 'Histogram of decoded counts with the threshold. Tap or drag to move the threshold; arrow keys nudge it');
+  let thr = d.thr, sel = null; const lab = h('p', {class:'note'}), pick = h('p', {class:'note'}, 'Hover or tap a tweezer to read its counts; tap or drag on the histogram to move the threshold.');
+  let bestOk = 0; for (let k = 2; k <= 98; k++){ const t = k / 100; bestOk = Math.max(bestOk, d.out.filter((o, i) => (o >= t ? 1 : 0) === d.truth[i]).length); }
+  const draw = () => {
+    const ctx = c.getContext('2d'), p = 50; ctx.fillStyle = C.night; ctx.fillRect(0, 0, 600, 600);
+    let ok = 0;
+    for (let i = 0; i < 144; i++){
+      const x = (i % 12) * p, y = Math.floor(i / 12) * p, call = d.out[i] >= thr ? 1 : 0;
+      ctx.fillStyle = W(d.in[i]); ctx.fillRect(x + 4, y + 4, p / 2 - 5, p - 8);
+      ctx.fillStyle = W(Math.min(1, d.out[i])); ctx.fillRect(x + p / 2 + 1, y + 4, p / 2 - 5, p - 8);
+      if (call === d.truth[i]) ok++; else { ctx.strokeStyle = C.warn; ctx.lineWidth = 2; ctx.setLineDash([4, 3]); ctx.strokeRect(x + 2, y + 2, p - 4, p - 4); ctx.setLineDash([]); }
+    }
+    const hx = hc.getContext('2d'); hx.fillStyle = C.night; hx.fillRect(0, 0, 600, 120);
+    const bins = 50, H = [new Array(bins).fill(0), new Array(bins).fill(0)];
+    d.out.forEach((o, i) => H[d.truth[i]][Math.min(bins - 1, Math.floor(o * bins))]++);
+    const mx = Math.max(...H[0], ...H[1]);
+    for (let b = 0; b < bins; b++){
+      const x = 10 + b * 580 / bins, e = 80 * H[0][b] / mx, l = 80 * H[1][b] / mx;
+      hx.fillStyle = C.faint; hx.fillRect(x, 95 - e, 580 / bins - 2, e); hx.fillStyle = C.wing; hx.fillRect(x, 95 - e - l, 580 / bins - 2, l);
+    }
+    hx.fillStyle = C.warn; hx.fillRect(10 + thr * 580 - 1, 6, 2, 92);
+    hx.font = mono(11); hx.fillStyle = C.haze; hx.fillText('0', 8, 116); hx.textAlign = 'right'; hx.fillText('1', 594, 116); hx.textAlign = 'left';
+    lab.innerHTML = `Threshold <b>${fT(thr)}</b>: <b>${ok}</b> of 144 tweezers called correctly (${pct(ok / 144)}), checked against the IBM loading pattern. Cells outlined in orange are wrong. The best any single threshold can do on these decoded values is <b>${bestOk}</b> of 144 (a classical scan), so the remaining wrong calls cannot be rescued by moving it.`;
+    if (sel != null){
+      const x = (sel % 12) * 50, y = Math.floor(sel / 12) * 50; ctx.strokeStyle = C.moon; ctx.lineWidth = 3; ctx.strokeRect(x + 1.5, y + 1.5, 47, 47);
+      const call = d.out[sel] >= thr ? 1 : 0;
+      pick.innerHTML = `Tweezer row ${Math.floor(sel / 12) + 1}, column ${sel % 12 + 1}: counts sent <b>${d.in[sel].toFixed(2)}</b>, decoded <b>${d.out[sel].toFixed(2)}</b> → called <b>${call ? 'loaded' : 'empty'}</b> at ${fT(thr)}; really <b>${d.truth[sel] ? 'loaded' : 'empty'}</b>${call === d.truth[sel] ? '' : ' (a wrong call)'}.`;
+    }
+  };
+  // step 0.005 so the chain's own threshold (0.275) sits exactly on the slider and Reset restores it exactly
+  const tsl = range(0.02, 0.98, thr, 0.005, 'Occupancy threshold', x => { thr = x; draw(); });
+  const setThr = x => { thr = Math.round(clamp(x, 0.02, 0.98) * 200) / 200; tsl.value = thr; draw(); };
+  probe(c, (x, y) => { const i = clamp(Math.floor(y / 50), 0, 11) * 12 + clamp(Math.floor(x / 50), 0, 11); if (i !== sel){ sel = i; draw(); } },
+    (dx, dy) => { sel = clamp((sel == null ? 0 : sel) + dx + 12 * dy, 0, 143); draw(); });
+  probe(hc, (x, y, down) => { if (down) setThr((x - 10) / 580); }, (dx, dy) => setThr(thr + .01 * (dx || -dy)));
+  v.append(h('div', {class:'ctl'}, h('span', {class:'label'}, 'Threshold'), tsl,
+    h('button', {type:'button', class:'btn ghost', onclick:() => setThr(d.thr)}, 'Reset')), c, pick, hc, h('p', {class:'note'}, 'Histogram of decoded values, 0 to 1: pale = truly empty, ink = truly loaded; the orange line is the threshold. Tap or drag on the histogram to move it.'), lab,
+    h('p', {class:'note'}, `The threshold is a classical decision; the decoded values are the engine’s output (${st.where}).`));
+  draw();
+};
+
+const ZW = 5, ZH = 4, zxy = (k, S) => [S * .12 + (k % ZW) * S * .19, S * .14 + Math.floor(k / ZW) * S * .19];
+R.maze = (v, st) => {
+  const d = st.data, c = canvas(640, 520, 'Target zone: rooms are tweezer sites, lines are lanes');
+  let mode = 'asked'; const lab = h('p', {class:'note'});
+  const draw = () => {
+    const ctx = c.getContext('2d'), S = 640; ctx.fillStyle = C.night; ctx.fillRect(0, 0, 640, 520);
+    const opened = new Set(d.opened.map(e => e.join('-')));
+    d.edges.forEach((e, i) => {
+      const [x1, y1] = zxy(e[0], S), [x2, y2] = zxy(e[1], S), mxp = (x1 + x2) / 2, myp = (y1 + y2) / 2;
+      if (mode === 'asked'){
+        if (d.signs[i] > 0){ ctx.strokeStyle = W(.9); ctx.setLineDash([8, 6]); ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); ctx.setLineDash([]); }
+        else { ctx.strokeStyle = M(.6); ctx.lineWidth = 7; const dx = (y2 - y1) / 4, dy = (x2 - x1) / 4; ctx.beginPath(); ctx.moveTo(mxp - dx, myp - dy); ctx.lineTo(mxp + dx, myp + dy); ctx.stroke(); }
+      } else {
+        const on = opened.has(e.join('-'));
+        ctx.strokeStyle = on ? C.wing : M(.12); ctx.lineWidth = on ? 6 : 2; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+        if (mode === 'sampled'){ ctx.fillStyle = C.haze; ctx.font = mono(11); ctx.fillText(Math.round(100 * d.per_edge[i]) + '%', mxp + 4, myp - 4); }
+      }
+    });
+    for (let k = 0; k < 20; k++){
+      const [x, y] = zxy(k, S), was = d.zocc[k], now = mode === 'after' ? d.after[k] : was;
+      ctx.beginPath(); ctx.arc(x, y, 22, 0, 2 * Math.PI); ctx.fillStyle = now ? (was ? C.wing : W(.55)) : C.night; ctx.fill();
+      ctx.strokeStyle = now && !was ? C.moon : C.line; ctx.lineWidth = 2; ctx.stroke();
+    }
+    lab.innerHTML = mode === 'asked' ? `Dashed: a lane was <b>wanted</b> (one end empty, ${d.signs.filter(s => s > 0).length} lanes). Bars: a <b>wall</b> was wanted (both ends loaded).` :
+      mode === 'sampled' ? `Solid: lanes open in the engine’s most likely maze (${d.opened.length}). Percentages: how often each lane came out as asked over 4096 samples.` :
+      `Holes joined to the zone’s rim through open lanes get an atom from the reservoir (outlined). Zone: ${d.zocc.reduce((a, b) => a + b, 0)} → ${d.after.reduce((a, b) => a + b, 0)} of 20 (as the camera believes).`;
+  };
+  const MODES = ['asked', 'sampled', 'after'], msg = seg('Show', [['asked', 'Lanes asked for'], ['sampled', 'Sampled maze'], ['after', 'After the moves']], 'asked', m => { mode = m; draw(); });
+  tapAct(c, () => { const i = (MODES.indexOf(mode) + 1) % 3; mode = MODES[i]; press(msg, i); draw(); }, 'step through lanes asked for, the sampled maze and the result of the moves');
+  v.append(msg, c, lab,
+    h('p', {class:'note'}, 'The move rule (fill any hole connected to the rim) is classical bookkeeping, not part of the engine.'));
+  draw();
+};
+
+R.telablur = (v, st) => {
+  const m = st.media, d = st.data, S = 640, c = canvas(S, S, 'Rearrangement: before, the engine’s halfway frame, after');
+  let p = 50, moves = false; const lab = h('p', {class:'note'});
+  const draw = () => {
+    const ctx = c.getContext('2d'); ctx.fillStyle = C.night; ctx.fillRect(0, 0, S, S);
+    const [a, b, t] = p <= 50 ? [m.before, m.mid, p / 50] : [m.mid, m.after, (p - 50) / 50];
+    // plain crossfade (1 - t)·a + t·b: the opaque engine frames keep their own (black) ground
+    const ia = img(a), ib = img(b);
+    if (ia.complete && ia.naturalWidth){ ctx.globalAlpha = 1; ctx.drawImage(ia, 0, 0, S, S); }
+    if (ib.complete && ib.naturalWidth){ ctx.globalAlpha = t; ctx.drawImage(ib, 0, 0, S, S); }
+    ctx.globalAlpha = 1;
+    if (moves){
+      const q = S / 12; ctx.strokeStyle = C.night; ctx.fillStyle = C.night; ctx.lineWidth = 2;
+      d.moves.forEach(([f, to]) => { const x1 = (f % 12 + .5) * q, y1 = (Math.floor(f / 12) + .5) * q, x2 = (to % 12 + .5) * q, y2 = (Math.floor(to / 12) + .5) * q;
+        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); const an = Math.atan2(y2 - y1, x2 - x1);
+        ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - 10 * Math.cos(an - .4), y2 - 10 * Math.sin(an - .4)); ctx.lineTo(x2 - 10 * Math.cos(an + .4), y2 - 10 * Math.sin(an + .4)); ctx.fill(); });
+    }
+    lab.innerHTML = p === 0 ? 'Before: the array as the camera called it (input frame).' : p === 50 ? '<b>The engine’s halfway frame</b> (telablur-v1, selector rotated halfway).' : p === 100 ? 'After: the planned array (input frame).' : 'Between real frames: a plain crossfade (classical), for orientation only.';
+    sl.value = p;
+  };
+  const sl = range(0, 100, 50, 1, 'Rearrangement progress', x => { p = x; draw(); });
+  c.setAttribute('aria-label', c.getAttribute('aria-label') + '. Drag across it (or use the arrow keys) to scrub from before to after');
+  c.title = 'Drag across to scrub from before (left) to after (right)';
+  probe(c, (x, y, down) => { if (down){ p = Math.round(clamp(x / S, 0, 1) * 100); draw(); } }, (dx, dy) => { p = clamp(p + 5 * (dx || -dy), 0, 100); draw(); });
+  [m.before, m.mid, m.after].forEach(s => img(s, draw));
+  v.append(h('div', {class:'ctl'}, sl), h('div', {class:'ctl'},
+    seg('Jump to', [[0, 'Before'], [50, 'Engine halfway'], [100, 'After']], 50, x => { p = x; draw(); }),
+    seg('Overlay', [[false, 'Frames'], [true, 'Show moves']], false, x => { moves = x; draw(); })), c, lab);
+  draw();
+};
+
+R.graph = (v, st) => {
+  const d = st.data, c = canvas(640, 520, 'Unit-disk graph of the atoms in the zone, with one measured excitation pattern');
+  const tops = d.top.slice(0, 10); let sel = 0; const lab = h('p', {class:'note'});
+  const draw = () => {
+    const ctx = c.getContext('2d'), S = 640, bits = tops[sel] ? tops[sel].b : '0'.repeat(20);
+    ctx.fillStyle = C.night; ctx.fillRect(0, 0, 640, 520);
+    let viol = 0;
+    d.edges.forEach((e, i) => { const [x1, y1] = zxy(e[0], S), [x2, y2] = zxy(e[1], S), both = bits[e[0]] === '1' && bits[e[1]] === '1';
+      if (both) viol++;
+      ctx.strokeStyle = both ? C.warn : W(.15 + .85 * Math.max(0, (d.p_anti[i] - .5) * 2)); ctx.lineWidth = both ? 3 : 2; ctx.setLineDash(both ? [5, 4] : []);
+      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); ctx.setLineDash([]); });
+    let ex = 0;
+    for (let k = 0; k < 20; k++){
+      const [x, y] = zxy(k, S);
+      if (!d.zocc[k]){ ctx.strokeStyle = M(.5); ctx.setLineDash([3, 4]); ctx.beginPath(); ctx.arc(x, y, 18, 0, 2 * Math.PI); ctx.stroke(); ctx.setLineDash([]);
+        if (d.believed[k]){ ctx.fillStyle = C.haze; ctx.font = mono(11); ctx.fillText('ghost', x - 16, y + 34); } continue; }
+      const on = bits[k] === '1'; if (on) ex++;
+      ctx.beginPath(); ctx.arc(x, y, on ? 16 : 13, 0, 2 * Math.PI); ctx.fillStyle = on ? C.wing : C.dusk; ctx.fill(); ctx.strokeStyle = C.moon; ctx.lineWidth = 1.5; ctx.stroke();
+    }
+    const t = tops[sel];
+    lab.innerHTML = `Pattern ${sel + 1}: <b>${ex}</b> atoms excited, measured in <b>${t ? (100 * t.p).toFixed(2) : 0}%</b> of 4096 shots; <b>${viol}</b> blockade violations (dashed orange edges: both ends excited). The largest independent set of this graph has <b>${d.mis}</b> atoms (classical brute force).`;
+  };
+  const pats = h('div', {class:'patterns', role:'group', 'aria-label':'Measured patterns'});
+  tops.forEach((t, i) => { const b = h('button', {type:'button', 'aria-pressed':String(i === 0)}, `${i + 1} · ${(100 * t.p).toFixed(1)}% ${t.ok ? '✓' : '✗'}`);
+    b.addEventListener('click', () => { sel = i; [...pats.children].forEach((x, j) => x.setAttribute('aria-pressed', String(j === i))); draw(); }); pats.append(b); });
+  tapAct(c, () => pats.children[(sel + 1) % tops.length].click(), 'show the next most frequent pattern');
+  v.append(c, h('span', {class:'label'}, 'Most frequent measured patterns (✓ = respects the blockade)'), pats, lab,
+    h('p', {class:'note'}, `Edge brightness: how anti-aligned the prepared state is on that edge (exact tomography). Mean ⟨ZZ⟩ on the ${d.edges.length} edges is ${(d.zz.reduce((a, b) => a + b, 0) / d.zz.length).toFixed(3)}: every triangle of this graph is frustrated, and the engine applies the ZZ targets one after another, so later targets undo earlier ones. Dotted rings are empty sites; “ghost” marks sites the camera wrongly called loaded.`));
+  draw();
+};
+
+R.tamagotchi = (v, st) => {
+  if (!st.completed){ statusCard(v, st); return; }
+  const d = st.data, c = canvas(640, 200, 'Logical qubits coloured by how often they read back correctly. Hover, tap or use the arrow keys to read one');
+  let lab0 = d.runs[0].label, R0 = d.runs[0].rounds, sel = null; const lab = h('p', {class:'note'}), pick = h('p', {class:'note'}, 'Hover or tap a cell to read that logical qubit.');
+  const draw = () => {
+    const run = d.runs.find(r => r.label === lab0 && r.rounds === R0) || d.runs[0], ctx = c.getContext('2d'), n = run.success.length, cw = 600 / 20;
+    ctx.fillStyle = C.night; ctx.fillRect(0, 0, 640, 200);
+    run.success.forEach((s, i) => { const r = Math.floor(i / 20), k = i % 20; ctx.fillStyle = W(Math.max(.05, (s - .5) * 2)); ctx.fillRect(20 + k * cw, 20 + r * 40, cw - 3, 34); });
+    ctx.fillStyle = C.haze; ctx.font = mono(11); d.bits.forEach((b, k) => ctx.fillText(b, 20 + k * cw + cw / 2 - 4, 190));
+    lab.innerHTML = `${run.label}, ${run.rounds} round(s): mean logical success <b>${pct(run.mean_success)}</b> over ${n} logical qubits (${n * 7} data qubits). Job ${run.job_id}.`;
+    if (sel != null && sel < n){
+      ctx.strokeStyle = C.warn; ctx.lineWidth = 2.5; ctx.strokeRect(20 + (sel % 20) * cw - 1.5, 20 + Math.floor(sel / 20) * 40 - 1.5, cw, 37);
+      pick.innerHTML = `Logical qubit ${sel + 1} holds answer bit ${sel % 20 + 1} (= ${d.bits[sel % 20]}) in 7 data qubits: read back right in <b>${pct(run.success[sel])}</b> of the shots (${run.label}, ${run.rounds} round${run.rounds === 1 ? '' : 's'}).`;
+    }
+  };
+  const nL = d.runs[0].success.length;
+  probe(c, (x, y) => { const k = Math.floor((x - 20) / 30), r = Math.floor((y - 20) / 40), i = r * 20 + k; if (k >= 0 && k < 20 && r >= 0 && i < nL && i !== sel){ sel = i; draw(); } },
+    (dx, dy) => { sel = clamp((sel == null ? 0 : sel) + dx + 20 * dy, 0, nL - 1); draw(); });
+  v.append(h('div', {class:'ctl'}, seg('Noise', [...new Set(d.runs.map(r => r.label))].map(l => [l, l]), lab0, x => { lab0 = x; draw(); }),
+    seg('Rounds', [...new Set(d.runs.map(r => r.rounds))].map(r => [r, r + (r === 1 ? ' round' : ' rounds')]), R0, x => { R0 = x; draw(); })), c, lab, pick);
+  draw();
+};
+
+R.blurmidi = (v, st) => {
+  const d = st.data, c = canvas(640, 320, 'Piano roll: pitch against beat');
+  let which = 'notes_out', play = null, raf = 0; const btn = h('button', {type:'button', class:'btn'}, '▶ Play');
+  const all = d.notes_in.concat(d.notes_out), pmin = Math.min(...all.map(n => n[2])), pmax = Math.max(...all.map(n => n[2])), T = Math.max(8, ...all.map(n => n[0] + n[1]));
+  const draw = (t) => {
+    const ctx = c.getContext('2d'); ctx.fillStyle = C.night; ctx.fillRect(0, 0, 640, 320);
+    const ph = 300 / (pmax - pmin + 1);
+    for (let k = 0; k <= T / d.step_s; k++){ ctx.fillStyle = C.line; ctx.fillRect(10 + k * d.step_s / T * 620, 10, 1, 300); }
+    for (const [s, du, p, vel] of d[which]){ ctx.fillStyle = W(.25 + .75 * vel / 127); ctx.fillRect(10 + s / T * 620, 310 - (p - pmin + 1) * ph, Math.max(2, du / T * 620 - 1), Math.max(2, ph - 1)); }
+    if (t != null){ ctx.fillStyle = C.warn; ctx.fillRect(10 + t / T * 620, 10, 2, 300); }
+  };
+  const stop = () => { if (play){ const p = play; play = null; p.stop(); } cancelAnimationFrame(raf); btn.textContent = '▶ Play'; draw(); };
+  btn.addEventListener('click', () => {
+    if (play){ stop(); return; }
+    stopAll(); play = playNotes(d[which], () => { if (play){ play = null; cancelAnimationFrame(raf); btn.textContent = '▶ Play'; draw(); } }, !inGal(c));
+    btn.textContent = '■ Stop';
+    const tick = () => { if (!play) return; draw(AC.currentTime - play.t0); raf = requestAnimationFrame(tick); }; tick();
+  });
+  tapAct(c, () => btn.click(), 'play or stop this score');
+  v.append(h('div', {class:'ctl'}, seg('Score', [['notes_in', 'Before the blur'], ['notes_out', 'After blur-midi']], which, x => { stop(); which = x; draw(); }), btn), c,
+    h('p', {class:'note'}, `Before: ${d.notes_in.length} notes built from the 16 most frequent Rydberg patterns (pitch = atom, one pattern per half-second beat). After: the engine’s ${d.notes_out.length} notes. Played with a simple browser synth.`));
+  draw();
+};
+
+R.retro = (v, st) => {
+  const m = st.media, d = st.data;
+  wavRow(v, 'Dry: the blurred score, synthesised', m.before, d.peaks_in || []);
+  wavRow(v, 'Echoed: retrocausal-echo-v1 output', m.after, d.peaks_out || []);
+  if (d.tapgrid){
+    const G = d.tapgrid, R8 = G.length, K = G[0].length, mxg = Math.max(...G.flat()), c = canvas(640, 220, 'Echo taps: level per site and depth. Hover, tap or use the arrow keys to read a cell');
+    const pick = h('p', {class:'note'}, 'Hover or tap a cell to read its tap level.'); let sel = null;
+    const draw = () => { const ctx = c.getContext('2d'); ctx.fillStyle = C.night; ctx.fillRect(0, 0, 640, 220);
+      heat(ctx, 20, 30, 600, 170, G, mxg, 'tap level |F| — rows: echo depth 1–8, columns: chain site 0–23');
+      if (sel){ const cw = 600 / K, ch = 170 / R8; ctx.strokeStyle = C.warn; ctx.lineWidth = 2; ctx.strokeRect(20 + sel[1] * cw - 1, 30 + sel[0] * ch - 1, cw + 1, ch + 1);
+        pick.innerHTML = `Depth ${sel[0] + 1}, site ${sel[1]}: tap level <b>${G[sel[0]][sel[1]].toFixed(3)}</b> (largest on the map: ${mxg.toFixed(3)}).`; } };
+    probe(c, (x, y) => { const k = Math.floor((x - 20) / (600 / K)), r = Math.floor((y - 30) / (170 / R8)); if (k >= 0 && k < K && r >= 0 && r < R8 && (!sel || sel[0] !== r || sel[1] !== k)){ sel = [r, k]; draw(); } },
+      (dx, dy) => { const s = sel || [0, 0]; sel = [clamp(s[0] + dy, 0, R8 - 1), clamp(s[1] + dx, 0, K - 1)]; draw(); });
+    draw(); v.append(c, pick);
+  }
+};
+
+R.otoc = (v, st) => {
+  const d = st.data, c = canvas(640, 300, 'Echo maps: clean and with the morning noise. Hover, tap or use the arrow keys to read a cell');
+  const mx = Math.max(...d.clean.flat(), ...d.noisy.flat(), 1e-9), tr = g => g[0].map((_, k) => g.map(r => r[k]));
+  const A = tr(d.clean), B = tr(d.noisy), R8 = A.length, K = A[0].length, cw = 290 / K, ch = 240 / R8;
+  const pick = h('p', {class:'note'}, 'Hover or tap a cell (on either map) to compare the clean and noisy echo there.'); let sel = null;
+  const draw = () => {
+    const ctx = c.getContext('2d'); ctx.fillStyle = C.night; ctx.fillRect(0, 0, 640, 300);
+    heat(ctx, 20, 40, 290, 240, A, mx, `clean (${d.clean_label || '18:00'})`); heat(ctx, 330, 40, 290, 240, B, mx, `disorder ${d.disorder} rad`);
+    if (sel){ const [r, k] = sel; ctx.strokeStyle = C.warn; ctx.lineWidth = 2; [20, 330].forEach(x0 => ctx.strokeRect(x0 + k * cw - 1, 40 + r * ch - 1, cw + 1, ch + 1));
+      pick.innerHTML = `Depth ${r + 1}, site ${k}: clean <b>${A[r][k].toFixed(3)}</b>, with the morning noise <b>${B[r][k].toFixed(3)}</b> (difference ${(B[r][k] - A[r][k]).toFixed(3)}).`; }
+  };
+  probe(c, (x, y) => { const xx = x >= 330 ? x - 330 : x - 20, k = Math.floor(xx / cw), r = Math.floor((y - 40) / ch); if (k >= 0 && k < K && r >= 0 && r < R8 && (!sel || sel[0] !== r || sel[1] !== k)){ sel = [r, k]; draw(); } },
+    (dx, dy) => { const s = sel || [0, 0]; sel = [clamp(s[0] + dy, 0, R8 - 1), clamp(s[1] + dx, 0, K - 1)]; draw(); });
+  draw();
+  v.append(c, pick, h('p', {class:'note'}, 'Rows: echo depth 1–8; columns: chain site 0–23; brightness: how much the kick changed that site, (1 − Re F)/2. The light cone opens from the kicked site (12).'));
+};
+
+R.qdrive = (v, st) => {
+  const d = st.data, c = canvas(640, 260, 'Target and achieved per-qubit Z. Hover, tap or use the arrow keys to pick a qubit');
+  const pick = h('p', {class:'note'}, 'Hover or tap a qubit’s bars to read them.'); let sel = null;
+  const draw = () => {
+    const ctx = c.getContext('2d'); ctx.fillStyle = C.night; ctx.fillRect(0, 0, 640, 260); ctx.fillStyle = C.line; ctx.fillRect(20, 130, 600, 1);
+    d.z_target.forEach((z, i) => { const x = 24 + i * 30; if (i === sel){ ctx.fillStyle = C.line; ctx.fillRect(x - 3, 14, 30, 232); }
+      ctx.fillStyle = C.faint; ctx.fillRect(x, 130, 11, -z * 110);
+      if (d.z_got){ ctx.fillStyle = C.wing; ctx.fillRect(x + 13, 130, 11, -d.z_got[i] * 110); } });
+    if (sel != null) pick.innerHTML = `Qubit ${sel + 1}: target ⟨Z⟩ <b>${d.z_target[sel].toFixed(3)}</b>, QDrive’s circuit gives <b>${d.z_got ? d.z_got[sel].toFixed(3) : 'n/a'}</b>.`;
+  };
+  probe(c, x => { const i = Math.floor((x - 21) / 30); if (i >= 0 && i < d.z_target.length && i !== sel){ sel = i; draw(); } },
+    (dx, dy) => { sel = clamp((sel == null ? 0 : sel) + (dx || dy), 0, d.z_target.length - 1); draw(); });
+  draw();
+  v.append(c, pick, h('p', {class:'note'}, 'Pale: target ⟨Z⟩ per qubit (from the 10:00 graph state). Ink: what QDrive’s circuit gives, read exactly off the returned circuit (a classical evaluation). The planned 22:00 tomography check of this circuit timed out, so it was never measured.'));
+};
+
+R.tomo = (v, st) => {
+  const d = st.data, c = canvas(640, 260, 'Promised and measured per-qubit Z'), ctx = c.getContext('2d');
+  let sel = 0; const lab = h('p', {class:'note'});
+  const draw = () => {
+    ctx.fillStyle = C.night; ctx.fillRect(0, 0, 640, 260); ctx.fillStyle = C.line; ctx.fillRect(20, 130, 600, 1);
+    d.z_promised.forEach((z, i) => { const x = 24 + i * 30; ctx.fillStyle = i === sel ? C.haze : C.faint; ctx.fillRect(x, 130, 11, -z * 110);
+      if (d.z_measured){ ctx.fillStyle = i === sel ? C.wing : W(.7); ctx.fillRect(x + 13, 130, 11, -d.z_measured[i] * 110); } });
+    lab.innerHTML = `Qubit ${sel}: promised ⟨Z⟩ <b>${d.z_promised[sel].toFixed(3)}</b>, measured <b>${d.z_measured ? d.z_measured[sel].toFixed(3) : 'n/a'}</b>. Pale: what QDrive’s circuit should give; ink: what tomography measured.`;
+  };
+  c.addEventListener('pointermove', e => { const r = c.getBoundingClientRect(), k = Math.floor(((e.clientX - r.left) / r.width * 640 - 22) / 30); if (k >= 0 && k < 20 && k !== sel){ sel = k; draw(); } });
+  c.addEventListener('keydown', e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight'){ e.preventDefault(); sel = Math.max(0, Math.min(19, sel + (e.key === 'ArrowLeft' ? -1 : 1))); draw(); } });
+  v.append(c, lab, h('p', {class:'note'}, 'Hover or use the arrow keys to pick a qubit. QDrive only had single-qubit targets, so its circuit has no two-qubit gates; tomography of neighbouring pairs should find no correlation beyond shot noise.'));
+  draw();
+};
+
+R.blurcore = (v, st) => {
+  const d = st.data;
+  wipe(v, st.media.before, st.media.after, 'raw IBM bits', 'blurred (blur-core-v1)', null, 260);
+  const pct = a => a.map(x => x.toFixed(2)).join(', ');
+  v.append(h('p', {class:'note'}, `Rows: the 144 tweezers. Columns: ${d.shots} bitstrings from comet, in the sorted (lexicographic) order its counts arrive in. comet keeps no per-shot order, so this is not a time series and the columns are not the day’s attempts left to right. Ink = qubit read 1 (the blurred side is contrast-stretched to its 99th percentile for display, a classical step). The blur rotates only the qubits that index the column axis, so light spreads sideways along each row, never between tweezers.`),
+    h('p', {class:'note'}, `Read the top of the grid with care. Because the columns are the ${d.shots} smallest bitstrings, the first ${d.zero_lead != null ? d.zero_lead : 'few'} tweezers read 0 in every column and the next ones fill in as a staircase${d.lead_rates ? ` (tweezers 0–7 read 1 at ${pct(d.lead_rates)} here, against ${pct(d.full_rates)} over all 10,000 shots)` : ''}. That comes from the sort, not from drift or stubborn sites. A run on randomly chosen bitstrings would avoid it, but the credit cap was spent.`));
+};
+
+// ================================================================= the pixel lab: sprites, the walkable path, one scene per stage
+// Sprites live in web/sprites.json (inlined at build time) and are drawn by InkSprite at an integer scale with no smoothing.
+// Every sprite that stands for a measurement is placed from the cached job data above; motion is decoration.
+const SP = {}; for (const k in SPRITES) SP[k] = InkSprite.make(SPRITES[k]);
+const DPR = () => Math.max(1, Math.min(3, window.devicePixelRatio || 1));
+const NOW = () => performance.now() / 1000;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const ease = x => x < .5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+const fr = (name, t) => SP[name] ? InkSprite.frameAt(SP[name], t) : 0;
+const sum = a => a.reduce((x, y) => x + (+y), 0);
+
+// a canvas drawn in "art pixels": u device pixels per art pixel (always an integer), art centred horizontally
+function Pix(c){
+  const P = {c, u:1, ox:0, oy:0, dpr:1, artW:1, artH:1, ctx:c.getContext('2d')};
+  P.size = (artW, artH, u, cssW) => {
+    const dpr = DPR(); P.dpr = dpr; P.u = u; P.artW = artW; P.artH = artH;
+    const W = Math.max(artW * u, Math.round((cssW || artW * u / dpr) * dpr)), H = artH * u;
+    if (c.width !== W) c.width = W;
+    if (c.height !== H) c.height = H;
+    c.style.height = (H / dpr) + 'px';
+    P.ox = Math.floor((W - artW * u) / 2); P.oy = 0;
+    P.ctx = c.getContext('2d'); P.ctx.imageSmoothingEnabled = false;
+    return P;
+  };
+  P.fit = (artW, artH, maxCss) => {
+    const dpr = DPR(), cssW = c.clientWidth || (c.parentNode && c.parentNode.clientWidth) || 600;
+    let u = Math.max(1, Math.floor(cssW * dpr / artW));
+    if (maxCss) u = Math.max(1, Math.min(u, Math.round(maxCss * dpr)));
+    return P.size(artW, artH, u, cssW);
+  };
+  P.X = ax => P.ox + Math.round(ax * P.u);
+  P.Y = ay => P.oy + Math.round(ay * P.u);
+  P.clear = col => { P.ctx.globalAlpha = 1; P.ctx.fillStyle = col || C.night; P.ctx.fillRect(0, 0, c.width, c.height); };
+  P.spr = (name, f, ax, ay, k, o) => { const s = SP[name]; if (s) InkSprite.draw(P.ctx, s, f || 0, P.X(ax), P.Y(ay), P.u * (k || 1), o); };
+  P.rect = (ax, ay, w, hh, col, a) => { const x = P.ctx; x.globalAlpha = a == null ? 1 : a; x.fillStyle = col; x.fillRect(P.X(ax), P.Y(ay), Math.round(w * P.u), Math.round(hh * P.u)); x.globalAlpha = 1; };
+  P.px = (ax, ay, col, a) => P.rect(Math.round(ax), Math.round(ay), 1, 1, col, a);
+  P.line = (x0, y0, x1, y1, col, a, dash) => {
+    x0 = Math.round(x0); y0 = Math.round(y0); x1 = Math.round(x1); y1 = Math.round(y1);
+    const dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1; let err = dx + dy, n = 0;
+    for (let guard = 0; guard < 4000; guard++){
+      if (!dash || (n++ % (2 * dash)) < dash) P.rect(x0, y0, 1, 1, col, a);
+      if (x0 === x1 && y0 === y1) break;
+      const e2 = 2 * err; if (e2 >= dy){ err += dy; x0 += sx; } if (e2 <= dx){ err += dx; y0 += sy; }
+    }
+  };
+  P.disc = (cx, cy, r, col, a) => { for (let y = Math.floor(cy - r); y <= Math.ceil(cy + r); y++){ const dy = y + .5 - cy; if (Math.abs(dy) > r) continue; const hw = Math.sqrt(r * r - dy * dy), x0 = Math.round(cx - hw), x1 = Math.round(cx + hw); if (x1 > x0) P.rect(x0, y, x1 - x0, 1, col, a); } };
+  P.ring = (cx, cy, r, col, a) => { for (let y = Math.floor(cy - r) - 1; y <= cy + r + 1; y++) for (let x = Math.floor(cx - r) - 1; x <= cx + r + 1; x++){ const d = Math.hypot(x + .5 - cx, y + .5 - cy); if (d <= r && d > r - 1.05) P.rect(x, y, 1, 1, col, a); } };
+  P.dashBox = (x, y, w, hh, col) => {
+    for (let i = 0; i < w; i += 3){ P.rect(x + i, y, Math.min(2, w - i), 1, col); P.rect(x + i, y + hh - 1, Math.min(2, w - i), 1, col); }
+    for (let j = 0; j < hh; j += 3){ P.rect(x, y + j, 1, Math.min(2, hh - j), col); P.rect(x + w - 1, y + j, 1, Math.min(2, hh - j), col); }
+  };
+  P.corners = (x, y, w, hh, col, arm) => {
+    arm = arm || 3;
+    P.rect(x, y, arm, 1, col); P.rect(x, y, 1, arm, col);
+    P.rect(x + w - arm, y, arm, 1, col); P.rect(x + w - 1, y, 1, arm, col);
+    P.rect(x, y + hh - 1, arm, 1, col); P.rect(x, y + hh - arm, 1, arm, col);
+    P.rect(x + w - arm, y + hh - 1, arm, 1, col); P.rect(x + w - 1, y + hh - arm, 1, arm, col);
+  };
+  P.text = (s, ax, ay, px, col, align, wt) => {
+    const x = P.ctx; x.globalAlpha = 1; x.font = `${wt || 500} ${Math.round(px * P.dpr)}px IBM Plex Mono, monospace`;
+    x.fillStyle = col || C.moon; x.textAlign = align || 'left'; x.textBaseline = 'middle'; x.fillText(s, P.X(ax), P.Y(ay));
+    x.textAlign = 'left'; x.textBaseline = 'alphabetic';
+  };
+  P.photo = (im, ax, ay, aw, ah, smooth) => {
+    if (!(im && im.complete && im.naturalWidth)) return false;
+    const x = P.ctx; x.globalAlpha = 1; x.imageSmoothingEnabled = smooth !== false;
+    x.drawImage(im, P.X(ax), P.Y(ay), Math.round(aw * P.u), Math.round(ah * P.u)); x.imageSmoothingEnabled = false; return true;
+  };
+  P.hair = (ay, col) => { P.ctx.globalAlpha = 1; P.ctx.fillStyle = col || C.line; P.ctx.fillRect(0, P.Y(ay), c.width, Math.max(1, Math.round(P.dpr))); };
+  P.toArt = e => { const r = c.getBoundingClientRect(); return [((e.clientX - r.left) * (c.width / (r.width || 1)) - P.ox) / P.u, ((e.clientY - r.top) * (c.height / (r.height || 1)) - P.oy) / P.u]; };
+  return P;
+}
+
+// one animation loop for the whole page: each entry redraws at its own idle rate, faster while something moves
+const ANIM = new Map();
+function animate(key, fn, fps){ ANIM.set(key, {fn, fps:fps || 12, last:0, fast:0, err:0}); }
+function fast(key, sec){ const a = ANIM.get(key); if (a) a.fast = Math.max(a.fast, NOW() + sec); }
+function loop(){
+  const t = NOW();
+  if (!document.hidden) ANIM.forEach(a => {
+    const fps = t < a.fast ? 60 : a.fps;
+    if (t - a.last >= 1 / fps - .004){ a.last = t; try { a.fn(t); } catch (e) { if (!a.err++) console.error(e); } }
+  });
+  requestAnimationFrame(loop);
+}
+
+// Tweezy's mood is the hop's result: F against chance (or against 0.5 for yes/no hops with no shuffle baseline)
+function MOOD(st){
+  if (!st.completed) return 'sad';
+  const F = st.hop ? st.hop.F : null;
+  if (F == null) return 'idle';
+  const gap = F - (st.hop.null == null ? .5 : st.hop.null);
+  return gap >= .25 ? 'happy' : gap < .06 ? 'dizzy' : 'meh';
+}
+const TW = m => m === 'idle' ? 'tweezy' : 'tweezy_' + m;
+const PROP = {coin:'st_coin', comet:'st_load', qrcimage:'st_film', shader:'st_glass', blur:'st_camera', fryer:'st_fryer', tessa:'st_scan',
+  qpixl:'st_counter', maze:'st_maze', telablur:'st_conveyor', graph:'st_rydberg', tamagotchi:'st_tama', blurmidi:'st_score',
+  retro:'st_echo', otoc:'st_calib', qdrive:'st_disk', tomo:'st_lens', blurcore:'st_reel'};
+const SAY = {
+  coin: (d, r) => `I flipped a 1-qubit coin ${d.shots} times on IBM ${r.backend}: ${d.heads} heads, ${d.tails} tails. Heads means a tweezer catches an atom.`,
+  comet: (d, r) => `A 148-qubit register on IBM ${r.backend} stands in for all 144 tweezers at once, read 10,000 times: ${pct(d.fill)} of the bits came up 1.`,
+  qrcimage: d => `A simulated quantum reservoir learned the order of 8 real loading attempts, then played ${d.gen.length} frames of its own.`,
+  shader: () => `My light leaves the vacuum cell through coated glass. Tweezers near the corners lose more of it.`,
+  blur: () => `Say cheese: the camera turns every atom into a soft spot.`,
+  fryer: () => `Gain cranked too far: the same frame comes out deep-fried.`,
+  tessa: (d, r) => { const a = r.attempts || [], fz = a.filter(t => t.backend === 'ibm_fez').length, ot = a.filter(t => t.backend !== 'ibm_fez').map(t => t.backend);
+    return `The digitiser timed out ${a.length === 1 ? 'once' : a.length === 2 ? 'twice' : a.length + ' times'}: ${ot.length ? `on the ${ot.join(', ')} noise model and ` : ''}${fz === 1 ? 'once' : fz === 2 ? 'twice' : fz + ' times'} on the real ibm_fez chip, so this station is closed today.`; },
+  qpixl: d => `I counted the photons and called every tweezer: ${Math.round(d.accuracy * 144)} of 144 right at the classical threshold.`,
+  maze: d => `I planned lanes for the moving tweezer: the zone goes from ${sum(d.zocc)} to ${sum(d.after)} of 20 atoms, as the camera believes.`,
+  telablur: d => `${d.moves.length} drags pull spare atoms into the target zone.`,
+  graph: d => `Blockade on: neighbours should not both glow. At most ${d.mis} atoms of this graph can glow at once without a clash.`,
+  tamagotchi: () => `Thirty logical qubits babysit the answer, seven data qubits each.`,
+  blurmidi: d => `The answer becomes a score: ${d.notes_in.length} notes in, ${d.notes_out.length} out of the blur.`,
+  retro: () => `Kick one spin, run time backwards, and listen to what comes back.`,
+  otoc: d => `Night calibration: the same echo again, with the morning's noise (${d.disorder} rad per gate).`,
+  qdrive: () => `Saving tomorrow's starting state to the drive.`,
+  tomo: () => `The check of tomorrow's state timed out at the server. Closed.`,
+  blurcore: d => `Last job: blur a slice of the day's record (${d.shots} bitstrings, in sorted order, not time order).`,
+};
+function say(st){
+  const fz = st.completed && st.fez && st.fez.status === 'pending' && !st.earlier ? ' I was sent to ibm_fez too; that job is still queued at IBM, so this is the recorded run.' :
+    st.completed && st.fez && st.fez.status !== 'ok' && !st.earlier ? ` I was sent to ibm_fez too, but ${(st.fez.attempts || []).some(t => t.type === 'engine_timeout') ? 'the engine timed out' : 'IBM reported the job failed'}, so this is the recorded run.` :
+    st.earlier ? ' This is the ibm_fez run.' : '';
+  const base = (SAY[st.id] || (() => (st.title || st.engine) + '.'))(runOf(st).data || {}, runOf(st)) + fz, m = MOOD(st);
+  if (!st.completed || !st.hop) return base;
+  const F = f3(st.hop.F), n = st.hop.null == null ? null : f3(st.hop.null);
+  return base + (m === 'happy' ? ` Signal kept: F ${F}${n ? `, chance ${n}` : ''}.` : m === 'meh' ? ` Some signal lost: F ${F} vs chance ${n || '0.500'}.` :
+    m === 'dizzy' ? ` Dizzy: F ${F} is close to chance (${n || '0.500'}).` : '');
+}
+
+// ---------- the lab clock: a 24-hour face whose hands sweep to each stage's hour, and a window that shows day or night
+const CLK = {P:null, h:5, from:5, to:5, t0:0, t1:0};
+function clockLayout(){
+  const c = $('clock'); if (!CLK.P) CLK.P = Pix(c);
+  const dpr = DPR(), wide = ($('pathwrap').clientWidth || 900) >= 900, u = Math.max(1, Math.round((wide ? 3 : 2) * dpr));
+  c.style.width = (54 * u / dpr) + 'px'; CLK.P.size(54, 28, u, 54 * u / dpr);
+}
+function clockDraw(t){
+  const P = CLK.P; if (!P) return;
+  if (CLK.t1 > CLK.t0) CLK.h = CLK.from + (CLK.to - CLK.from) * ease(clamp((t - CLK.t0) / (CLK.t1 - CLK.t0), 0, 1));
+  P.clear(C.dusk);
+  P.disc(14, 14, 13.8, C.moon); P.disc(14, 14, 12.6, C.night);
+  for (let k = 0; k < 24; k++){
+    const a = k / 24 * 2 * Math.PI - Math.PI / 2, big = k % 6 === 0;
+    for (let r = big ? 8.5 : 10; r <= 11.2; r += .6) P.px(14 + r * Math.cos(a) - .5, 14 + r * Math.sin(a) - .5, big ? C.moon : C.faint);
+  }
+  const hh = ((CLK.h % 24) + 24) % 24, ah = hh / 24 * 2 * Math.PI - Math.PI / 2, am = (hh % 1) * 2 * Math.PI - Math.PI / 2;
+  const hand = (a, L, col) => { const x0 = Math.cos(a) >= 0 ? 14 : 13, y0 = Math.sin(a) >= 0 ? 14 : 13; P.line(x0, y0, x0 + L * Math.cos(a), y0 + L * Math.sin(a), col); };
+  hand(am, 8.5, C.haze); hand(ah, 6, C.moon); P.rect(13, 13, 2, 2, C.moon);
+  const day = hh >= 6 && hh < 19;
+  P.rect(32, 2, 22, 22, C.moon); P.rect(33, 3, 20, 20, day ? C.night : C.haze);
+  if (!day){ P.px(36, 6, C.night); P.px(48, 18, C.night); P.px(49, 7, C.faint); }
+  P.spr(day ? 'sun' : 'moon', 0, 43, 13, 1);
+  P.rect(32, 24, 22, 2, C.moon);
+}
+
+// ---------- the walkable path: stations in a serpentine, Tweezy walks between them
+const PATHC = {P:null, cellW:40, cellH:50, cols:9, pos:0, walk:null, btns:[]};
+function cellRC(i){ const cols = PATHC.cols, r = Math.floor(i / cols), k = i % cols; return [r, r % 2 ? cols - 1 - k : k]; }
+function cellXY(i){ const [r, c] = cellRC(i); return [c * PATHC.cellW, r * PATHC.cellH]; }
+function standXY(i){ const [x, y] = cellXY(i); return [x + PATHC.cellW / 2, y + 30]; }
+// the leg from station i to i + 1: straight along a row, or round the outside of the row's end
+function legPts(i){
+  const a = standXY(i), b = standXY(i + 1), [ra, ca] = cellRC(i), [rb] = cellRC(i + 1);
+  if (ra === rb) return [a, b];
+  const ex = a[0] + (ca === 0 ? -1 : 1) * (PATHC.cellW / 2 - 4);
+  return [a, [ex, a[1]], [ex, b[1]], b];
+}
+function walkXY(p){
+  const n = CHAIN.length, i0 = clamp(Math.floor(p), 0, n - 1);
+  if (i0 >= n - 1) return standXY(n - 1);
+  const pts = legPts(i0), seg = [];
+  let L = 0; for (let k = 1; k < pts.length; k++){ const d = Math.hypot(pts[k][0] - pts[k - 1][0], pts[k][1] - pts[k - 1][1]); seg.push(d); L += d; }
+  let s = clamp(p - i0, 0, 1) * L;
+  for (let k = 0; k < seg.length; k++){
+    if (s <= seg[k] || k === seg.length - 1){ const g = seg[k] ? clamp(s / seg[k], 0, 1) : 1; return [pts[k][0] + (pts[k + 1][0] - pts[k][0]) * g, pts[k][1] + (pts[k + 1][1] - pts[k][1]) * g]; }
+    s -= seg[k];
+  }
+  return standXY(i0 + 1);
+}
+function pathLayout(){
+  const c = $('path'); if (!PATHC.P) PATHC.P = Pix(c);
+  const dpr = DPR(), cssW = c.clientWidth || $('pathwrap').clientWidth || 900, narrow = cssW < 560;
+  const u = Math.max(1, Math.round((cssW >= 900 ? 3 : 2) * dpr));
+  PATHC.cellW = narrow ? 36 : 40; PATHC.cellH = narrow ? 46 : 50;
+  const avail = Math.floor(cssW * dpr / u);
+  PATHC.cols = [9, 6, 4, 3].find(k => k * PATHC.cellW <= avail) || 3;
+  const rows = Math.ceil(CHAIN.length / PATHC.cols), P = PATHC.P.size(PATHC.cols * PATHC.cellW, rows * PATHC.cellH, u, cssW);
+  PATHC.btns.forEach((b, i) => {
+    const [x, y] = cellXY(i);
+    b.style.left = ((P.ox + x * P.u) / dpr) + 'px'; b.style.top = ((P.oy + y * P.u) / dpr) + 'px';
+    b.style.width = (PATHC.cellW * P.u / dpr) + 'px'; b.style.height = (PATHC.cellH * P.u / dpr) + 'px';
+  });
+}
+function walkTo(from, to){
+  const t = NOW();
+  CLK.from = CLK.h; CLK.to = hours(CHAIN[to]); if (CLK.to < CLK.from - 12) CLK.to += 24;
+  if (RM || !PATHC.P){ PATHC.pos = to; PATHC.walk = null; CLK.h = CLK.to; CLK.t0 = CLK.t1 = 0; return; }
+  const p0 = PATHC.pos, dur = Math.min(1.8, .3 + .14 * Math.abs(to - p0));
+  PATHC.walk = {p0, p1:to, t0:t, t1:t + dur}; CLK.t0 = t; CLK.t1 = t + dur;
+  fast('path', dur + .1);
+}
+function pathDraw(t){
+  const P = PATHC.P; if (!P) return;
+  const w = PATHC.walk;
+  if (w){ const f = clamp((t - w.t0) / (w.t1 - w.t0), 0, 1); PATHC.pos = w.p0 + (w.p1 - w.p0) * ease(f); if (f >= 1){ PATHC.walk = null; PATHC.pos = w.p1; } }
+  P.clear(C.dusk);
+  const n = CHAIN.length, cw = PATHC.cellW, fpx = cw === 36 ? 10 : 11;
+  for (let i = 0; i < n - 1; i++){ const q = legPts(i); for (let k = 1; k < q.length; k++) P.line(q[k - 1][0], q[k - 1][1] + 9, q[k][0], q[k][1] + 9, C.faint, 1, 2); }
+  CHAIN.forEach((st, i) => {
+    const [x0, y0] = cellXY(i), cx = x0 + cw / 2, cy = y0 + 11, name = PROP[st.id] || 'st_scan', here = i === cur;
+    if (here) P.rect(cx - 12, y0, 24, 22, C.line);
+    const f = here && st.completed && name !== 'st_coin' ? fr(name, t) : 0;
+    P.spr(name, f, cx, cy, 1, {alpha: st.completed ? 1 : .4});
+    if (!st.completed) P.spr('barrier', 0, cx, cy + 6, 1);
+    if (/IBM hardware/.test(st.where || '')) P.spr('chip', 0, cx + 10, y0 + 5, 1);
+    P.rect(cx - 1, y0 + 38, 2, 2, st.completed ? C.haze : C.faint);
+    if (Math.abs(PATHC.pos - i) > .45) P.text(st.clock, cx, y0 + 27, fpx, here ? C.moon : C.haze, 'center', here ? 600 : 500);
+  });
+  const [mx, my] = walkXY(PATHC.pos), walking = !!PATHC.walk, name = walking ? 'tweezy_walk' : TW(MOOD(CHAIN[cur]));
+  let flip = false;
+  if (walking){ const a = walkXY(PATHC.pos), b = walkXY(PATHC.pos + (w.p1 > w.p0 ? .05 : -.05)); flip = b[0] < a[0]; }
+  P.spr(name, fr(name, t), Math.round(mx), Math.round(my), 1, {flipX: flip});
+  clockDraw(t);
+}
+
+// ---------- stage scenes: a strip (station prop, Tweezy, one real number) above a pixel picture of the stage
+let SCENE = null;
+function scene(v, artW, artH, label, draw){
+  const c = h('canvas', {class:'pix', role:'img', 'aria-label':label, tabindex:'0'});
+  v.append(c);
+  const S = {c, P:Pix(c), artW, artH, draw, react:-9};
+  S.fit = () => S.P.fit(artW, artH, 4);
+  S.redraw = () => { try { S.draw(NOW()); } catch (e) { console.error(e); } };
+  S.fast = sec => fast('scene', sec || 1.2);
+  S.poke = () => { S.react = NOW(); S.fast(1); };
+  S.onTap = (fn, what) => tapAct(c, fn, what);                                   // scenes without a site picker: tap = main action
+  S.still = () => { c.removeAttribute('tabindex'); c.classList.add('still'); };    // a picture with nothing to do (closed stations)
+  S.fit(); SCENE = S;
+  animate('scene', t => { const r = c.getBoundingClientRect(); if (r.bottom > 0 && r.top < innerHeight) S.draw(t); }, 12);
+  return S;
+}
+function strip(S, st, t, stat, o){
+  const P = S.P, prop = PROP[st.id] || 'st_scan'; o = o || {};
+  const pf = o.propFrame != null ? o.propFrame : (prop === 'st_coin' ? 0 : fr(prop, t));
+  P.spr(prop, pf, 12, 12, 1, {alpha: st.completed ? 1 : .45});
+  if (!st.completed) P.spr('barrier', 0, 12, 18, 1);
+  // a reaction is a hop only: the face always stays the hop's real result (MOOD), never set by a click
+  const r = t - S.react, react = r >= 0 && r < .9, name = TW(MOOD(st));
+  const hop = react && !RM ? -Math.round(3 * Math.sin(clamp(r / .45, 0, 1) * Math.PI)) : 0;
+  P.spr(name, fr(name, t), 32, 12 + hop, 1);
+  if (stat){   // one real number, shrunk to fit the strip on narrow screens
+    const x = P.ctx, maxW = (S.artW - 46 - (o.moon ? 14 : 0)) * P.u; let px = 12;
+    const setF = () => { x.font = `500 ${Math.round(px * P.dpr)}px IBM Plex Mono, monospace`; };
+    setF(); while (px > 8 && x.measureText(stat).width > maxW){ px -= .5; setF(); }
+    P.text(stat, 44, 12, px, C.moon);
+  }
+  if (o.moon) P.spr('moon', 0, S.artW - 8, 11, 1);
+  P.hair(24);
+}
+const siteXY = i => [9 + (i % 12) * 10, 33 + Math.floor(i / 12) * 10];           // 12 x 12 array under the strip
+const zoneXY = k => [16 + (k % 5) * 24, 44 + Math.floor(k / 5) * 24];             // 5 x 4 target zone, 24 px rooms
+const ZI = k => (4 + Math.floor(k / 5)) * 12 + 4 + k % 5;                          // zone index -> array index
+function pickAt(S, e, kind){
+  const [ax, ay] = S.P.toArt(e);
+  if (kind === 'zone'){ const c = Math.floor((ax - 4) / 24), r = Math.floor((ay - 32) / 24); return c >= 0 && c < 5 && r >= 0 && r < 4 ? r * 5 + c : null; }
+  if (kind === 'pets'){ const c = Math.floor((ax - 9) / 11), r = Math.floor((ay - 37) / 18); return c >= 0 && c < 10 && r >= 0 && r < 3 ? r * 10 + c : null; }
+  const c = Math.floor((ax - 4) / 10), r = Math.floor((ay - 28) / 10); return c >= 0 && c < 12 && r >= 0 && r < 12 ? r * 12 + c : null;
+}
+// click or arrow keys pick a site; returns a getter for the current pick
+function picker(S, kind, onPick){
+  const cols = kind === 'zone' ? 5 : kind === 'pets' ? 10 : 12, n = kind === 'zone' ? 20 : kind === 'pets' ? 30 : 144;
+  let sel = null;
+  const set = i => { sel = i; onPick(i); S.redraw(); };
+  S.c.addEventListener('click', e => { const i = pickAt(S, e, kind); if (i != null) set(i); });
+  S.c.addEventListener('keydown', e => {
+    const d = {ArrowLeft:-1, ArrowRight:1, ArrowUp:-cols, ArrowDown:cols}[e.key];
+    if (d == null) return; e.preventDefault(); set(clamp(sel == null ? 0 : sel + d, 0, n - 1));
+  });
+  return () => sel;
+}
+function selBox(S, i, kind){
+  if (i == null) return;
+  if (kind === 'zone'){ const [x, y] = zoneXY(i); S.P.corners(x - 12, y - 12, 24, 24, C.moon, 4); }
+  else { const [x, y] = siteXY(i); S.P.corners(x - 5, y - 5, 10, 10, C.moon, 3); }
+}
+const rc = i => `row ${Math.floor(i / 12) + 1}, column ${i % 12 + 1}`;
+const SC = {};
+
+SC.coin = (v, st) => {
+  const d = st.data; let toss = -9;
+  const jar = (P, x, y, n, sp, word) => {
+    P.rect(x - 2, y - 4, 56, 4, C.moon); P.rect(x - 1, y - 3, 54, 2, C.faint);
+    P.rect(x, y, 52, 60, C.moon); P.rect(x + 1, y, 50, 59, C.night); P.rect(x + 2, y + 2, 2, 50, C.line);
+    for (let k = 0; k < n; k++) P.spr(sp, 0, x + 6 + (k % 9) * 5, y + 56 - Math.floor(k / 9) * 5);
+    P.text(`${n} ${word}`, x + 26, y + 68, 11, C.moon, 'center');
+  };
+  const S = scene(v, 128, 112, `Two jars: ${d.heads} tosses came up heads (an atom caught), ${d.tails} tails (empty)`, t => {
+    const P = S.P, r = t - toss, live = r >= 0 && r < 2.2 && !RM, prog = live ? clamp((r - .7) / 1.3, 0, 1) : 1;
+    P.clear();
+    strip(S, st, t, `${d.heads} heads · ${d.tails} tails`, {propFrame: live && r < .9 ? Math.floor(r * 14) % 8 : 0});
+    jar(P, 8, 34, Math.round(d.heads * prog), 'dot', 'caught');
+    jar(P, 68, 34, Math.round(d.tails * prog), 'pip', 'missed');
+  });
+  const btn = h('button', {type:'button', class:'btn'}, 'Toss the 144 coins again');
+  btn.addEventListener('click', () => { toss = NOW(); S.poke(); S.fast(2.5); });
+  S.onTap(() => btn.click(), 'toss the 144 coins again');
+  v.append(h('div', {class:'ctl'}, btn), h('p', {class:'note'}, `Real result: ${d.heads} heads and ${d.tails} tails from ${d.shots} shots on IBM hardware. The engine returns totals only, so the replay fills the jars in no particular order. Heads = a tweezer that caught an atom; tails = one that stayed empty.`));
+  S.redraw();
+};
+
+SC.comet = (v, st) => {
+  const d = st.data; let k = 0, drop = -9;
+  const lab = h('p', {class:'note'}, 'Tap a tweezer (or focus the picture and use the arrow keys) to read it.');
+  const S = scene(v, 128, 152, 'The 12 by 12 tweezer array: an atom sits in every tweezer that loaded in this attempt', t => {
+    const P = S.P, bits = d.frames[k]; P.clear();
+    strip(S, st, t, `${sum([...bits])} / 144 loaded`);
+    if (k === 0 && !st.earlier) P.dashBox(43, 67, 52, 42, C.moon);
+    for (let i = 0; i < 144; i++){
+      const [x, y] = siteXY(i); P.spr('beam', 0, x, y);
+      if (bits[i] !== '1') continue;
+      const tt = RM ? 9 : t - drop - ((i % 12) + Math.floor(i / 12)) * .025;
+      if (tt < 0) continue;
+      P.spr('atom', 0, x, y - (tt < .3 ? Math.round(24 * (1 - tt / .3)) : 0));
+    }
+    selBox(S, get(), 'arr');
+  });
+  const get = picker(S, 'arr', i => { lab.innerHTML = `Tweezer ${rc(i)}: <b>${d.frames[k][i] === '1' ? 'loaded' : 'empty'}</b> in attempt ${k + 1}. Over all 10,000 shots it read 1 in <b>${(100 * d.site_bias[i]).toFixed(1)}%</b> (a perfect chip: 50.0%).`; });
+  const sl = range(1, d.frames.length, 1, 1, 'Loading attempt', x => { k = x - 1; drop = NOW(); S.fast(1.2); S.redraw(); });
+  const btn = h('button', {type:'button', class:'btn'}, 'Load again');
+  btn.addEventListener('click', () => { k = (k + 1) % d.frames.length; sl.value = k + 1; drop = NOW(); S.poke(); S.fast(1.3); });
+  v.append(h('div', {class:'ctl'}, btn, h('span', {class:'label'}, 'Attempt'), sl), lab,
+    h('p', {class:'note'}, `Each attempt is one real bitstring from ${st.backend}, picked by comet’s own conditioned random integers (comet returns counts, not a shot-by-shot record). The dashed box is the 20-site target zone; ${st.earlier ? 'the day continues with attempt 1 of the recorded run (switch Run to see it)' : 'attempt 1 is the one the day continues with'}. Bell check on 8 more qubits: S = ${d.S} (classical limit 2).`));
+  S.redraw();
+};
+
+SC.qrcimage = (v, st) => {
+  const d = st.data, comet = byId('comet'), F = d.frames || (comet ? (comet.earlier || comet).data.frames : []); let k = 0, timer = 0;
+  const played = h('div', {class:'tokens', 'aria-label':'Played sequence'});
+  d.gen.forEach((t, i) => played.append(h('span', {class: i > 0 && t === (d.gen[i - 1] + 1) % 8 ? 'ok' : ''}, t + 1)));
+  const S = scene(v, 128, 152, 'The tweezer array flickering through the frames the reservoir played', t => {
+    const P = S.P, bits = F[d.gen[k]] || ''; P.clear();
+    strip(S, st, t, `frame ${k + 1}/${d.gen.length} · attempt ${d.gen[k] + 1}`);
+    for (let i = 0; i < 144; i++){ const [x, y] = siteXY(i); P.spr('beam', 0, x, y); if (bits[i] === '1') P.spr('atom', 0, x, y); }
+    [...played.children].forEach((s, i) => s.classList.toggle('on', i === k));
+  });
+  const sl = range(1, d.gen.length, 1, 1, 'Frame', x => { k = x - 1; S.redraw(); });
+  const btn = h('button', {type:'button', class:'btn'}, '▶ Play');
+  const stop = () => { clearInterval(timer); timers.delete(timer); timer = 0; btn.textContent = '▶ Play'; };
+  btn.addEventListener('click', () => {
+    if (timer){ stop(); return; }
+    btn.textContent = '❚❚ Pause'; S.poke();
+    timer = every(1000 / d.fps, () => { k = (k + 1) % d.gen.length; sl.value = k + 1; S.redraw(); });
+  });
+  S.onTap(() => btn.click(), 'play or pause the flicker');
+  v.append(h('div', {class:'ctl'}, btn, sl), h('span', {class:'label'}, 'Played by the reservoir (outlined = follows the taught order)'), played,
+    h('p', {class:'note'}, 'Each frame is one of the 8 real IBM loading attempts the reservoir was taught (from the recorded 05:30 load), drawn here with sprites. The order is the one the reservoir played back, decoded from the GIF it returned.'));
+  S.redraw();
+};
+
+SC.shader = (v, st) => {
+  const d = st.data, comet = byId('comet'), occ = d.occ || (comet ? (comet.earlier || comet).data.frames[0] : '1'.repeat(144)), ts = d.t_site;
+  const tm = Math.max(...ts), tn = Math.min(...ts), cx = 5.5, rmax = Math.hypot(cx, cx);
+  const lab = h('p', {class:'note'}, 'Tap a tweezer to read how much of its light gets out.');
+  const S = scene(v, 128, 152, 'The tweezer array seen through the vacuum-cell glass: dimmer atoms lose more light', t => {
+    const P = S.P; P.clear();
+    strip(S, st, t, `glass T = ${tn.toFixed(3)}–${tm.toFixed(3)}`);
+    for (let j = 0; j < 150; j++){ const x = 4 + j, y = 148 - j * 1.0; if (y > 28 && x < 124){ P.rect(x, Math.round(y), 1, 4, C.line, .55); } }
+    for (let j = 0; j < 110; j++){ const x = 40 + j, y = 148 - j; if (y > 28 && x < 124) P.rect(x, Math.round(y), 1, 2, C.line, .55); }
+    for (let i = 0; i < 144; i++){
+      const [x, y] = siteXY(i); P.spr('beam', 0, x, y, 1, {alpha:.7});
+      if (occ[i] === '1') P.spr('atom', 0, x, y, 1, {alpha: .18 + .82 * ts[i] / tm});
+    }
+    P.rect(3, 27, 122, 1, C.faint); P.rect(3, 148, 122, 1, C.faint); P.rect(3, 27, 1, 122, C.faint); P.rect(124, 27, 1, 122, C.faint);
+    selBox(S, get(), 'arr');
+  });
+  const get = picker(S, 'arr', i => {
+    const th = 30 * Math.hypot(i % 12 - cx, Math.floor(i / 12) - cx) / rmax;
+    lab.innerHTML = `Tweezer ${rc(i)} (${occ[i] === '1' ? 'loaded' : 'empty'}): glass transmission <b>${ts[i].toFixed(3)}</b> at 780 nm, at <b>${th.toFixed(1)}°</b> incidence (the position-to-angle map is this piece’s assumption).`;
+  });
+  v.append(lab, h('p', {class:'note'}, 'Atom brightness follows the transmission read off the engine’s T table at each tweezer’s angle (attempt 1 from comet). The diagonal sheen is decoration.'));
+  S.redraw();
+};
+
+SC.blur = (v, st) => {
+  const m = st.media; let show = 'after', flash = -9;
+  const S = scene(v, 128, 148, 'Camera viewfinder showing the engine’s blurred frame or the ideal frame', t => {
+    const P = S.P, r = t - flash, fl = r >= 0 && r < .5 && !RM; P.clear();
+    strip(S, st, t, show === 'after' ? 'camera: blur-v1' : 'ideal: in the tweezers', {propFrame: fl ? 1 : 0});
+    P.rect(10, 30, 108, 108, C.moon);
+    P.photo(img(show === 'after' ? m.after : m.before), 11, 31, 106, 106);
+    P.corners(6, 26, 116, 116, C.moon, 9);
+    if (fl) P.rect(11, 31, 106, 106, C.night, 1 - r / .5);
+  });
+  img(m.before, S.redraw); img(m.after, S.redraw);
+  const sg = seg('Frame', [['before', 'In the tweezers'], ['after', 'Camera (blur-v1)']], 'after', x => { show = x; S.redraw(); });
+  const snap = h('button', {type:'button', class:'btn'}, 'Snap');
+  snap.addEventListener('click', () => { show = 'after'; [...sg.children].forEach((b, i) => b.setAttribute('aria-pressed', String(i === 1))); flash = NOW(); S.poke(); S.fast(.9); });
+  S.onTap(() => snap.click(), 'snap a picture');
+  v.append(h('div', {class:'ctl'}, snap, sg), h('p', {class:'note'}, 'The frames are the real ideal render (classical) and the engine’s blurred output, shown as returned. The flash is decoration.'));
+  S.redraw();
+};
+
+SC.fryer = (v, st) => {
+  const m = st.media; let show = 'after';
+  const cx = 58, cy = 72, R = 38;
+  const S = scene(v, 128, 136, 'The camera frame in a frying pan: raw or deep-fried by the engine', t => {
+    const P = S.P; P.clear();
+    strip(S, st, t, `F ${f3(st.hop.F)} ≈ chance ${f3(st.hop.null)}`);
+    for (let k = 0; k < 5; k++) P.spr('flame', (fr('flame', t) + k) % 2, cx - 28 + 14 * k, 121, 2);
+    P.rect(cx - 38, 129, 76, 3, C.moon); P.rect(cx - 34, 132, 4, 4, C.moon); P.rect(cx + 30, 132, 4, 4, C.moon);
+    P.disc(cx, cy, R + 3, C.moon); P.disc(cx, cy, R + 1, C.haze);
+    const ctx = P.ctx, im = img(show === 'after' ? m.after : m.before);
+    ctx.save(); ctx.beginPath(); ctx.arc(P.X(cx), P.Y(cy), R * P.u, 0, 2 * Math.PI); ctx.clip(); P.photo(im, cx - R, cy - R, 2 * R, 2 * R); ctx.restore();
+    P.rect(cx + R + 2, cy - 3, 22, 6, C.moon); P.rect(cx + R + 4, cy - 2, 18, 4, C.haze);
+  });
+  img(m.before, S.redraw); img(m.after, S.redraw);
+  const fsg = seg('Frame', [['before', 'Camera frame'], ['after', 'Fried (deep-fryer-v1)']], 'after', x => { show = x; S.poke(); S.redraw(); });
+  S.onTap(() => { show = show === 'after' ? 'before' : 'after'; press(fsg, show === 'after' ? 1 : 0); S.poke(); S.redraw(); }, 'switch between the camera frame and the fried frame');
+  v.append(h('div', {class:'ctl'}, fsg),
+    h('p', {class:'note'}, 'The frame in the pan is the real input and the engine’s fried output. The flames are decoration; this side branch is not used downstream.'));
+  S.redraw();
+};
+
+SC.closed = (v, st) => {
+  const S = scene(v, 128, 80, `${st.engine}: this station is closed, the job did not complete`, t => {
+    const P = S.P; P.clear();
+    strip(S, st, t, 'closed today');
+    P.rect(30, 66, 3, 12, C.moon); P.rect(95, 66, 3, 12, C.moon);
+    P.rect(22, 33, 84, 34, C.moon); P.rect(24, 35, 80, 30, C.night);
+    for (let x = 24; x < 104; x += 8){ P.rect(x, 35, 4, 3, C.moon); P.rect(x + 4, 62, 4, 3, C.moon); }
+    P.text('CLOSED', 64, 46, 15, C.moon, 'center', 600); P.text('job did not complete', 64, 56, 10, C.haze, 'center');
+  });
+  S.still(); S.redraw(); statusCard(v, st);
+};
+SC.tessa = SC.closed; SC.tomo = SC.closed;
+
+SC.qpixl = (v, st) => {
+  const d = st.data; let thr = d.thr;
+  const lab = h('p', {class:'note'}, 'Tap a tweezer to read its photon count.');
+  const S = scene(v, 128, 152, 'Every tweezer called loaded or empty at the threshold; ghosts and faded atoms are wrong calls', t => {
+    const P = S.P; P.clear(); let ok = 0;
+    for (let i = 0; i < 144; i++){
+      const [x, y] = siteXY(i), call = d.out[i] >= thr, tr = d.truth[i] === 1;
+      if (call === tr) ok++; else P.rect(x - 5, y - 5, 10, 10, C.line);
+      P.spr('beam', 0, x, y);
+      if (call && tr) P.spr('atom', 0, x, y);
+      else if (call) P.spr('ghost', fr('ghost', t + i * .37), x, y);
+      else if (tr) P.spr('atom', 0, x, y, 1, {alpha:.3});
+    }
+    strip(S, st, t, `${ok}/144 called right`);
+    selBox(S, get(), 'arr');
+  });
+  const get = picker(S, 'arr', i => { const call = d.out[i] >= thr, tr = d.truth[i] === 1;
+    lab.innerHTML = `Tweezer ${rc(i)}: counts sent <b>${d.in[i].toFixed(2)}</b>, decoded <b>${d.out[i].toFixed(2)}</b> → called <b>${call ? 'loaded' : 'empty'}</b>; really <b>${tr ? 'loaded' : 'empty'}</b> (IBM loading pattern).`; });
+  const sl = range(0.02, 0.98, thr, 0.005, 'Occupancy threshold', x => { thr = x; S.redraw(); });
+  const reset = h('button', {type:'button', class:'btn ghost'}, 'Reset');
+  reset.addEventListener('click', () => { thr = d.thr; sl.value = thr; S.poke(); S.redraw(); });
+  v.append(h('div', {class:'ctl'}, h('span', {class:'label'}, 'Threshold'), sl, reset), lab,
+    h('p', {class:'note'}, `A ghost is a site called loaded that was empty; a faded atom is a real atom called empty; tinted squares are the wrong calls. Decoded counts come from qpixl-v1 (${st.where}); the threshold is a classical choice.`));
+  S.redraw();
+};
+
+SC.maze = (v, st) => {
+  const d = st.data; let mode = 'before', run = -9;
+  const opened = new Set(d.opened.map(e => e.join('-'))), adj = Array.from({length:20}, () => []);
+  d.opened.forEach(([a, b]) => { adj[a].push(b); adj[b].push(a); });
+  const rim = k => { const r = Math.floor(k / 5), c = k % 5; return r === 0 || r === 3 || c === 0 || c === 4; };
+  const outside = k => { const [x, y] = zoneXY(k), r = Math.floor(k / 5), c = k % 5; return r === 0 ? [x, y - 14] : r === 3 ? [x, y + 14] : c === 0 ? [x - 14, y] : [x + 14, y]; };
+  // the classical move rule: a hole fills from the reservoir if it is on the rim or joined to the rim by open lanes
+  const routes = [];
+  d.after.forEach((a, k) => {
+    if (!a || d.zocc[k]) return;
+    const prev = {[k]: -1}, q = [k]; let end = null;
+    while (q.length){ const x = q.shift(); if (rim(x)){ end = x; break; } adj[x].forEach(y => { if (!(y in prev)){ prev[y] = x; q.push(y); } }); }
+    if (end == null) return;
+    const pts = [outside(end)]; for (let x = end; x !== -1; x = prev[x]) pts.push(zoneXY(x));
+    routes.push({hole:k, pts});
+  });
+  const along = (pts, f) => { const L = pts.length - 1, s = clamp(f, 0, 1) * L, i = Math.min(L - 1, Math.floor(s)), g = s - i; return [pts[i][0] + (pts[i + 1][0] - pts[i][0]) * g, pts[i][1] + (pts[i + 1][1] - pts[i][1]) * g]; };
+  const S = scene(v, 128, 136, 'Target zone: rooms are tweezer sites, open lanes join them, walls block them', t => {
+    const P = S.P; P.clear();
+    strip(S, st, t, mode === 'before' ? `zone ${sum(d.zocc)}/20 (camera)` : `zone ${sum(d.after)}/20 (camera)`);
+    P.dashBox(2, 30, 124, 104, C.faint);
+    d.edges.forEach(([a, b]) => {
+      const [x1, y1] = zoneXY(a), open = opened.has(a + '-' + b), vert = b - a === 5;
+      if (vert){ if (open){ P.rect(x1 - 3, y1 + 10, 6, 4, C.line); P.rect(x1 - 4, y1 + 10, 1, 4, C.haze); P.rect(x1 + 3, y1 + 10, 1, 4, C.haze); } else P.rect(x1 - 10, y1 + 11, 20, 2, C.moon); }
+      else { if (open){ P.rect(x1 + 10, y1 - 3, 4, 6, C.line); P.rect(x1 + 10, y1 - 4, 4, 1, C.haze); P.rect(x1 + 10, y1 + 3, 4, 1, C.haze); } else P.rect(x1 + 11, y1 - 10, 2, 20, C.moon); }
+    });
+    for (let k = 0; k < 20; k++){ const [x, y] = zoneXY(k); P.rect(x - 10, y - 10, 20, 20, C.line); if (d.zocc[k]) P.spr('atom', 0, x, y, 2); else P.spr('beam', 0, x, y, 2, {alpha:.8}); }
+    if (mode === 'after') routes.forEach((ro, j) => {
+      const f = RM ? 1 : (t - run - j * .2) / .9;
+      if (f < 0) return;
+      const [x, y] = along(ro.pts, ease(clamp(f, 0, 1)));
+      P.spr('atom', 0, Math.round(x), Math.round(y), 2);
+    });
+  });
+  const sg = seg('Show', [['before', 'Before the moves'], ['after', 'After the moves']], 'before', x => { mode = x; run = NOW() - 9; S.redraw(); });
+  const btn = h('button', {type:'button', class:'btn'}, 'Run the moves');
+  btn.addEventListener('click', () => { mode = 'after'; [...sg.children].forEach((b, i) => b.setAttribute('aria-pressed', String(i === 1))); run = NOW(); S.poke(); S.fast(routes.length * .2 + 1.2); });
+  S.onTap(() => btn.click(), 'run the moves');
+  v.append(h('div', {class:'ctl'}, btn, sg), h('p', {class:'note'}, `Lanes and walls are the engine’s most likely maze (${d.opened.length} open lanes of ${d.edges.length}). New atoms enter from the reservoir through open lanes; that move rule is classical bookkeeping. Occupancy is what the camera believes, not the truth.`));
+  S.redraw();
+};
+
+SC.telablur = (v, st) => {
+  const d = st.data, M = d.moves; let m = 0, run = -9;
+  const state = mm => { const bel = d.before.slice(), phys = d.truth.slice(); for (let j = 0; j < mm; j++){ const [f, to] = M[j]; bel[f] = 0; bel[to] = 1; phys[to] = phys[f]; phys[f] = 0; } return [bel, phys]; };
+  const S = scene(v, 128, 152, 'The array during rearrangement: a bright tweezer drags each spare atom into a hole of the target zone', t => {
+    const P = S.P; P.clear();
+    let done = m, moving = null;
+    if (run > 0 && !RM){ const e = (t - run) / .55; if (e < M.length){ done = Math.floor(e); moving = {j:done, f:e - done}; } else done = M.length; }
+    const [bel, phys] = state(done);
+    strip(S, st, t, `move ${moving ? moving.j + 1 : done}/${M.length}`);
+    P.dashBox(43, 67, 52, 42, C.moon);
+    for (let i = 0; i < 144; i++){
+      const [x, y] = siteXY(i); P.spr('beam', 0, x, y);
+      if (moving && M[moving.j][0] === i) continue;
+      if (bel[i] && phys[i]) P.spr('atom', 0, x, y); else if (bel[i]) P.spr('ghost', fr('ghost', t + i * .37), x, y); else if (phys[i]) P.spr('atom', 0, x, y, 1, {alpha:.3});
+    }
+    if (moving){
+      const [f, to] = M[moving.j], [x1, y1] = siteXY(f), [x2, y2] = siteXY(to), g = ease(moving.f), x = Math.round(x1 + (x2 - x1) * g), y = Math.round(y1 + (y2 - y1) * g);
+      P.line(x1, y1, x2, y2, C.faint, 1, 1);
+      P.spr('beam_hot', 0, x, y); P.spr(phys[f] ? 'atom' : 'ghost', 0, x, y);
+    }
+    if (!moving) M.slice(0, done).forEach(([f, to]) => { const [x1, y1] = siteXY(f), [x2, y2] = siteXY(to); P.line(x1, y1, x2, y2, C.faint, .9, 1); });
+  });
+  const sl = range(0, M.length, 0, 1, 'Moves done', x => { m = x; run = -9; S.redraw(); });
+  const btn = h('button', {type:'button', class:'btn'}, 'Drag the atoms');
+  btn.addEventListener('click', () => { run = NOW(); m = M.length; sl.value = m; S.poke(); S.fast(M.length * .55 + .5); });
+  S.onTap(() => btn.click(), 'drag the atoms');
+  v.append(h('div', {class:'ctl'}, btn, h('span', {class:'label'}, 'Moves'), sl),
+    h('p', {class:'note'}, `The ${M.length} planned moves (classical: nearest detected spare atom to each hole). Ghosts are sites the camera called loaded that are empty; a faded atom is one it missed. The engine itself made only the halfway frame, under Data.`));
+  S.redraw();
+};
+
+SC.graph = (v, st) => {
+  const d = st.data, tops = d.top.slice(0, 10); let sel = 0;
+  const S = scene(v, 128, 136, 'The atoms of the target zone; glowing ones were excited in the chosen measured pattern', t => {
+    const P = S.P, bits = tops[sel] ? tops[sel].b : '0'.repeat(20); P.clear();
+    let viol = 0, ex = 0; const clash = [];
+    d.edges.forEach(([a, b]) => { const [x1, y1] = zoneXY(a), [x2, y2] = zoneXY(b), both = bits[a] === '1' && bits[b] === '1'; if (both){ viol++; clash.push([(x1 + x2) / 2, (y1 + y2) / 2]); } P.line(x1, y1, x2, y2, C.line); });
+    for (let k = 0; k < 20; k++){ const [x, y] = zoneXY(k); if (!d.zocc[k]){ if (d.believed[k]) P.spr('ghost', fr('ghost', t + k * .3), x, y, 2); else P.spr('beam', 0, x, y, 2); } else if (bits[k] !== '1') P.spr('atom', 0, x, y, 2); }
+    for (let k = 0; k < 20; k++){ if (d.zocc[k] && bits[k] === '1'){ ex++; const [x, y] = zoneXY(k), pulse = fr('hot', t + k * .13);
+      P.ring(x, y, pulse ? 11.6 : 10.8, C.warn); if (pulse) [[-1, -14], [-1, 12], [-14, -1], [12, -1]].forEach(([dx, dy]) => P.rect(x + dx, y + dy, 2, 2, C.warn));
+      P.spr('atom', 0, x, y, 2); } }
+    clash.forEach(([x, y]) => P.spr('spark', fr('spark', t), Math.round(x), Math.round(y), 1));
+    strip(S, st, t, `${ex} glowing · ${viol} clash${viol === 1 ? '' : 'es'}`);
+  });
+  const lab = h('p', {class:'note'});
+  const pats = h('div', {class:'patterns', role:'group', 'aria-label':'Measured patterns'});
+  const info = () => { const t = tops[sel]; lab.innerHTML = `Pattern ${sel + 1} was measured in <b>${t ? (100 * t.p).toFixed(2) : 0}%</b> of 4096 shots. Sparks mark neighbours that both glow (a blockade clash). The largest clash-free set of this graph has <b>${d.mis}</b> atoms (classical brute force).`; };
+  tops.forEach((t, i) => { const b = h('button', {type:'button', 'aria-pressed':String(i === 0)}, `${i + 1} · ${(100 * t.p).toFixed(1)}% ${t.ok ? '✓' : '✗'}`);
+    b.addEventListener('click', () => { sel = i; [...pats.children].forEach((x, j) => x.setAttribute('aria-pressed', String(j === i))); info(); S.poke(); S.redraw(); }); pats.append(b); });
+  S.onTap(() => pats.children[(sel + 1) % tops.length].click(), 'show the next most frequent pattern');
+  v.append(h('span', {class:'label'}, 'Most frequent measured patterns (✓ = no clash)'), pats, lab,
+    h('p', {class:'note'}, `Glow = the qubit read 1 in that pattern (graph-v1, ${st.where}). Ghosts are the two sites the camera wrongly called loaded: no atom, so never excited.`));
+  info(); S.redraw();
+};
+
+SC.tamagotchi = (v, st) => {
+  const d = st.data; let L0 = d.runs[0].label, R0 = d.runs[0].rounds;
+  const run = () => d.runs.find(r => r.label === L0 && r.rounds === R0) || d.runs[0];
+  const lab = h('p', {class:'note'}, 'Tap a pet to read its logical qubit.');
+  const S = scene(v, 128, 108, 'Thirty pets, one per logical qubit; their mood shows how often the qubit read back right', t => {
+    const P = S.P, ru = run(); P.clear();
+    strip(S, st, t, `${pct(ru.mean_success)} read back right`);
+    P.rect(4, 29, 120, 68, C.moon); P.rect(6, 31, 116, 64, C.haze); P.rect(8, 33, 112, 60, C.line);
+    ru.success.forEach((s, i) => { const x = 14 + (i % 10) * 11, y = 46 + Math.floor(i / 10) * 18, nm = s >= .8 ? 'pet_happy' : s >= .6 ? 'pet_ok' : 'pet_sad'; P.spr(nm, fr(nm, t + i * .29), x, y); });
+    const sel = get(); if (sel != null) P.corners(14 + (sel % 10) * 11 - 6, 46 + Math.floor(sel / 10) * 18 - 7, 12, 14, C.moon, 3);
+    [44, 64, 84].forEach(x => P.rect(x - 2, 100, 4, 4, C.moon));
+  });
+  const get = picker(S, 'pets', i => { const ru = run(); lab.innerHTML = `Logical qubit ${i + 1} holds answer bit ${i % 20 + 1} (= ${d.bits[i % 20]}) in 7 data qubits: read back right in <b>${pct(ru.success[i])}</b> of 1024 shots (${ru.label}, ${ru.rounds} round${ru.rounds === 1 ? '' : 's'}).`; });
+  v.append(h('div', {class:'ctl'}, seg('Noise', [...new Set(d.runs.map(r => r.label))].map(l => [l, l]), L0, x => { L0 = x; S.poke(); S.redraw(); }),
+    seg('Rounds', [...new Set(d.runs.map(r => r.rounds))].map(r => [r, r + (r === 1 ? ' round' : ' rounds')]), R0, x => { R0 = x; S.poke(); S.redraw(); })), lab,
+    h('p', {class:'note'}, 'Pet mood is the real per-logical success rate from tamagotchi-v1 (Aer stabilizer simulator): happy at 80% or more, flat from 60%, sad below 60% (bands chosen by this piece).'));
+  S.redraw();
+};
+
+SC.blurmidi = (v, st) => {
+  const d = st.data; let which = 'notes_out', play = null;
+  const pitches = [...new Set(d.notes_in.concat(d.notes_out).map(n => n[2]))].sort((a, b) => a - b), N = pitches.length;
+  const bw = Math.max(2, Math.floor(116 / N)), x0 = Math.round((128 - bw * N) / 2), T = Math.max(8, ...d.notes_in.concat(d.notes_out).map(n => n[0] + n[1]));
+  const S = scene(v, 128, 100, 'A xylophone with one bar per pitch; bars light up as their notes play', t => {
+    const P = S.P, now = play && AC ? AC.currentTime - play.t0 : null; P.clear();
+    strip(S, st, t, `${d[which].length} notes · ${which === 'notes_in' ? 'before' : 'after'} the blur`);
+    P.rect(x0 - 4, 49, bw * N + 7, 1, C.moon); P.rect(x0 - 4, 67, bw * N + 7, 1, C.moon);
+    const hits = [];
+    pitches.forEach((p, j) => {
+      const x = x0 + j * bw, hgt = Math.round(48 - 26 * j / Math.max(1, N - 1)), y = 58 - Math.round(hgt / 2);
+      let on = 0; if (now != null) for (const [s, du, pp, vel] of d[which]) if (pp === p && now >= s && now < s + du) on = Math.max(on, vel / 127);
+      P.rect(x, y, bw - 1, hgt, on ? C.moon : (j % 2 ? C.faint : C.haze));
+      P.rect(x, y, bw - 1, 1, on ? C.moon : C.line);
+      P.px(x + Math.floor((bw - 1) / 2), 49, C.night); P.px(x + Math.floor((bw - 1) / 2), 67, C.night);
+      if (on) hits.push([x + Math.floor(bw / 2), y - 3 - Math.round(6 * on)]);
+    });
+    hits.forEach(([x, y]) => { P.line(x + 2, y - 2, x + 9, y - 9, C.haze); P.spr('dot', 0, x, y); });
+    P.rect(x0 - 6, 47, 3, 22, C.moon); P.rect(x0 + bw * N + 3, 47, 3, 22, C.moon);
+    P.rect(x0 - 8, 86, bw * N + 15, 2, C.moon); P.rect(x0 - 6, 69, 2, 17, C.moon); P.rect(x0 + bw * N + 4, 69, 2, 17, C.moon);
+    if (now != null) P.rect(x0, 93, Math.round(bw * N * clamp(now / T, 0, 1)), 2, C.moon); else P.rect(x0, 93, bw * N, 1, C.line);
+  });
+  const btn = h('button', {type:'button', class:'btn'}, '▶ Play');
+  const stop = () => { if (play){ const p = play; play = null; p.stop(); } btn.textContent = '▶ Play'; S.redraw(); };
+  btn.addEventListener('click', () => {
+    if (play){ stop(); return; }
+    stopAll(); play = playNotes(d[which], () => { if (play){ play = null; btn.textContent = '▶ Play'; S.redraw(); } }, true);
+    btn.textContent = '■ Stop'; S.poke(); S.fast(play.end + .5);
+  });
+  S.onTap(() => btn.click(), 'play or stop this score');
+  v.append(h('div', {class:'ctl'}, seg('Score', [['notes_in', 'Before the blur'], ['notes_out', 'After blur-midi']], which, x => { stop(); which = x; S.redraw(); }), btn),
+    h('p', {class:'note'}, `One bar per pitch (${N} in all, low to high); a bar lights while its real note sounds, higher bounce = louder. Played by a simple browser synth (classical).`));
+  S.redraw();
+};
+
+SC.retro = (v, st) => {
+  const m = st.media, d = st.data; let playing = null;
+  const els = {dry:h('audio', {src:m.before, preload:'none'}), wet:h('audio', {src:m.after, preload:'none'})};
+  const pk = w => (w === 'dry' ? d.peaks_in : d.peaks_out) || [];
+  const arc = (P, cx, cy, r, a, left, c0) => { const col = c0 || C.moon, al = c0 ? 1 : clamp(.2 + a, .2, 1); for (let q = -.55; q <= .55; q += .9 / r){ const x = cx + (left ? -1 : 1) * r * Math.cos(q), y = cy + r * Math.sin(q); if (x > 34 && x < 110 && y > 27) P.px(x, y, col, al); } };
+  const S = scene(v, 128, 112, 'A speaker sending sound waves at a cliff; with the echo they come back', t => {
+    const P = S.P; P.clear();
+    strip(S, st, t, playing ? (playing.w === 'dry' ? 'dry score' : 'echoed score') : 'press play');
+    for (let y = 28; y < 104; y++){ const e = 112 + Math.round(2.5 * Math.sin(y * .45) + 1.5 * Math.sin(y * .13)); P.rect(e, y, 128 - e, 1, C.haze); P.px(e, y, C.moon); }
+    P.spr('st_echo', playing ? fr('st_echo', t) : 0, 20, 64, 2);
+    const w = playing && playing.w, p = pk(w || 'dry');
+    if (!playing) [12, 19, 26].forEach(r => arc(P, 30, 64, r, 0, false, C.faint));
+    if (playing){
+      const el = els[w], dur = el.duration || 8, pos = el.currentTime || 0;
+      for (let k = 0; k < 16; k++){
+        const age = k * .09 + (pos % .09), emit = pos - age; if (emit < 0) continue;
+        const a = p[Math.min(p.length - 1, Math.floor(emit / dur * p.length))] || 0, r = 8 + age * 120;
+        if (r < 82) arc(P, 30, 64, r, a, false);
+        else if (w === 'wet') arc(P, 194, 64, r, a * .7, true);
+      }
+    }
+    const nb = 80, x0 = 24, src = p.length ? p : [0];
+    for (let b = 0; b < nb; b++){ const a = src[Math.floor(b / nb * src.length)] || 0, hgt = Math.max(1, Math.round(a * 9)); const done = playing && els[w].duration && b / nb < els[w].currentTime / els[w].duration; P.rect(x0 + b, 108 - hgt, 1, hgt, done ? C.moon : C.faint); }
+  });
+  const mk = (w, label) => {
+    const b = h('button', {type:'button', class:'btn' + (w === 'dry' ? ' ghost' : '')}, '▶ ' + label);
+    const stop = () => { const el = els[w]; el.pause(); el.currentTime = 0; if (playing && playing.w === w) playing = null; b.textContent = '▶ ' + label; S.redraw(); };
+    els[w].addEventListener('ended', stop);
+    b.addEventListener('click', () => {
+      if (playing && playing.w === w){ stop(); return; }
+      stopAll(); playing = {w}; b.textContent = '■ Stop'; onStop(stop, {stage:true});
+      const pr = els[w].play(); if (pr && pr.catch) pr.catch(stop);
+      S.poke(); S.fast(30);
+    });
+    return b;
+  };
+  const dryB = mk('dry', 'Dry score'), wetB = mk('wet', 'Echoed');
+  S.onTap(() => (playing ? (playing.w === 'dry' ? dryB : wetB) : wetB).click(), 'play the echoed sound, or stop what is playing');
+  v.append(h('div', {class:'ctl'}, dryB, wetB), els.dry, els.wet,
+    h('p', {class:'note'}, 'Wave strength follows the loudness of the real recording as it plays (the strip under the cliff is its waveform). The waves and the bounce off the cliff are a picture of an echo, not a measurement.'));
+  S.redraw();
+};
+
+SC.otoc = (v, st) => {
+  const d = st.data; let depth = 8, which = 'noisy', run = -9;
+  const S = scene(v, 128, 92, 'A chain of 24 atoms; the ones the kick reached glow and shake', t => {
+    const P = S.P, g = d[which]; P.clear();
+    const dd = run > 0 && !RM && t - run < 8 * .45 ? 1 + Math.floor((t - run) / .45) : depth;
+    let reached = 0;
+    P.rect(4, 64, 120, 1, C.line);
+    for (let s = 0; s < g.length; s++){ const val = g[s][dd - 1] || 0; if (val > .01){ reached++; P.disc(8 + s * 5, 64, 1.5 + 4.5 * val, C.warn, .15 + .45 * val); } }
+    for (let s = 0; s < g.length; s++){ const val = g[s][dd - 1] || 0, dx = val > .01 && !RM ? Math.round(Math.sin(t * 25 + s * 1.7) * val * 1.6) : 0; P.spr(val > .3 ? 'dot_hot' : 'dot', 0, 8 + s * 5 + dx, 64); }
+    P.spr('spark', fr('spark', t), 8 + 12 * 5, 53);
+    for (let k = 0; k < 8; k++) P.rect(40 + k * 6, 80, 4, 4, k < dd ? C.moon : C.line);
+    strip(S, st, t, `depth ${dd} · ${reached} reached`, {moon:true});
+  });
+  const sl = range(1, 8, depth, 1, 'Echo depth', x => { depth = x; run = -9; S.redraw(); });
+  const btn = h('button', {type:'button', class:'btn'}, '▶ Run the echo');
+  btn.addEventListener('click', () => { run = NOW(); depth = 8; sl.value = 8; S.poke(); S.fast(8 * .45 + .5); });
+  S.onTap(() => btn.click(), 'run the echo');
+  v.append(h('div', {class:'ctl'}, btn, seg('Echo', [['clean', `Clean (${d.clean_label || '18:00'})`], ['noisy', `Morning noise (${d.disorder} rad)`]], which, x => { which = x; S.poke(); S.redraw(); }), h('span', {class:'label'}, 'Depth'), sl),
+    h('p', {class:'note'}, `The star marks the kicked site (12). Glow size and shake follow how much the kick changed each site at that depth, (1 − Re F)/2 from the engine’s ${st.backend === 'aer' ? 'exact echo map (Aer)' : `echo map, sampled on IBM ${st.backend}`}; the light cone opens as depth grows.`));
+  S.redraw();
+};
+
+SC.qdrive = (v, st) => {
+  const d = st.data; let run = -9;
+  const lab = h('p', {class:'note'}, 'Tap an atom to read its spin.');
+  const ang = z => Math.acos(clamp(z, -1, 1));
+  const S = scene(v, 128, 136, 'Twenty atoms with spin needles: solid = what QDrive’s circuit gives, dotted = the target', t => {
+    const P = S.P, p = run > 0 && !RM ? ease(clamp((t - run) / 1.2, 0, 1)) : 1; P.clear();
+    strip(S, st, t, `F ${f3(st.hop.F)} vs target`);
+    for (let k = 0; k < 20; k++){
+      const [x, y] = zoneXY(k), tt = ang(d.z_target[k]), tg = ang(d.z_got[k]) * p;
+      P.rect(x - 10, y - 10, 20, 20, C.line, .6);
+      P.line(x + 5 * Math.sin(tt), y - 5 * Math.cos(tt), x + 11 * Math.sin(tt), y - 11 * Math.cos(tt), C.faint, 1, 1);
+      P.spr('atom', 0, x, y);
+      const ex = x + 11 * Math.sin(tg), ey = y - 11 * Math.cos(tg);
+      P.line(x + 5 * Math.sin(tg), y - 5 * Math.cos(tg), ex, ey, C.moon); P.rect(Math.round(ex) - 1, Math.round(ey) - 1, 2, 2, C.moon);
+    }
+    if (run > 0 && t - run > 1.2 && t - run < 2.2) P.spr('spark', fr('spark', t), 116, 12);
+    selBox(S, get(), 'zone');
+  });
+  const get = picker(S, 'zone', k => { lab.innerHTML = `Qubit ${k + 1}: target ⟨Z⟩ <b>${d.z_target[k].toFixed(3)}</b>, circuit gives <b>${d.z_got[k].toFixed(3)}</b> (needle tilt ${(ang(d.z_got[k]) * 180 / Math.PI).toFixed(0)}° from up).`; });
+  const btn = h('button', {type:'button', class:'btn'}, 'Write the state');
+  btn.addEventListener('click', () => { run = NOW(); S.poke(); S.fast(2.4); });
+  v.append(h('div', {class:'ctl'}, btn), lab, h('p', {class:'note'}, 'Needle tilt = arccos ⟨Z⟩: up is |0⟩, down is |1⟩. Solid needles are read exactly off QDrive’s returned circuit (a classical evaluation); dotted ones are the 10:00 targets. The 22:00 check that would have measured this state failed.'));
+  S.redraw();
+};
+
+SC.blurcore = (v, st) => {
+  const m = st.media, d = st.data; let show = 'after', run = -9;
+  const reel = (P, cx, cy, a) => { P.disc(cx, cy, 11, C.moon); P.disc(cx, cy, 10, C.faint); P.disc(cx, cy, 3, C.moon); for (let k = 0; k < 3; k++){ const q = a + k * 2 * Math.PI / 3; P.line(cx + 4 * Math.cos(q), cy + 4 * Math.sin(q), cx + 9 * Math.cos(q), cy + 9 * Math.sin(q), C.haze); } };
+  const S = scene(v, 128, 100, 'The day’s record as a tape between two reels: raw IBM bits or blurred by blur-core-v1', t => {
+    const P = S.P, r = run > 0 && !RM ? clamp((t - run) / 2, 0, 1) : 1, spin = run > 0 && !RM && r < 1 ? t * 6 : 0; P.clear();
+    strip(S, st, t, `${d.shots} bitstrings × 144`, {moon:true});
+    reel(P, 13, 62, spin); reel(P, 115, 62, -spin);
+    P.rect(24, 39, 80, 1, C.moon); P.rect(24, 85, 80, 1, C.moon);
+    P.line(13, 51, 24, 39, C.moon); P.line(13, 73, 24, 85, C.moon); P.line(115, 51, 104, 39, C.moon); P.line(115, 73, 104, 85, C.moon);
+    const raw = img(m.before), blr = img(m.after);
+    if (show === 'before') P.photo(raw, 26, 40, 76, 45);
+    else { P.photo(raw, 26, 40, 76, 45); const ctx = P.ctx; ctx.save(); ctx.beginPath(); ctx.rect(P.X(26), P.Y(40), Math.round(76 * r * P.u), 45 * P.u); ctx.clip(); P.photo(blr, 26, 40, 76, 45); ctx.restore(); if (r < 1) P.rect(26 + Math.round(76 * r), 40, 1, 45, C.warn); }
+  });
+  img(m.before, S.redraw); img(m.after, S.redraw);
+  const sg = seg('Tape', [['before', 'Raw IBM bits'], ['after', 'Blurred (blur-core-v1)']], 'after', x => { show = x; run = -9; S.redraw(); });
+  const btn = h('button', {type:'button', class:'btn'}, 'Run the tape');
+  btn.addEventListener('click', () => { show = 'after'; [...sg.children].forEach((b, i) => b.setAttribute('aria-pressed', String(i === 1))); run = NOW(); S.poke(); S.fast(2.4); });
+  S.onTap(() => btn.click(), 'run the tape');
+  v.append(h('div', {class:'ctl'}, btn, sg),
+    h('p', {class:'note'}, `Rows: the 144 tweezers; columns: ${d.shots} bitstrings from comet in sorted (lexicographic) order, not time order, so the empty top rows and the staircase come from the sort, not from drift. Details and the full-size frames are under Data.`));
+  S.redraw();
+};
+
+// ================================================================= frame: header, readout, curve
+let cur = 0;
+let MODE = 'scene';
+function chips(st){
+  const out = [];
+  if (st.engine) out.push(h('span', {class:'chip'}, h('b', {}, st.engine)));
+  if (st.where) out.push(h('span', {class:'chip' + (/IBM hardware/.test(st.where) ? ' hw' : '')}, st.where));
+  if (st.qubits) out.push(h('span', {class:'chip'}, h('b', {}, st.qubits), ' qubits'));
+  if (!st.completed) out.push(h('span', {class:'chip'}, st.pending ? 'pending' : 'did not complete'));
+  if (st.completed && st.fez && !st.earlier && st.fez.status === 'pending') out.push(h('span', {class:'chip fail', title:'This stage was also sent to IBM ibm_fez; that job is still queued'}, 'ibm_fez re-run: still queued'));
+  else if (st.completed && st.fez && !st.earlier && (st.fez.attempts || []).length) out.push(h('span', {class:'chip fail', title:'This stage was also sent to IBM ibm_fez; that job did not complete'}, 'ibm_fez re-run: failed'));
+  return out;
+}
+function readout(st){
+  const dl = $('readout'); dl.textContent = '';
+  const row = (k, v) => { if (v == null || v === '') return; dl.append(h('dt', {}, k), h('dd', {}, v)); };
+  row('Stage', `${st.clock} · ${st.title || st.id}`);
+  row('Engine', st.engine); row('Where it ran', st.where);
+  row('Qubits', st.qubits ? `${st.qubits} — ${st.qubits_how}` : (st.qubits_how || null));
+  row('Job ID', st.job_id); row('IBM job ID', st.ibm_job_id);
+  if (st.jobs) row('All jobs', st.jobs.join(', '));
+  row('Params', st.params ? JSON.stringify(st.params) : null);
+  row('Input', st.input); row('Output', st.output);
+  if (st.hop) row('Hop', `${st.hop.metric}; from ${st.hop.parent}; outcomes: ${st.hop.outcomes}`);
+  if (st.earlier) row('Recorded run', `${st.earlier.where}, job ${st.earlier.job_id} (fed the later stages); F ${f3(st.earlier.hop && st.earlier.hop.F)}`);
+  if (st.fez && (st.fez.attempts || []).length) row('ibm_fez attempts', st.fez.attempts.map(t => `job ${t.job_id}: ${t.error}${t.submitted_at ? ' (' + fmtT(t.submitted_at) + ')' : ''}`).join('; ') + (st.fez.why ? `; ${st.fez.why}` : ''));
+  if (st.fez && st.fez.params && !st.earlier) row('ibm_fez params', JSON.stringify(st.fez.params));
+  if (!st.completed) row('Status', st.pending ? 'still queued; not counted' : 'failed; not counted');
+}
+const MODE_NOTE = {scene:'Scene: pixel stand-ins placed by this stage’s real data; motion is decoration.', data:'Data: the stage’s charts and engine frames, as before. Every stage’s charts are also in The data, below.'};
+function renderView(){
+  stopAll({stageOnly:true}); clearTimers(); ANIM.delete('scene'); SCENE = null;
+  const st = CHAIN[cur], view = $('view'); view.textContent = '';
+  FK = Math.max(1, Math.min(2, 560 / Math.max(240, view.clientWidth || 560)));
+  [...$('mode').children].forEach(b => b.setAttribute('aria-pressed', String(b.dataset.m === MODE)));
+  $('mode-note').textContent = MODE_NOTE[MODE];
+  const fn = MODE === 'scene' ? (st.completed ? (SC[st.id] || SC.closed) : SC.closed)
+    : (st.completed ? (R[st.id] || statusCard) : (st.id === 'tamagotchi' ? R.tamagotchi : statusCard));
+  const rs = runSel(st, () => { renderView(); hopInto($('hop'), runOf(st)); }); if (rs) view.append(rs);
+  try { fn(view, runOf(st)); }
+  catch (e) { console.error(e); view.textContent = ''; statusCard(view, {...st, error: 'render error: ' + e.message}); }
+}
+function render(){
+  const st = CHAIN[cur];
+  $('c-clock').textContent = st.clock; $('c-title').textContent = st.title || st.engine;
+  const ch = $('c-chips'); ch.textContent = ''; chips(st).forEach(c => ch.append(c));
+  $('c-analogy').textContent = st.analogy || 'This engine’s job did not complete, so there is nothing to show.';
+  $('c-role').textContent = st.role || '';
+  renderView();
+  const fb = $('c-fez'); fb.textContent = ''; fezNote(st).forEach(x => fb.append(x));
+  hopInto($('hop'), runOf(st));
+  $('pos').textContent = `${st.clock} · ${cur + 1} / ${CHAIN.length}`;
+  $('c-pos').textContent = `stage ${cur + 1} of ${CHAIN.length}`;
+  $('say-label').textContent = `Tweezy says · ${st.clock} · ${st.engine}`;
+  $('say').textContent = say(st);
+  PATHC.btns.forEach((b, i) => { if (i === cur) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); });
+  GALLERY.forEach((f, i) => { f.classList.toggle('cur', i === cur); });
+  readout(st); dial(); curve(); clockSync();
+}
+// the hop score: survival F against chance, as a number, a gauge and a sentence (stage card and every chart in The data)
+function hopInto(hp, st){
+  hp.textContent = '';
+  if (st.completed && st.hop){
+    const F = st.hop.F, n = st.hop.null;
+    hp.append(h('span', {class:'big'}, f3(F)), h('div', {},
+      h('div', {class:'gauge', role:'img', 'aria-label':`Survival ${f3(F)}, chance ${f3(n)}`}, h('i', {style:`width:${(100 * F).toFixed(1)}%`}), n != null ? h('u', {style:`left:${(100 * n).toFixed(1)}%`}) : null),
+      h('p', {class:'note', style:'margin-top:.45rem'}, `Survival F from ${st.hop.parent}${n != null ? `; chance would score ${f3(n)}` : ''}. ${st.hop.metric}.`)));
+  } else hp.append(h('span', {class:'note'}, 'No survival score: this job did not complete.'));
+  return hp;
+}
+// "The data": every stage's charts at once (the same renderers as the stage card's Data view), each titled, with its
+// captions and hop score, and a button that walks Tweezy to that stage in the lab
+const GALLERY = [];
+function gallery(){
+  const box = $('gallery'); if (!box) return;
+  const keepFK = FK;
+  CHAIN.forEach((st, i) => {
+    const body = h('div', {class:'view'});
+    const go1 = h('button', {type:'button', class:'btn ghost', 'aria-label':`Show ${st.clock} ${st.title || st.engine} in the lab: Tweezy walks there and the page scrolls up to the lab`}, `Show ${st.clock} in the lab ↑`);
+    go1.addEventListener('click', () => { go(i); const lab = document.querySelector('section.lab'); if (lab) lab.scrollIntoView({behavior: RM ? 'auto' : 'smooth', block:'start'}); });
+    const fzn = fezNote(st), fbox = fzn.length ? h('div', {class:'fez'}, fzn) : null, hp = h('div', {class:'hop'});
+    const fig = h('figure', {class:'fig', id:'fig-' + st.id, 'aria-label':`${st.clock} ${st.title || st.engine}: charts`},
+      h('div', {class:'fighead'}, h('span', {class:'t'}, st.clock), h('h3', {}, st.title || st.engine), h('div', {class:'chips'}, chips(st))),
+      body, fbox, hopInto(hp, runOf(st)), h('div', {class:'figfoot'}, go1));
+    box.append(fig); GALLERY.push(fig);
+    FK = Math.max(1, Math.min(2, 560 / Math.max(240, body.clientWidth || 560)));
+    const fn = st.completed ? (R[st.id] || statusCard) : (st.id === 'tamagotchi' ? R.tamagotchi : statusCard);
+    const draw1 = () => { body.textContent = ''; const rs = runSel(st, () => { draw1(); hopInto(hp, runOf(st)); if (CHAIN[cur] === st) render(); }); if (rs) body.append(rs);
+      try { fn(body, runOf(st)); }
+      catch (e) { console.error(e); body.textContent = ''; statusCard(body, {...st, error: 'render error: ' + e.message}); } };
+    draw1();
+  });
+  FK = keepFK;
+  GALLERY.forEach((f, i) => f.classList.toggle('cur', i === cur));
+}
+// shareable state in the hash: the stage id, plus ".data" when the Data view is open (e.g. #graph or #qpixl.data)
+const hashFor = () => '#' + CHAIN[cur].id + (MODE === 'data' ? '.data' : '');
+function setHash(){ try { history.replaceState(null, '', hashFor()); } catch (e) { location.hash = hashFor(); } }
+function go(i){
+  const prev = cur; cur = (i + CHAIN.length) % CHAIN.length;
+  setHash();
+  walkTo(prev, cur); render();
+}
+// the lab clock is a dial: tap or drag to an hour and Tweezy walks to the stage in progress at that hour (the last one
+// that started at or before it, so 03:00 is still the 23:00 job); the window flips between day and night
+function clockSync(){
+  const c = $('clock'), st = CHAIN[cur]; if (!c) return;
+  c.setAttribute('aria-valuenow', String(Math.round(hours(st) * 100) / 100)); c.setAttribute('aria-valuetext', `${st.clock}, ${st.title || st.engine}`);
+}
+function stageAt(hr){
+  const t = hr + .25;           // a quarter-hour of grace, so a tap just short of a tick still counts as that hour
+  let best = CHAIN.length - 1;
+  CHAIN.forEach((st, i) => { if (hours(st) <= t) best = i; });
+  return CHAIN.every(st => hours(st) > t) ? CHAIN.length - 1 : best;
+}
+function clockInput(e){
+  const P = CLK.P; if (!P) return;
+  const [ax, ay] = P.toArt(e);
+  if (ax >= 31){               // the window: day -> the first night stage, night -> the first morning stage after 06:00
+    const night = hours(CHAIN[cur]) >= 19 || hours(CHAIN[cur]) < 6;
+    const j = CHAIN.findIndex(st => night ? hours(st) >= 6 : hours(st) >= 19);
+    if (j >= 0 && j !== cur) go(j);
+    return;
+  }
+  const a = Math.atan2(ay - 14, ax - 14), hr = ((a + Math.PI / 2) / (2 * Math.PI) * 24 + 24) % 24, j = stageAt(hr);
+  if (j !== cur) go(j);
+}
+
+const SVG = (t, a) => { const e = document.createElementNS('http://www.w3.org/2000/svg', t); for (const k in a) e.setAttribute(k, a[k]); return e; };
+const hours = s => { const [a, b] = s.clock.split(':').map(Number); return a + b / 60; };
+// the 24-hour dial (beside the stage card): one marker per stage at its hour; the hand points at the current stage
+function dial(){
+  const s = $('dial'); if (!s) return;
+  const refocus = !!(document.activeElement && s.contains(document.activeElement));   // keyboard users keep their place
+  s.textContent = ''; const cx = 160, cy = 160;
+  const ang = hr => hr / 24 * 2 * Math.PI - Math.PI / 2;
+  const arc = (h0, h1, r) => { const a0 = ang(h0), a1 = ang(h1); return `M ${cx + r * Math.cos(a0)} ${cy + r * Math.sin(a0)} A ${r} ${r} 0 ${((h1 - h0 + 24) % 24) > 12 ? 1 : 0} 1 ${cx + r * Math.cos(a1)} ${cy + r * Math.sin(a1)}`; };
+  s.append(SVG('circle', {cx, cy, r:132, fill:'none', stroke:C.line, 'stroke-width':1}));
+  s.append(SVG('path', {d:arc(20, 5, 140), fill:'none', stroke:C.line, 'stroke-width':6, 'stroke-linecap':'round'}));
+  for (let k = 0; k < 24; k++){ const a = ang(k), r1 = k % 6 ? 128 : 122; s.append(SVG('line', {x1:cx + r1 * Math.cos(a), y1:cy + r1 * Math.sin(a), x2:cx + 136 * Math.cos(a), y2:cy + 136 * Math.sin(a), stroke:C.haze, 'stroke-width':k % 6 ? 1 : 2}));
+    if (k % 6 === 0){ const t = SVG('text', {x:cx + 108 * Math.cos(a), y:cy + 108 * Math.sin(a) + 4, 'text-anchor':'middle', fill:C.haze, 'font-size':11, 'font-family':'IBM Plex Mono, monospace'}); t.textContent = String(k).padStart(2, '0'); s.append(t); } }
+  const st = CHAIN[cur], a = ang(hours(st));
+  s.append(SVG('line', {x1:cx + 58 * Math.cos(a), y1:cy + 58 * Math.sin(a), x2:cx + 92 * Math.cos(a), y2:cy + 92 * Math.sin(a), stroke:C.wing, 'stroke-width':2.5, 'stroke-linecap':'round'}));
+  const t1 = SVG('text', {x:cx, y:cy + 6, 'text-anchor':'middle', fill:C.moon, 'font-size':30, 'font-weight':300, 'font-family':'Geist, Helvetica Neue, Arial, sans-serif'}); t1.textContent = st.clock; s.append(t1);
+  const t2 = SVG('text', {x:cx, y:cy + 28, 'text-anchor':'middle', fill:C.haze, 'font-size':10, 'font-family':'IBM Plex Mono, monospace'}); t2.textContent = st.engine; s.append(t2);
+  CHAIN.forEach((x, i) => {
+    const r = i % 2 ? 150 : 158, aa = ang(hours(x)), g = SVG('g', {class:'mk', tabindex:'0', role:'button', 'aria-label':`${x.clock} ${x.title || x.engine}${x.completed ? '' : ' (did not complete)'}`});
+    const on = i === cur, col = x.completed ? C.wing : C.haze;
+    g.append(SVG('circle', {cx:cx + r * Math.cos(aa), cy:cy + r * Math.sin(aa), r:on ? 8 : 5.5, fill:on ? col : (x.completed ? W(.35) : C.night), stroke:col, 'stroke-width':on ? 2 : 1.5}));
+    const tt = SVG('title', {}); tt.textContent = `${x.clock} ${x.engine}`; g.append(tt);
+    g.addEventListener('click', () => go(i)); g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); go(i); } });
+    s.append(g);
+    if (refocus && on) g.focus();
+  });
+}
+function curve(){
+  const s = $('curve'); s.textContent = ''; const x0 = 40, x1 = 545, y0 = 200, y1 = 20, n = CHAIN.length;
+  const fk = Math.max(1, Math.min(1.5, 420 / Math.max(200, s.getBoundingClientRect().width || 560)));   // larger labels when the chart is shrunk on a phone
+  const X = i => x0 + (x1 - x0) * (n > 1 ? i / (n - 1) : .5), Y = f => y0 - (y0 - y1) * f;
+  [0, .5, 1].forEach(f => { s.append(SVG('line', {x1:x0, x2:x1, y1:Y(f), y2:Y(f), stroke:C.line, 'stroke-width':1}));
+    const t = SVG('text', {x:x0 - 8, y:Y(f) + 4, 'text-anchor':'end', fill:C.haze, 'font-size':10 * fk, 'font-family':'IBM Plex Mono, monospace'}); t.textContent = f.toFixed(1); s.append(t); });
+  s.append(SVG('line', {x1:X(cur), x2:X(cur), y1:y1 - 8, y2:y0 + 4, stroke:C.moon, 'stroke-width':1, 'stroke-dasharray':'3 3'}));
+  let path = '';
+  CHAIN.forEach((st, i) => { if (st.completed && st.hop){ path += (path ? ' L ' : 'M ') + X(i) + ' ' + Y(st.hop.F); } });
+  s.append(SVG('path', {d:path, fill:'none', stroke:W(.6), 'stroke-width':1.5}));
+  CHAIN.forEach((st, i) => {
+    const g = SVG('g', {class:'pt', tabindex:'0', role:'button', 'aria-label':`${st.clock} ${st.engine}: ${st.completed && st.hop ? 'F ' + f3(st.hop.F) : 'did not complete'}`});
+    if (st.completed && st.hop){
+      if (st.hop.null != null) g.append(SVG('line', {x1:X(i) - 7, x2:X(i) + 7, y1:Y(st.hop.null), y2:Y(st.hop.null), stroke:C.haze, 'stroke-width':2}));
+      g.append(SVG('circle', {cx:X(i), cy:Y(st.hop.F), r:i === cur ? 7 : 4.5, fill:C.wing, stroke:C.night, 'stroke-width':1.5}));
+    } else {
+      g.append(SVG('path', {d:`M ${X(i) - 5} ${y0 - 5} L ${X(i) + 5} ${y0 + 5} M ${X(i) + 5} ${y0 - 5} L ${X(i) - 5} ${y0 + 5}`, stroke:C.haze, 'stroke-width':2}));
+    }
+    g.append(SVG('rect', {x:X(i) - 12, y:y1 - 10, width:24, height:y0 - y1 + 20, fill:'transparent'}));
+    const lab = SVG('text', {x:X(i), y:y0 + 18, 'text-anchor':'end', fill:i === cur ? C.wing : C.haze, 'font-size':9 * fk, 'font-family':'IBM Plex Mono, monospace', transform:`rotate(-55 ${X(i)} ${y0 + 18})`}); lab.textContent = st.clock; g.append(lab);
+    const tt = SVG('title', {}); tt.textContent = `${st.clock} ${st.engine}`; g.append(tt);
+    g.addEventListener('click', () => go(i)); g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); go(i); } });
+    s.append(g);
+  });
+}
+
+// ================================================================= static parts
+(function(){
+  const p = $('proof');
+  p.append(h('span', {class:'hot'}, h('b', {}, META.engines_completed), ' engines completed'),
+    h('span', {}, h('b', {}, META.jobs_completed), ' real Atlas jobs'),
+    ...(META.hw || []).map(e => h('span', {title: e.primary ? `${e.stages} stage run${e.stages === 1 ? '' : 's'} on this chip` : 'the recorded run kept beside an ibm_fez result'}, h('b', {}, e.qubits), ' qubits on IBM ', h('b', {}, e.backend), e.primary ? '' : ' (recorded comparison)')),
+    META.max_qubits > META.hw_qubits ? h('span', {}, 'up to ', h('b', {}, META.max_qubits), ' simulated (stabilizer)') : null,
+    META.fez_sent ? h('span', {}, h('b', {}, META.fez_done), ` of ${META.fez_sent} ibm_fez re-runs completed`) : null);
+  const t = $('jobs');
+  t.append(h('tr', {}, ['Time', 'Engine', 'Role', 'Where', 'Qubits', 'Job', 'Done?'].map(x => h('th', {}, x))));
+  CHAIN.forEach(st => {
+    t.append(h('tr', {}, h('td', {}, st.clock), h('td', {}, st.engine), h('td', {}, st.title || ''), h('td', {}, st.where || ''),
+      h('td', {}, st.qubits || '—'), h('td', {}, st.job_id || '—'), h('td', {}, st.completed ? 'yes' : (st.pending ? 'pending' : 'no'))));
+    if (st.earlier) t.append(h('tr', {}, h('td', {}, st.clock), h('td', {}, st.engine), h('td', {}, 'recorded run (fed the later stages)'), h('td', {}, st.earlier.where),
+      h('td', {}, st.earlier.qubits || '—'), h('td', {}, st.earlier.job_id), h('td', {}, 'yes')));
+    ((st.fez && st.fez.attempts) || []).forEach(a => t.append(h('tr', {}, h('td', {}, st.clock), h('td', {}, st.engine), h('td', {}, 'ibm_fez re-run (same input)'),
+      h('td', {}, 'IBM hardware (ibm_fez)'), h('td', {}, st.qubits || '—'), h('td', {}, a.job_id), h('td', {}, `no: ${a.error}`))));
+    if (st.fez && st.fez.status === 'pending' && st.fez.job_id) t.append(h('tr', {}, h('td', {}, st.clock), h('td', {}, st.engine), h('td', {}, 'ibm_fez re-run, still queued'),
+      h('td', {}, 'IBM hardware (ibm_fez)'), h('td', {}, st.qubits || '—'), h('td', {}, st.fez.job_id), h('td', {}, 'pending: not counted')));
+  });
+  $('failnote').textContent = META.failnote || '';
+  // the hardware sentences in "What this does not claim" and the credits, from the chain itself (not hand-written)
+  const onHw = CHAIN.filter(s => s.completed && /IBM hardware/.test(s.where || '')), byBe = {};
+  onHw.forEach(s => (byBe[s.backend] = byBe[s.backend] || []).push(`${s.clock} ${s.engine}`));
+  const sent = CHAIN.filter(s => s.earlier || (s.fez && (s.fez.attempts || []).length) || /ibm_fez/.test(s.where || ''));
+  const notFez = sent.filter(s => !(s.completed && /IBM hardware \(ibm_fez\)/.test(s.where || '')));
+  const kept = notFez.filter(s => s.completed), closed = notFez.filter(s => !s.completed), nm = l => l.map(s => `${s.clock} ${s.engine}`).join(', ');
+  const hon = $('hw-honesty');
+  if (hon) hon.textContent = `${onHw.length} stage${onHw.length === 1 ? '' : 's'} ran on real IBM hardware (${Object.entries(byBe).map(([b, l]) => `${b}: ${l.join(', ')}`).join('; ')}), and each card names the backend and the job; the rest ran on Atlas simulators or noise-model emulators, and each card says which. Every hardware-capable stage was sent to IBM’s ibm_fez on the same input it had in the recorded day. Where that job completed, it is the card’s primary result, and the recorded run stays beside it as a labelled comparison (it is the run the later stages read).${kept.length ? ` ${nm(kept)} did not complete on ibm_fez, so ${kept.length === 1 ? 'that card keeps' : 'those cards keep'} the recorded run.` : ''}${closed.length ? ` ${nm(closed)} did not complete on ibm_fez or in the recorded day, so ${closed.length === 1 ? 'that card shows' : 'those cards show'} no result.` : ''}${notFez.length ? ' Every ibm_fez try is listed on its card, with what IBM or the engine reported.' : ''}`;
+  const cr = $('hw-credits');
+  if (cr && META.hw && META.hw.length) cr.textContent = META.hw.map(e => e.primary ? e.backend : `${e.backend}, for the recorded runs kept as comparisons`).join('; ');
+  soundList();
+  // the film: its source is attached only when the player nears the viewport (lazy, like loading="lazy"); it never
+  // autoplays, and it joins the one-sound-at-a-time rule (playing it stops other sounds, starting a sound pauses it)
+  const film = $('film'), fsrc = film && film.querySelector('source[data-src]');
+  if (fsrc && fsrc.dataset.src){
+    const attach = () => { if (!fsrc.getAttribute('src')){ fsrc.setAttribute('src', fsrc.dataset.src); try { film.load(); } catch (e) {} } };
+    if ('IntersectionObserver' in window){
+      const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)){ io.disconnect(); attach(); } }, {rootMargin:'300px 0px'});
+      io.observe(film); film.addEventListener('focus', attach, {once:true});
+    } else attach();
+    film.addEventListener('play', () => { stopAll({except:'film'}); onStop(() => film.pause(), {key:'film'}); });
+  } else if (film) { $('film-wrap').hidden = true; }
+  $('prev').addEventListener('click', () => go(cur - 1));
+  $('next').addEventListener('click', () => go(cur + 1));
+  $('lab-prev').addEventListener('click', () => go(cur - 1));
+  $('lab-next').addEventListener('click', () => go(cur + 1));
+  [...$('mode').children].forEach(b => b.addEventListener('click', () => { if (MODE !== b.dataset.m){ MODE = b.dataset.m; setHash(); renderView(); } }));
+  // the clock dial: pointer (tap or drag) and keyboard
+  const ck = $('clock'); let ckDown = false;
+  ck.addEventListener('pointerdown', e => { ckDown = true; try { ck.setPointerCapture(e.pointerId); } catch (x) {} clockInput(e); });
+  ck.addEventListener('pointermove', e => { if (ckDown) { const [ax] = CLK.P ? CLK.P.toArt(e) : [0]; if (ax < 31) clockInput(e); } });
+  ck.addEventListener('pointerup', () => { ckDown = false; }); ck.addEventListener('pointercancel', () => { ckDown = false; });
+  ck.addEventListener('keydown', e => {
+    const d = {ArrowRight:1, ArrowUp:1, ArrowLeft:-1, ArrowDown:-1}[e.key];
+    if (d){ e.preventDefault(); go(cur + d); } else if (e.key === 'Home'){ e.preventDefault(); go(0); } else if (e.key === 'End'){ e.preventDefault(); go(CHAIN.length - 1); }
+  });
+  // the lab path: one transparent button per station over the pixel canvas (keyboard and screen-reader access)
+  const stns = $('stns');
+  CHAIN.forEach((st, i) => {
+    const b = h('button', {type:'button', class:'stn', 'aria-label':`${st.clock} ${st.title || st.engine} (${st.engine})${st.completed ? '' : ', did not complete'}`});
+    b.addEventListener('click', () => go(i)); stns.append(b); PATHC.btns.push(b);
+  });
+  stns.addEventListener('keydown', e => {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    e.preventDefault(); go(cur + (e.key === 'ArrowRight' ? 1 : -1)); PATHC.btns[cur].focus();
+  });
+  // drag Tweezy along the path: press anywhere on the path, let go anywhere on it, and Tweezy walks to the station
+  // nearest where you let go (a plain tap on one station is handled by that station's own button)
+  const pw = $('pathwrap'); let pFrom = null;
+  const stationNear = e => {
+    const P = PATHC.P; if (!P) return null;
+    const [ax, ay] = P.toArt(e); let best = null, bd = Infinity;
+    CHAIN.forEach((st, i) => { const [x, y] = cellXY(i), d = Math.hypot(ax - (x + PATHC.cellW / 2), ay - (y + PATHC.cellH / 2)); if (d < bd){ bd = d; best = i; } });
+    return best;
+  };
+  pw.addEventListener('pointerdown', e => { pFrom = e.target; });
+  pw.addEventListener('pointerup', e => {
+    const from = pFrom; pFrom = null; if (!from) return;
+    const at = document.elementFromPoint(e.clientX, e.clientY);
+    if (at === from && from.classList && from.classList.contains('stn')) return;
+    const j = stationNear(e); if (j != null && j !== cur) go(j);
+  });
+  pw.addEventListener('pointercancel', () => { pFrom = null; });
+  let rz = 0;
+  window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => {
+    pathLayout(); clockLayout(); pathDraw(NOW()); if (SCENE){ SCENE.fit(); SCENE.redraw(); } curve(); }, 120); });
+  document.addEventListener('keydown', e => {
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    if (e.target.closest && e.target.closest('input,canvas,button,a,summary,video,audio,[role=button],[role=slider]')) return;
+    if (e.key === 'ArrowRight') go(cur + 1); else if (e.key === 'ArrowLeft') go(cur - 1);
+  });
+  $('share').addEventListener('click', async () => {
+    setHash();
+    const toast = m => { const el = $('toast'); el.textContent = m; el.classList.add('on'); clearTimeout(el._h); el._h = setTimeout(() => el.classList.remove('on'), 2200); };
+    const what = `${CHAIN[cur].clock}${MODE === 'data' ? ', Data view' : ''}`;
+    try { await navigator.clipboard.writeText(location.href); toast(`Link copied (${what})`); } catch (e) { toast(`Copy failed: the link is in your address bar (${what})`); }
+  });
+  const m = location.hash.match(/^#([a-z]+)(?:\.(scene|data))?$/), i = m ? CHAIN.findIndex(s => s.id === m[1]) : -1;
+  cur = i >= 0 ? i : 0;
+  if (i >= 0 && m[2]) MODE = m[2];
+  pathLayout(); clockLayout();
+  PATHC.pos = cur; CLK.h = CLK.to = hours(CHAIN[cur]);
+  render();
+  gallery();
+  const pc = $('path');   // idle redraws only while the lab is on screen (a walk always finishes)
+  animate('path', t => { const r = pc.getBoundingClientRect(); if (PATHC.walk || (r.bottom > 0 && r.top < innerHeight)) pathDraw(t); }, 8); pathDraw(NOW());
+  requestAnimationFrame(loop);
+})();
+</script>

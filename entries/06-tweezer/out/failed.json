@@ -1,0 +1,7 @@
+{
+ "tomo": {
+  "engine": "tomography-api-v2",
+  "job_id": "a26d52ac-ba54-43c5-961e-69f4418da794",
+  "error": "tomography-api-v2 a26d52ac-ba54-43c5-961e-69f4418da794 failed: {\"$schema\": \"https://api.mothquantum.com/schemas/JobStatusOutputBody.json\", \"job_id\": \"a26d52ac-ba54-43c5-961e-69f4418da794\", \"engine_id\": \"tomography-api-v2\", \"status\": \"failed\", \"progress\": {}, \"error\": {\"message\": \"The engine did not respond in time \\u2014 retry the job\", \"retryable\": true, \"type\": \"engine_timeout\"}, \"warnings\": [], \"submitted_at\": \"2026-10-05T05:59:26Z\", \"updated_at\": \"2026-10-05T05:59:26Z\"}"
+ }
+}

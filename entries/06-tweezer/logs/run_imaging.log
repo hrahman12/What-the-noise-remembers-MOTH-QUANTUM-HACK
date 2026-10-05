@@ -1,0 +1,9 @@
+[coin] coin-toss-v1  F=0.9998 (chance None)  job=83ad70dc-cb9c-4acf-9def-fbc0a15034d6
+[comet] comet-qrng-v1  F=0.9997 (chance None)  job=f7749ef9-75fe-47d2-8120-74cd86d36478
+[shader] entanglement-shader-v1  F=0.9904 (chance 0.2491)  job=743d08b4-4f6b-4bd5-9ce6-9bd135c362b6
+  uploaded fluor_ideal.png -> 8fdc4234-ab52-43ba-8041-41acdb984d96
+  blur-v1: submitted d612dc36-4f02-4d6c-820e-42f9b3a8ab24
+  blur-v1: done d612dc36 in 5.6s
+[blur] blur-v1  F=1.0 (chance 0.2465)  job=d612dc36-4f02-4d6c-820e-42f9b3a8ab24
+  uploaded fryer_in.png -> a32411c9-653a-46bb-a5b5-4ee6709e7591
+  deep-fryer-v1: submitted c60ddf89-7ce6-4b7a-9285-9c2ffbd262b8

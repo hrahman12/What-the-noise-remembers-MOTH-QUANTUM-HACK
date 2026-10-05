@@ -1,0 +1,360 @@
+{
+ "piece": "06-tweezer",
+ "ok": true,
+ "passed": 74,
+ "failed": [],
+ "steps": [
+  {
+   "step": "load: nothing sounds before a click (no autoplay)",
+   "ok": true,
+   "detail": "{\"sources\":0,\"osc\":0,\"media\":0,\"mediaErr\":0}"
+  },
+  {
+   "step": "load: title and verb-led hook",
+   "ok": true,
+   "detail": "Walk one atom array through a day, engine by engine."
+  },
+  {
+   "step": "load: proof chips match piece.json (engines, jobs, hardware qubits, max qubits)",
+   "ok": true,
+   "detail": "16 engines completed26 real Atlas jobs156 qubits on IBM ibm_fez156 qubits on IBM ibm_marrakesh (recorded comparison)up to 210 simulated (stabilizer)7 of 8 ibm_fez re-runs completed"
+  },
+  {
+   "step": "load: opens on the first stage, Scene view",
+   "ok": true,
+   "detail": "05:00 · 1 / 18"
+  },
+  {
+   "step": "load: 18 stations on the lab path, one per stage",
+   "ok": true,
+   "detail": "18"
+  },
+  {
+   "step": "walk: \"Later\" moves Tweezy to 05:30 (comet)",
+   "ok": true,
+   "detail": "A 148-qubit register on IBM ibm_fez stands in for all 144 tweezers at once, read 10,000 times: 50.2% of the bits came up 1. This is the ibm_fez run. Signal kept: F 1.000."
+  },
+  {
+   "step": "walk: \"Earlier\" walks back to 05:00",
+   "ok": true
+  },
+  {
+   "step": "walk: tapping the 10:00 station opens graph-v1",
+   "ok": true,
+   "detail": "Switch on the Rydberg blockade"
+  },
+  {
+   "step": "walk: dragging along the path walks Tweezy to the station where you let go",
+   "ok": true,
+   "detail": "07:00"
+  },
+  {
+   "step": "walk: clock dial End key jumps to the last stage (23:00)",
+   "ok": true
+  },
+  {
+   "step": "walk: clock dial Home + ArrowRight = 05:30",
+   "ok": true
+  },
+  {
+   "step": "walk: tapping the clock window at 05:30 (night) jumps to the first morning stage (06:00)",
+   "ok": true,
+   "detail": "06:00"
+  },
+  {
+   "step": "walk: tapping it again jumps from day to the first night stage",
+   "ok": true,
+   "detail": "20:00"
+  },
+  {
+   "step": "walk: the survival curve navigates (tap the 08:30 point)",
+   "ok": true
+  },
+  {
+   "step": "readout: \"What actually ran\" names the engine, backend and job ID of the stage",
+   "ok": true,
+   "detail": "Stage08:30 · Count the photons, call each siteEngineqpixl-v1Where it ranIBM hardware (ibm_fez)Qubitsaddress qubits ceil(log2 144) = 8 plus data qubits on the engine's lattice; total not reportedJob ID"
+  },
+  {
+   "step": "qpixl: at threshold 0.98 a truly loaded tweezer is called empty (from the cached decoded counts)",
+   "ok": true,
+   "detail": "Tweezer row 1, column 2: counts sent 0.81, decoded 0.87 → called empty; really loaded (IBM loading pattern)."
+  },
+  {
+   "step": "qpixl: Reset restores the chain threshold and the same tweezer is called loaded again",
+   "ok": true,
+   "detail": "Tweezer row 1, column 2: counts sent 0.81, decoded 0.87 → called loaded; really loaded (IBM loading pattern)."
+  },
+  {
+   "step": "Scene/Data: Data opens the charts and the hash records it",
+   "ok": true,
+   "detail": "#qpixl.data"
+  },
+  {
+   "step": "qpixl Data: at threshold 0.98 the page reports 73 of 144 correct (recomputed here from the data)",
+   "ok": true,
+   "detail": "Threshold 0.98: 73 of 144 tweezers called correctly (50.7%), checked against the IBM loading pattern. Cells outlined in "
+  },
+  {
+   "step": "qpixl Data: at threshold 0.02 the page reports 75 of 144 correct (recomputed here from the data)",
+   "ok": true,
+   "detail": "Threshold 0.02: 75 of 144 tweezers called correctly (52.1%), checked against the IBM loading pattern. Cells outlined in "
+  },
+  {
+   "step": "Scene/Data: Scene returns to the pixel scene",
+   "ok": true
+  },
+  {
+   "step": "comet: \"Load again\" shows attempt 2 and the tapped tweezer matches the hardware bitstring and rate",
+   "ok": true,
+   "detail": "Tweezer row 2, column 6: empty in attempt 2. Over all 10,000 shots it read 1 in 51.5% (a perfect chip: 50.0%)."
+  },
+  {
+   "step": "graph: choosing pattern 2 shows its measured frequency from graph-v1",
+   "ok": true,
+   "detail": "Pattern 2 was measured in 0.20% of 4096 shots. Sparks mark neighbours that both glow (a blockade cla"
+  },
+  {
+   "step": "sounds: all 5 sound deliverables are listed (the ibm_fez echo and, beside it, the recorded one)",
+   "ok": true,
+   "detail": "5"
+  },
+  {
+   "step": "sound: MIDI score (Web Audio synth) starts: oscillators scheduled, button says Stop, progress moves",
+   "ok": true,
+   "detail": "osc 0->141, bar 7%"
+  },
+  {
+   "step": "sound: echoed WAV (MP3) plays, and starting it stopped the MIDI (one sound at a time)",
+   "ok": true,
+   "detail": "{\"paused\":false,\"t\":1.105601}"
+  },
+  {
+   "step": "sound: pressing Stop stops and rewinds it",
+   "ok": true,
+   "detail": "{\"paused\":true,\"t\":0}"
+  },
+  {
+   "step": "sound: the recorded echo (exact Aer run) plays from its own row",
+   "ok": true,
+   "detail": "{\"paused\":false,\"t\":1.275556}"
+  },
+  {
+   "step": "sound: 18:00 scene \"Echoed\" plays the engine output",
+   "ok": true
+  },
+  {
+   "step": "sound: leaving a stage stops its player",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "step": "sound: 16:00 xylophone plays the blurred score (oscillators)",
+   "ok": true,
+   "detail": "osc +85"
+  },
+  {
+   "step": "sound: xylophone Stop",
+   "ok": true
+  },
+  {
+   "step": "video: tweezer_day.mp4 is attached lazily, decodes and plays (no autoplay attribute)",
+   "ok": true,
+   "detail": "{\"paused\":false,\"t\":1.406906,\"w\":1280,\"d\":60,\"autoplay\":false}"
+  },
+  {
+   "step": "video: starting a sound pauses the film",
+   "ok": true
+  },
+  {
+   "step": "drawers: all 4 drawers open",
+   "ok": true,
+   "detail": "[true,true,true,true]"
+  },
+  {
+   "step": "drawers: \"Every engine, every job\" lists all 18 stages with their job IDs and the failure tally",
+   "ok": true,
+   "detail": "18"
+  },
+  {
+   "step": "drawers: a drawer closes again",
+   "ok": true
+  },
+  {
+   "step": "sections: How to play, The data, The science, What this does not claim, Jobs and credits are titled and visible",
+   "ok": true,
+   "detail": "How to play | The data | The science | What this does not claim | Jobs and credits"
+  },
+  {
+   "step": "sections: How to play has the three steps (Step / Play / Judge)",
+   "ok": true
+  },
+  {
+   "step": "sections: the honesty note is visible without opening anything",
+   "ok": true
+  },
+  {
+   "step": "dial: 18 hour markers; tapping the 20:00 marker opens otoc-echo-v1 and the hand moves there",
+   "ok": true,
+   "detail": "18 markers, 0006121820:00otoc-echo-v105:00 coin-toss-v105:30 comet-qrng-v106:00 qrc-image-v107:00 entanglement-shader-v107:30 blur-v108:00 deep-fryer-v108:15 tessa-image-v108:30 qpixl-v109:00 labyrinth-v109:30 telablur-v110:00 graph-v111:00 tamagotchi-v116:00 blur-midi-v118:00 retrocausal-echo-v120:"
+  },
+  {
+   "step": "The data: all 18 stages have a visible chart block; every canvas of the 16 completed stages is drawn, failed stages show their status card",
+   "ok": true,
+   "detail": "[\"coin:1/1\",\"comet:1/1\",\"qrcimage:1/1\",\"shader:2/2\",\"blur:1/1\",\"fryer:1/1\",\"tessa:0/0\",\"qpixl:2/2\",\"maze:1/1\",\"telablur:1/1\",\"graph:1/1\",\"tamagotchi:1/1\",\"blurmidi:1/1\",\"retro:3/3\",\"otoc:1/1\",\"qdrive:1/1\",\"tomo:0/0\",\"blurcore:1/1\"]"
+  },
+  {
+   "step": "The data: the stage open in the card is outlined in The data",
+   "ok": true
+  },
+  {
+   "step": "rail charts: the 24-hour dial (18 markers, ticks, hand) and the survival curve (a point per stage, a line through every scored hop) are drawn",
+   "ok": true,
+   "detail": "{\"dialMk\":18,\"dialHand\":25,\"pts\":18,\"verts\":16,\"scored\":16}"
+  },
+  {
+   "step": "rail charts: all 18 dial markers and all 18 survival-curve points open their own stage",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "step": "The data: \"Show 10:00 in the lab\" walks Tweezy to graph-v1 and scrolls up to the lab",
+   "ok": true,
+   "detail": "2"
+  },
+  {
+   "step": "The data: the 16:00 piano roll plays the score and keeps playing when the card changes stage",
+   "ok": true,
+   "detail": "osc +85"
+  },
+  {
+   "step": "The data: and it stops on Stop",
+   "ok": true
+  },
+  {
+   "step": "share: \"Copy link to this stage\" copies a link with the stage and view",
+   "ok": true,
+   "detail": "Link copied (10:00, Data view) | http://127.0.0.1:6330/index.html#graph.data"
+  },
+  {
+   "step": "share: reloading the copied link restores 10:00 graph-v1 in the Data view",
+   "ok": true
+  },
+  {
+   "step": "share: a scene link (#otoc) restores 20:00 in the Scene view",
+   "ok": true
+  },
+  {
+   "step": "nav: brand bar links to the hub",
+   "ok": true,
+   "detail": "https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa"
+  },
+  {
+   "step": "nav: brand bar names the challenge like every other piece (all entries equal: no \"Bonus\" or \"main entry\" anywhere)",
+   "ok": true,
+   "detail": "What the Noise RemembersChallenge 06 · Lose"
+  },
+  {
+   "step": "nav: prev = 05-jam-the-bat, next = 07-flavour, hub button, all 22 pieces listed, this one marked",
+   "ok": true,
+   "detail": "{\"brand\":\"https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa\",\"prev\":\"https://claude.ai/artifact/DFBxuRrKviy2L7Am6zTrkR\",\"next\":\"https://claude.ai/artifact/UsBvQGmks6jUsXaks1m8TD\",\"hub\":\"https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa\",\"list\":22,\"cur\":\"06Tweezer\",\"foot\":true,\"navBeforeFoot\":true}"
+  },
+  {
+   "step": "nav: sits just before the footer disclaimer",
+   "ok": true
+  },
+  {
+   "step": "nav: \"Jump to any piece\" opens",
+   "ok": true
+  },
+  {
+   "step": "data: all 26 completed job IDs on the page exist in cache/<engine>/*.json",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "step": "data: the 2 failed job IDs shown (labelled \"did not complete\") are in cache/ledger.jsonl",
+   "ok": true,
+   "detail": "56cdf27d-aae9-40ca-8ab6-d6fb20d99871, a26d52ac-ba54-43c5-961e-69f4418da794"
+  },
+  {
+   "step": "data: PARAMS.md lists exactly the completed jobs on the page",
+   "ok": true,
+   "detail": "26 vs 26"
+  },
+  {
+   "step": "data: README states the same totals (16 engines, 26 jobs, 156 on ibm_fez, 210 stabilizer)",
+   "ok": true
+  },
+  {
+   "step": "data: the hardware stages on the page match piece.json (coin, comet, qpixl, maze, graph, retro, otoc), each with its backend, qubits and job",
+   "ok": true,
+   "detail": "coin: IBM hardware (ibm_fez) 1 / comet: IBM hardware (ibm_fez) 156 / qpixl: IBM hardware (ibm_fez) - / maze: IBM hardware (ibm_fez) 20 / graph: IBM hardware (ibm_fez) 20 / retro: IBM hardware (ibm_fez) 24 / otoc: IBM hardware (ibm_fez) 24"
+  },
+  {
+   "step": "data: piece.json hardware is ibm_fez and hardware_qubits (156) is the most qubits that ran there",
+   "ok": true,
+   "detail": "ibm_fez 156 vs 156"
+  },
+  {
+   "step": "fez: all 8 hardware-capable stages were sent to ibm_fez (a result or a logged attempt each)",
+   "ok": true,
+   "detail": "[\"coin:ok\",\"comet:ok\",\"tessa:2\",\"qpixl:ok\",\"maze:ok\",\"graph:ok\",\"retro:ok\",\"otoc:ok\"]"
+  },
+  {
+   "step": "fez: the 9 ibm_fez attempts that did not complete are in the ledger, not in the cache, and not counted",
+   "ok": true,
+   "detail": "2c2263b1-ed55-4d65-a759-35bf84e17e7f, 456b4798-c8b7-4c44-bdb8-918a17573e3c, ed0a2239-725c-4bf3-9db9-3e6a6d725d28, 56cdf27d-aae9-40ca-8ab6-d6fb20d99871, af52a90e-b29e-41fc-b613-aa3824122ef2, 0a04c9e1-18ec-430b-bb27-be2075d75c67, 122de1c4-d04e-41cb-aba6-5633cc20d3a7, 3d9695df-61ea-413b-9a4f-e16a223a04"
+  },
+  {
+   "step": "fez: the jobs table has a row for every ibm_fez attempt",
+   "ok": true,
+   "detail": "9"
+  },
+  {
+   "step": "fez: the proof chips count the ibm_fez re-runs honestly",
+   "ok": true,
+   "detail": "16 engines completed26 real Atlas jobs156 qubits on IBM ibm_fez156 qubits on IBM ibm_marrakesh (recorded comparison)up to 210 simulated (stabilizer)7 of 8 ibm_fez re-runs completed"
+  },
+  {
+   "step": "fez: the 05:30 card says what happened on ibm_fez and names the job",
+   "ok": true,
+   "detail": "IBM ibm_fez, 156 qubits, job 7a6587bb-9185-4038-a7d2-fab4c5a87193This stage ran on IBM hardware ibm_fez (job 7a6587bb-9185-4038-a7d2-fab4c5a87193, 156 qubits) on the same input as the recorded run, an"
+  },
+  {
+   "step": "controls: no control starts out disabled in a stage card",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "step": "controls: all 148 controls across the 18 stage cards (Scene and Data) change something",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "step": "Data view: every chart in the stage card's Data view is drawn for all 16 completed stages (failed stages show their status card)",
+   "ok": true,
+   "detail": "[\"coin:1/1\",\"comet:1/1\",\"qrcimage:1/1\",\"shader:2/2\",\"blur:1/1\",\"fryer:1/1\",\"tessa:0/0\",\"qpixl:2/2\",\"maze:1/1\",\"telablur:1/1\",\"graph:1/1\",\"tamagotchi:1/1\",\"blurmidi:1/1\",\"retro:3/3\",\"otoc:1/1\",\"qdrive:1/1\",\"tomo:0/0\",\"blurcore:1/1\"]"
+  },
+  {
+   "step": "The data: no control starts out disabled in any of the 18 charts",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "step": "The data: all 78 controls across the 18 charts (buttons, sliders, charts you hover, tap or drag, \"Show in the lab\") change something",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "step": "page: no console errors, page errors or dialogs during the journey",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "step": "page: no requests to hosts other than Google Fonts",
+   "ok": true,
+   "detail": "fonts.googleapis.com, fonts.gstatic.com"
+  }
+ ]
+}

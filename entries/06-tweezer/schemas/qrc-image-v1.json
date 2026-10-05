@@ -1,0 +1,167 @@
+{
+ "$schema": "https://api.mothquantum.com/schemas/Engine.json",
+ "engine_id": "qrc-image-v1",
+ "name": "QRC Image",
+ "description": "Train a quantum reservoir on a sequence of images (or continue one already trained) and generate a new sequence, rendered as an animated GIF.",
+ "owner": "37eae1ca-66b4-46f8-aca3-0baa7b011987",
+ "owner_type": "user",
+ "created_by": "37eae1ca-66b4-46f8-aca3-0baa7b011987",
+ "visibility": "public",
+ "queue": "",
+ "input_type": "multipart/form-data",
+ "output_type": "image/gif",
+ "input_files": [
+  {
+   "name": "vocabulary",
+   "mime_types": [
+    "application/zip"
+   ],
+   "required": true,
+   "description": ""
+  },
+  {
+   "name": "state",
+   "mime_types": [
+    "application/json"
+   ],
+   "required": false,
+   "description": ""
+  }
+ ],
+ "output_files": [
+  {
+   "name": "result",
+   "content_types": [
+    "image/gif"
+   ],
+   "required": true,
+   "description": "The generated GIF."
+  },
+  {
+   "name": "state",
+   "content_types": [
+    "application/json"
+   ],
+   "required": true,
+   "description": "Advanced reservoir state; reuse on a later call as job:<id>/state."
+  },
+  {
+   "name": "vocabulary",
+   "content_types": [
+    "application/zip"
+   ],
+   "required": true,
+   "description": "Frame vocabulary; reuse as job:<id>/vocabulary."
+  }
+ ],
+ "is_multipart": true,
+ "is_async": false,
+ "execution_mode": "handler",
+ "run_policy": {
+  "timeout": 3600,
+  "max_retries": 1,
+  "heartbeat": 3000
+ },
+ "params_schema": {
+  "properties": {
+   "fps": {
+    "default": 4,
+    "description": "Frames per second for the generated GIF.",
+    "exclusiveMinimum": 0,
+    "maximum": 30,
+    "title": "Fps",
+    "type": "number"
+   },
+   "length": {
+    "default": 10,
+    "description": "Number of frames to generate",
+    "exclusiveMinimum": 0,
+    "maximum": 500,
+    "title": "Length",
+    "type": "integer"
+   },
+   "periodic": {
+    "default": true,
+    "description": "Allow training windows to wrap past the end of `training_sequence` back to the start, treating it as cyclic. Used only when training (state is absent); ignored otherwise.",
+    "title": "Periodic",
+    "type": "boolean"
+   },
+   "quality": {
+    "default": "moderate",
+    "description": "Training effort, used only when training (i.e. `state` is absent): fast is quick and rough, complete trains longest on the most data.",
+    "enum": [
+     "fast",
+     "moderate",
+     "complete"
+    ],
+    "title": "Quality",
+    "type": "string"
+   },
+   "seed": {
+    "anyOf": [
+     {
+      "maximum": 4294967295,
+      "minimum": 0,
+      "type": "integer"
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "default": null,
+    "description": "Top-level RNG seed for training. Used only when training (state is absent); None picks a random seed for this run, recorded in the returned state so the exact run can be reproduced later by passing it back explicitly. Ignored when continuing from a state \u2014 its own build seed is always reused, since a different value would reconstruct a different physical reservoir than the one the readout was trained against.",
+    "title": "Seed"
+   },
+   "training_sequence": {
+    "anyOf": [
+     {
+      "items": {
+       "type": "string"
+      },
+      "type": "array"
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "default": null,
+    "description": "Sequence of filenames from `vocabulary`, in training order. Required when `state` is not given (there's nothing yet to continue from); ignored otherwise.",
+    "title": "Training Sequence"
+   },
+   "variation": {
+    "default": 1,
+    "description": "Sampling temperature: low = deterministic/repetitive, high = random",
+    "exclusiveMinimum": 0,
+    "title": "Variation",
+    "type": "number"
+   }
+  },
+  "title": "Params",
+  "type": "object"
+ },
+ "credits_per_run": 5,
+ "enabled": true,
+ "registered_at": "2026-08-25T10:53:10Z",
+ "updated_at": "2026-08-25T13:11:45Z",
+ "description_md": "qrc-image-v1 \u2014 train (once) or continue a quantum reservoir over a vocabulary of images, and\nrender the generated token sequence back into an animated GIF.\n\nThe vocabulary is a zip of images: each image's filename is itself a token, so\nqrc.data.sequence_mapping.SequenceMapping can build its index straight from the zip's filenames\nand `training_sequence` is just a list of those filenames in training order. This engine maps the\ngenerated filenames back to image bytes to build the GIF.\n\nTwo paths, chosen by whether `state` is given:\n  - no `state` -> train a fresh reservoir on `training_sequence` (quality picks epochs/sample_fraction).\n  - `state` given -> skip training, reload the trained reservoir/readout from it and keep going.\n\nEither way it then generates `length` frames and returns the GIF as the primary output, with the\nnew state and the vocabulary zip riding alongside as named files \u2014 `files.state` and\n`files.vocabulary` \u2014 so a later call can reference both by job id instead of re-uploading/re-training\n(see named-output references, `job:<id>/<name>`, in the platform's v0.6 protocol).",
+ "code_samples": [
+  {
+   "lang": "Python",
+   "source": "import requests\nBASE = \"https://api.mothquantum.com/v1\"\nHEADERS = {\"Authorization\": \"Bearer YOUR_KEY\"}\n\n# First call: no state yet -> trains, then generates once.\nr = requests.post(\n    f\"{BASE}/generation/qrc-image-v1/process\",\n    headers=HEADERS,\n    files={\"vocabulary\": open(\"images.zip\", \"rb\")},\n    data={\n        \"training_sequence\": [\"a.png\", \"b.png\", \"c.png\", \"a.png\"],\n        \"length\": 10,\n        \"quality\": \"moderate\",\n    },\n)\njob_id = r.json()[\"job_id\"]\n# ... poll GET {BASE}/status/{job_id} until \"completed\" ...\n\ngif_bytes = requests.get(f\"{BASE}/result/{job_id}\", headers=HEADERS).content\nopen(\"generated.gif\", \"wb\").write(gif_bytes)\n\n# Generate more from the same trained reservoir \u2014 no re-upload, no re-train. `state` and\n# `vocabulary` are this job's own named outputs, referenced by id (no separate download/upload).\nr = requests.post(\n    f\"{BASE}/generation/qrc-image-v1/process\",\n    headers=HEADERS,\n    data={\n        \"length\": 20,\n        \"vocabulary\": f\"job:{job_id}/vocabulary\",\n        \"state\": f\"job:{job_id}/state\",\n    },\n)\n"
+  },
+  {
+   "lang": "curl",
+   "source": "curl -X POST https://api.mothquantum.com/v1/generation/qrc-image-v1/process \\\n  -H \"Authorization: Bearer YOUR_KEY\" \\\n  -F vocabulary=@images.zip \\\n  -F 'training_sequence=[\"a.png\",\"b.png\",\"c.png\",\"a.png\"]' \\\n  -F length=10\n# ... poll GET /v1/status/{job_id} until \"completed\", then:\ncurl -H \"Authorization: Bearer YOUR_KEY\" https://api.mothquantum.com/v1/result/{job_id} -o generated.gif\n"
+  }
+ ],
+ "banner_image_id": null,
+ "card_image_id": null,
+ "banner_image_tag": null,
+ "card_image_tag": null,
+ "has_estimate": false,
+ "estimate": null,
+ "has_estimate_fn": false,
+ "estimate_needs_container": false,
+ "sidecar_endpoint": null,
+ "has_validate_fn": false
+}

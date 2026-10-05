@@ -1,0 +1,266 @@
+{
+ "$schema": "https://api.mothquantum.com/schemas/Engine.json",
+ "engine_id": "tessa-image-v1-test",
+ "name": "Tessa Image",
+ "description": "Encode an image's colours as points on a sphere with the Tessa quantum encoder and read them back",
+ "version": "0.1.3",
+ "owner": "825c73f9-123a-46e0-a558-851ee85dba90",
+ "owner_type": "user",
+ "created_by": "825c73f9-123a-46e0-a558-851ee85dba90",
+ "visibility": "public",
+ "queue": "",
+ "input_type": "application/json",
+ "output_type": "image/png",
+ "input_files": [
+  {
+   "name": "image",
+   "mime_types": [
+    "image/png",
+    "image/jpeg",
+    "image/webp",
+    "image/tiff",
+    "image/bmp"
+   ],
+   "required": true,
+   "description": "The image to encode. By default every pixel becomes a point on the colour sphere -- a radius and two angles, the same coordinates that describe a qubit's own state -- and each of those three goes through the quantum encode/measure/decode round trip, any that doesn't vary passed through unencoded, before the image is recomposed. With fixed_palette the image is instead quantized to a palette of its own colours (capped at 256) and only the per-pixel palette index makes the trip. The alpha channel, if any, passes through unchanged."
+  }
+ ],
+ "output_files": [
+  {
+   "name": "result",
+   "content_types": [
+    "image/png"
+   ],
+   "required": true,
+   "description": "The recomposed image after the quantum round trip."
+  }
+ ],
+ "is_multipart": true,
+ "is_async": false,
+ "execution_mode": "handler",
+ "run_policy": {
+  "timeout": 18000,
+  "max_retries": 1,
+  "heartbeat": 6000
+ },
+ "params_schema": {
+  "properties": {
+   "backend_name": {
+    "anyOf": [
+     {
+      "type": "string"
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "default": null,
+    "description": "Backend/device to target. Required for mode='emu' (the real chip to simulate, e.g. 'sherbrooke') and mode='qpu' unless provider='ibm' (then omit to auto-select the least busy device). Ignored for mode='sim'.",
+    "title": "Backend Name"
+   },
+   "distortion": {
+    "default": 0,
+    "description": "Alpha for the exp(i*alpha/2*(P\u2297Q)) gate applied between adjacent data qubits in transform_channels, where (P, Q) is `gate_pauli`.",
+    "title": "Distortion",
+    "type": "number"
+   },
+   "dynamical_decoupling": {
+    "default": true,
+    "description": "Whether mode='qpu' submissions get moth_backbone's dynamical_decoupling ('XY4') - pads idle-qubit time with pulses that cancel dephasing, no extra circuit executions, so it's on by default. Set False only to isolate its effect for a controlled comparison; normal callers should leave this on. Ignored for mode='sim'/'emu' (no idle-time dephasing to counteract either way).",
+    "title": "Dynamical Decoupling",
+    "type": "boolean"
+   },
+   "error_mitigation": {
+    "anyOf": [
+     {
+      "const": "zne",
+      "type": "string"
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "default": null,
+    "description": "Real archaeo error mitigation, applied server-side by moth_backbone. Currently 'zne' (Zero-Noise Extrapolation) - genuine accuracy gain but runs the circuit at multiple noise-scaled variants, so real extra QPU time/cost. Opt-in only, never a silent default. Ignored for mode='sim'.",
+    "title": "Error Mitigation"
+   },
+   "fixed_palette": {
+    "default": false,
+    "description": "Import the image through a palette of its own colours (capped at 256) and run only the resulting per-pixel palette index through the device -- as exact, losslessly-quantized levels -- instead of decomposing it into the continuous colour-sphere coordinates. Good for flat-color/graphic-style images.",
+    "title": "Fixed Palette",
+    "type": "boolean"
+   },
+   "gate_pauli": {
+    "default": "XZ",
+    "description": "Which two-qubit Pauli pair (P, Q) to use for the exp(i*distortion/2*(P\u2297Q)) gate applied between adjacent data qubits in transform_channels, e.g. 'XY', 'ZZ'.",
+    "pattern": "^[IXYZ]{2}$",
+    "title": "Gate Pauli",
+    "type": "string"
+   },
+   "max_tiles": {
+    "default": 16,
+    "description": "Safety cap on mode='emu'/'qpu' tiling (see the module's own tiling docstring): an oversized image for a fixed-capacity chip is now split into tiles instead of downsampled away, and real cost scales with the NUMBER of tiles (each is its own extra circuit in the shared submission, so real extra queue time/cost on mode='qpu'), not with pixel count directly - nothing bounds that automatically. Rejected outright (before any circuit runs) when the image would need more tiles than this. Raise explicitly to accept a bigger job's cost/time; ignored for mode='sim' (no fixed capacity to tile against - it grows its own lattice to fit instead, up to topology._MAX_LATTICE_DIM).",
+    "exclusiveMinimum": 0,
+    "title": "Max Tiles",
+    "type": "integer"
+   },
+   "mode": {
+    "default": "sim",
+    "description": "'sim' runs on a local noiseless simulator, sized to fit the image (no backend_name needed). 'emu' runs locally against a real IBM chip's own calibration snapshot via moth_backbone (needs an explicit backend_name, e.g. 'sherbrooke' - no 'fake_' prefix). 'qpu' submits to real hardware via moth_backbone.",
+    "enum": [
+     "sim",
+     "emu",
+     "qpu"
+    ],
+    "title": "Mode",
+    "type": "string"
+   },
+   "pole_clamp": {
+    "anyOf": [
+     {
+      "maximum": 1.5707963267948966,
+      "minimum": 0,
+      "type": "number"
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "default": null,
+    "description": "How far each single-field channel's (r/theta, or index for fixed_palette) encoded angle stays from the poles (theta=0/pi). HISTORICAL NOTE, why this defaults to 0 now: this field predates iqpixl's own linear-in-<Z> encoding fix (see Mode.angles' own docstring) - the ORIGINAL rationale was that theta=arccos(<Z>)'s decode slope is infinite at the poles, amplifying shot/readout noise hardest at extreme values, and a nonzero clamp bounded that slope. Once the encoding itself was changed so <Z> is linear in the value (no arccos anywhere in the decode path), that slope-blowup no longer exists, and re-measuring (same noisy local simulation, same realistic ~2-3%/qubit readout error this field's own earlier measurement used) found NO consistent benefit from a nonzero clamp any more - error was flat within noise across 0 to 0.2*pi. Shot-noise variance is actually LOWEST at the poles under the new encoding (a Bloch-sphere qubit's own measurement variance is (1-<Z>^2)/shots, minimized at <Z>=+-1), so clamping away from them now trades away real signal for no compensating benefit. Left as a settable escape hatch (e.g. for a systematic, non-shot-noise effect like T1 decay during measurement, which a per-cell affine/readout calibration - see codec.calibrate_readout - already corrects for anyway) rather than removed outright, but 0 is now the default for every mode, sim included (a field pinned exactly to a pole is a deterministic |0>/|1> measurement with ZERO shot variance regardless of shot count on a noiseless simulator - confirmed directly: a flat/grayscale image's exact noiseless round trip depends on this staying 0 there). Applies to every single-field channel (r always; theta/phi too when separate_rgb=True) - never to the paired theta/phi circuit (separate_rgb=False), whose own theta already gets iqpixl's own pair-mode default (0.2*pi) automatically, nor to fixed_palette's index channel, which stays exact (clamp=0) on purpose - quant_levels='auto' there promises a lossless round trip, and clamping would break that promise.",
+    "title": "Pole Clamp"
+   },
+   "provider": {
+    "anyOf": [
+     {
+      "enum": [
+       "ibm",
+       "iqm"
+      ],
+      "type": "string"
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "default": null,
+    "description": "Execution family for mode='qpu'/'emu' - 'ibm' | 'iqm'. Omit for a real IBM device name (inferred), or for mode='emu' to reach IBM's fake_<chip> catalog; set 'iqm' for mode='emu' to reach IQM's own fake_<chip> catalog instead, or for mode='qpu' to target IQM hardware.",
+    "title": "Provider"
+   },
+   "range_correction": {
+    "default": false,
+    "description": "Stretch each decoded field back over its original dynamic range. Off by default -- the raw decoded values are used as-is, with no correction.",
+    "title": "Range Correction",
+    "type": "boolean"
+   },
+   "readout_calibration": {
+    "default": false,
+    "description": "Whether to measure and correct per-cell noise before decoding - iqpixl's own calibrate_affine: one real, GENERIC-data calibration circuit (same graph/mode/clamp as the real channels), fitting a per-cell affine <Z> gain/offset via least squares over that cell's own address configs. Its own circuits ride in the SAME combined submission as every channel this image decodes (see decode_channels) - not a separate batch, not once per channel or per cell. Corrects the real circuit's OWN accumulated gate error in addition to readout error (unlike a bare measurement-only calibration), because iqpixl's own linear-in-<Z> encoding (Mode.angles) makes a depolarizing-style contraction EXACTLY affine in the value. Confirmed empirically (noisy local simulation, realistic ~1%/qubit gate + ~2-3%/qubit readout error): mean reconstruction error dropped ~70% when enabled - confirm before assuming that figure holds at a different noise scale. Real, genuine extra cost (len(graph.groups) more circuits in the shared batch, at the same shots= as everything else) - opt-in, not a silent default, same reasoning as error_mitigation. KNOWN LIMITATION, not planned to change: the calibration circuits' shots are the SAME shots= as the real channels, with no independent knob - SubmitJobBatchRequest.shots is one value for the WHOLE batch by design (moth_backbone's own proto comment: a per-circuit override would silently split one real submission into several), and fixing that means either touching archaeo/moth_interconnect (out of scope) or giving calibration its own separate submission (a second real queue entry - exactly what batching this into one call exists to avoid). Low shots= can therefore under-shoot calibration's own stability - if that matters, use a higher shots= or leave this off. Ignored for mode='sim' (noiseless - the fit's own shot noise is then pure overhead with nothing to correct). With separate_rgb=False, the one paired theta/phi channel gets iqpixl's calibrate_readout (per-qubit confusion matrices) instead - calibrate_affine's own fit is tied to the clamp it was measured against, and that channel's own clamp differs from the other channels' (see decode_channels' own docstring). A fitted calibration is cached process-wide (keyed by backend/clamp/shots, with a TTL), so only the first image on a given backend/settings pays for it.",
+    "title": "Readout Calibration",
+    "type": "boolean"
+   },
+   "separate_rgb": {
+    "default": true,
+    "description": "Give each of the three colour coordinates its own circuit. Turn this off to put the two angles on one circuit instead: a qubit is cos(theta/2)|0> + e^(i phi)|1>, so the sphere's polar angle can ride in the rotation and hue in the phase of the same cell, turning three circuits into two at the cost of a second measurement setting and a noisier reconstruction. Ignored when fixed_palette is set.",
+    "title": "Separate Rgb",
+    "type": "boolean"
+   },
+   "shots": {
+    "default": 4096,
+    "description": "Base number of measurement shots to sample, per processed field. The ACTUAL submitted count scales with the graph's own worst-case cell degree (see decode_channels' own `_shots_for_graph`): every address config in a degree-d cell shares the SAME shot budget (one joint measurement setting reads all 2**d of them at once), so a higher-degree chip (e.g. IQM's square-lattice garnet) dilutes per-value precision more than a lower-degree one (e.g. IBM's heavy-hex fez) at the SAME nominal shots= - silently paying more error for the same setting. Scaled by 2**max_degree / 8 (degree 3 - the common heavy-hex case - is unchanged; higher-degree chips pay more shots, lower-degree ones fewer) so the same shots= means comparable per-value precision across backends, not the same literal circuit count.",
+    "exclusiveMinimum": 0,
+    "title": "Shots",
+    "type": "integer"
+   },
+   "simulator": {
+    "anyOf": [
+     {
+      "enum": [
+       "aer",
+       "pennylane_lightning",
+       "cudaq_sim"
+      ],
+      "type": "string"
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "default": null,
+    "description": "mode='sim' only - which local simulator moth_backbone executes circuits against. Defaults to 'aer'. 'pennylane_lightning' and 'cudaq_sim' are real, separate simulator backends (not aliases of aer) - useful to compare against aer's own time/fidelity, not just hardware's. Ignored for mode='emu'/'qpu'.",
+    "title": "Simulator"
+   },
+   "twirling": {
+    "default": true,
+    "description": "Whether mode='qpu' submissions get Pauli twirling on two-qubit gates - randomizes each physical CX/ECR instance's Pauli frame so coherent gate errors average into a stochastic channel across shots, no extra circuit executions, so it's on by default (same reasoning as dynamical_decoupling). IBM-only - real, already-wired archaeo capability (sampler.options.twirling); silently has no effect for provider='iqm' (logged server-side, not an error). Ignored for mode='sim'/'emu' (no gate-level noise model to twirl either way).",
+    "title": "Twirling",
+    "type": "boolean"
+   }
+  },
+  "title": "Params",
+  "type": "object"
+ },
+ "credits_per_run": 1,
+ "enabled": true,
+ "registered_at": "2026-09-26T22:53:42Z",
+ "updated_at": "2026-09-26T22:53:42Z",
+ "description_md": "Encode an image onto a quantum device using Tessa (the `iqpixl` library).\n\nTEST BRANCH: execution for mode=\"emu\"/\"qpu\" goes through moth_backbone (the\nnew backend service) instead of mothbackend (the old one) - see\ntopology.py's and moth_backbone_sampler.py's own docstrings. Production\n(main) is untouched; this branch never merges.\n\nThe pipeline is three steps, and `run` is those three calls:\n\n    image  ->  circuits  ->  circuits  ->  image\n            encode_    transform_   decode_\n            channels    channels     channels\n\n`encode_channels` splits the image into fields and writes each onto its own\ncircuit. `transform_channels` is the seam -- the image is on the circuits and\nnothing has run yet, so gates appended there change the picture, computed on\nthe device rather than on the array. `decode_channels` measures what comes out\nand turns it back into fields. Only the middle step is optional; it is the\nidentity today.\n\n**The colour sphere.** Every pixel is a point on it\n(`media_utils.image.rgb_to_sphere`): 50% grey at the centre, the white pole at\n``theta = 0``, the black pole at ``theta = pi``, maximum brightness and\nsaturation around the equator, and hue as the azimuth ``phi``. A colour is\ntherefore ``(r, theta, phi)`` -- a radius and the two angles of a direction --\nwhich is the same shape as a qubit's own state,\n``cos(theta/2)|0> + e^{i phi} sin(theta/2)|1>``. That is what makes gates in the\nmiddle step mean something: a rotation on a cell is a rotation of a colour.\n``theta`` is bent toward the equator on the way in and bent back on the way out\n(`_EQUATOR_PULL`), which is exactly reversible and gives the saturated colours\nmore of the encoded range than the near-white and near-black caps.\n\n**What lands on a channel** is chosen by two flags:\n\n* `Params.separate_rgb` (default) puts ``r``, ``theta`` and ``phi`` on three\n  circuits. Turn it off and ``theta``/``phi`` share one cell -- see\n  `_encode_angle_pair`.\n* `Params.fixed_palette` replaces the sphere entirely: the image is quantized\n  to a palette of its own colours (capped at 256, see `_read_as_palette`) and\n  only the per-pixel palette *index* -- one discrete\n  channel -- makes the trip, encoded losslessly via iqpixl's codebook\n  quantization. Good for flat-colour/graphic-style images where the\n  discreteness itself should survive the round trip.\n\n**How a channel is read back** is `decode`'s ``per_group`` flag:\n\n* ``per_group=True`` -- one tiny (<= 4-qubit) sub-circuit per data qubit. This\n  is what makes noisy whole-chip *simulation* cheap (`mode=\"sim\"` /\n  `\"emu\"`): a 156-qubit noise model would be infeasible to simulate\n  jointly, but each data qubit's own local sub-circuit is exactly its reduced\n  state by the bipartite construction, independent of every other group. It\n  also means a gate spanning two cells is dropped -- see `transform_channels`.\n* ``per_group=False`` -- the whole circuit read out in one joint measurement.\n  This is what you want on *real hardware* (`mode=\"qpu\"`, `provider=\"ibm\"`\n  / `\"iqm\"`): one job beats one job per data qubit.\n\n`Params.sampler` is the `SamplerV2`-like primitive built automatically from\n`Params.mode`/`backend_name`/`provider` -- see `topology.build_sampler`.\n`Params.shots` defaults to 4096 and must be positive -- there's no\nexact/noiseless mode for a sampled run.\n\nEvery field is encoded, including one that turns out to be constant (hue on a\ngrayscale image, all three on a flat-colour one). That costs a circuit it can't\nlearn anything from, but it costs nothing in accuracy: a constant field\nnormalises to a single angle, and on a noiseless machine the device reproduces\nthat angle deterministically. The one caveat is shot starvation -- the shots\nare split across each cell's ``2**degree`` address configurations, and a\nconfiguration that draws none at all has no counts to invert, so at very low\n`Params.shots` a pixel here or there can still come back wrong.\n\n**Tiling.** `mode=\"sim\"` sizes its own lattice to the image (no fixed ceiling\nshort of `topology._MAX_LATTICE_DIM`), but `mode=\"emu\"`/`\"qpu\"` target a real\nchip's own fixed `graph.capacity` -- an image with more pixels than that no\nlonger gets shrunk to fit (that threw away real resolution to make a job\npossible at all). Instead each field is split into contiguous, row-major\npixel-index tiles of at most `graph.capacity` pixels each (`_tile_ranges`),\nand every (field, tile) pair becomes its own `Channel` sharing the SAME\ngraph -- one more circuit each, not a different code path. `decode_channels`\nalready concatenates every channel's own circuits into ONE combined\n`submit_jobs` call regardless of how the channel list was built (see its own\ndocstring), so N tiles cost one real backend job's worth of RPC overhead,\nsame as N un-tiled channels always have -- what scales with tile count is\nthe real hardware queue time/cost itself, not the plumbing. `Params.max_tiles`\ncaps that real cost explicitly rather than leaving it unbounded. Each field's\nown `prepare_field` call happens ONCE, over the WHOLE image, before slicing\ninto tiles -- every tile of one field shares the same `FieldPrep` (so\n`range_correction`'s dynamic-range recovery uses the whole image's own\nmin/mean/max as its reference for every tile, not each tile's own local\nstatistics, which would otherwise show up as visible seams at tile\nboundaries) and the same explicit `value_range` passed to `encode()` (so the\nsame physical angle means the same original value in every tile, instead of\neach tile silently getting its own affine mapping from its own local\nmin/max). `decode_channels` stitches each tile's own restored values back\ninto one flat per-field array by its own `Channel.tile` slice; `run()`\nreshapes that flat array back to the image's `(height, width)` once, after\nevery tile of every field has landed.",
+ "code_samples": [
+  {
+   "lang": "Python",
+   "source": "import requests\n\nwith open(\"image.png\", \"rb\") as img:\n    r = requests.post(\n        \"https://api.mothquantum.com/v1/generation/tessa-image-v1-test/process\",\n        headers={\"Authorization\": \"Bearer YOUR_KEY\"},\n        files={\"image\": img},\n        data={\"mode\": \"sim\", \"fixed_palette\": False},\n    )\njob = r.json()\nprint(job[\"job_id\"])\n"
+  },
+  {
+   "lang": "curl",
+   "source": "curl -X POST https://api.mothquantum.com/v1/generation/tessa-image-v1-test/process \\\n  -H \"Authorization: Bearer YOUR_KEY\" \\\n  -F \"image=@image.png\" \\\n  -F \"mode=sim\"\n"
+  }
+ ],
+ "error_codes": [
+  {
+   "type": "invalid_image",
+   "description": "The image file could not be decoded."
+  },
+  {
+   "type": "distortion_without_hardware",
+   "description": "distortion is greater than 0 on a machine that reads out per-group (every machine except real IBM hardware) -- the cross-cell gate it adds is silently dropped there, so it would have no effect."
+  },
+  {
+   "type": "too_many_values",
+   "description": "mode='sim' only -- the image's pixel count exceeds the largest supported simulated lattice (64x64). \"sim\" sizes its own lattice to fit the image; this is what it hits instead once that growth runs out of room."
+  },
+  {
+   "type": "insufficient_qubits",
+   "description": "mode='sim' only -- the image's pixel count exceeds the data-qubit capacity of the largest lattice \"sim\" can grow to (see too_many_values). Not reachable for mode='emu'/'qpu', which tile an oversized image across a fixed-capacity chip instead (see too_many_tiles)."
+  },
+  {
+   "type": "too_many_tiles",
+   "description": "mode='emu'/'qpu' only -- the image needs more tiles than max_tiles allows to fit the selected machine's fixed data-qubit capacity. Each tile is a real backend submission, so this bounds real cost/time explicitly rather than tiling an arbitrarily large image for free; raise max_tiles to accept the extra cost, or shrink the image."
+  },
+  {
+   "type": "unsupported_machine",
+   "description": "the requested machine name isn't recognized."
+  },
+  {
+   "type": "ibm_connection_failed",
+   "description": "Could not authenticate/connect to IBM Quantum with the given token/instance."
+  },
+  {
+   "type": "submission_failed",
+   "description": "The transpiled circuit was rejected or the sampling job failed to submit."
+  },
+  {
+   "type": "encoding_failed",
+   "description": "The output image could not be encoded."
+  }
+ ],
+ "banner_image_id": null,
+ "card_image_id": null,
+ "banner_image_tag": null,
+ "card_image_tag": null,
+ "has_estimate": false,
+ "estimate": null,
+ "has_estimate_fn": false,
+ "estimate_needs_container": false,
+ "sidecar_endpoint": null,
+ "has_validate_fn": false
+}

@@ -10,9 +10,11 @@
 //      status line counts the lines in step, and the fly buzzes its wings when they fall into step (29 of 30 or more).
 //   5. A tap on MBON12-1 sends the steam train puffing down across the map while the journey keeps running.
 // A drawn pointer follows the real mouse events (the recorder does not draw the OS cursor), with a ring on each press.
+// Timing: the browser's video starts after record_demo.cjs's clock, by a varying 0.2-1.5 s (measured over three takes),
+// so the cut opens anywhere in the first ~1.5 s of the recipe. Depart is pressed at once, so the clip opens either on
+// the press or on the hardware samples already running; everything after that sits at fixed recipe times from 1.7 s.
 module.exports = async (page, h) => {
-  const r0 = Date.now();
-  const fp = await page.evaluate(() => { const e = performance.getEntriesByType('paint').find(e => e.name === 'first-paint'); return e ? e.startTime : 0; });
+  const T0 = Date.now(), at = ms => h.wait(Math.max(0, T0 + ms - Date.now()));
   // 1) frame: the stage fills the viewport (the canvas lays itself out at 782 px: 613 px tall, its 16 px pads trimmed)
   await page.evaluate(() => {
     const css = document.createElement('style');
@@ -56,27 +58,24 @@ module.exports = async (page, h) => {
   };
   const tap = async () => { await page.mouse.down(); await h.wait(70); await page.mouse.up(); };
   await page.mouse.move(px, py);
-  // lead-in: the video starts at first paint but record_demo.cjs trims from its own clock, so the clip opens at
-  // recipe time ~(first-paint - 170 ms); hold the framed scene still until then plus 0.35 s
-  await h.wait(Math.max(150, Math.max(0, Math.min(2500, fp) - 170) + 350 - (Date.now() - r0)));
-  const T0 = Date.now(), at = ms => h.wait(Math.max(0, T0 + ms - Date.now()));
 
   // 2) Depart on the IBM train: ibm_fez hardware samples switch the lamps in a wave from the train (one per second)
-  await glide(await el('#play'), 380); await tap();
+  await h.wait(250);
+  await glide(await el('#play'), 300); await tap();
   // 3) tap MBON35 at the top of the map: the train rides the lines up there while the samples keep arriving
-  await at(1000);
+  await at(1700);
   await glide(await stationAt(13), 450); await tap();
   // 4) the Gibbs steam train from the depot takes over mid-ride (switching train holds the samples)
-  await at(2700);
+  await at(3300);
   await glide(await depot('gibbs'), 450); await tap();
   // 5) Journey 160 + Depart: consecutive Gibbs samples flicker through the lamps, the fly's mood follows the lines
-  await at(3450);
+  await at(4050);
   await glide(await el('#seg-route button[data-r="chain"]'), 400); await tap();
   await h.wait(80);
   await glide(await el('#play'), 220); await tap();
   // 6) tap MBON12-1: the steam train puffs down across the map while the journey's samples keep switching the lamps
-  await at(4450);
+  await at(5050);
   await glide(await stationAt(8), 420); await tap();
   await glide({x: px + 40, y: py + 70}, 300);
-  await at(7000);
+  await at(7600);
 };

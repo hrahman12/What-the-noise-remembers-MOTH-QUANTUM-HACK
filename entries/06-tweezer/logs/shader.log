@@ -1,0 +1,4 @@
+  entanglement-shader-v1: submitted 743d08b4-4f6b-4bd5-9ce6-9bd135c362b6
+  entanglement-shader-v1: done 743d08b4 in 236.4s
+shader
+shader 743d08b4-4f6b-4bd5-9ce6-9bd135c362b6 {'$schema': 'https://api.mothquantum.com/schemas/JobResultOutputBody.json', 'outputs': [{'slot': 'result', 'output_asset_id': 'dd9a5122-530a-45be-8311-c35459ec9f81', 'url': 'https://moth-api-assets-us-east-1.s3.us-east-1.amazonaws.com/jobs/743d08b4-4f6b-4bd5-9ce6-9bd135c362b6/result?X-Amz-Algorithm=

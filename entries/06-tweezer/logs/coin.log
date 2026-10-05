@@ -1,0 +1,3 @@
+  coin-toss-v1: submitted 83ad70dc-cb9c-4acf-9def-fbc0a15034d6
+  coin-toss-v1: done 83ad70dc in 80.9s
+coin 83ad70dc-cb9c-4acf-9def-fbc0a15034d6 {'$schema': 'https://api.mothquantum.com/schemas/JobResultOutputBody.json', 'result': {'backend': 'ibm_marrakesh', 'heads': 70, 'ibm_job_id': 'db1j2d3id5ic73er6r1g', 'mode': 'qpu', 'output': 'tails', 'shots': 144, 'tails': 74}}

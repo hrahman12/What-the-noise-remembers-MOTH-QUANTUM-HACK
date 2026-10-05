@@ -1,0 +1,20 @@
+[coin] coin-toss-v1  F=0.9998 (chance None)  job=83ad70dc-cb9c-4acf-9def-fbc0a15034d6
+[comet] comet-qrng-v1  F=0.9997 (chance None)  job=f7749ef9-75fe-47d2-8120-74cd86d36478
+[qrcimage] qrc-image-v1  F=0.998 (chance 0.0617)  job=da0814bc-0e38-4f37-9883-21c6dba6a40a
+[shader] entanglement-shader-v1  F=0.9904 (chance 0.2491)  job=743d08b4-4f6b-4bd5-9ce6-9bd135c362b6
+[blur] blur-v1  F=1.0 (chance 0.2465)  job=d612dc36-4f02-4d6c-820e-42f9b3a8ab24
+  deep-fryer-v1: resuming c60ddf89-7ce6-4b7a-9285-9c2ffbd262b8
+[fryer] still pending (c60ddf89-7ce6-4b7a-9285-9c2ffbd262b8); continuing without it
+[tessa] skipped: failed earlier (ca5e2709-ead8-49d7-b8fd-425422677d3d), not retried
+[qpixl] qpixl-v1  F=0.8432 (chance 0.3936)  job=c9f5292e-37f6-4cdf-84c9-9a955ce79eca
+  labyrinth-v1: submitted 900b2088-fc88-4502-bb8b-37dd188faac2
+  labyrinth-v1: done 900b2088 in 54.8s
+[maze] labyrinth-v1  F=0.6748 (chance 0.5)  job=900b2088-fc88-4502-bb8b-37dd188faac2
+  uploaded rearr_before.png -> a13f9c62-b8a1-4287-95a4-46f517110460
+  uploaded rearr_after.png -> 4948cffa-cb7a-4ce2-be84-52e7c38ef65f
+  telablur-v1: submitted a906c79c-ae77-43df-8d66-09bb56d52366
+  telablur-v1: done a906c79c in 8.7s
+[telablur] telablur-v1  F=0.5299 (chance 0.4735)  job=a906c79c-ae77-43df-8d66-09bb56d52366
+  graph-v1: submitted a9b7f426-b0c4-40c6-992a-6ababba6be30
+[graph] FAILED (recorded, will not retry): graph-v1 a9b7f426-b0c4-40c6-992a-6ababba6be30 failed: {"$schema": "https://api.mothquantum.com/schemas/JobStatusOutputBody.json", "job_id": "a9b7f426-b0c4-40c6-992a-6ababba6be30", "engine_id": "graph-v1", "status": "failed", "progress": {"detail": "Step 1 of 4", "step": "build"}, "steps": [{"name": 
+spent (ledger): 37 of 50 credits; frozen=False

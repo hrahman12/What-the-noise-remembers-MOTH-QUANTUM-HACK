@@ -1,0 +1,328 @@
+{
+ "$schema": "https://api.mothquantum.com/schemas/Engine.json",
+ "engine_id": "comet-qrng-v1",
+ "name": "Comet Quantum RNG Engine",
+ "description": "Random bytes from Born-rule measurements on IBM hardware (or Aer baseline), with an SP 800-90B min-entropy certificate, Toeplitz extractor and CHSH witness.",
+ "version": "1.0.0",
+ "owner": "37eae1ca-66b4-46f8-aca3-0baa7b011987",
+ "owner_type": "user",
+ "created_by": "37eae1ca-66b4-46f8-aca3-0baa7b011987",
+ "visibility": "public",
+ "queue": "",
+ "input_type": "application/json",
+ "output_type": "application/json",
+ "is_multipart": false,
+ "is_async": false,
+ "execution_mode": "steps",
+ "run_policy": {
+  "timeout": 300,
+  "max_retries": 3,
+  "heartbeat": 60
+ },
+ "params_schema": {
+  "$defs": {
+   "Derivation": {
+    "properties": {
+     "floats": {
+      "default": 0,
+      "description": "Uniform doubles in [0, 1) with 53-bit mantissas.",
+      "maximum": 100000,
+      "minimum": 0,
+      "title": "Floats",
+      "type": "integer"
+     },
+     "integers": {
+      "anyOf": [
+       {
+        "$ref": "#/$defs/IntegerDerivation"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "default": null,
+      "description": "Uniform integers in [min, max] via rejection sampling."
+     }
+    },
+    "title": "Derivation",
+    "type": "object"
+   },
+   "IntegerDerivation": {
+    "properties": {
+     "count": {
+      "description": "How many integers to derive.",
+      "maximum": 100000,
+      "minimum": 1,
+      "title": "Count",
+      "type": "integer"
+     },
+     "max": {
+      "description": "Inclusive upper bound.",
+      "title": "Max",
+      "type": "integer"
+     },
+     "min": {
+      "description": "Inclusive lower bound.",
+      "title": "Min",
+      "type": "integer"
+     }
+    },
+    "required": [
+     "min",
+     "max",
+     "count"
+    ],
+    "title": "IntegerDerivation",
+    "type": "object"
+   }
+  },
+  "properties": {
+   "backend_name": {
+    "anyOf": [
+     {
+      "type": "string"
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "default": null,
+    "description": "IBM backend to target; omit to auto-select the least busy device. Ignored when mode='emu'.",
+    "title": "Backend Name"
+   },
+   "bell_witness": {
+    "default": true,
+    "description": "Add 8 qubits carrying four CHSH Bell pairs measured in the same job (fidelity witness).",
+    "title": "Bell Witness",
+    "type": "boolean"
+   },
+   "derive": {
+    "anyOf": [
+     {
+      "$ref": "#/$defs/Derivation"
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "default": null,
+    "description": "Optional unbiased integers/floats derived from the conditioned bytes."
+   },
+   "epsilon_log2": {
+    "default": 64,
+    "description": "Extractor security parameter: output is 2^-epsilon_log2-close to uniform.",
+    "maximum": 128,
+    "minimum": 32,
+    "title": "Epsilon Log2",
+    "type": "integer"
+   },
+   "include_raw_counts": {
+    "default": true,
+    "description": "Echo the raw counts so third parties can recompute the output.",
+    "title": "Include Raw Counts",
+    "type": "boolean"
+   },
+   "mode": {
+    "default": "emu",
+    "description": "'emu' samples on a local Aer simulator (classical baseline, uncertified); 'qpu' samples IBM hardware.",
+    "enum": [
+     "emu",
+     "qpu"
+    ],
+    "title": "Mode",
+    "type": "string"
+   },
+   "num_qubits": {
+    "default": 12,
+    "description": "Width of the randomness register (Born-rule bits per shot).",
+    "maximum": 256,
+    "minimum": 1,
+    "title": "Num Qubits",
+    "type": "integer"
+   },
+   "output_bytes": {
+    "default": 32,
+    "description": "Conditioned bytes requested. You receive min(output_bytes, extractable).",
+    "maximum": 1000000,
+    "minimum": 1,
+    "title": "Output Bytes",
+    "type": "integer"
+   },
+   "prev_pulse_hash": {
+    "anyOf": [
+     {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "default": null,
+    "description": "Previous beacon pulse hash to chain onto (hex).",
+    "title": "Prev Pulse Hash"
+   },
+   "public_seed": {
+    "default": "toeplitz-v1",
+    "description": "Toeplitz seed: a shipped seed id (default 'toeplitz-v1', uniform seed from a documented ceremony \u2014 information-theoretic mode) or any custom string (SHAKE-256 expanded \u2014 computational mode, labelled as such).",
+    "maxLength": 256,
+    "minLength": 1,
+    "title": "Public Seed",
+    "type": "string"
+   },
+   "pulse_index": {
+    "anyOf": [
+     {
+      "minimum": 0,
+      "type": "integer"
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "default": null,
+    "description": "Beacon pulse index, if chaining.",
+    "title": "Pulse Index"
+   },
+   "qpu_instance": {
+    "anyOf": [
+     {
+      "format": "password",
+      "type": "string",
+      "writeOnly": true
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "default": null,
+    "description": "IBM Quantum instance CRN; BYOK override, omit to use mothbackend's own shared IBM credentials.",
+    "title": "Qpu Instance"
+   },
+   "qpu_token": {
+    "anyOf": [
+     {
+      "format": "password",
+      "type": "string",
+      "writeOnly": true
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "default": null,
+    "description": "IBM Quantum API token; BYOK override, omit to use mothbackend's own shared IBM credentials.",
+    "title": "Qpu Token"
+   },
+   "require_assumption_free": {
+    "default": false,
+    "description": "Certify only on the assumption-free tier (whole-shot most-common-value bound, no independence assumed). Capped near log2(shots) bits per shot; \u22480 in counts mode, so this effectively needs per-shot memory readout.",
+    "title": "Require Assumption Free",
+    "type": "boolean"
+   },
+   "shots": {
+    "default": 4096,
+    "description": "Number of measurement shots (max 10,000). Raw bits = num_qubits \u00d7 shots.",
+    "exclusiveMinimum": 0,
+    "maximum": 10000,
+    "title": "Shots",
+    "type": "integer"
+   }
+  },
+  "title": "Params",
+  "type": "object"
+ },
+ "credits_per_run": 5,
+ "enabled": true,
+ "registered_at": "2026-09-09T15:58:44Z",
+ "updated_at": "2026-09-09T15:58:44Z",
+ "description_md": "Comet Quantum RNG Engine (comet-qrng-v1) \u2014 hardware Born-rule randomness with an honest certificate.\n\nYou ask for random bytes. The engine prepares `num_qubits` qubits in |+\u27e9, measures\nthem on a simulator (`emu`) or an IBM QPU (`qpu`) through mothbackend, estimates\nhow much min-entropy the device's output actually carried (NIST SP 800-90B\nestimators on the real data \u2014 not an assumed constant), runs it through a\nseeded Toeplitz extractor with a stated security parameter, and returns the\nbytes together with everything needed to audit them.\n\n## What you send\n\n`application/json`:\n\n```json\n{\"num_qubits\": 12, \"shots\": 4096, \"mode\": \"emu\", \"output_bytes\": 32,\n \"bell_witness\": true, \"derive\": {\"integers\": {\"min\": 1, \"max\": 6, \"count\": 10}}}\n```\n\n- **`num_qubits`** \u2014 width of the randomness register (one Born-rule bit per\n  qubit per shot). `emu` caps the whole circuit at 20 qubits; `qpu` is bounded\n  by the backend.\n- **`shots`** \u2014 repetitions (\u2264 10,000). Raw bits = num_qubits \u00d7 shots.\n- **`bell_witness`** \u2014 add 8 qubits carrying four CHSH Bell pairs measured in the\n  same job. Yields an S value that *can fail* on hardware (a fidelity witness,\n  not device-independent certification \u2014 see `bell_witness.caveat`).\n- **`output_bytes`** \u2014 how many conditioned bytes you want. You get\n  `min(output_bytes, extractable)`; the certificate says which.\n- **`derive`** \u2014 optional unbiased integers / floats derived from the bytes.\n- **`prev_pulse_hash`, `pulse_index`** \u2014 chain this run as a beacon pulse.\n- **`public_seed`, `epsilon_log2`** \u2014 extractor parameters (public; defaults fine).\n\n## What you get back\n\n`GET /result/{job_id}` \u2192 `result.output`:\n\n```json\n{\n  \"random\": {\"hex\": \"9f3a\u2026\", \"bytes\": 32, \"derived\": {\"integers\": {\"values\": [3, 6, 1, \u2026]}}},\n  \"certificate\": {\"certified\": true, \"grade\": \"hardware\", \"h_bit\": 0.91,\n                  \"budget_bits\": 388211, \"output_bits\": 256, \"epsilon_log2\": 64, \"statements\": [\"\u2026\"]},\n  \"entropy\": {\"readout\": \"counts\", \"h_bit\": 0.91, \"ordering_penalty_bits\": 43250.8, \"\u2026\": \"\u2026\"},\n  \"bell_witness\": {\"S\": 2.61, \"sigma_S\": 0.012, \"violates_classical_3sigma\": true, \"\u2026\": \"\u2026\"},\n  \"device_fingerprint\": {\"z_expectations\": [\"\u2026\"], \"top_correlated_pairs\": [\"\u2026\"]},\n  \"provenance\": {\"mode\": \"qpu\", \"backend\": \"ibm_miami\", \"provider_job_id\": \"\u2026\", \"qpu_seconds\": 3.1, \"circuit_hash\": \"\u2026\"},\n  \"commitment\": {\"commit\": \"\u2026\", \"salt\": \"\u2026\", \"committed_at\": \"\u2026\"},\n  \"pulse\": {\"pulse_hash\": \"\u2026\", \"prev_hash\": \"\u2026\", \"\u2026\": \"\u2026\"},\n  \"raw\": {\"counts_sha256\": \"\u2026\", \"counts\": {\"0110\u2026\": 1, \"\u2026\": \"\u2026\"}}\n}\n```\n\n`emu` output is a classical simulator's pseudo-randomness. It is returned with\n`certificate.certified = false, grade = \"simulator-baseline\"` \u2014 it is the\ncontrol the hardware result is compared against, not a product claim.\n\n## Pipeline (internal)\n\n  build   \u2192 Params \u2192 CircuitSpec \u2192 QASM bytes (+ circuit_hash)\n  submit  \u2192 mothbackend.client: emu inline \u2192 counts; qpu \u2192 job id. Forms the\n            commitment C = H(circuit_hash \u2016 backend \u2016 job_id \u2016 salt) BEFORE any\n            outcome exists and surfaces it via update_progress.\n  collect \u2192 emu passthrough \u2502 qpu: poll until terminal \u2192 counts (+ memory if the\n            backend ever returns per-shot data), usage_seconds\n  format  \u2192 entropy assessment \u2192 Toeplitz extraction \u2192 derivations \u2192 CHSH\n            witness \u2192 device fingerprint \u2192 certificate \u2192 pulse\n\nBitstring convention: mothbackend reports counts qubit-0-LEFTMOST; everything\nhere consumes strings directly. Circuit qubits [0, num_qubits) are the\nrandomness register; the next 8 are the witness pairs.",
+ "code_samples": [
+  {
+   "lang": "Python (EMU baseline)",
+   "source": "import time, requests\n\nBASE = \"https://api.mothquantum.com/v1\"\nHEADERS = {\"Authorization\": \"Bearer YOUR_KEY\"}\n\nr = requests.post(f\"{BASE}/generation/comet-qrng-v1/process\", headers=HEADERS,\n                  json={\"num_qubits\": 12, \"shots\": 2048, \"mode\": \"emu\", \"output_bytes\": 32,\n                        \"derive\": {\"integers\": {\"min\": 1, \"max\": 6, \"count\": 10}}})\njob_id = r.json()[\"job_id\"]\nwhile True:\n    s = requests.get(f\"{BASE}/status/{job_id}\", headers=HEADERS).json()\n    if s[\"status\"] in (\"completed\", \"failed\"):\n        break\n    time.sleep(2)\nout = requests.get(f\"{BASE}/result/{job_id}\", headers=HEADERS).json()[\"result\"][\"output\"]\nprint(out[\"random\"][\"hex\"], out[\"random\"][\"derived\"][\"integers\"][\"values\"])\nprint(out[\"certificate\"][\"grade\"], out[\"certificate\"][\"statements\"])\n"
+  },
+  {
+   "lang": "Python (QPU, certified)",
+   "source": "import time, requests\n\nBASE = \"https://api.mothquantum.com/v1\"\nHEADERS = {\"Authorization\": \"Bearer YOUR_KEY\"}\n\nr = requests.post(f\"{BASE}/generation/comet-qrng-v1/process\", headers=HEADERS,\n                  json={\"num_qubits\": 100, \"shots\": 10000, \"mode\": \"qpu\",\n                        \"output_bytes\": 4096, \"bell_witness\": True})\njob_id = r.json()[\"job_id\"]\nwhile True:\n    s = requests.get(f\"{BASE}/status/{job_id}\", headers=HEADERS).json()\n    for step in s.get(\"steps\", []):\n        print(step[\"name\"], \"\u2192\", step[\"status\"])   # the submit step surfaces the commitment\n    if s[\"status\"] in (\"completed\", \"failed\"):\n        break\n    time.sleep(10)\nout = requests.get(f\"{BASE}/result/{job_id}\", headers=HEADERS).json()[\"result\"][\"output\"]\nprint(out[\"certificate\"][\"certified\"], out[\"certificate\"][\"h_bit\"], out[\"random\"][\"bytes\"], \"bytes\")\nprint(\"CHSH S =\", out[\"bell_witness\"][\"S\"], \"\u00b1\", out[\"bell_witness\"][\"sigma_S\"])\nprint(\"pulse\", out[\"pulse\"][\"pulse_hash\"])\n"
+  },
+  {
+   "lang": "curl",
+   "source": "curl -X POST https://api.mothquantum.com/v1/generation/comet-qrng-v1/process \\\n  -H \"Authorization: Bearer YOUR_KEY\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"num_qubits\": 12, \"shots\": 2048, \"mode\": \"emu\", \"output_bytes\": 32}'\n"
+  }
+ ],
+ "error_codes": [
+  {
+   "type": "invalid_params",
+   "description": "Parameter validation failed (e.g. circuit exceeds the EMU cap of 20 qubits)."
+  },
+  {
+   "type": "backend_too_small",
+   "description": "The circuit needs more qubits than the selected IBM backend provides."
+  },
+  {
+   "type": "missing_credentials",
+   "description": "IBM authentication failed \u2014 no usable token/instance (shared or BYOK)."
+  },
+  {
+   "type": "simulation_failed",
+   "description": "Aer simulation failed."
+  },
+  {
+   "type": "collection_failed",
+   "description": "Could not retrieve the QPU result \u2014 job cancelled, failed, or backend errored."
+  },
+  {
+   "type": "collection_timeout",
+   "description": "The QPU job did not reach a terminal state within the engine's 6000 s poll deadline; the provider job was cancelled."
+  },
+  {
+   "type": "result_malformed",
+   "description": "The backend returned counts that do not match the submitted circuit."
+  }
+ ],
+ "steps": [
+  {
+   "name": "build",
+   "timeout": 300,
+   "heartbeat": 120,
+   "input_type": "application/json",
+   "max_retries": 0,
+   "output_type": "application/x-qasm"
+  },
+  {
+   "name": "submit",
+   "timeout": 3600,
+   "heartbeat": 1200,
+   "input_type": "application/x-qasm",
+   "max_retries": 2,
+   "output_type": "application/json"
+  },
+  {
+   "name": "collect",
+   "timeout": 6200,
+   "heartbeat": 3200,
+   "input_type": "application/json",
+   "max_retries": 5,
+   "output_type": "application/json"
+  },
+  {
+   "name": "format",
+   "timeout": 600,
+   "heartbeat": 300,
+   "input_type": "application/json",
+   "max_retries": 0,
+   "output_type": "application/json"
+  }
+ ],
+ "banner_image_id": null,
+ "card_image_id": null,
+ "banner_image_tag": null,
+ "card_image_tag": null,
+ "has_estimate": false,
+ "estimate": null,
+ "has_estimate_fn": false,
+ "estimate_needs_container": false,
+ "sidecar_endpoint": null,
+ "has_validate_fn": false
+}

@@ -1,0 +1,7 @@
+[coin] coin-toss-v1  F=0.9998 (chance None)  job=83ad70dc-cb9c-4acf-9def-fbc0a15034d6
+[comet] comet-qrng-v1  F=0.9997 (chance None)  job=f7749ef9-75fe-47d2-8120-74cd86d36478
+  uploaded qrc_vocab.zip -> 8a0fe9d2-f109-4d6f-8893-343d7226f099
+  qrc-image-v1: submitted da0814bc-0e38-4f37-9883-21c6dba6a40a
+  qrc-image-v1: done da0814bc in 74.3s
+[qrcimage] qrc-image-v1  F=0.998 (chance 0.0617)  job=da0814bc-0e38-4f37-9883-21c6dba6a40a
+spent (ledger): 26 of 50 credits; frozen=False

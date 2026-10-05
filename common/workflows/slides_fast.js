@@ -1,0 +1,29 @@
+export const meta = {
+  name: 'slides-fast',
+  description: 'Write one challenge deck\'s slides in parallel: one agent per section writes its slide files (the lead publishes them)',
+  phases: [{ title: 'Write', detail: 'one agent per group of slides, in parallel' }],
+}
+const A = args
+const ROOT = 'C:\\Users\\Rahma\\OneDrive\\Desktop\\MOTH QUANTUM'
+const SLIDES = `${A.root}\\project\\slides`
+const COMMON = `CONTEXT: the user asked for "a whole presentation dedicated to each challenge ... fill with science and eng and everything", and "u need to be quicker than that for present just be quick pls we have to do this 11 times". This is the deck for Challenge ${A.n} · ${A.name} of "What the Noise Remembers" (22 playable quantum pieces for Moth Hack 2026 on Moth Quantum's Atlas engines; one idea across all: a signal hides, gets lost in noise, and is rebuilt). Pieces in this challenge: ${A.pieces.join(', ')} (folders in ${ROOT}\\entries\\). Be quick: read only the files you need (the piece README.md, piece.json, PARAMS.md, CREDITS.md; ${ROOT}\\reference\\engines.txt for the engine; ${ROOT}\\cache\\jobs_index.json for runs; ${ROOT}\\common\\BUILD_GUIDE.md and ${ROOT}\\atlas\\client.py only for project-engineering slides), then write your slide files in one go. Do NOT publish, render, screenshot or re-read your files; the lead publishes all slides together.
+
+FACTS: every number, name, job id, qubit count, parameter and claim must come from those files. Never invent a statistic, quote or result. Simulator runs are simulator runs. No Moth Quantum logo.
+
+FILES: write each slide to ${SLIDES}\\<id>.html, EXACTLY ONE <section id="<id>" ...> per file, nothing before or after it (no html/head/style/body). Speaker notes: one <aside> of plain text (2-5 sentences a presenter can say) as the section's LAST child.
+
+SLIDE FORMAT (closed subset; anything else is dropped): fixed 1920x1080 canvas; every style inline; px units only (no em/rem/%/vw except width/height % on pinned or flex children); NO margin, z-index, classes, <style>, var(). Section style: background (always), font-family, color, display:flex (flex-direction:column) or display:grid, padding, gap, align-items, justify-content. Elements: h1 h2 h3 p (set font-size; never under 24px), ul/ol of plain li (one level), br, inline b i u a span(style color only); div containers (flex row/column or grid with grid-template-columns in px or fr; at most 15 deep); img src alt style="width;height;object-fit:contain|cover"; table of tr/th/td (first row th; set width:N% on every first-row cell; font-size 24-28px); svg (<=52KB, no text, labels as p over it); hr; x-shape kind="rect|rounded|ellipse|diamond|arrow-right|arrow-left|arrow-up|arrow-down|line"; x-icon name in (Activity Book Chart Chat Check CheckCircle Clock Cloud Code Database Globe GraduationCap Home Key Lightbulb Lightning Link Lock PaperPlane Play Search Settings Star ThumbsUp Tool Trust Users Verified Warning Wrench); x-connector (as a flow child between boxes: <x-connector style="width:96px"></x-connector>, or pinned with x1 y1 x2 y2 head="end"). position:absolute pins a child to the slide (give left/top/width/height; pinned text needs a width). At most 200 elements per slide. Text wraps only at spaces: size boxes to their longest word (~0.6 x font-size per character). Vertical room inside padding is 824px (792px with the footer padding): heading height ~ size x lines x 1.1, table row ~ 2.1 x font-size; split content rather than shrink.
+
+LOOK (match the cover below exactly): paper #FBFAF9 background (main), panel #F0F0F4 (cards, second background tone), ink #19238E (headings, strong text, rules), ink-2 #545BA9 (body text), rule #D3D3E6 (1-2px hairlines), accent #B4541A (mono eyebrows, the odd highlighted figure). Fonts: 'Geist', Arial, sans-serif (headings 500 weight, body 300-400) and 'IBM Plex Mono', 'Courier New', monospace (eyebrows, labels, numbers, job ids). Type scale ONLY: 112 / 64 / 40 / 30 / 24 px. Slide pattern: eyebrow (mono 24px uppercase letter-spacing 2px #B4541A) then a 64px ink heading at the top margin, then content. Cards: background #F0F0F4 or #FFFFFF with 1px solid #D3D3E6 border, border-radius 16px, padding 40px. Pills: mono 24px, 2px solid #19238E, border-radius 999px, padding 8px 20px. Big numbers: 112px Geist 500 ink with a 24px mono label. Images (engine outputs, figures, screenshots): object-fit:contain with 1px solid #D3D3E6 border on #FBFAF9 or #F0F0F4.
+FOOTER on every slide you write: padding:128px 128px 160px on the section, plus as the LAST flow-free elements before the <aside>: <p style="position:absolute;left:128px;bottom:64px;width:1300px;font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;color:#545BA9">What the Noise Remembers · Challenge ${A.n} · ${A.name}</p> and <p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'IBM Plex Mono', 'Courier New', monospace;font-size:24px;color:#545BA9">NN / ${A.total}</p> where NN is the slide's position (given below).
+FIRST read ${A.argsFile} (JSON): its 'cover' is the cover slide's HTML (match its look exactly), its 'blobs' maps each uploaded image (description) to its url (use the url VERBATIM as src; no other images), and its 'groups' list gives the brief for your slide ids.
+
+THE DECK ORDER (id: position): ${A.order.map((id, i) => `${id}:${i + 1}`).join(', ')}.`
+
+const OUT = {type:'object', properties:{written:{type:'array', items:{type:'string'}}, notes:{type:'string'}}, required:['written','notes']}
+const res = await parallel(A.groups.map(g => () => agent(`${COMMON}
+
+YOUR SLIDES (write exactly these ids, nothing else): ${g.ids.join(', ')}.
+WHAT THEY COVER: the 'brief' of the group with these ids in ${A.argsFile}.
+Return the list of files written.`, {label:`slides:${g.ids[0]}`, phase:'Write', schema: OUT})))
+return res.map((r, i) => ({group: A.groups[i].ids, written: r ? r.written : null, notes: r ? r.notes : 'FAILED'}))

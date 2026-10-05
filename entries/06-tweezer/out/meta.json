@@ -1,0 +1,35 @@
+{
+ "engines_completed": 16,
+ "jobs_completed": 26,
+ "max_qubits": 210,
+ "hw_qubits": 156,
+ "hardware": "ibm_fez",
+ "hw": [
+  {
+   "backend": "ibm_fez",
+   "qubits": 156,
+   "stages": 7,
+   "primary": true
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "qubits": 156,
+   "stages": 2,
+   "primary": false
+  }
+ ],
+ "hw_stages": 7,
+ "fez_sent": 8,
+ "fez_done": 7,
+ "fez_jobs": 16,
+ "failnote": "55 submissions for this piece: 26 completed and counted, 1 completed probe not used, 28 failed (11 of them free tamagotchi attempts; 40 credits went to the failed ones), plus 1 request refused before a job was created (HTTP 413, no credit). Every failure is listed in ENGINES.md with its job ID and error, and none is counted.",
+ "tally": {
+  "submitted": 55,
+  "counted": 26,
+  "probe_unused": 1,
+  "failed": 28,
+  "failed_free": 11,
+  "failed_credits": 40.0,
+  "refused": 1
+ }
+}

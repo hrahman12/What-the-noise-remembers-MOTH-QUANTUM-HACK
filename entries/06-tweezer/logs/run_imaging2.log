@@ -1,0 +1,13 @@
+[coin] coin-toss-v1  F=0.9998 (chance None)  job=83ad70dc-cb9c-4acf-9def-fbc0a15034d6
+[comet] comet-qrng-v1  F=0.9997 (chance None)  job=f7749ef9-75fe-47d2-8120-74cd86d36478
+[shader] entanglement-shader-v1  F=0.9904 (chance 0.2491)  job=743d08b4-4f6b-4bd5-9ce6-9bd135c362b6
+[blur] blur-v1  F=1.0 (chance 0.2465)  job=d612dc36-4f02-4d6c-820e-42f9b3a8ab24
+  deep-fryer-v1: resuming c60ddf89-7ce6-4b7a-9285-9c2ffbd262b8
+[fryer] still pending (c60ddf89-7ce6-4b7a-9285-9c2ffbd262b8); continuing without it
+  uploaded tessa_in.png -> 84c857ce-66ba-472f-b2c8-ceed06c02b2a
+  tessa-image-v1: submitted ca5e2709-ead8-49d7-b8fd-425422677d3d
+[tessa] FAILED (recorded, will not retry): tessa-image-v1 ca5e2709-ead8-49d7-b8fd-425422677d3d failed: {"$schema": "https://api.mothquantum.com/schemas/JobStatusOutputBody.json", "job_id": "ca5e2709-ead8-49d7-b8fd-425422677d3d", "engine_id": "tessa-image-v1", "status": "failed", "progress": {}, "error": {"message": "The engine did not respon
+  qpixl-v1: submitted c9f5292e-37f6-4cdf-84c9-9a955ce79eca
+  qpixl-v1: done c9f5292e in 347.4s
+[qpixl] qpixl-v1  F=0.8432 (chance 0.3936)  job=c9f5292e-37f6-4cdf-84c9-9a955ce79eca
+spent (ledger): 26 of 50 credits; frozen=False

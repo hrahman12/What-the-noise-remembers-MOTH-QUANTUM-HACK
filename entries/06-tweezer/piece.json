@@ -1,0 +1,128 @@
+{
+ "slug": "06-tweezer",
+ "challenge": "06 Daisy Chain",
+ "bonus": false,
+ "title": "Tweezer",
+ "hook": "Walk one atom array through a day, engine by engine.",
+ "sub": "A day in the life of a neutral-atom quantum computer, told by a chain of Atlas engines, with signal survival measured at every hop.",
+ "you_control": [
+  "Walk the lab: tap any of the 18 pixel-art stations (or Earlier / Later) and Tweezy, an atom in a tweezer beam, walks there while the lab clock sweeps to that hour",
+  "Play each stage's scene, drawn from its real output: load attempts, snap the camera, set the photon threshold, run the moves, drag atoms, pick Rydberg patterns, check the error-corrected pets, play the xylophone score and the echo",
+  "Flip any stage to Data for its charts and engine frames; copy a link to any stage",
+  "Judge each hop: survival F against chance, on Tweezy's face, the stage gauge and the survival curve"
+ ],
+ "engines": [
+  "blur-core-v1",
+  "blur-midi-v1",
+  "blur-v1",
+  "coin-toss-v1",
+  "comet-qrng-v1",
+  "deep-fryer-v1",
+  "entanglement-shader-v1",
+  "graph-v1",
+  "labyrinth-v1",
+  "otoc-echo-v1",
+  "qdrive-api-v1",
+  "qpixl-v1",
+  "qrc-image-v1",
+  "retrocausal-echo-v1",
+  "tamagotchi-v1",
+  "telablur-v1"
+ ],
+ "qubits": 210,
+ "qubits_note": "210 = tamagotchi-v1: 30 Steane logical qubits x 7 data qubits on Aer's stabilizer simulator. 156 = the most qubits that ran on IBM ibm_fez (comet-qrng-v1: 148-qubit register + 8 Bell-witness qubits, the whole Heron chip). 7 of the 8 hardware-capable stages ran on IBM ibm_fez (5 Oct 2026, same inputs as the recorded day) and are the primary results on the page: coin-toss-v1 1 qubit, job d27e51b3-464d-48d6-97ca-97b2bb49072a; comet-qrng-v1 156 qubits, job 7a6587bb-9185-4038-a7d2-fab4c5a87193; qpixl-v1 qubits not reported, job e3b9dbd1-8919-4667-a048-a5e112f7f6be; labyrinth-v1 20 qubits, job a8fdcac4-4a50-4168-a3b7-2c11826c6f09; graph-v1 20 qubits, job 216de0ea-ca8a-4b01-8a89-6b071eaa6048; retrocausal-echo-v1 24 qubits, job 4839781c-7d2b-4926-aa4b-23a62800f4c0; otoc-echo-v1 24 qubits, job 18aa3832-83ff-46f1-b66a-d5c756895591. Did not complete on ibm_fez: tessa-image-v1 (2 tries: ed0a2239, 56cdf27d, The engine did not respond in time \u2014 retry the job). Kept beside them as labelled comparisons (they fed the later stages): the recorded hardware runs on ibm_marrakesh (coin-toss-v1 1 qubit, job 83ad70dc; comet-qrng-v1 156 qubits, job f7749ef9) and the recorded emulator runs of the other ibm_fez stages. Other stages ran at their engine ceilings where the platform allowed: 24 (echo engines, Aer cap for the exact runs; the ibm_fez echo runs use the same 24-site chain so the two compare site by site), 21 (teleblur; shader budget), 20 (blur, graph, labyrinth, blur-midi, qdrive), 19 (blur-core, payload-limited), 16 per deep-fryer tile; qrc-image and qpixl do not report a count.",
+ "hardware": "ibm_fez",
+ "hardware_qubits": 156,
+ "hardware_all": [
+  "ibm_fez",
+  "ibm_marrakesh"
+ ],
+ "hardware_stages": {
+  "coin": {
+   "backend": "ibm_fez",
+   "qubits": 1,
+   "job_id": "d27e51b3-464d-48d6-97ca-97b2bb49072a"
+  },
+  "comet": {
+   "backend": "ibm_fez",
+   "qubits": 156,
+   "job_id": "7a6587bb-9185-4038-a7d2-fab4c5a87193"
+  },
+  "qpixl": {
+   "backend": "ibm_fez",
+   "qubits": null,
+   "job_id": "e3b9dbd1-8919-4667-a048-a5e112f7f6be"
+  },
+  "maze": {
+   "backend": "ibm_fez",
+   "qubits": 20,
+   "job_id": "a8fdcac4-4a50-4168-a3b7-2c11826c6f09"
+  },
+  "graph": {
+   "backend": "ibm_fez",
+   "qubits": 20,
+   "job_id": "216de0ea-ca8a-4b01-8a89-6b071eaa6048"
+  },
+  "retro": {
+   "backend": "ibm_fez",
+   "qubits": 24,
+   "job_id": "4839781c-7d2b-4926-aa4b-23a62800f4c0"
+  },
+  "otoc": {
+   "backend": "ibm_fez",
+   "qubits": 24,
+   "job_id": "18aa3832-83ff-46f1-b66a-d5c756895591"
+  }
+ },
+ "jobs": 26,
+ "credits_spent": 94.0,
+ "deliverables": [
+  "run.py",
+  "stages.py",
+  "lib.py",
+  "ENGINES.md",
+  "PARAMS.md",
+  "README.md",
+  "CREDITS.md",
+  "web/index.html",
+  "web/template.html",
+  "build_web.py",
+  "web/files.json",
+  "web/audio/",
+  "web/media/",
+  "out/chain.json",
+  "failures.json",
+  "verify.py",
+  "test_page.cjs",
+  "make_docs.py",
+  "make_video.py",
+  "qa/report.json",
+  "qpu_submit.py",
+  "readme_table.py",
+  "qa/e2e.cjs",
+  "make_sprites.py",
+  "web/sprites.json",
+  "web/img/mascot.png",
+  "tweezer_day.mp4",
+  "web/video/",
+  "out/readout_score.mid",
+  "out/readout_blurred.mid",
+  "out/echo_in.wav",
+  "out/echo_out.wav",
+  "out/echo_out_fez.wav"
+ ],
+ "web_entry": "web/index.html",
+ "mascot": "web/img/mascot.png",
+ "status": "built",
+ "honesty": "Atlas runs gate-model circuits and simulators, not atoms: every stage is a labelled analogy; only completed jobs are counted and every failure is listed with its job ID.",
+ "blockers": [
+  "tessa-image-v1: engine timeouts on all 3 attempts (fake_fez, ibm_fez, ibm_fez), not counted",
+  "tomography-api-v2: server timeout (tried once, not credited)",
+  "recorded day (4 Oct): the first ibm_fez submissions failed at IBM's submit step ('Stream removed'), so the recorded hardware hops ran on ibm_marrakesh; on 5 Oct the hardware-capable stages were re-run on ibm_fez on the same inputs, and the completed ones are primary on the page",
+  "did not complete on ibm_fez after two tries (5 Oct 2026, same inputs): tessa-image-v1 (08:15): ed0a2239 The engine did not respond in time \u2014 retry the job, 56cdf27d The engine did not respond in time \u2014 retry the job; that stage keeps its recorded run, or no result where the recorded run failed too, labelled",
+  "qdrive-api-v1 cannot target ibm_fez (invalid_machine: not wired up yet, entry 19's jobs); tomography-api-v2 not sent to ibm_fez (free-text provider/backend with no validation, so no free probe; no IBM provider name documented; its Aer run failed at once with an engine timeout)",
+  "qrc-audio-v1 dropped to stay inside the 50-credit cap (credits lost to failed jobs)",
+  "blur-core-v1's input is 375 bitstrings in the lexicographic order of comet's counts (comet returns no per-shot order), not a time series; a re-run on randomly chosen rows was not possible at 50/50 credits",
+  "ledger: 55 submissions, 26 counted, 1 unused probe, 28 failed (11 free tamagotchi), 1 refused before a job (HTTP 413)"
+ ]
+}

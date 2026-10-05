@@ -53,3 +53,6 @@ entries/04-magic-angle/magic_angle.mp4
 cache/*/
 cache/*.bak
 cache/assets.json
+
+# form uploads assembled per challenge (copies of files already in the repo)
+submission/

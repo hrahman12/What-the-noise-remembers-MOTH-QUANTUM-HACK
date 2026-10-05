@@ -1,0 +1,32 @@
+[coin] coin-toss-v1  F=0.9998 (chance None)  job=d27e51b3-464d-48d6-97ca-97b2bb49072a
+  comet-qrng-v1: resuming 7a6587bb-9185-4038-a7d2-fab4c5a87193
+  comet-qrng-v1: done 7a6587bb in 185.2s
+[comet] comet-qrng-v1  F=0.9999 (chance None)  job=7a6587bb-9185-4038-a7d2-fab4c5a87193
+[qrcimage] qrc-image-v1  F=0.998 (chance 0.0617)  job=da0814bc-0e38-4f37-9883-21c6dba6a40a
+[shader] entanglement-shader-v1  F=0.9904 (chance 0.2491)  job=743d08b4-4f6b-4bd5-9ce6-9bd135c362b6
+[blur] blur-v1  F=1.0 (chance 0.2465)  job=d612dc36-4f02-4d6c-820e-42f9b3a8ab24
+[fryer] deep-fryer-v1  F=0.4985 (chance 0.4948)  job=c60ddf89-7ce6-4b7a-9285-9c2ffbd262b8
+  tessa-image-v1: resuming 56cdf27d-aae9-40ca-8ab6-d6fb20d99871
+[tessa] tessa-image-v1  F=None (chance None)  job=56cdf27d-aae9-40ca-8ab6-d6fb20d99871
+  qpixl-v1: resuming e3b9dbd1-8919-4667-a048-a5e112f7f6be
+  qpixl-v1: done e3b9dbd1 in 3.2s
+[qpixl] qpixl-v1  F=0.7429 (chance 0.4301)  job=e3b9dbd1-8919-4667-a048-a5e112f7f6be
+  labyrinth-v1: resuming a8fdcac4-4a50-4168-a3b7-2c11826c6f09
+  labyrinth-v1: done a8fdcac4 in 5.2s
+[maze] labyrinth-v1  F=0.5467 (chance 0.5)  job=a8fdcac4-4a50-4168-a3b7-2c11826c6f09
+[telablur] telablur-v1  F=0.5299 (chance 0.4735)  job=a906c79c-ae77-43df-8d66-09bb56d52366
+  graph-v1: resuming 216de0ea-ca8a-4b01-8a89-6b071eaa6048
+  graph-v1: done 216de0ea in 4.4s
+[graph] graph-v1  F=0.5421 (chance 0.5)  job=216de0ea-ca8a-4b01-8a89-6b071eaa6048
+[tamagotchi] tamagotchi-v1  F=0.7187 (chance 0.5)  job=443780f1-4638-473b-ab53-21166ec94834
+[blurmidi] blur-midi-v1  F=0.2847 (chance 0.1401)  job=d44e7ada-0857-4663-bc38-3e75e25a36d8
+  retrocausal-echo-v1: resuming 4839781c-7d2b-4926-aa4b-23a62800f4c0
+  retrocausal-echo-v1: done 4839781c in 2184.1s
+[retro] retrocausal-echo-v1  F=0.3744 (chance 0.0331)  job=4839781c-7d2b-4926-aa4b-23a62800f4c0
+  otoc-echo-v1: resuming 18aa3832-83ff-46f1-b66a-d5c756895591
+  otoc-echo-v1: done 18aa3832 in 4.1s
+[otoc] otoc-echo-v1  F=0.552 (chance 0.1734)  job=18aa3832-83ff-46f1-b66a-d5c756895591
+[qdrive] qdrive-api-v1  F=0.9997 (chance 0.5)  job=d36275c5-17d8-43b0-bdc3-4e3da66bf1fc
+[tomo] skipped: failed earlier (a26d52ac-ba54-43c5-961e-69f4418da794), not retried
+[blurcore] blur-core-v1  F=0.422 (chance 0.3779)  job=76083b0e-a4b7-46d3-ade5-fb729448d876
+spent (ledger): 94 of 96 credits; frozen=False

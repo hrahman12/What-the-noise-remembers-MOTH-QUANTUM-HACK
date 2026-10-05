@@ -1,0 +1,118 @@
+[
+ {
+  "engine": "entanglement-shader-v0",
+  "job_id": "0a3403b4-dadb-4868-83e4-610102a079ea",
+  "params": {
+   "layers": 60,
+   "incoming_rays": 60
+  },
+  "status": "failed",
+  "error": "engine_timeout",
+  "note": "budget probe; accepted at submission instead of rejected, then timed out. Not used."
+ },
+ {
+  "engine": "entanglement-shader-v0",
+  "job_id": "c6758568-bf8e-4868-b122-da6f95c8f82d",
+  "params": {
+   "layers": 30,
+   "incoming_rays": 40
+  },
+  "status": "failed",
+  "error": "engine_timeout",
+  "note": "budget probe; not used."
+ },
+ {
+  "engine": "coin-toss-v1",
+  "job_id": "78ab6835-0a3f-48c1-8f09-a491f6cf5c2b",
+  "params": {
+   "mode": "qpu",
+   "backend_name": "ibm_fez",
+   "shots": 144
+  },
+  "status": "failed",
+  "error": "unavailable: Stream removed (Socket closed) at the IBM submit step",
+  "note": "retried once with the platform's least-busy backend"
+ },
+ {
+  "engine": "comet-qrng-v1",
+  "job_id": "dc042700-e2a2-4386-b4de-db8d5cf6d86e",
+  "params": {
+   "num_qubits": 148,
+   "bell_witness": true,
+   "shots": 10000,
+   "mode": "qpu",
+   "backend_name": "ibm_fez"
+  },
+  "status": "failed",
+  "error": "unavailable at the IBM submit step (Resolving IBM backend)",
+  "note": "retried once on ibm_marrakesh"
+ },
+ {
+  "engine": "graph-v1",
+  "job_id": "a9b7f426-b0c4-40c6-992a-6ababba6be30",
+  "params": {
+   "num_qubits": 20,
+   "coupling_map": "King edges among real atoms only"
+  },
+  "status": "failed",
+  "error": "validation_error at build: every qubit must appear in coupling_map; missing [15, 18] (the two empty 'ghost' sites)",
+  "note": "our bug; retried once with the full zone lattice in coupling_map"
+ },
+ {
+  "engine": "tessa-image-v1",
+  "job_id": "ca5e2709-ead8-49d7-b8fd-425422677d3d",
+  "params": {
+   "machine": "fake_fez",
+   "shots": 4096
+  },
+  "status": "failed",
+  "error": "engine_timeout (The engine did not respond in time)",
+  "note": "known server timeouts: tried once, not retried, not credited"
+ },
+ {
+  "engine": "tamagotchi-v1",
+  "job_id": "888ac6e7-fc77-43ef-b52d-72a3cbd280d9",
+  "params": {
+   "n_logical": 60
+  },
+  "status": "failed",
+  "error": "engine_timeout",
+  "note": "free (0 credits); engine not responding during the build"
+ },
+ {
+  "engine": "tomography-api-v2",
+  "job_id": "a26d52ac-ba54-43c5-961e-69f4418da794",
+  "params": {
+   "qubits": 20,
+   "pairs": 8,
+   "shots": 2048
+  },
+  "status": "failed",
+  "error": "engine_timeout (The engine did not respond in time)",
+  "note": "known server timeouts: tried once, not retried, not credited"
+ },
+ {
+  "engine": "blur-core-v1",
+  "job_id": null,
+  "params": {
+   "values": "10000 x 148 bits (22 qubits)"
+  },
+  "status": "rejected before submission",
+  "error": "HTTP 413: request body over the 1,048,576-byte limit",
+  "note": "no job created, no credit; re-run at 21 qubits (17 x 129 x 144)"
+ },
+ {
+  "engine": "blur-core-v1",
+  "job_id": "be4f42aa-b492-4eff-8a42-f6908d7b1b32",
+  "params": {
+   "values": "17 x 129 x 144 bits (21 qubits)",
+   "axes": [
+    0,
+    1
+   ]
+  },
+  "status": "failed",
+  "error": "internal_error [TMPRL1103]: the engine finished ('Recovered 21-qubit grid from measurement') but its ~6 MB result exceeded the platform's payload limit",
+  "note": "re-run once at 19 qubits (5 x 5 x 5 x 3 x 144), whose result fits"
+ }
+]

@@ -1,0 +1,4 @@
+  tamagotchi-v1: submitted bcdde688-30ff-4648-9857-977d6fc574a9
+40 FAILED tamagotchi-v1 bcdde688-30ff-4648-9857-977d6fc574a9 failed: {"$schema": "https://api.mothquantum.com/schemas/JobStatusOutputBody.json", "job_id": "bcdde688-30ff-4648-9857-977d6fc574a9", "engine_id": "tamagotchi-v1", "status": "failed", "progress": {}, "error": {"message": "The engine did not respond 
+  tamagotchi-v1: submitted dbbb1f0d-f78d-40dc-ac79-c94953700682
+30 FAILED tamagotchi-v1 dbbb1f0d-f78d-40dc-ac79-c94953700682 failed: {"$schema": "https://api.mothquantum.com/schemas/JobStatusOutputBody.json", "job_id": "dbbb1f0d-f78d-40dc-ac79-c94953700682", "engine_id": "tamagotchi-v1", "status": "failed", "progress": {}, "error": {"message": "The engine did not respond 

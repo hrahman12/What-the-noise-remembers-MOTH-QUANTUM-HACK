@@ -1,0 +1,135 @@
+{
+ "comet": [
+  {
+   "engine": "comet-qrng-v1",
+   "job_id": "456b4798-c8b7-4c44-bdb8-918a17573e3c",
+   "backend": "ibm_fez",
+   "attempt": 1,
+   "submitted_at": "2026-10-05T14:11:09Z",
+   "updated_at": "2026-10-05T14:13:19Z",
+   "status": "failed",
+   "type": "collection_failed",
+   "error": "QPU job ended as failed",
+   "step": "QPU status: failed",
+   "credits": 5.0
+  }
+ ],
+ "maze": [
+  {
+   "engine": "labyrinth-v1",
+   "job_id": "0a04c9e1-18ec-430b-bb27-be2075d75c67",
+   "backend": "ibm_fez",
+   "attempt": 1,
+   "submitted_at": "2026-10-05T14:11:19Z",
+   "updated_at": "2026-10-05T14:13:55Z",
+   "status": "failed",
+   "type": "ibm_collection_failed",
+   "error": "QPU job ended as failed",
+   "step": "QPU status: failed",
+   "credits": 5.0
+  }
+ ],
+ "graph": [
+  {
+   "engine": "graph-v1",
+   "job_id": "122de1c4-d04e-41cb-aba6-5633cc20d3a7",
+   "backend": "ibm_fez",
+   "attempt": 1,
+   "submitted_at": "2026-10-05T14:11:28Z",
+   "updated_at": "2026-10-05T14:13:48Z",
+   "status": "failed",
+   "type": "ibm_collection_failed",
+   "error": "QPU job ended as failed",
+   "step": "QPU status: failed",
+   "credits": 5.0
+  }
+ ],
+ "coin": [
+  {
+   "engine": "coin-toss-v1",
+   "job_id": "2c2263b1-ed55-4d65-a759-35bf84e17e7f",
+   "backend": "ibm_fez",
+   "attempt": 1,
+   "submitted_at": "2026-10-05T14:11:37Z",
+   "updated_at": "2026-10-05T14:13:48Z",
+   "status": "failed",
+   "type": "ibm_collection_failed",
+   "error": "QPU job ended as failed",
+   "step": "QPU status: failed",
+   "credits": 2.0
+  }
+ ],
+ "qpixl": [
+  {
+   "engine": "qpixl-v1",
+   "job_id": "af52a90e-b29e-41fc-b613-aa3824122ef2",
+   "backend": "ibm_fez",
+   "attempt": 1,
+   "submitted_at": "2026-10-05T14:11:45Z",
+   "updated_at": "2026-10-05T14:11:52Z",
+   "status": "failed",
+   "type": "ibm_submission_failed",
+   "error": "[ibm_submission_failed] submitting the job to IBM failed",
+   "step": "Building the circuit",
+   "credits": 1.0
+  }
+ ],
+ "tessa": [
+  {
+   "engine": "tessa-image-v1",
+   "job_id": "ed0a2239-725c-4bf3-9db9-3e6a6d725d28",
+   "backend": "ibm_fez",
+   "attempt": 1,
+   "submitted_at": "2026-10-05T14:11:56Z",
+   "updated_at": "2026-10-05T14:13:19Z",
+   "status": "failed",
+   "type": "engine_timeout",
+   "error": "The engine did not respond in time \u2014 retry the job",
+   "step": null,
+   "credits": 1.0
+  },
+  {
+   "engine": "tessa-image-v1",
+   "job_id": "56cdf27d-aae9-40ca-8ab6-d6fb20d99871",
+   "backend": "ibm_fez",
+   "attempt": 2,
+   "error": "The engine did not respond in time \u2014 retry the job",
+   "credits": 1.0,
+   "status": "failed",
+   "submitted_at": "2026-10-05T19:08:53Z",
+   "updated_at": "2026-10-05T19:10:18Z",
+   "type": "engine_timeout",
+   "step": null
+  }
+ ],
+ "retro": [
+  {
+   "engine": "retrocausal-echo-v1",
+   "job_id": "3d9695df-61ea-413b-9a4f-e16a223a047b",
+   "backend": "ibm_fez",
+   "attempt": 1,
+   "submitted_at": "2026-10-05T14:12:38Z",
+   "updated_at": "2026-10-05T14:14:56Z",
+   "status": "failed",
+   "type": "execution_failed",
+   "error": "ibm_fez estimator failed: [job_failed] job ended as failed",
+   "step": "waiting on ibm_fez (122s elapsed)",
+   "credits": 2.0
+  }
+ ],
+ "otoc": [
+  {
+   "engine": "otoc-echo-v1",
+   "job_id": "2ef272dc-c355-4baa-b3af-7e8e56953101",
+   "backend": "ibm_fez",
+   "attempt": 1,
+   "submitted_at": "2026-10-05T14:12:48Z",
+   "updated_at": "2026-10-05T14:15:13Z",
+   "status": "failed",
+   "type": "execution_failed",
+   "error": "ibm_fez estimator failed: [job_failed] job ended as failed",
+   "step": "waiting on ibm_fez (121s elapsed)",
+   "credits": 1.0
+  }
+ ]
+}

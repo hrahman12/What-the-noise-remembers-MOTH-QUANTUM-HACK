@@ -37,7 +37,7 @@ Every piece is its own interactive page. Click a name to play it.
 | 04 · Moving image | **[Quantum Lenia](https://hrahman12.github.io/What-the-noise-remembers-MOTH-QUANTUM-HACK/pieces/17-quantum-lenia/)** | Paint creatures, then blur their sense of touch with quantum noise. | Atlas simulator |
 | 05 · Quantum game | **[Jam the Bat](https://hrahman12.github.io/What-the-noise-remembers-MOTH-QUANTUM-HACK/pieces/05-jam-the-bat/)** | Jam a bat that learns your rhythm. | IBM ibm_fez |
 | 05 · Quantum game | **[Moth to Flame](https://hrahman12.github.io/What-the-noise-remembers-MOTH-QUANTUM-HACK/pieces/13-moth-to-flame/)** | Fly a moth home before the lamps catch it. | IBM ibm_fez |
-| 06 · Daisy Chain | **[Tweezer](https://hrahman12.github.io/What-the-noise-remembers-MOTH-QUANTUM-HACK/pieces/06-tweezer/)** | Walk one atom array through a day, engine by engine. | IBM ibm_marrakesh |
+| 06 · Daisy Chain | **[Tweezer](https://hrahman12.github.io/What-the-noise-remembers-MOTH-QUANTUM-HACK/pieces/06-tweezer/)** | Walk one atom array through a day, engine by engine. | IBM ibm_fez (156 qubits) + Atlas simulator |
 | 07 · Make a VST or AU | **[FLAVOUR](https://hrahman12.github.io/What-the-noise-remembers-MOTH-QUANTUM-HACK/pieces/07-flavour/)** | Send a neutrino through the Earth. Hear which flavour arrives. | IBM ibm_fez |
 | 07 · Make a VST or AU | **[Frog Chorus](https://hrahman12.github.io/What-the-noise-remembers-MOTH-QUANTUM-HACK/pieces/19-frog-chorus/)** | Seat the frogs, then hear them learn to take turns. | IBM ibm_fez + Atlas simulator |
 | 08 · Make a web app | **[p-bit or qubit?](https://hrahman12.github.io/What-the-noise-remembers-MOTH-QUANTUM-HACK/pieces/08-pbit-or-qubit/)** | Sauna vs Fridge: call who sent the noise. | IBM ibm_fez |
@@ -103,7 +103,7 @@ Independent entry to Moth Hack 2026; not an official Moth Quantum project.
 
 ## How it's built
 
-- **Real quantum jobs only.** Every quantum-derived image, sound and number replays a completed [Moth Quantum](https://mothquantum.com) Atlas job; each piece lists its job IDs. Most ran on Atlas simulators, and several ran on IBM hardware (ibm_fez, ibm_marrakesh, ibm_miami), up to a full 156-qubit chip. All 291+ jobs (engine, job ID, qubits, backend) are listed in [`cache/jobs_index.json`](cache/jobs_index.json); IBM jobs that failed on IBM's side are named on their pages, not hidden.
+- **Real quantum jobs only.** Every quantum-derived image, sound and number replays a completed [Moth Quantum](https://mothquantum.com) Atlas job; each piece lists its job IDs. Most ran on Atlas simulators, and several ran on IBM hardware (ibm_fez, ibm_marrakesh, ibm_miami), up to a full 156-qubit chip. All 299 jobs (engine, job ID, qubits, backend) are listed in [`cache/jobs_index.json`](cache/jobs_index.json); IBM jobs that failed on IBM's side are named on their pages, not hidden.
 - **You're at the controls.** Nothing plays until you click; every piece is a game, instrument, or explorable scene.
 - **Honest by design.** Simulator and hardware runs are labelled, analogies are named as analogies, and each piece has a "what this does not claim" section.
 

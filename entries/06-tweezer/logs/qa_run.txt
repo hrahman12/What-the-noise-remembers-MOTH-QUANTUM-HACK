@@ -1,0 +1,86 @@
+{
+ "piece": "06-tweezer",
+ "problems": [],
+ "desktop": {
+  "errors": [],
+  "failed": [],
+  "external": [
+   "fonts.googleapis.com",
+   "fonts.gstatic.com"
+  ],
+  "overflow_px": 0
+ },
+ "mobile": {
+  "errors": [],
+  "failed": [],
+  "external": [
+   "fonts.googleapis.com",
+   "fonts.gstatic.com"
+  ],
+  "overflow_px": 0
+ },
+ "audio": {
+  "files": [
+   {
+    "file": "audio/echo_in.mp3",
+    "ok": true,
+    "seconds": 8
+   },
+   {
+    "file": "audio/echo_out.mp3",
+    "ok": true,
+    "seconds": 11
+   }
+  ],
+  "sound_started": true,
+  "counters": {
+   "sources_started": 0,
+   "media_playing_events": 1,
+   "media_errors": 0,
+   "audio_contexts": 0
+  }
+ },
+ "buttons": [
+  {
+   "label": "← Earlier",
+   "sound": false,
+   "errors": []
+  },
+  {
+   "label": "Later →",
+   "sound": false,
+   "errors": []
+  },
+  {
+   "label": "Copy link to this stage",
+   "sound": false,
+   "errors": []
+  },
+  {
+   "label": "▶ Hear the day",
+   "sound": true,
+   "errors": []
+  },
+  {
+   "label": "Why a neutral-atom day?",
+   "sound": false,
+   "errors": []
+  },
+  {
+   "label": "How survival is scored",
+   "sound": false,
+   "errors": []
+  },
+  {
+   "label": "Every engine, every job",
+   "sound": false,
+   "errors": []
+  },
+  {
+   "label": "What this does not claim",
+   "sound": false,
+   "errors": []
+  }
+ ],
+ "ok": true
+}

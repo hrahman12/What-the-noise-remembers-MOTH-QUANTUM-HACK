@@ -1,0 +1,15 @@
+[coin] coin-toss-v1  F=0.9998 (chance None)  job=83ad70dc-cb9c-4acf-9def-fbc0a15034d6
+[comet] comet-qrng-v1  F=0.9997 (chance None)  job=f7749ef9-75fe-47d2-8120-74cd86d36478
+[qrcimage] qrc-image-v1  F=0.998 (chance 0.0617)  job=da0814bc-0e38-4f37-9883-21c6dba6a40a
+[shader] entanglement-shader-v1  F=0.9904 (chance 0.2491)  job=743d08b4-4f6b-4bd5-9ce6-9bd135c362b6
+[blur] blur-v1  F=1.0 (chance 0.2465)  job=d612dc36-4f02-4d6c-820e-42f9b3a8ab24
+  deep-fryer-v1: resuming c60ddf89-7ce6-4b7a-9285-9c2ffbd262b8
+[fryer] still pending (c60ddf89-7ce6-4b7a-9285-9c2ffbd262b8); continuing without it
+[tessa] skipped: failed earlier (ca5e2709-ead8-49d7-b8fd-425422677d3d), not retried
+[qpixl] qpixl-v1  F=0.8432 (chance 0.3936)  job=c9f5292e-37f6-4cdf-84c9-9a955ce79eca
+[maze] labyrinth-v1  F=0.6748 (chance 0.5)  job=900b2088-fc88-4502-bb8b-37dd188faac2
+[telablur] telablur-v1  F=0.5299 (chance 0.4735)  job=a906c79c-ae77-43df-8d66-09bb56d52366
+  graph-v1: submitted e51a6ab6-b5b9-4a55-b500-adc5381f4424
+  graph-v1: done e51a6ab6 in 30.6s
+[graph] graph-v1  F=0.5102 (chance 0.5)  job=e51a6ab6-b5b9-4a55-b500-adc5381f4424
+spent (ledger): 42 of 50 credits; frozen=False
