@@ -19,7 +19,8 @@ ARGS = [a for a in sys.argv[1:] if not a.startswith("--")]
 OUT = Path(ARGS[0]).resolve() if ARGS else ROOT / "docs"
 # --pieces a,b: re-export only these pieces into an existing site (hub and other pieces untouched)
 ONLY = next((a.split("=", 1)[1].split(",") for a in sys.argv[1:] if a.startswith("--pieces=")), None)
-KEEP = {"demos"}  # README demo clips live here and are made separately
+KEEP = {"demos", "og"}  # README demo clips and link-preview cards live here and are made separately
+SITE = "https://hrahman12.github.io/What-the-noise-remembers-MOTH-QUANTUM-HACK/"
 HUB = "https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa"
 urls = json.loads((ROOT / "site" / "urls.json").read_text(encoding="utf-8"))
 
@@ -35,10 +36,41 @@ HEAD = """<!doctype html>
 """
 
 
-def wrap(html):
+def esc(t):
+    return t.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;")
+
+
+def og(slug=None):
+    """Open Graph / Twitter tags so Discord, Slack, X etc. show a proper preview card."""
+    if slug is None:
+        title = "What the Noise Remembers: 22 playable quantum pieces"
+        desc = ("A signal hides, gets lost in noise, and is rebuilt. 22 playable pieces for Moth Hack 2026, built on real "
+                "Moth Quantum Atlas jobs, on simulators and IBM ibm_fez up to 156 qubits. Play in your browser, no login.")
+        url, img = SITE, SITE + "og/hub.png"
+    else:
+        p = json.loads((ROOT / "entries" / slug / "piece.json").read_text(encoding="utf-8"))
+        title = f"{p['title']} · What the Noise Remembers"
+        desc = f"{p.get('hook', '')} {p.get('sub', '')}".strip()[:290]
+        url, img = f"{SITE}pieces/{slug}/", f"{SITE}og/{slug}.png"
+    tags = [("og:type", "website"), ("og:site_name", "What the Noise Remembers"), ("og:title", title),
+            ("og:description", desc), ("og:url", url), ("og:image", img), ("og:image:width", "1200"),
+            ("og:image:height", "630"), ("og:image:alt", title)]
+    out = "".join(f'<meta property="{k}" content="{esc(v)}">' + NL for k, v in tags)
+    out += '<meta name="twitter:card" content="summary_large_image">' + NL
+    out += f'<meta name="twitter:title" content="{esc(title)}">' + NL
+    out += f'<meta name="twitter:description" content="{esc(desc)}">' + NL
+    out += f'<meta name="twitter:image" content="{esc(img)}">' + NL
+    out += '<meta name="theme-color" content="#19238E">' + NL
+    return out
+
+
+NL = chr(10)
+
+
+def wrap(html, slug=None):
     if html.lstrip().lower().startswith("<!doctype"):
-        return html
-    return HEAD + html + "\n</body>\n</html>\n"
+        return html.replace("</head>", og(slug) + "</head>", 1)
+    return HEAD.replace("</head>", og(slug) + "</head>", 1) + html + NL + "</body>" + NL + "</html>" + NL
 
 
 def rewrite(html, here):
@@ -77,7 +109,7 @@ def main():
         (OUT / ".nojekyll").write_text("", encoding="ascii")
         # hub
         hub = (ROOT / "site" / "index.html").read_text(encoding="ascii")
-        (OUT / "index.html").write_text(wrap(rewrite(hub, None)), encoding="ascii")
+        (OUT / "index.html").write_text(wrap(rewrite(hub, None)).encode("ascii", "xmlcharrefreplace").decode("ascii"), encoding="ascii")
         hub_files = json.loads((ROOT / "site" / "files.json").read_text(encoding="utf-8"))
         copy_files(ROOT / "site", OUT, hub_files)
     # pieces
@@ -90,7 +122,7 @@ def main():
             shutil.rmtree(dst)
         dst.mkdir(parents=True)
         html = (web / "index.html").read_text(encoding="ascii")
-        (dst / "index.html").write_text(wrap(rewrite(html, slug)), encoding="ascii")
+        (dst / "index.html").write_text(wrap(rewrite(html, slug), slug).encode("ascii", "xmlcharrefreplace").decode("ascii"), encoding="ascii")
         fj = json.loads((web / "files.json").read_text(encoding="utf-8")) if (web / "files.json").exists() else {}
         n = copy_files(web, dst, fj)
         size = sum(f.stat().st_size for f in dst.rglob("*") if f.is_file())
