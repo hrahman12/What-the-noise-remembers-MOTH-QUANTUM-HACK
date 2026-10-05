@@ -318,3 +318,5 @@
 {"piece": "06-tweezer", "engine": "graph-v1", "job_id": "216de0ea-ca8a-4b01-8a89-6b071eaa6048", "credits": 5.0, "key": "304c68e815e50f3f", "t": 1791227370}
 {"piece": "06-tweezer", "engine": "retrocausal-echo-v1", "job_id": "4839781c-7d2b-4926-aa4b-23a62800f4c0", "credits": 2.0, "key": "48f9e5c87bd8f45c", "t": 1791227381}
 {"piece": "06-tweezer", "engine": "otoc-echo-v1", "job_id": "18aa3832-83ff-46f1-b66a-d5c756895591", "credits": 1.0, "key": "6f47b8bc4ec011d3", "t": 1791227395}
+{"piece": "06-tweezer", "engine": "tessa-image-v1", "job_id": "1c5e4238-36a6-4bdd-9128-807e48723dc6", "credits": 1.0, "key": "0bb08de2c6b8ad86", "t": 1791236162}
+{"piece": "06-tweezer", "engine": "tessa-image-v1", "job_id": "3c9b053f-bd19-4c21-b527-a0b3bcbe9f25", "credits": 1.0, "key": "0bb08de2c6b8ad86", "t": 1791236250}

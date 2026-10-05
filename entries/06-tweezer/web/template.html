@@ -445,8 +445,10 @@ function statusCard(view, st){
       pend ? 'The job was submitted and is still waiting in the engine’s queue, so the chain went on without it. It is not counted in the totals.' :
       st.attempts && st.attempts.length > 1 ? `The engine returned an error each time it was tried (${st.attempts.length} attempts, below). None is counted in the totals or in the survival curve.` :
       'The engine returned an error. It was tried once and is not counted in the totals or in the survival curve.'),
-    st.attempts && st.attempts.length > 1 ? h('ul', {class:'note'}, st.attempts.map(t => h('li', {}, `${t.backend === 'ibm_fez' ? 'IBM hardware ibm_fez' : t.backend}: job `, h('b', {}, t.job_id), ` · ${t.error}${t.submitted_at ? ' · ' + fmtT(t.submitted_at) : ''}`))) :
+    st.attempts && st.attempts.length > 1 ? h('ul', {class:'note'}, st.attempts.map(t => h('li', {}, `${t.backend === 'ibm_fez' ? 'IBM hardware ibm_fez' : t.backend}${t.size ? `, ${t.size.replace('x', ' × ')} frame` : ''}${t.shots ? `, ${t.shots} shots` : ''}: job `, h('b', {}, t.job_id), ` · ${t.error}${t.submitted_at ? ' · ' + fmtT(t.submitted_at) : ''}`))) :
     st.job_id ? h('p', {class:'note'}, down ? 'Last attempt ' : 'Job ', h('b', {}, st.job_id)) : null,
+    st.small && (st.small.attempts || []).length ? h('p', {class:'note'}, `The ${st.small.attempts[0].size.replace('x', ' × ')} frame is the same 07:30 camera frame, scaled down with Pillow (Lanczos) and sent with fewer shots so the job would fit the engine’s time limit.`) : null,
+    st.why ? h('p', {class:'note'}, h('b', {}, 'Why it failed: '), st.why) : null,
     msg && !down && !(st.attempts && st.attempts.length > 1) ? h('p', {class:'note'}, 'Server said: ', msg) : null));
 }
 // ---------- ibm_fez: every hardware-capable stage was also sent to IBM's ibm_fez, on the same input it had in the recorded day
@@ -1057,8 +1059,11 @@ const SAY = {
   shader: () => `My light leaves the vacuum cell through coated glass. Tweezers near the corners lose more of it.`,
   blur: () => `Say cheese: the camera turns every atom into a soft spot.`,
   fryer: () => `Gain cranked too far: the same frame comes out deep-fried.`,
-  tessa: (d, r) => { const a = r.attempts || [], fz = a.filter(t => t.backend === 'ibm_fez').length, ot = a.filter(t => t.backend !== 'ibm_fez').map(t => t.backend);
-    return `The digitiser timed out ${a.length === 1 ? 'once' : a.length === 2 ? 'twice' : a.length + ' times'}: ${ot.length ? `on the ${ot.join(', ')} noise model and ` : ''}${fz === 1 ? 'once' : fz === 2 ? 'twice' : fz + ' times'} on the real ibm_fez chip, so this station is closed today.`; },
+  tessa: (d, r) => { const a = r.attempts || [], n = k => k === 1 ? 'once' : k === 2 ? 'twice' : k + ' times', by = {};
+    a.forEach(t => (by[t.size || '64x64'] = by[t.size || '64x64'] || []).push(t));
+    const part = Object.entries(by).map(([sz, l]) => { const fz = l.filter(t => t.backend === 'ibm_fez').length, ot = [...new Set(l.filter(t => t.backend !== 'ibm_fez').map(t => t.backend))];
+      return `on the ${sz.replace('x', ' × ')} frame, ${[l.length - fz ? `${n(l.length - fz)} on the ${ot.join(', ')} noise model` : '', fz ? `${n(fz)} on the real ibm_fez chip` : ''].filter(Boolean).join(' and ')}`; });
+    return `The digitiser timed out ${n(a.length)}: ${part.join('; ')}. So this station is closed today.`; },
   qpixl: d => `I counted the photons and called every tweezer: ${Math.round(d.accuracy * 144)} of 144 right at the classical threshold.`,
   maze: d => `I planned lanes for the moving tweezer: the zone goes from ${sum(d.zocc)} to ${sum(d.after)} of 20 atoms, as the camera believes.`,
   telablur: d => `${d.moves.length} drags pull spare atoms into the target zone.`,
@@ -1706,6 +1711,8 @@ function readout(st){
   if (st.earlier) row('Recorded run', `${st.earlier.where}, job ${st.earlier.job_id} (fed the later stages); F ${f3(st.earlier.hop && st.earlier.hop.F)}`);
   if (st.fez && (st.fez.attempts || []).length) row('ibm_fez attempts', st.fez.attempts.map(t => `job ${t.job_id}: ${t.error}${t.submitted_at ? ' (' + fmtT(t.submitted_at) + ')' : ''}`).join('; ') + (st.fez.why ? `; ${st.fez.why}` : ''));
   if (st.fez && st.fez.params && !st.earlier) row('ibm_fez params', JSON.stringify(st.fez.params));
+  if (st.small && (st.small.attempts || []).length) row('Downscaled retries', st.small.attempts.map(t => `${t.size.replace('x', ' × ')} frame on ${t.backend}, ${JSON.stringify(t.params)}: job ${t.job_id}: ${t.error}${t.submitted_at ? ' (' + fmtT(t.submitted_at) + ')' : ''}`).join('; '));
+  if (st.why) row('Why it failed', st.why);
   if (!st.completed) row('Status', st.pending ? 'still queued; not counted' : 'failed; not counted');
 }
 const MODE_NOTE = {scene:'Scene: pixel stand-ins placed by this stage’s real data; motion is decoration.', data:'Data: the stage’s charts and engine frames, as before. Every stage’s charts are also in The data, below.'};
@@ -1877,6 +1884,8 @@ function curve(){
       h('td', {}, st.earlier.qubits || '—'), h('td', {}, st.earlier.job_id), h('td', {}, 'yes')));
     ((st.fez && st.fez.attempts) || []).forEach(a => t.append(h('tr', {}, h('td', {}, st.clock), h('td', {}, st.engine), h('td', {}, 'ibm_fez re-run (same input)'),
       h('td', {}, 'IBM hardware (ibm_fez)'), h('td', {}, st.qubits || '—'), h('td', {}, a.job_id), h('td', {}, `no: ${a.error}`))));
+    ((st.small && st.small.attempts) || []).forEach(a => t.append(h('tr', {}, h('td', {}, st.clock), h('td', {}, st.engine), h('td', {}, `downscaled retry (${a.size.replace('x', ' × ')} frame, ${a.shots} shots)`),
+      h('td', {}, a.backend === 'ibm_fez' ? 'IBM hardware (ibm_fez)' : `Atlas emulator (${a.backend})`), h('td', {}, '—'), h('td', {}, a.job_id), h('td', {}, `no: ${a.error}`))));
     if (st.fez && st.fez.status === 'pending' && st.fez.job_id) t.append(h('tr', {}, h('td', {}, st.clock), h('td', {}, st.engine), h('td', {}, 'ibm_fez re-run, still queued'),
       h('td', {}, 'IBM hardware (ibm_fez)'), h('td', {}, st.qubits || '—'), h('td', {}, st.fez.job_id), h('td', {}, 'pending: not counted')));
   });

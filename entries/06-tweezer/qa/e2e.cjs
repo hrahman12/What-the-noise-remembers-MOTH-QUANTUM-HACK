@@ -79,7 +79,8 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
       proof.includes(`156 qubits on IBM ${piece.hardware}`) && proof.includes(`up to ${piece.qubits} simulated`), proof);
     check('load: opens on the first stage, Scene view', (await page.textContent('#c-clock')) === '05:00' &&
       (await page.getAttribute('#mode button[data-m="scene"]', 'aria-pressed')) === 'true', await page.textContent('#pos'));
-    const CH = await page.evaluate(() => CHAIN.map(s => ({ id: s.id, clock: s.clock, engine: s.engine, completed: !!s.completed, job_id: s.job_id, jobs: s.jobs || null, qubits: s.qubits || null, where: s.where || '' })));
+    const CH = await page.evaluate(() => CHAIN.map(s => ({ id: s.id, clock: s.clock, engine: s.engine, completed: !!s.completed, job_id: s.job_id, jobs: s.jobs || null, qubits: s.qubits || null, where: s.where || '',
+      attempts: (s.attempts || []).map(t => ({ job_id: t.job_id, size: t.size || null })), small: s.small ? { attempts: (s.small.attempts || []).map(t => ({ job_id: t.job_id })) } : null })));
     const N = CH.length;
     check('load: 18 stations on the lab path, one per stage', N === 18 && (await page.$$('#stns .stn')).length === N, N);
 
@@ -228,9 +229,13 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
     const open = await page.$$eval('details.drawer', ds => ds.map(d => d.open));
     check(`drawers: all ${nd} drawers open`, nd >= 4 && open.every(Boolean), JSON.stringify(open));
     const allRows = await page.$$eval('#jobs tr', trs => trs.slice(1).map(tr => [...tr.children].map(td => td.textContent)));
-    const jobRows = allRows.filter(r => !/^(ibm_fez re-run|recorded run)/.test(r[2]));      // the extra rows: ibm_fez attempts, recorded runs
+    const jobRows = allRows.filter(r => !/^(ibm_fez re-run|recorded run|downscaled retry)/.test(r[2]));      // the extra rows: ibm_fez attempts, recorded runs, 08:15 downscaled tries
     check('drawers: "Every engine, every job" lists all 18 stages with their job IDs and the failure tally', jobRows.length === N &&
       jobRows.every((r, i) => r[5] === (CH[i].job_id || '\u2014')) && (await page.textContent('#failnote')).includes(`${piece.jobs} completed and counted`), jobRows.length);
+    const smallTries = CH.flatMap(s => ((s.small && s.small.attempts) || []).map(t => t.job_id));
+    const smallRows = allRows.filter(r => /^downscaled retry/.test(r[2]));
+    check(`drawers: the jobs table has a row for each of the ${smallTries.length} 08:15 downscaled-frame tries, marked not done`,
+      smallRows.length === smallTries.length && smallTries.every(j => smallRows.some(r => r[5] === j && /^no:/.test(r[6]))), smallRows.map(r => r[5]).join(', '));
     await drawers.nth(0).locator('summary').click(); await page.waitForTimeout(80);
     check('drawers: a drawer closes again', !(await drawers.nth(0).evaluate(d => d.open)));
 
@@ -366,6 +371,14 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
     const cfez = (await page.textContent('#c-fez')).replace(/\s+/g, ' '), cro = (await page.textContent('#readout')).replace(/\s+/g, ' ');
     const cst = fz.find(s => s.id === 'comet');
     check('fez: the 05:30 card says what happened on ibm_fez and names the job', cst.ok ? (cfez.includes(`IBM ibm_fez, ${CH[ci].qubits} qubits, job ${CH[ci].job_id}`) && cst.tries.every(j => cfez.includes(j) && cro.includes(j)) && /recorded run/i.test(cfez)) : (cst.tries.every(j => cfez.includes(j) && cro.includes(j)) && /ibm_fez/.test(cfez) && /recorded run/.test(cfez)), cfez.slice(0, 200));
+
+    const ti = CH.findIndex(s => s.id === 'tessa');
+    if (ti >= 0 && !CH[ti].completed) {   // the closed 08:15 station: every attempt (all sizes) and the plain reason are on its card
+      await page.evaluate(i => go(i), ti); await page.waitForTimeout(250);
+      const tv = (await page.textContent('#view')).replace(/\s+/g, ' ');
+      check(`tessa: the closed 08:15 card lists all ${CH[ti].attempts.length} attempts (with frame size) and says why it failed`,
+        CH[ti].attempts.every(t => tv.includes(t.job_id)) && /16 × 16 frame/.test(tv) && /Why it failed/.test(tv) && /synchronous/.test(tv), tv.slice(0, 240));
+    }
 
     // ------------------------------------------------------------------ 9. every control in every stage card does something
     const FP = () => {

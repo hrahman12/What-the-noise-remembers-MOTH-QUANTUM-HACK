@@ -18,6 +18,21 @@ PARENT = {"maze": "labyrinth", "blurmidi": "blur-midi", "retro": "retrocausal-ec
 SIDE = {"fryer", "tamagotchi"}          # side branches: nothing downstream reads them
 
 
+def tries_text(att):
+    """'engine timeout: 64 × 64 once on fake_fez and twice on ibm_fez, then 16 × 16 twice on fake_fez'."""
+    n = {1: "once", 2: "twice"}
+    by = {}
+    for t in att:
+        by.setdefault(t.get("size") or "64x64", []).append(t["backend"])
+    parts = []
+    for size, bes in by.items():
+        cnt = {}
+        for b in bes:
+            cnt[b] = cnt.get(b, 0) + 1
+        parts.append(f"{size.replace('x', ' × ')} " + " and ".join(f"{n.get(k, f'{k} times')} on {b}" for b, k in cnt.items()))
+    return "engine timeout: " + ", then ".join(parts)
+
+
 def f3(x):
     return "–" if x is None else f"{x:.3f}"
 
@@ -28,7 +43,7 @@ def main():
     rows = ["| Time | Stage | Engine | Where it ran | Qubits | F | Chance | From |", "|---|---|---|---|---|---|---|---|"]
     for r in chain:
         if not r.get("completed"):
-            why = "engine timeout on fake_fez and twice on ibm_fez" if r["id"] == "tessa" else "server timeout"
+            why = tries_text(r.get("attempts") or []) if len(r.get("attempts") or []) > 1 else "server timeout"
             rows.append(f"| {r['clock']} | {r['title']} | {r['engine']} | – | – | **failed** ({why}) | | |")
             continue
         w = r.get("where") or ""
@@ -70,7 +85,8 @@ def main():
     spent = Atlas(piece="06-tweezer", credit_cap=CAP).spent()
     t = ledger_tally(chain)
     budget = (f"Credit cap {CAP:g} (50 for the recorded day, 24 for the first ibm_fez pass, 22 for one retry of each failed "
-              f"ibm_fez job);\nledgered {spent:g}. From the ledger and the job cache: "
+              f"ibm_fez job, and 2 more so the 08:15 downscaled-frame retry had 4 credits of room);\nledgered {spent:g}. "
+              "From the ledger and the job cache: "
               + tally_sentence(t, "in ENGINES.md") + "\n")
     s = re.sub(r"Credit cap \d+ \(50 for the recorded day[\s\S]*?\n(?=Spent in the recorded day)", lambda m: budget, s, count=1)
     (HERE / "README.md").write_text(s, encoding="utf-8")

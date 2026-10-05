@@ -8723,11 +8723,11 @@
   "clock": "08:15",
   "engine": "tessa-image-v1",
   "title": "Digitise the frame",
-  "analogy": "Planned: Atlas would encode the 64 x 64 camera frame onto qubits and decode it, first on fake_fez (IBM Fez's noise model, in the recorded day), then on the real ibm_fez chip (tried twice on 5 October 2026). No job completed: the engine did not respond in time, every time.",
+  "analogy": "Planned: Atlas would encode the 64 x 64 camera frame onto qubits and decode it, first on fake_fez (IBM Fez's noise model, in the recorded day), then on the real ibm_fez chip (tried twice on 5 October 2026). On 5 October the same frame, scaled down to 16 x 16 with Pillow, was also sent to fake_fez with 1024 shots instead of 4096 (tried twice), to fit the engine's time limit. No job completed: the engine did not respond in time, every time.",
   "role": "The camera frame becomes numbers: a quantum encode/measure/decode round trip. A side branch: 08:30 reads the camera frame directly.",
-  "where": "fake_fez, then ibm_fez twice: every attempt failed",
+  "where": "fake_fez, then ibm_fez twice (64 x 64), then fake_fez twice (16 x 16): every attempt failed",
   "completed": false,
-  "job_id": "56cdf27d-aae9-40ca-8ab6-d6fb20d99871",
+  "job_id": "3c9b053f-bd19-4c21-b527-a0b3bcbe9f25",
   "error": "The engine did not respond in time \u2014 retry the job",
   "attempts": [
    {
@@ -8736,6 +8736,10 @@
     "backend": "fake_fez",
     "attempt": 0,
     "error": "The engine did not respond in time (engine_timeout)",
+    "type": "engine_timeout",
+    "size": "64x64",
+    "shots": 4096,
+    "submitted_at": "2026-10-05T05:24:26Z",
     "note": "the recorded day's attempt, on the fake_fez noise model"
    },
    {
@@ -8749,7 +8753,9 @@
     "type": "engine_timeout",
     "error": "The engine did not respond in time \u2014 retry the job",
     "step": null,
-    "credits": 1.0
+    "credits": 1.0,
+    "size": "64x64",
+    "shots": 4096
    },
    {
     "engine": "tessa-image-v1",
@@ -8762,12 +8768,95 @@
     "submitted_at": "2026-10-05T19:08:53Z",
     "updated_at": "2026-10-05T19:10:18Z",
     "type": "engine_timeout",
-    "step": null
+    "step": null,
+    "size": "64x64",
+    "shots": 4096
+   },
+   {
+    "engine": "tessa-image-v1",
+    "job_id": "1c5e4238-36a6-4bdd-9128-807e48723dc6",
+    "backend": "fake_fez",
+    "size": "16x16",
+    "shots": 1024,
+    "params": {
+     "machine": "fake_fez",
+     "shots": 1024
+    },
+    "status": "failed",
+    "type": "engine_timeout",
+    "error": "The engine did not respond in time \u2014 retry the job",
+    "submitted_at": "2026-10-05T21:36:01Z",
+    "updated_at": "2026-10-05T21:37:04Z",
+    "credits": 1.0,
+    "downscaled": true,
+    "note": "the 07:30 camera frame scaled down to 16 x 16 with Pillow (Lanczos)"
+   },
+   {
+    "engine": "tessa-image-v1",
+    "job_id": "3c9b053f-bd19-4c21-b527-a0b3bcbe9f25",
+    "backend": "fake_fez",
+    "size": "16x16",
+    "shots": 1024,
+    "params": {
+     "machine": "fake_fez",
+     "shots": 1024
+    },
+    "status": "failed",
+    "type": "engine_timeout",
+    "error": "The engine did not respond in time \u2014 retry the job",
+    "submitted_at": "2026-10-05T21:37:28Z",
+    "updated_at": "2026-10-05T21:38:30Z",
+    "credits": 1.0,
+    "downscaled": true,
+    "note": "the 07:30 camera frame scaled down to 16 x 16 with Pillow (Lanczos)"
    }
   ],
+  "why": "tessa-image-v1 is a synchronous engine: one call has to encode, run and decode the whole frame. Every attempt timed out on Atlas's side 60 to 90 seconds after it was submitted, before the engine reported any progress, even a 16 x 16 copy of the frame at 1024 shots, so a smaller job did not help.",
   "params": {
-   "machine": "ibm_fez",
-   "shots": 4096
+   "machine": "fake_fez",
+   "shots": 1024
+  },
+  "small": {
+   "attempts": [
+    {
+     "engine": "tessa-image-v1",
+     "job_id": "1c5e4238-36a6-4bdd-9128-807e48723dc6",
+     "backend": "fake_fez",
+     "size": "16x16",
+     "shots": 1024,
+     "params": {
+      "machine": "fake_fez",
+      "shots": 1024
+     },
+     "status": "failed",
+     "type": "engine_timeout",
+     "error": "The engine did not respond in time \u2014 retry the job",
+     "submitted_at": "2026-10-05T21:36:01Z",
+     "updated_at": "2026-10-05T21:37:04Z",
+     "credits": 1.0,
+     "downscaled": true,
+     "note": "the 07:30 camera frame scaled down to 16 x 16 with Pillow (Lanczos)"
+    },
+    {
+     "engine": "tessa-image-v1",
+     "job_id": "3c9b053f-bd19-4c21-b527-a0b3bcbe9f25",
+     "backend": "fake_fez",
+     "size": "16x16",
+     "shots": 1024,
+     "params": {
+      "machine": "fake_fez",
+      "shots": 1024
+     },
+     "status": "failed",
+     "type": "engine_timeout",
+     "error": "The engine did not respond in time \u2014 retry the job",
+     "submitted_at": "2026-10-05T21:37:28Z",
+     "updated_at": "2026-10-05T21:38:30Z",
+     "credits": 1.0,
+     "downscaled": true,
+     "note": "the 07:30 camera frame scaled down to 16 x 16 with Pillow (Lanczos)"
+    }
+   ]
   },
   "fez": {
    "status": "failed",

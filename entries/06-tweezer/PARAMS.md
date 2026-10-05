@@ -45,3 +45,12 @@ Same input as the recorded run of each stage; ibm_fez is the default hardware ta
 | 10:00 | `graph-v1` | `{"num_qubits":20,"coupling_map":"47 edges","operations":"49 ZZ=-1 targets","shots":4096,"mode":"qpu","seed":6,"backend_name":"ibm_fez"}` | 122de1c4 | QPU job ended as failed |
 | 18:00 | `retrocausal-echo-v1` | `{"n_sites":24,"depth":8,"machine":"ibm_fez","exact":false,"mix":0.6,"feedback":0.3,"emit":"audio","via":"mothbackend","shots":4096,"fractional_gates":false}` | 3d9695df | ibm_fez estimator failed: [job_failed] job ended as failed |
 | 20:00 | `otoc-echo-v1` | `{"n_sites":24,"depth":8,"machine":"ibm_fez","exact":false,"disorder":0.04,"seed":6,"include_taps":true,"min_tap_level":0.0,"via":"mothbackend","shots":4096,"fractional_gates":false}` | 2ef272dc | ibm_fez estimator failed: [job_failed] job ended as failed |
+
+## 08:15 retry on a downscaled frame (did not complete; not counted)
+
+The same 07:30 camera frame scaled down with Pillow (Lanczos), sent by `run_tessa_small.py`.
+
+| Time | Engine | Frame | Params | Job ID | What happened |
+|---|---|---|---|---|---|
+| 08:15 | `tessa-image-v1` | 16 x 16 | `{"machine":"fake_fez","shots":1024}` | 1c5e4238 | The engine did not respond in time — retry the job |
+| 08:15 | `tessa-image-v1` | 16 x 16 | `{"machine":"fake_fez","shots":1024}` | 3c9b053f | The engine did not respond in time — retry the job |

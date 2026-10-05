@@ -32,7 +32,8 @@ from atlas.client import Atlas, AtlasError  # noqa: E402
 from lib import OUT, dump, load  # noqa: E402
 from stages import INFO, STAGES  # noqa: E402
 
-PIECE, CAP = "06-tweezer", 96     # 50 for the recorded day + 24 for the first ibm_fez pass + 22 for the ibm_fez retries
+PIECE, CAP = "06-tweezer", 98     # 50 for the recorded day + 24 for the first ibm_fez pass + 22 for the ibm_fez retries
+#                                   + 2, so the 08:15 downscaled-frame retry (run_tessa_small.py) had 4 credits of room
 
 
 def main():

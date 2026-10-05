@@ -99,7 +99,7 @@ shader table's colours) keep their own colours.
 | 07:00 | Light leaves through the glass | entanglement-shader-v1 | Atlas simulator | 21 (budget) | 0.990 | 0.249 | comet |
 | 07:30 | The camera sees spots, not atoms | blur-v1 | statevector simulator | 20 | 1.000 | 0.246 | shader |
 | 08:00 | Crank the gain too far (side branch) | deep-fryer-v1 | statevector simulator | 16 per tile | 0.498 | 0.495 | blur |
-| 08:15 | Digitise the frame | tessa-image-v1 | – | – | **failed** (engine timeout on fake_fez and twice on ibm_fez) | | |
+| 08:15 | Digitise the frame | tessa-image-v1 | – | – | **failed** (engine timeout: 64 × 64 once on fake_fez and twice on ibm_fez, then 16 × 16 twice on fake_fez) | | |
 | 08:30 | Count the photons, call each site | qpixl-v1 | **IBM hardware (ibm_fez)**; recorded run beside it: emulator, fake_fez noise model, F 0.843 | not reported | 0.743 | 0.430 | blur |
 | 09:00 | Plan the moves | labyrinth-v1 | **IBM hardware (ibm_fez)**; recorded run beside it: Aer emulator (noiseless), F 0.675 | 20 | 0.547 | 0.500 | qpixl |
 | 09:30 | Drag atoms into place | telablur-v1 | statevector simulator | 21 | 0.530 | 0.473 | labyrinth |
@@ -190,8 +190,8 @@ unit-disk graph (framing after Ebadi et al., Science 2022), not a Rydberg Hamilt
 
 ## Failures and the budget (all listed in ENGINES.md)
 
-Credit cap 96 (50 for the recorded day, 24 for the first ibm_fez pass, 22 for one retry of each failed ibm_fez job);
-ledgered 94. From the ledger and the job cache: 55 submissions for this piece: 26 completed and counted, 1 completed probe not used, 28 failed (11 of them free tamagotchi attempts; 40 credits went to the failed ones), plus 1 request refused before a job was created (HTTP 413, no credit). Every failure is listed in ENGINES.md with its job ID and error, and none is counted.
+Credit cap 98 (50 for the recorded day, 24 for the first ibm_fez pass, 22 for one retry of each failed ibm_fez job, and 2 more so the 08:15 downscaled-frame retry had 4 credits of room);
+ledgered 96. From the ledger and the job cache: 57 submissions for this piece: 26 completed and counted, 1 completed probe not used, 30 failed (11 of them free tamagotchi attempts; 42 credits went to the failed ones), plus 1 request refused before a job was created (HTTP 413, no credit). Every failure is listed in ENGINES.md with its job ID and error, and none is counted.
 Spent in the recorded day on jobs that did not complete: two shader-v0 budget probes (accepted, then timed
 out), the first ibm_fez submissions of coin-toss and comet (IBM submit step failed: "Stream removed"), graph-v1's first
 run (our coupling map left out the two ghost sites), blur-core at 21 qubits (computed, but its ~6 MB result exceeded
@@ -220,9 +220,15 @@ every ibm_fez job of this project failed; each stage was retried once (coin at 1
 | 20:00 otoc-echo-v1 | `18aa3832-83ff-46f1-b66a-d5c756895591`: 94 cells moved by the kick | 24 | 0.552 (0.173) | Aer exact `5e851a8c`, 0.999 (0.142) |
 
 tessa-image-v1 (08:15) did not complete on ibm_fez in two tries (`ed0a2239`, `56cdf27d`: "The engine did not respond in
-time"), after its recorded-day attempt on the fake_fez noise model failed the same way, so that station stays closed.
-Every failed try (the seven first-pass jobs and tessa's two) is listed with its job ID in ENGINES.md and on the page,
-and none is counted. Each ibm_fez result is the stage's primary data and scene (labelled *IBM ibm_fez, N qubits, job
+time"), after its recorded-day attempt on the fake_fez noise model failed the same way. tessa-image-v1 is a synchronous
+engine (`is_async` false, `execution_mode` handler): one call has to encode, run and decode the whole frame, and each
+of those tries timed out 60 to 90 seconds after it was submitted. So on 5 October (21:36 and 21:37 UTC) the same camera
+frame, scaled down from 64 x 64 to 16 x 16 with Pillow (Lanczos), was sent to the fake_fez emulator with 1024 shots
+instead of 4096 (`run_tessa_small.py`): `1c5e4238` and `3c9b053f` both failed the same way, about a minute after submission and still queued, with no progress
+reported. A smaller frame did not help, so no ibm_fez run (it was to be sent only if the emulator completed) and no
+32 x 32 run were sent (2 credits spent of the 4 allowed), and that station stays closed. Every failed try (the seven
+first-pass jobs, tessa's two ibm_fez tries and its two downscaled tries) is listed with its job ID in ENGINES.md and on
+the page, and none is counted. Each ibm_fez result is the stage's primary data and scene (labelled *IBM ibm_fez, N qubits, job
 ...*), and its hop F drives Tweezy's face, the stage gauge and the survival curve. The later stages still read the
 recorded run they were fed (re-feeding the day from ibm_fez would need new jobs for every downstream stage), so their
 hops are scored against that run. Not sent to ibm_fez: qdrive-api-v1 (its `machine='ibm_fez'` is rejected as not wired

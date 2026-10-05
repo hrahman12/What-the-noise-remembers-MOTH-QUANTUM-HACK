@@ -1,0 +1,4 @@
+  uploaded tessa_in_16.png -> 50f9650b-4c1b-4d1e-ad4a-c0e2269a8347
+  tessa-image-v1: submitted 1c5e4238-36a6-4bdd-9128-807e48723dc6
+FAILED: {"engine": "tessa-image-v1", "size": "16x16", "machine": "fake_fez", "shots": 1024, "params": {"machine": "fake_fez", "shots": 1024}, "input": "tessa_in_16.png", "job_id": "1c5e4238-36a6-4bdd-9128-807e48723dc6", "status": "failed", "type": "engine_timeout", "error": "The engine did not respond in time \u2014 retry the job", "submitted_at": "2026-10-05T21:36:01Z", "updated_at": "2026-10-05T21:37:04Z", "seconds": 82.7}
+ledgered spend 95 of 98

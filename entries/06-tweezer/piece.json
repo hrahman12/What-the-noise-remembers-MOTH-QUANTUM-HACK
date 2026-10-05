@@ -75,7 +75,7 @@
   }
  },
  "jobs": 26,
- "credits_spent": 94.0,
+ "credits_spent": 96.0,
  "deliverables": [
   "run.py",
   "stages.py",
@@ -116,13 +116,13 @@
  "status": "built",
  "honesty": "Atlas runs gate-model circuits and simulators, not atoms: every stage is a labelled analogy; only completed jobs are counted and every failure is listed with its job ID.",
  "blockers": [
-  "tessa-image-v1: engine timeouts on all 3 attempts (fake_fez, ibm_fez, ibm_fez), not counted",
+  "tessa-image-v1: engine timeouts on all 5 attempts (fake_fez 64x64, ibm_fez 64x64, ibm_fez 64x64, fake_fez 16x16, fake_fez 16x16), not counted",
   "tomography-api-v2: server timeout (tried once, not credited)",
   "recorded day (4 Oct): the first ibm_fez submissions failed at IBM's submit step ('Stream removed'), so the recorded hardware hops ran on ibm_marrakesh; on 5 Oct the hardware-capable stages were re-run on ibm_fez on the same inputs, and the completed ones are primary on the page",
   "did not complete on ibm_fez after two tries (5 Oct 2026, same inputs): tessa-image-v1 (08:15): ed0a2239 The engine did not respond in time \u2014 retry the job, 56cdf27d The engine did not respond in time \u2014 retry the job; that stage keeps its recorded run, or no result where the recorded run failed too, labelled",
   "qdrive-api-v1 cannot target ibm_fez (invalid_machine: not wired up yet, entry 19's jobs); tomography-api-v2 not sent to ibm_fez (free-text provider/backend with no validation, so no free probe; no IBM provider name documented; its Aer run failed at once with an engine timeout)",
   "qrc-audio-v1 dropped to stay inside the 50-credit cap (credits lost to failed jobs)",
   "blur-core-v1's input is 375 bitstrings in the lexicographic order of comet's counts (comet returns no per-shot order), not a time series; a re-run on randomly chosen rows was not possible at 50/50 credits",
-  "ledger: 55 submissions, 26 counted, 1 unused probe, 28 failed (11 free tamagotchi), 1 refused before a job (HTTP 413)"
+  "ledger: 57 submissions, 26 counted, 1 unused probe, 30 failed (11 free tamagotchi), 1 refused before a job (HTTP 413)"
  ]
 }

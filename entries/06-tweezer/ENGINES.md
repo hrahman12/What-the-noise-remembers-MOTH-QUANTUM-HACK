@@ -1,6 +1,6 @@
 # ENGINES: Tweezer chain
 
-**16 engines completed, 26 completed jobs counted.** Credits ledgered for this piece: **94 of 96** (50 for the recorded day, 24 for the first ibm_fez pass of 5 October 2026, 22 for one retry of each failed ibm_fez job). From the ledger and the job cache: 55 submissions for this piece: 26 completed and counted, 1 completed probe not used, 28 failed (11 of them free tamagotchi attempts; 40 credits went to the failed ones), plus 1 request refused before a job was created (HTTP 413, no credit). Every failure is listed below with its job ID and error, and none is counted.
+**16 engines completed, 26 completed jobs counted.** Credits ledgered for this piece: **96 of 98** (50 for the recorded day, 24 for the first ibm_fez pass of 5 October 2026, 22 for one retry of each failed ibm_fez job, and 2 more so the 08:15 downscaled-frame retry had 4 credits of room). From the ledger and the job cache: 57 submissions for this piece: 26 completed and counted, 1 completed probe not used, 30 failed (11 of them free tamagotchi attempts; 42 credits went to the failed ones), plus 1 request refused before a job was created (HTTP 413, no credit). Every failure is listed below with its job ID and error, and none is counted.
 
 Atlas runs gate-model circuits and simulators, never atoms. Each row says what stood in for what.
 
@@ -12,7 +12,7 @@ Atlas runs gate-model circuits and simulators, never atoms. Each row says what s
 | 4 | 07:00 | `entanglement-shader-v1` | Light leaves through the glass | comet snapshot (which tweezers hold atoms): attempt 1 of the recorded load (ibm_marrakesh) | 60 x 60 R and T lookup tables | 21 (the engine's 21-qubit budget: (6 layers, 6 rays) is the largest configuration with rays >= layers that its validator accepts; (6, 7) is rejected as over 21 qubits (entry 03's probe jobs). The engine does not report an exact count.) | Atlas simulator | `743d08b4-4f6b-4bd5-9ce6-9bd135c362b6` | yes |
 | 5 | 07:30 | `blur-v1` | The camera sees spots, not atoms | ideal fluorescence render (atoms x glass transmission) | blurred camera frame | 20 (1024 x 1024 region: ceil(log2 1024) x 2 = 20 (engine rule)) | Atlas statevector simulator | `d612dc36-4f02-4d6c-820e-42f9b3a8ab24` | yes |
 | 6 | 08:00 | `deep-fryer-v1` | Crank the gain too far | camera frame (256 x 256) | deep-fried frame | 16 (tile_size 4 -> 4 x 4 = 16 qubits per tile (engine description; the maximum tile_size)) | Atlas statevector simulator | `c60ddf89-7ce6-4b7a-9285-9c2ffbd262b8` | yes |
-| 7 | 08:15 | `tessa-image-v1` | Digitise the frame |  |  |  | fake_fez, then ibm_fez twice: every attempt failed | `56cdf27d-aae9-40ca-8ab6-d6fb20d99871` | no (failed, not counted) |
+| 7 | 08:15 | `tessa-image-v1` | Digitise the frame |  |  |  | fake_fez, then ibm_fez twice (64 x 64), then fake_fez twice (16 x 16): every attempt failed | `3c9b053f-bd19-4c21-b527-a0b3bcbe9f25` | no (failed, not counted) |
 | 8 | 08:30 | `qpixl-v1` | Count the photons, call each site | 144 per-tweezer counts from blur | decoded counts; threshold 0.35 | address qubits ceil(log2 144) = 8 plus data qubits on the engine's lattice; total not reported | IBM hardware (ibm_fez) | `e3b9dbd1-8919-4667-a048-a5e112f7f6be, c9f5292e-37f6-4cdf-84c9-9a955ce79eca` | yes |
 | 9 | 09:00 | `labyrinth-v1` | Plan the moves | detected zone occupancy (11/20 loaded) -> 22 wanted lanes | most likely maze opens 12 lanes; zone after moves 19/20 | 20 (one qubit per room: 4 x 5 grid = 20 (level_data.num_qubits; the target zone, the same level as the recorded Aer run)) | IBM hardware (ibm_fez) | `a8fdcac4-4a50-4168-a3b7-2c11826c6f09, 900b2088-fc88-4502-bb8b-37dd188faac2` | yes |
 | 10 | 09:30 | `telablur-v1` | Drag atoms into place | before (79 atoms) and after (79 atoms) frames | the halfway frame | 21 (1024 x 1024: 20 pixel qubits + 1 selector (engine description: n + 1)) | Atlas statevector simulator | `a906c79c-ae77-43df-8d66-09bb56d52366` | yes |
@@ -57,7 +57,7 @@ F = classical (Bhattacharyya) fidelity between what a stage received and what it
 | `coin-toss-v1` | `78ab6835-0a3f-48c1-8f09-a491f6cf5c2b` | unavailable: Stream removed (Socket closed) at the IBM submit step | retried once with the platform's least-busy backend |
 | `comet-qrng-v1` | `dc042700-e2a2-4386-b4de-db8d5cf6d86e` | unavailable at the IBM submit step (Resolving IBM backend) | retried once on ibm_marrakesh |
 | `graph-v1` | `a9b7f426-b0c4-40c6-992a-6ababba6be30` | validation_error at build: every qubit must appear in coupling_map; missing [15, 18] (the two empty 'ghost' sites) | our bug; retried once with the full zone lattice in coupling_map |
-| `tessa-image-v1` | `ca5e2709-ead8-49d7-b8fd-425422677d3d` | engine_timeout (The engine did not respond in time) | known server timeouts: tried once, not retried, not credited |
+| `tessa-image-v1` | `ca5e2709-ead8-49d7-b8fd-425422677d3d` | engine_timeout (The engine did not respond in time) | the recorded day's attempt (known server timeouts were tried once then); retried on 5 Oct 2026, twice on ibm_fez and twice on a 16 x 16 frame (rows below); not counted |
 | `tamagotchi-v1` | `888ac6e7-fc77-43ef-b52d-72a3cbd280d9` | engine_timeout | free (0 credits); engine not responding during the build |
 | `tomography-api-v2` | `a26d52ac-ba54-43c5-961e-69f4418da794` | engine_timeout (The engine did not respond in time) | known server timeouts: tried once, not retried, not credited |
 | `blur-core-v1` | none (refused before a job was created) | HTTP 413: request body over the 1,048,576-byte limit | no job created, no credit; re-run at 21 qubits (17 x 129 x 144) |
@@ -71,6 +71,8 @@ F = classical (Bhattacharyya) fidelity between what a stage received and what it
 | `graph-v1` | `122de1c4-d04e-41cb-aba6-5633cc20d3a7` | ibm_fez re-run of the 10:00 stage (same input as the recorded run), submitted 2026-10-05T14:11:28Z: QPU job ended as failed (ibm_collection_failed) | 5 credits ledgered; not counted |
 | `retrocausal-echo-v1` | `3d9695df-61ea-413b-9a4f-e16a223a047b` | ibm_fez re-run of the 18:00 stage (same input as the recorded run), submitted 2026-10-05T14:12:38Z: ibm_fez estimator failed: [job_failed] job ended as failed (execution_failed) | 2 credits ledgered; not counted |
 | `otoc-echo-v1` | `2ef272dc-c355-4baa-b3af-7e8e56953101` | ibm_fez re-run of the 20:00 stage (same input as the recorded run), submitted 2026-10-05T14:12:48Z: ibm_fez estimator failed: [job_failed] job ended as failed (execution_failed) | 1 credits ledgered; not counted |
+| `tessa-image-v1` | `1c5e4238-36a6-4bdd-9128-807e48723dc6` | downscaled retry of the 08:15 stage (the camera frame scaled to 16 x 16 with Pillow, 1024 shots, on fake_fez), submitted 2026-10-05T21:36:01Z: The engine did not respond in time — retry the job (engine_timeout) | 1 credits ledgered; not counted |
+| `tessa-image-v1` | `3c9b053f-bd19-4c21-b527-a0b3bcbe9f25` | downscaled retry of the 08:15 stage (the camera frame scaled to 16 x 16 with Pillow, 1024 shots, on fake_fez), submitted 2026-10-05T21:37:28Z: The engine did not respond in time — retry the job (engine_timeout) | 1 credits ledgered; not counted |
 | `tamagotchi-v1` | `b5e06df9-0c7b-49b7-8b51-c9af66534c4c` | did not complete (engine not responding during the build) | 0 credits; not counted |
 | `tamagotchi-v1` | `bcdde688-30ff-4648-9857-977d6fc574a9` | did not complete (engine not responding during the build) | 0 credits; not counted |
 | `tamagotchi-v1` | `dbbb1f0d-f78d-40dc-ac79-c94953700682` | did not complete (engine not responding during the build) | 0 credits; not counted |
@@ -100,6 +102,17 @@ ibm_fez (IBM Heron r2, 156 qubits) is the default hardware target in `stages.py`
 | 20:00 | `otoc-echo-v1` | 24 | **completed**: primary on the page | `18aa3832-83ff-46f1-b66a-d5c756895591` (earlier try `2ef272dc-c355-4baa-b3af-7e8e56953101` failed: ibm_fez estimator failed: [job_failed] job ended as failed (execution_failed)) | Atlas simulator (Aer, exact), `5e851a8c-9469-47c6-9dde-e489f7a22f80` |
 
 Not run on ibm_fez: qdrive-api-v1 (its `machine='ibm_fez'` is rejected at run time with `invalid_machine`, 'reserved for a future IBM Quantum Runtime backend ... not wired up yet', as entry 19's jobs 35c1e8df, fa5a9846 and b4a7e89a found; a run would only spend a credit) and tomography-api-v2 (its schema takes free-text `provider_name` / `backend_name` with no list of values and the engine has no validation step, so there is no free 422 probe; no IBM provider name is documented; and its only run, on Aer, failed at once with an engine timeout). tamagotchi-v1 and the blur family are simulator-only engines and stay on their simulators.
+
+## 08:15 retry on a downscaled frame (5 October 2026)
+
+Every 64 x 64 attempt at 08:15 failed with engine_timeout and no progress reported (the recorded day's attempt on fake_fez, then two on ibm_fez). `tessa-image-v1` is a synchronous engine (`GET /engines/tessa-image-v1`: `is_async` false, `execution_mode` handler), so the whole encode, run and decode has to finish inside one call. `run_tessa_small.py` therefore sent the same 07:30 camera frame scaled down with Pillow (Lanczos), with fewer shots, to the emulator first; the plan was ibm_fez once only if the emulator completed, and 32 x 32 only if 16 x 16 completed fast. Credit allowance: 4.
+
+| Frame | Machine | Shots | Job ID | Submitted (UTC) | Failed (UTC) | What happened |
+|---|---|---|---|---|---|---|
+| 16 x 16 | fake_fez | 1024 | `1c5e4238-36a6-4bdd-9128-807e48723dc6` | 2026-10-05T21:36:01Z | 2026-10-05T21:37:04Z | The engine did not respond in time — retry the job (engine_timeout) |
+| 16 x 16 | fake_fez | 1024 | `3c9b053f-bd19-4c21-b527-a0b3bcbe9f25` | 2026-10-05T21:37:28Z | 2026-10-05T21:38:30Z | The engine did not respond in time — retry the job (engine_timeout) |
+
+Both tries of the same configuration failed the same way, about a minute after submission and still 'queued' when last polled, so nothing more was sent: no ibm_fez run and no 32 x 32 run. The station stays closed. tessa-image-v1 is a synchronous engine: one call has to encode, run and decode the whole frame. Every attempt timed out on Atlas's side 60 to 90 seconds after it was submitted, before the engine reported any progress, even a 16 x 16 copy of the frame at 1024 shots, so a smaller job did not help.
 
 ## Ordering note (comet's record)
 

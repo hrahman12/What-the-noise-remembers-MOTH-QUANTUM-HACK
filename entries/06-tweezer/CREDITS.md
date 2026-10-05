@@ -19,7 +19,9 @@ qdrive-api-v1, tomography-api-v2, blur-core-v1. blur-v1 wraps the QuantumBlur li
 (https://github.com/qiskit-community/QuantumBlur). IBM Quantum hardware was reached through Atlas (and, for the echo engines, Moth's execution service): IBM's ibm_fez
 (Heron r2, 156 qubits) is the hardware target of every hardware-capable stage and the primary result wherever its job
 completed (5 October 2026); ibm_marrakesh ran the recorded day's coin and comet jobs, kept as labelled comparisons.
-Every ibm_fez attempt, completed or not, is listed with its job ID in ENGINES.md.
+Every ibm_fez attempt, completed or not, is listed with its job ID in ENGINES.md. tessa-image-v1 never completed for this
+piece, including two tries on a 16 x 16 copy of the camera frame (downscaled with Pillow) on the fake_fez emulator; it is
+credited as an engine that was tried, and those jobs are listed in ENGINES.md too.
 
 The 21-qubit configuration limit of entanglement-shader-v1 ((6 layers, 6 rays) accepted, (6, 7) rejected) comes from
 probe jobs run by entry 03 of this project (`entries/03-moth-eye/out/probes.json`); this piece did not repeat them.

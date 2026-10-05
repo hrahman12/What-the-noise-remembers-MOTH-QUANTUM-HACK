@@ -1,7 +1,7 @@
 {
  "piece": "06-tweezer",
  "ok": true,
- "passed": 74,
+ "passed": 76,
  "failed": [],
  "steps": [
   {
@@ -122,12 +122,12 @@
   {
    "step": "sound: MIDI score (Web Audio synth) starts: oscillators scheduled, button says Stop, progress moves",
    "ok": true,
-   "detail": "osc 0->141, bar 7%"
+   "detail": "osc 0->141, bar 6.8%"
   },
   {
    "step": "sound: echoed WAV (MP3) plays, and starting it stopped the MIDI (one sound at a time)",
    "ok": true,
-   "detail": "{\"paused\":false,\"t\":1.105601}"
+   "detail": "{\"paused\":false,\"t\":1.087011}"
   },
   {
    "step": "sound: pressing Stop stops and rewinds it",
@@ -137,7 +137,7 @@
   {
    "step": "sound: the recorded echo (exact Aer run) plays from its own row",
    "ok": true,
-   "detail": "{\"paused\":false,\"t\":1.275556}"
+   "detail": "{\"paused\":false,\"t\":1.129552}"
   },
   {
    "step": "sound: 18:00 scene \"Echoed\" plays the engine output",
@@ -160,7 +160,7 @@
   {
    "step": "video: tweezer_day.mp4 is attached lazily, decodes and plays (no autoplay attribute)",
    "ok": true,
-   "detail": "{\"paused\":false,\"t\":1.406906,\"w\":1280,\"d\":60,\"autoplay\":false}"
+   "detail": "{\"paused\":false,\"t\":1.370147,\"w\":1280,\"d\":60,\"autoplay\":false}"
   },
   {
    "step": "video: starting a sound pauses the film",
@@ -175,6 +175,11 @@
    "step": "drawers: \"Every engine, every job\" lists all 18 stages with their job IDs and the failure tally",
    "ok": true,
    "detail": "18"
+  },
+  {
+   "step": "drawers: the jobs table has a row for each of the 2 08:15 downscaled-frame tries, marked not done",
+   "ok": true,
+   "detail": "1c5e4238-36a6-4bdd-9128-807e48723dc6, 3c9b053f-bd19-4c21-b527-a0b3bcbe9f25"
   },
   {
    "step": "drawers: a drawer closes again",
@@ -234,7 +239,7 @@
   {
    "step": "share: \"Copy link to this stage\" copies a link with the stage and view",
    "ok": true,
-   "detail": "Link copied (10:00, Data view) | http://127.0.0.1:6330/index.html#graph.data"
+   "detail": "Link copied (10:00, Data view) | http://127.0.0.1:6331/index.html#graph.data"
   },
   {
    "step": "share: reloading the copied link restores 10:00 graph-v1 in the Data view",
@@ -275,7 +280,7 @@
   {
    "step": "data: the 2 failed job IDs shown (labelled \"did not complete\") are in cache/ledger.jsonl",
    "ok": true,
-   "detail": "56cdf27d-aae9-40ca-8ab6-d6fb20d99871, a26d52ac-ba54-43c5-961e-69f4418da794"
+   "detail": "3c9b053f-bd19-4c21-b527-a0b3bcbe9f25, a26d52ac-ba54-43c5-961e-69f4418da794"
   },
   {
    "step": "data: PARAMS.md lists exactly the completed jobs on the page",
@@ -320,6 +325,11 @@
    "step": "fez: the 05:30 card says what happened on ibm_fez and names the job",
    "ok": true,
    "detail": "IBM ibm_fez, 156 qubits, job 7a6587bb-9185-4038-a7d2-fab4c5a87193This stage ran on IBM hardware ibm_fez (job 7a6587bb-9185-4038-a7d2-fab4c5a87193, 156 qubits) on the same input as the recorded run, an"
+  },
+  {
+   "step": "tessa: the closed 08:15 card lists all 5 attempts (with frame size) and says why it failed",
+   "ok": true,
+   "detail": "This hop did not completetessa-image-v1: failedThe engine returned an error each time it was tried (5 attempts, below). None is counted in the totals or in the survival curve.fake_fez, 64 × 64 frame, 4096 shots: job ca5e2709-ead8-49d7-b8fd-"
   },
   {
    "step": "controls: no control starts out disabled in a stage card",

@@ -71,7 +71,8 @@ def main():
     L = ["# ENGINES: Tweezer chain", "",
          f"**{len(engines)} engines completed, {len(set(jobs))} completed jobs counted.** "
          f"Credits ledgered for this piece: **{spent:g} of {CAP:g}** (50 for the recorded day, 24 for the first ibm_fez "
-         f"pass of 5 October 2026, 22 for one retry of each failed ibm_fez job). From the ledger and the job cache: "
+         f"pass of 5 October 2026, 22 for one retry of each failed ibm_fez job, and 2 more so the 08:15 downscaled-frame "
+         f"retry had 4 credits of room). From the ledger and the job cache: "
          f"{tally_sentence(tally, 'below')}", "",
          "Atlas runs gate-model circuits and simulators, never atoms. Each row says what stood in for what.", "",
          "| # | Time | Engine | Role in the day | Input | Output | Qubits | Where it ran | Job ID | Completed? |",
@@ -104,6 +105,15 @@ def main():
             seen.add(t.get("job_id"))
             L.append(f"| `{t['engine']}` | `{t['job_id']}` | ibm_fez re-run of the {f['clock']} stage (same input as the recorded "
                      f"run), submitted {t.get('submitted_at', '')}: {cell(t.get('error', ''))} ({t.get('type', '')}) | "
+                     f"{(t.get('credits') or 0):g} credits ledgered; not counted |")
+    for r in chain:                     # the 08:15 retries on a downscaled copy of the camera frame (run_tessa_small.py)
+        for t in (r.get("small") or {}).get("attempts") or []:
+            if t.get("job_id") in seen:
+                continue
+            seen.add(t.get("job_id"))
+            L.append(f"| `{t['engine']}` | `{t['job_id']}` | downscaled retry of the {r['clock']} stage (the camera frame "
+                     f"scaled to {t['size'].replace('x', ' x ')} with Pillow, {t['shots']} shots, on {t['backend']}), submitted "
+                     f"{t.get('submitted_at', '')}: {cell(t.get('error', ''))} ({t.get('type', '')}) | "
                      f"{(t.get('credits') or 0):g} credits ledgered; not counted |")
     for r in chain:
         if not r.get("completed") and r.get("job_id") and r["job_id"] not in seen:
@@ -167,6 +177,24 @@ def main():
           "`provider_name` / `backend_name` with no list of values and the engine has no validation step, so there is no free "
           "422 probe; no IBM provider name is documented; and its only run, on Aer, failed at once with an engine timeout). "
           "tamagotchi-v1 and the blur family are simulator-only engines and stay on their simulators."]
+    for r in chain:
+        sm = (r.get("small") or {}).get("attempts") or []
+        if not sm:
+            continue
+        L += ["", f"## {r['clock']} retry on a downscaled frame (5 October 2026)", "",
+              f"Every 64 x 64 attempt at {r['clock']} failed with engine_timeout and no progress reported (the recorded day's "
+              "attempt on fake_fez, then two on ibm_fez). `tessa-image-v1` is a synchronous engine (`GET /engines/tessa-image-v1`: "
+              "`is_async` false, `execution_mode` handler), so the whole encode, run and decode has to finish inside one call. "
+              "`run_tessa_small.py` therefore sent the same 07:30 camera frame scaled down with Pillow (Lanczos), with fewer "
+              "shots, to the emulator first; the plan was ibm_fez once only if the emulator completed, and 32 x 32 only if "
+              "16 x 16 completed fast. Credit allowance: 4.", "",
+              "| Frame | Machine | Shots | Job ID | Submitted (UTC) | Failed (UTC) | What happened |", "|---|---|---|---|---|---|---|"]
+        for t in sm:
+            L.append(f"| {t['size'].replace('x', ' x ')} | {t['backend']} | {t['shots']} | `{t['job_id']}` | "
+                     f"{t.get('submitted_at') or ''} | {t.get('updated_at') or ''} | {cell(t.get('error', ''))} ({t.get('type', '')}) |")
+        L += ["", "Both tries of the same configuration failed the same way, about a minute after submission and still "
+              "'queued' when last polled, so nothing more was sent: no ibm_fez run and no 32 x 32 run. The station stays "
+              "closed. " + (r.get("why") or "")]
     L += ["", "## Ordering note (comet's record)", "",
           "comet-qrng-v1 returns counts per bitstring (`raw.memory_available` is false), so there is no shot-by-shot time "
           "order. All 10,000 bitstrings were distinct and the counts arrive with their keys sorted lexicographically. "
@@ -205,6 +233,13 @@ def main():
             P.append(f"| {r['clock']} | `{r['engine']}` | `{cell(p)[:300]}` | "
                      f"{', '.join(t['job_id'][:8] for t in f['attempts'])} | "
                      f"{cell('; '.join(t.get('error', '') for t in f['attempts']))} |")
+    for r in [r for r in chain if (r.get("small") or {}).get("attempts")]:
+        P += ["", f"## {r['clock']} retry on a downscaled frame (did not complete; not counted)", "",
+              "The same 07:30 camera frame scaled down with Pillow (Lanczos), sent by `run_tessa_small.py`.", "",
+              "| Time | Engine | Frame | Params | Job ID | What happened |", "|---|---|---|---|---|---|"]
+        for t in r["small"]["attempts"]:
+            P.append(f"| {r['clock']} | `{r['engine']}` | {t['size'].replace('x', ' x ')} | "
+                     f"`{json.dumps(t['params'], separators=(',', ':'))}` | {t['job_id'][:8]} | {cell(t.get('error', ''))} |")
     (HERE / "PARAMS.md").write_text("\n".join(P) + "\n", encoding="utf-8")
     print(f"ENGINES.md / PARAMS.md: {len(engines)} engines, {len(set(jobs))} jobs, spent {spent:g}")
 
@@ -228,8 +263,9 @@ def main():
     deliverables += [f"out/{n}" for n in ("readout_score.mid", "readout_blurred.mid", "echo_in.wav", "echo_out.wav", "echo_out_fez.wav")
                      if (HERE / "out" / n).exists()]
     blockers = [f"{r['engine']}: " + ('engine not responding during the build' if r.get('down') else 'still queued' if r.get('pending')
-                else (f"engine timeouts on all {len(r['attempts'])} attempts ({', '.join(t.get('backend', '') for t in r['attempts'])}), "
-                      "not counted") if len(r.get('attempts') or []) > 1 else 'server timeout (tried once, not credited)')
+                else (f"engine timeouts on all {len(r['attempts'])} attempts ("
+                      + ", ".join(f"{t.get('backend', '')} {t.get('size', '')}".strip() for t in r['attempts'])
+                      + "), not counted") if len(r.get('attempts') or []) > 1 else 'server timeout (tried once, not credited)')
                 for r in missing]
     blockers.append("recorded day (4 Oct): the first ibm_fez submissions failed at IBM's submit step ('Stream removed'), so "
                     "the recorded hardware hops ran on ibm_marrakesh; on 5 Oct the hardware-capable stages were re-run on "

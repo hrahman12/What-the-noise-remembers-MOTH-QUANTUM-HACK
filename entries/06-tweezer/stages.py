@@ -361,23 +361,49 @@ def stage_fryer(ctx):
 # ================================================================== 08:15 tessa-image-v1 (digitise the frame)
 P_TESSA = {"machine": HW, "shots": 4096}
 TESSA_FIRST = {"engine": "tessa-image-v1", "job_id": "ca5e2709-ead8-49d7-b8fd-425422677d3d", "backend": "fake_fez",
-               "attempt": 0, "error": "The engine did not respond in time (engine_timeout)",
+               "attempt": 0, "error": "The engine did not respond in time (engine_timeout)", "type": "engine_timeout",
+               "size": "64x64", "shots": 4096, "submitted_at": "2026-10-05T05:24:26Z",
                "note": "the recorded day's attempt, on the fake_fez noise model"}
+# 5 Oct: the same camera frame scaled down with Pillow and sent with fewer shots, to fit the engine's time limit.
+# run_tessa_small.py submits (emulator first, ibm_fez only if the emulator completes) and logs every try here.
+TESSA_SMALL = OUT / "tessa_small.json"
+TESSA_WHY = ("tessa-image-v1 is a synchronous engine: one call has to encode, run and decode the whole frame. Every "
+             "attempt timed out on Atlas's side 60 to 90 seconds after it was submitted, before the engine reported any "
+             "progress, even a 16 x 16 copy of the frame at 1024 shots, so a smaller job did not help.")
+
+
+def small_attempts():
+    """The downscaled-frame tries from out/tessa_small.json, in the same shape as the other attempts."""
+    log = load(TESSA_SMALL) if TESSA_SMALL.exists() else []
+    return [{"engine": e["engine"], "job_id": e["job_id"], "backend": e["machine"], "size": e["size"], "shots": e["shots"],
+             "params": e["params"], "status": e["status"], "type": e.get("type"), "error": e.get("error"),
+             "submitted_at": e.get("submitted_at"), "updated_at": e.get("updated_at"), "credits": e.get("credits"),
+             "downscaled": True,
+             "note": f"the 07:30 camera frame scaled down to {e['size'].replace('x', ' x ')} with Pillow (Lanczos)"}
+            for e in log]
 
 
 def stage_tessa(ctx):
     """A side branch now: the day was recorded while this engine timed out, so 08:30 reads the camera frame directly.
-    The stage is retried on ibm_fez (real hardware), on the same 64 x 64 camera frame."""
+    The stage is retried on ibm_fez (real hardware), on the same 64 x 64 camera frame, and then on a downscaled copy of
+    that frame (run_tessa_small.py); no try has completed, so the station stays closed with every attempt listed."""
     parent = "blur"
     src = OUT / "tessa_in.png"
     Image.open(ctx[parent]["img"]).convert("L").resize((64, 64), Image.LANCZOS).save(src)
     prev = site_sums(grey(src))
     fz = fez_run(ctx, "tessa", "tessa-image-v1", P_TESSA, files={"image": src}, timeout=QPU)
     base = {"id": "tessa", "clock": "08:15", "engine": "tessa-image-v1", "title": "Digitise the frame"}
+    small = small_attempts()
+    if any(t["status"] == "completed" for t in small):   # none has: wire a completed one in as the stage's result
+        raise RuntimeError("a downscaled 08:15 tessa run completed; stages.stage_tessa does not show it yet")
     if not fz["rec"]:
-        last = (fz["attempts"] or [TESSA_FIRST])[-1]
+        fez64 = [{**t, "size": "64x64", "shots": P_TESSA["shots"]} for t in fz["attempts"]]
+        tries = [TESSA_FIRST] + fez64 + [t for t in small if t["status"] != "completed"]
+        last = tries[-1]
         return {**base, **INFO["tessa"], "completed": False, "job_id": last.get("job_id"), "error": last.get("error"),
-                "attempts": [TESSA_FIRST] + fz["attempts"], "params": P_TESSA,
+                "attempts": tries, "why": TESSA_WHY,
+                "params": last.get("params") or {"machine": last.get("backend"), "shots": last.get("shots")},   # the shown job's
+                "small": {"attempts": [t for t in small if t["status"] != "completed"]},
                 "fez": {"status": fz["status"], "attempts": fz["attempts"], "why": fz.get("why"), "params": P_TESSA}}
     a = ctx["atlas"]
     rec = fz["rec"]
@@ -1270,10 +1296,12 @@ INFO = {
     "tessa": {"clock": "08:15", "engine": "tessa-image-v1", "title": "Digitise the frame",
               "analogy": "Planned: Atlas would encode the 64 x 64 camera frame onto qubits and decode it, first on fake_fez "
                          "(IBM Fez's noise model, in the recorded day), then on the real ibm_fez chip (tried twice on "
-                         "5 October 2026). No job completed: the engine did not respond in time, every time.",
+                         "5 October 2026). On 5 October the same frame, scaled down to 16 x 16 with Pillow, was also sent "
+                         "to fake_fez with 1024 shots instead of 4096 (tried twice), to fit the engine's time limit. "
+                         "No job completed: the engine did not respond in time, every time.",
               "role": "The camera frame becomes numbers: a quantum encode/measure/decode round trip. A side branch: "
                       "08:30 reads the camera frame directly.",
-              "where": "fake_fez, then ibm_fez twice: every attempt failed"},
+              "where": "fake_fez, then ibm_fez twice (64 x 64), then fake_fez twice (16 x 16): every attempt failed"},
     "tamagotchi": {"clock": "11:00", "engine": "tamagotchi-v1", "title": "Keep the answer alive", "down": True,
                    "analogy": "Planned: Atlas would write the 20-bit Rydberg answer into 30 Steane logical qubits (210 data "
                               "qubits) and run syndrome rounds on Aer's stabilizer simulator. The engine did not respond.",
