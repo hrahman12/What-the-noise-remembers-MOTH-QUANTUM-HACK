@@ -38,3 +38,6 @@ site_check_report.json
 # third-party screenshots and reference copies (not ours to redistribute)
 Moth hack*.png
 reference/
+
+# demo recording scratch
+common/demo_work/

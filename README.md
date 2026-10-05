@@ -8,7 +8,16 @@
 
 No install and no login. Every piece runs in the browser.
 
+[![Highlight reel: Quantum Lenia, Moth Eye, The Hole in the Penrose, Magic Angle, Moth to Flame, Jam the Bat, Frog Chorus, Scroll Unroll and Busy Beaver Score, each played live in the browser](docs/demos/highlights.gif)](https://hrahman12.github.io/What-the-noise-remembers-MOTH-QUANTUM-HACK/)
+
+*Nine of the pieces, played live in the browser. Click the reel to play them yourself. ([MP4 version](docs/demos/highlights.mp4))*
+
+<details>
+<summary>The home page</summary>
+
 [![A tour of the home page: drag the before/after slider, meet the cast, open a challenge](docs/demos/hub.gif)](https://hrahman12.github.io/What-the-noise-remembers-MOTH-QUANTUM-HACK/)
+
+</details>
 
 ## The 22 pieces
 
