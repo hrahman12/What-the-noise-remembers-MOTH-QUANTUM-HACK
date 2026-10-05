@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="What the Noise Remembers: 22 playable quantum pieces for Moth Hack 2026, built on real Moth Quantum Atlas jobs.">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:#FBFAF9}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>What the Noise Remembers</title>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap");
+/* What the Noise Remembers: shared brand kit for all 22 pieces.
+   Look: in the spirit of the Moth Hack 2026 brief pages. Warm paper ground, a single ultramarine
+   ink, small uppercase monospace labels, thin rules, pill buttons and solid-ink section bars.
+   Deliberately single-theme (light). This is an independent entry; use no Moth logo or wordmark.
+   Layout concept: the instrument is the hero; story and science live in drawers. */
+:root{
+  --paper:#FBFAF9;    /* page ground */
+  --panel:#FFFFFF;    /* raised surfaces */
+  --panel-2:#F0F0F4;  /* control wells */
+  --rule:#D3D3E6;     /* hairlines */
+  --ink:#19238E;      /* the one ink: text, rules, buttons, accents */
+  --ink-2:#545BA9;    /* secondary text */
+  --ink-3:#A1A4CE;    /* tertiary text, disabled */
+  --link:#194BBA;
+  --on-ink:#FBFAF9;   /* text on solid ink */
+  --good:#1F7A4D;
+  --warn:#B4541A;
+  --tint:rgba(25,35,142,.07);
+
+  /* compatibility aliases for pages built on the first (dark) kit: keep them working */
+  --night:var(--paper); --dusk:var(--panel); --dusk-2:var(--panel-2); --line:var(--rule);
+  --moon:var(--ink); --haze:var(--ink-2); --wing:var(--ink); --wing-ink:var(--on-ink);
+  --glow:rgba(25,35,142,.14);
+
+  --display:"Geist", "Helvetica Neue", Arial, Helvetica, sans-serif;
+  --body:"Geist", "Helvetica Neue", Arial, Helvetica, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  color-scheme:light;
+}
+html,body{background:var(--paper);color:var(--ink)}
+body{font:400 1rem/1.55 var(--body);padding-inline:clamp(16px,3vw,40px);padding-block:0 3rem;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance;letter-spacing:-.015em;color:var(--ink)}
+h1 em,h2 em{font-style:normal;color:var(--ink);background:var(--tint);padding-inline:.12em;border-radius:.1em}
+p{margin:0}
+a{color:var(--link)}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+::selection{background:var(--ink);color:var(--on-ink)}
+
+/* brand bar: monospace, hairline below, like the brief pages */
+.wtnr-bar{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding-block:1.1rem .9rem;border-bottom:1px solid var(--ink);font:500 .74rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
+.wtnr-bar a{color:var(--ink);text-decoration:none}
+.wtnr-bar a:hover{text-decoration:underline;text-underline-offset:3px}
+.wtnr-bar .count b{font-weight:500}
+
+/* solid ink strip, like the "JUDGING CRITERIA" bar */
+.ink-bar{display:flex;justify-content:space-between;align-items:center;gap:1rem;background:var(--ink);color:var(--on-ink);padding:.9rem 1.1rem;font:500 .76rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+
+/* proof chips: real, verified numbers */
+.proof{display:flex;flex-wrap:wrap;gap:.5rem}
+.proof span{font:500 .72rem/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:.5rem .75rem;border:1px solid var(--rule);background:var(--panel);color:var(--ink-2);border-radius:999px}
+.proof span b{color:var(--ink);font-weight:500}
+.proof span.hot{border-color:var(--ink);background:var(--ink);color:var(--on-ink)}
+.proof span.hot b{color:var(--on-ink)}
+
+/* controls: segmented pills and pill buttons */
+.seg{display:inline-flex;flex-wrap:wrap;background:var(--panel);border:1px solid var(--ink);border-radius:999px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;padding:.55rem .95rem;border-radius:999px;cursor:pointer;font:500 .76rem/1 var(--mono);letter-spacing:.04em;color:var(--ink)}
+.seg button:hover{background:var(--tint)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--on-ink)}
+.seg button:disabled{color:var(--ink-3);cursor:not-allowed;background:transparent}
+.btn{display:inline-flex;align-items:center;gap:.5rem;border:1px solid var(--ink);background:var(--ink);color:var(--on-ink);padding:.78rem 1.25rem;border-radius:999px;font:500 .92rem/1 var(--body);cursor:pointer;text-decoration:none}
+.btn:hover{background:#121A6E}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost:hover{background:var(--tint)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+input[type=range]{accent-color:var(--ink);width:100%}
+.label{font:500 .7rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+
+/* drawers for the science: hairline-ruled list like the challenge index */
+details.drawer{border-top:1px solid var(--rule)}
+details.drawer:last-of-type{border-bottom:1px solid var(--rule)}
+details.drawer summary{cursor:pointer;list-style:none;padding:1.05rem 0;display:flex;justify-content:space-between;gap:1rem;font:400 1.3rem/1.2 var(--display);color:var(--ink)}
+details.drawer summary::after{content:"+";font:400 1.1rem/1.2 var(--mono);color:var(--ink)}
+details.drawer[open] summary::after{content:"\2212"}
+details.drawer summary::-webkit-details-marker{display:none}
+details.drawer .body{padding-bottom:1.25rem;color:var(--ink-2);max-width:68ch;display:grid;gap:.75rem}
+
+.honesty{font-size:.84rem;color:var(--ink-2);border-inline-start:2px solid var(--ink);padding-inline-start:.8rem}
+
+/* footer line every page carries */
+.wtnr-foot{margin-top:2.5rem;border-top:1px solid var(--rule);padding-top:1rem;font:400 .72rem/1.5 var(--mono);letter-spacing:.04em;color:var(--ink-2)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* Layout: thesis + live wipe, proof strip, qubit chart, then a challenge index (like the brief page) whose rows open to the pieces. */
+.wrap{max-width:76rem;margin-inline:auto}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,25rem);gap:clamp(1.5rem,4vw,3.5rem);align-items:end;padding-block:clamp(2rem,5vw,3.5rem) 2rem;border-bottom:1px solid var(--rule)}
+.kicker{font:500 .74rem/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+h1{font-size:clamp(3rem,8.5vw,6.6rem);line-height:.94;font-weight:300;letter-spacing:-.03em;margin-block:.9rem 1.2rem}
+.lede{font-size:clamp(1.05rem,1.5vw,1.2rem);color:var(--ink-2);max-width:54ch}
+.lede b{color:var(--ink);font-weight:500}
+.cta{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.5rem}
+.wipe{position:relative;aspect-ratio:1/1;overflow:hidden;border:1px solid var(--ink);touch-action:none;cursor:ew-resize;background:var(--panel)}
+.wipe img{position:absolute;inset:0;width:100%;height:100%}
+.wipe .over{clip-path:inset(0 0 0 var(--cut,50%))}
+.wipe .bar{position:absolute;top:0;bottom:0;left:var(--cut,50%);width:3px;transform:translateX(-1.5px);background:var(--paper)}
+.wipe .knob{position:absolute;top:50%;left:var(--cut,50%);transform:translate(-50%,-50%);width:40px;height:40px;border-radius:50%;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;font:500 .95rem/1 var(--mono);border:2px solid var(--paper)}
+.wipe .tag{position:absolute;bottom:.7rem;font:500 .66rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:.45rem .65rem;border-radius:999px;background:var(--paper);color:var(--ink);border:1px solid var(--ink)}
+.wipe .tl{left:.7rem}.wipe .tr{right:.7rem;background:var(--ink);color:var(--on-ink)}
+.cap{font:400 .72rem/1.5 var(--mono);color:var(--ink-2);margin-top:.5rem}
+.cap b{color:var(--ink);font-weight:500}
+.hi{display:inline-flex;align-items:center;gap:.5rem;font:500 .8rem/1 var(--mono);letter-spacing:.06em;color:var(--ink);background:var(--panel);border:1px solid var(--rule);border-radius:999px;padding:.55rem .9rem}
+.hi .wave{display:inline-block;width:.6rem;height:.6rem;border-radius:50%;background:var(--ink);font-size:0}
+.lede.story{font-size:1rem;margin-top:.9rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* meet the cast: every mascot, clickable */
+.cast,.starters,.how{margin-block:2.25rem}
+.cast-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:.4rem 1.5rem;margin-bottom:.9rem}
+.cast-head h2{font-size:clamp(1.5rem,2.6vw,2rem);font-weight:300}
+.cast-head p{color:var(--ink-2);font-size:.95rem;max-width:52ch}
+.parade{display:flex;gap:.5rem;overflow-x:auto;padding:.75rem;border:1px solid var(--rule);background:var(--panel);scrollbar-width:thin}
+.parade a{flex:none;display:grid;justify-items:center;gap:.35rem;width:84px;padding:.5rem .25rem;border-radius:12px;text-decoration:none;color:var(--ink);font:500 .62rem/1.2 var(--mono);text-align:center;letter-spacing:.02em}
+.parade a img{width:64px;height:64px;image-rendering:pixelated;object-fit:contain;transition:transform .18s}
+.parade a:hover,.parade a:focus-visible{background:var(--tint)}
+.parade a:hover img,.parade a:focus-visible img{transform:translateY(-6px) rotate(-3deg)}
+.parade a .nn{color:var(--ink-2)}
+.bubble{margin-top:.7rem;display:inline-block;background:var(--ink);color:var(--on-ink);border-radius:14px;padding:.7rem 1rem;font-size:.92rem;max-width:62ch;position:relative}
+.bubble b{font-weight:600}
+
+/* starters */
+.start-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+.starter{display:grid;grid-template-columns:72px minmax(0,1fr);gap:.4rem 1rem;align-items:center;background:var(--panel);border:1px solid var(--ink);padding:1rem 1.1rem;text-decoration:none;color:var(--ink);transition:background .15s}
+.starter:hover,.starter:focus-visible{background:var(--tint)}
+.starter img{grid-row:span 3;width:72px;height:72px;image-rendering:pixelated;object-fit:contain}
+.starter .label{color:var(--ink-2)}
+.starter strong{font:400 1.35rem/1.1 var(--display)}
+.starter span.go{font-size:.9rem;color:var(--ink-2)}
+
+/* how it works */
+.how-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;counter-reset:s}
+.how-steps li{background:var(--panel-2);border-radius:14px;padding:1rem 1.1rem 1.1rem;font-size:.93rem;color:var(--ink-2);display:grid;gap:.35rem;counter-increment:s}
+.how-steps li::before{content:counter(s);width:1.8rem;height:1.8rem;border-radius:50%;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;font:500 .85rem/1 var(--mono)}
+.how-steps b{color:var(--ink);font-weight:500;font-size:1rem}
+@media (max-width:900px){.start-grid,.how-steps{grid-template-columns:minmax(0,1fr)}}
+
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid var(--rule)}
+.stats div{padding:1.4rem 1rem 1.3rem;border-inline-start:1px solid var(--rule);display:grid;gap:.35rem}
+.stats div:first-child{border-inline-start:0;padding-inline-start:0}
+.stats b{font:300 clamp(2rem,4vw,3rem)/1 var(--display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+
+section{margin-block:3rem}
+.sec-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:.5rem 1.5rem;margin-bottom:1rem}
+.sec-head h2{font-size:clamp(1.7rem,3vw,2.3rem);font-weight:300}
+.sec-head p{color:var(--ink-2);max-width:52ch;font-size:.95rem}
+.chart{overflow-x:auto;border:1px solid var(--rule);background:var(--panel);padding:.75rem .75rem .25rem}
+.chart svg{display:block;min-width:52rem;width:100%;height:auto}
+.chart text{font-family:var(--mono)}
+.note{font:400 .74rem/1.5 var(--mono);color:var(--ink-2);margin-top:.6rem;min-height:1.2em}
+.row{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;justify-content:space-between;margin-bottom:.9rem}
+
+/* challenge index, like the brief page */
+.tier{display:flex;justify-content:space-between;gap:1rem;font:500 .74rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);padding:1.4rem 0 .6rem;border-bottom:1px solid var(--ink)}
+.chal{border-bottom:1px solid var(--rule)}
+.chal>summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:3rem minmax(0,1fr) auto;gap:1rem;align-items:baseline;padding:.95rem 0}
+.chal>summary::-webkit-details-marker{display:none}
+.chal>summary .n{font:500 .8rem/1 var(--mono);color:var(--ink)}
+.chal>summary .t{font:400 clamp(1.25rem,2.2vw,1.6rem)/1.15 var(--display);color:var(--ink)}
+.chal>summary .t small{display:block;font:400 .82rem/1.4 var(--body);color:var(--ink-2);margin-top:.25rem}
+.chal>summary .c{font:500 .7rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap}
+.chal>summary .c::after{content:" +";color:var(--ink)}
+.chal[open]>summary .c::after{content:" \2212"}
+.chal>summary:hover .t{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;padding:0 0 1.5rem 4rem}
+.card{background:var(--panel);border:1px solid var(--rule);padding:1.25rem;display:grid;gap:.8rem;align-content:start;min-width:0}
+.card{border-color:var(--ink)}
+.chal>summary .ms{display:inline-flex;gap:2px;align-items:center}
+.chal>summary .ms img{width:30px;height:30px;image-rendering:pixelated;object-fit:contain}
+.card .top{display:flex;justify-content:space-between;gap:.6rem;flex-wrap:wrap;align-items:center}
+.pill{font:500 .64rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:.42rem .6rem;border-radius:999px;border:1px solid var(--ink);color:var(--ink);white-space:nowrap}
+.pill.solid{background:var(--ink);color:var(--on-ink)}
+.pill.soft{border-color:var(--rule);color:var(--ink-2)}
+.card h3{font-size:1.6rem;font-weight:400;line-height:1.05}
+.card .head{display:flex;gap:.9rem;align-items:center}
+.mascot{width:72px;height:72px;flex:none;image-rendering:pixelated;object-fit:contain;background:var(--panel-2);border:1px solid var(--rule)}
+.chal>summary .m{width:40px;height:40px;image-rendering:pixelated;object-fit:contain}
+.chal>summary{grid-template-columns:3rem 98px minmax(0,1fr) auto}
+@media (max-width:520px){.chal>summary{grid-template-columns:2.2rem 98px minmax(0,1fr)}.chal>summary .c{grid-column:3}}
+.hook{font-size:1.02rem;color:var(--ink)}
+.sub{font-size:.9rem;color:var(--ink-2)}
+.you{border-top:1px solid var(--rule);padding-top:.7rem;display:grid;gap:.35rem}
+.you ul{margin:0;padding-inline-start:1.1rem;font-size:.88rem;display:grid;gap:.15rem}
+.facts{display:grid;grid-template-columns:5.5rem minmax(0,1fr);gap:.3rem .75rem;font-size:.84rem;margin:0}
+.facts dt{font:500 .66rem/1.8 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.facts dd{margin:0;min-width:0;overflow-wrap:anywhere}
+code{font:400 .8rem/1.4 var(--mono);color:var(--ink)}
+.qb{display:flex;align-items:center;gap:.6rem}
+.qb .track{flex:1;height:5px;background:var(--panel-2);border:1px solid var(--rule)}
+.qb .track i{display:block;height:100%;background:var(--ink)}
+.qb .n{font:500 .8rem/1 var(--mono);font-variant-numeric:tabular-nums}
+.honest{font-size:.8rem;color:var(--ink-2)}
+.card .btn{justify-self:start}
+.card .soon{font:500 .7rem/1.4 var(--mono);color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em}
+@media (max-width:900px){.hero{grid-template-columns:minmax(0,1fr)}.cards{grid-template-columns:minmax(0,1fr);padding-inline-start:0}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stats div:nth-child(3){border-inline-start:0;padding-inline-start:0}}
+
+</style>
+
+<div class="wrap">
+<nav class="wtnr-bar"><span>What the Noise Remembers</span><span class="count">Moth Hack 2026 &middot; <b id="n-pieces">22</b> pieces</span></nav>
+
+<header class="hero">
+  <div>
+    <p class="hi"><span class="wave" aria-hidden="true">&#9675;</span> Hello, and welcome to Moth Hack 2026</p>
+    <h1>What the noise remembers</h1>
+    <p class="lede">Twenty-two little quantum worlds you can play with, spread across all eleven Moth Hack challenges. Pick one, press play, and poke at it. No physics degree needed.</p>
+    <p class="lede story">Here's the thread that ties them together. A moth survives by staying unseen. A bat hunts by listening to echoes. A qubit can never be looked at directly, and every measurement of it is noisy. These pieces follow one signal through that chase: <b>it hides, noise eats it, and you rebuild it.</b> Every one runs on real Atlas quantum jobs at the most qubits its engine allows, and in every one you're the one at the controls.</p>
+    <div class="cta">
+      <a class="btn" id="cta-01" href="#">Start with 01: tear a hole in a Penrose tiling</a>
+      <a class="btn ghost" href="#index">Browse all challenges</a>
+    </div>
+  </div>
+  <div>
+    <div class="wipe" id="wipe" role="slider" tabindex="0" aria-label="Drag to compare the original tiling with the quantum-blurred hole" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+      <img src="img/intact.webp" alt="Intact Penrose tiling">
+      <img src="img/erased.webp" alt="Penrose tiling with a large hole rewritten by a 20-qubit quantum blur" class="over">
+      <div class="bar"></div><div class="knob" aria-hidden="true">&harr;</div>
+      <span class="tag tl">Original</span><span class="tag tr">20-qubit blur</span>
+    </div>
+    <p class="cap"><b>Try it:</b> drag across the picture. The right side is a real blur-v1 job (20 qubits, Atlas simulator).</p>
+  </div>
+</header>
+
+<section class="cast" aria-labelledby="cast-h">
+  <div class="cast-head"><h2 id="cast-h">Meet the cast</h2><p>Every piece has its own character. Hover or tap one to say hello, then click to play.</p></div>
+  <div class="parade" id="parade"></div>
+  <p class="bubble" id="bubble" aria-live="polite">Pick a character to see what they're up to.</p>
+</section>
+
+<section class="starters" aria-labelledby="start-h">
+  <div class="cast-head"><h2 id="start-h">New here? Start with one of these</h2><p>Three quick ways in. Each takes about a minute.</p></div>
+  <div class="start-grid" id="starters"></div>
+</section>
+
+<section class="how" aria-labelledby="how-h">
+  <h2 id="how-h" class="sr">How every piece works</h2>
+  <ol class="how-steps">
+    <li><b>Pick a world.</b> Use the cast above or the challenge list below. Every piece opens on its own page.</li>
+    <li><b>Play with it.</b> You drive everything. Nothing moves or makes a sound until you click.</li>
+    <li><b>Peek at the science.</b> Each page has drawers explaining what the quantum computer did, and what the piece does not claim.</li>
+  </ol>
+</section>
+
+<div class="stats" id="stats"></div>
+
+<section id="flight" aria-labelledby="flight-h">
+  <div class="sec-head"><h2 id="flight-h">Qubit flight path</h2><p>Each piece runs at its engine's ceiling. Outlined bars: the most qubits each piece used on Atlas simulators. Solid bars: qubits that ran on a real IBM chip.</p></div>
+  <div class="row">
+    <div class="seg" role="group" aria-label="Chart scale">
+      <button type="button" id="sc-log" data-scale="log" aria-pressed="true">Log scale</button>
+      <button type="button" id="sc-lin" data-scale="lin" aria-pressed="false">Linear</button>
+    </div>
+    <span class="label">Hover, tap or tab to a bar</span>
+  </div>
+  <div class="chart"><svg id="chart" viewBox="0 0 1040 300" role="img" aria-label="Qubits used per piece"></svg></div>
+  <p class="note" id="chart-note"></p>
+</section>
+
+<section id="index">
+  <div class="sec-head"><h2>Challenges</h2><p>Open a challenge to see every piece made for it. Every card links to a playable page.</p></div>
+  <div class="row">
+    <div class="seg" role="group" aria-label="Filter pieces">
+      <button type="button" id="f-all" data-f="all" aria-pressed="true">All pieces</button>
+      <button type="button" id="f-hw" data-f="hw" aria-pressed="false">On IBM hardware</button>
+    </div>
+    <div class="seg" role="group" aria-label="Open or close all">
+      <button type="button" id="open-all" aria-pressed="false">Open all</button>
+      <button type="button" id="close-all" aria-pressed="false">Close all</button>
+    </div>
+  </div>
+  <div id="chals"></div>
+</section>
+
+<div class="ink-bar"><span>How we kept it honest</span><span>&darr;</span></div>
+<details class="drawer"><summary>Real jobs only</summary><div class="body"><p>Every quantum-derived image, sound and number on these pages is a downloaded output of a completed Atlas job. The pages replay those cached outputs, because a published page can't call the API live. Each piece lists its job IDs.</p></div></details>
+<details class="drawer"><summary>Simulator or hardware, always labelled</summary><div class="body"><p>Most engines run on Atlas's classical simulators of quantum circuits. Pieces that ran on IBM hardware say which backend did the work. Hardware access was confirmed with a coin toss on ibm_fez (job 1736b3bb). Named backends: ibm_fez and ibm_marrakesh (Heron, 156 qubits) and ibm_miami (Nighthawk, 120 qubits).</p></div></details>
+<details class="drawer"><summary>Analogies are named as analogies</summary><div class="body"><p>A quantum blur over a LIGO spectrogram is not squeezed light. A reservoir trained on whale codas does not translate them. A disputed theory of smell stays disputed. Each piece has a "what this does not claim" drawer.</p></div></details>
+<details class="drawer"><summary>Data licences checked at the source</summary><div class="body"><p>We used only data whose licence we confirmed on its source page, or synthetic data labelled as synthetic. Where a licence was unclear (FlyWire, Herculaneum scrolls), we switched to an open alternative or a generated stand-in.</p></div></details>
+
+<p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
+</div>
+
+<script>
+const P = [{"slug": "01-penrose-hole", "challenge": "01", "title": "The Hole in the Penrose", "hook": "Tear a hole in a pattern that never repeats.", "sub": "A 20-qubit quantum blur scrambles a hole in a Penrose tiling. You put the pattern back, tile by tile.", "you_control": ["Fly the mender moth over the hole to paint tiles back", "Move the hole to any of nine computed positions", "Wipe to compare with the original", "Flip through the 12-job parameter sweep and share your view"], "engines": ["blur-v1"], "qubits": 20, "qubits_note": "541 px hole bounding box -> ceil(log2 541) x 2 = 20 qubits, blur-v1's maximum (documented rule)", "hardware": "", "jobs": 30, "honesty": "blur-v1 runs on Atlas's classical statevector simulator; the repair is classical geometry; Atlas did not run an error-correcting code.", "url": "pieces/01-penrose-hole/index.html", "hw_qubits": null, "mascot": "img/mascots/01-penrose-hole.png"}, {"slug": "02-coda-reservoir", "challenge": "02", "title": "Coda Reservoir", "hook": "Hear a 12-qubit reservoir click like a sperm whale.", "sub": "A quantum reservoir learned the rhythms of 3,840 real codas recorded off Dominica. Play the whales, then let the reservoir carry on.", "you_control": ["Pick real codas, the reservoir, or the real-to-reservoir handoff, or tap a whale in the sea", "Choose a whale label, or a variation level and take (each a real qrc-gen-v2 job)", "Play, pause, scrub and slow down; each click lights its whale's head and sends out a ring"], "engines": ["qrc-train-v2", "qrc-gen-v2"], "qubits": 12, "qubits_note": "12 reservoir qubits (num_qubits, set at training and reused by every qrc-gen-v2 job); the engine maximum, 13 is rejected with HTTP 422", "hardware": "", "jobs": 14, "honesty": "Rhythm only: no meaning is claimed; codas are treated as rhythm tokens. Reservoir ran on Atlas's Aer simulator; tokenising, timing and click synthesis are classical.", "url": "pieces/02-coda-reservoir/index.html", "hw_qubits": null, "mascot": "img/mascots/02-coda-reservoir.png"}, {"slug": "03-moth-eye", "challenge": "03", "title": "Moth Eye", "hook": "Hide a moth\u2019s shiny eye from the bat.", "sub": "Real moth eyes kill glare with nanopillars. Put a 3D nanopillar eye under the loupe, shade it with a quantum thin-film shader, stack up to six layers, and see whether the bat still spots the shine.", "you_control": ["Orbit the 3D eye in the loupe (drag, pinch, arrow keys); the bat flies to your viewing angle", "Move the lamp on the light pad or by dragging the sky", "Stack layers 1-6 (each a real shader run); switch the nonlinear interaction off at 1 and 6", "Compare moth eye, bare dome and flat slab; sweep the viewing tilt"], "engines": ["entanglement-shader-v1"], "qubits": 21, "qubits_note": "6 layers x 6 rays is the largest stack the engine accepts: 7 rays at 6 layers was rejected ('at most 6'), 7+ layers allow at most 5 rays but need rays >= layers; each ray is one qubit, so 6x6 = 21. Smaller runs ~17-20 qubits from our fit q = rays + layers - floor(layers/4) + 10 to the engine's budget messages (engine reports no per-job count).", "hardware": "", "jobs": 8, "honesty": "Analogy only: real moth eyes are sub-wavelength graded-index; the engine models a thin conducting-sheet stack on Atlas's classical statevector simulator, and in it more layers raise reflectance (0.418 -> 0.479) rather than kill it.", "url": "pieces/03-moth-eye/index.html", "hw_qubits": null, "mascot": "img/mascots/03-moth-eye.png"}, {"slug": "04-magic-angle", "challenge": "04", "title": "Magic Angle", "hook": "Twist two honeycombs. Find the order hiding in the noise.", "sub": "A 21-qubit quantum morph scrambles two twisted lattices into speckle. Fourier analysis still pulls the twist back out from 1.5\u00b0 up. At the magic angle, the qubit register's own echo gets in the way.", "you_control": ["Spin the turntable (or drag the slider) from 0\u00b0 to 5\u00b0 through 45 real engine frames; the 1.0\u20131.2\u00b0 magic angle zone is marked, not claimed", "Flip between the original layers and the quantum morph, and watch Ay, Bee and Lec the electron react to what the classical FFT actually reads", "Open Frame for the full engine frame with raw pixels and a magnifier, or Data for the angular profile and the period-against-twist plot", "Play or pause the sweep and the 30 s film on the page, and copy a link to your exact view"], "engines": ["telablur-v1"], "qubits": 21, "qubits_note": "1024 x 1024 frame, no mask: log2(1024) + log2(1024) = 20 pixel qubits + 1 selector = 21 per job, computed from the engine's documented rule at its size ceiling (the engine reports no qubit count). The 1024 px timing frame took 9.8 s, so no step-down was needed.", "hardware": "", "jobs": 49, "honesty": "Geometry only, on Atlas's statevector simulator: no band structure or superconductivity is simulated; the quantum morph scrambles the bilayer and a classical FFT recovers the period from 1.5 to 5 deg (median 0.94 of a/(2 sin theta/2)), while near 1.1 deg it reads the register's own echo, which is reported, not hidden.", "url": "pieces/04-magic-angle/index.html", "hw_qubits": null, "mascot": "img/mascots/04-magic-angle.png"}, {"slug": "05-jam-the-bat", "challenge": "05", "title": "Jam the Bat", "hook": "Jam a bat that learns your rhythm.", "sub": "You're a tiger moth. Your ultrasonic clicks scramble the bat's sonar, but its AI learns your timing. Feed your click jitter from a metronome, a leaky seed packet, an emulator, or 156 qubits of IBM's ibm_fez, and see which one it can read.", "you_control": ["Steer the moth (pointer, finger or arrow keys)", "Click to jam: hold for a click train, tap for one click", "Pick your noise-maker mid-flight: metronome, leaky seed packet, emulator box, or the ibm_fez / ibm_marrakesh chip", "Run the bat tournament: 100-500 auto-rounds per source"], "engines": ["comet-qrng-v1"], "qubits": 156, "qubits_note": "comet-qrng-v1 on ibm_fez and on ibm_marrakesh: 148 register + 8 Bell-witness = 156 qubits each, reported by the job's provenance.circuit (n_rand 148, n_total 156); initial_layout covers physical qubits 0-155, the whole chip. Emulator runs at the 20-qubit emu cap (12+8 and 20+0).", "hardware": "ibm_fez", "jobs": 4, "honesty": "Hardware banks are real comet-qrng-v1 outputs from all 156 qubits of ibm_fez (S = 2.543 +/- 0.015) and ibm_marrakesh (S = 2.728 +/- 0.015), entropy-accounted under a stated independence assumption but not certified (CHSH is a fidelity witness, not device-independent); the emulator bank is an uncertified classical baseline; the game, bat AI and tournament are classical, and the tournament shows hardware, emulator and secret-seed PRNG level (p = 0.93), with only the metronome and the leaked seed losing.", "url": "pieces/05-jam-the-bat/index.html", "hw_qubits": 156, "mascot": "img/mascots/05-jam-the-bat.png"}, {"slug": "06-tweezer", "challenge": "06", "title": "Tweezer", "hook": "Walk one atom array through a day, engine by engine.", "sub": "A day in the life of a neutral-atom quantum computer, told by a chain of Atlas engines, with signal survival measured at every hop.", "you_control": ["Walk the lab: tap any of the 18 pixel-art stations (or Earlier / Later) and Tweezy, an atom in a tweezer beam, walks there while the lab clock sweeps to that hour", "Play each stage's scene, drawn from its real output: load attempts, snap the camera, set the photon threshold, run the moves, drag atoms, pick Rydberg patterns, check the error-corrected pets, play the xylophone score and the echo", "Flip any stage to Data for its charts and engine frames; copy a link to any stage", "Judge each hop: survival F against chance, on Tweezy's face, the stage gauge and the survival curve"], "engines": ["blur-core-v1", "blur-midi-v1", "blur-v1", "coin-toss-v1", "comet-qrng-v1", "deep-fryer-v1", "entanglement-shader-v1", "graph-v1", "labyrinth-v1", "otoc-echo-v1", "qdrive-api-v1", "qpixl-v1", "qrc-image-v1", "retrocausal-echo-v1", "tamagotchi-v1", "telablur-v1"], "qubits": 210, "qubits_note": "210 = tamagotchi-v1: 30 Steane logical qubits x 7 data qubits on Aer's stabilizer simulator. 156 = comet-qrng-v1 on IBM hardware ibm_marrakesh (148-qubit register + 8 Bell-witness qubits, a full Heron chip), the hardware maximum. Other stages ran at their engine ceilings where the platform allowed: 24 (echo engines, Aer cap), 21 (teleblur; shader budget), 20 (blur, graph, labyrinth, blur-midi, qdrive), 19 (blur-core, payload-limited), 16 per deep-fryer tile; qrc-image and qpixl do not report a count.", "hardware": "ibm_marrakesh", "jobs": 19, "honesty": "Atlas runs gate-model circuits and simulators, not atoms: every stage is a labelled analogy; only completed jobs are counted and every failure is listed with its job ID.", "url": "pieces/06-tweezer/index.html", "hw_qubits": 156, "mascot": "img/mascots/06-tweezer.png"}, {"slug": "07-flavour", "challenge": "07", "title": "FLAVOUR", "hook": "Walk a muon scoop down the road. Taste what it became.", "sub": "The Neutrino Gelateria: each neutrino is a gelato scoop, born muon (choc-chip), that turns electron (swirl) or tau (ribbon) with distance over energy. Its flavour curves went onto qubits and came back from a real IBM chip, 12 IBM noise models and a noiseless simulator; every scoop, lick and note uses what came back.", "you_control": ["Pick where the scoop is born: an accelerator beam, cosmic-ray showers in the sky, or the free road", "Walk the cone down the road (distance over energy sets its flavours)", "Taste: tap the cone rack or the tank taster, and the synth plays that flavour mix", "Swap kitchens (the machine that measured the recipe) and slide the recipe from exact to measured"], "engines": ["qpixl-v1"], "qubits": 13, "qubits_note": "4096-value curves on aer = 2^12 addresses: 12 address + 1 data qubit by the documented QPIXL rule (the engine splits them into data-qubit groups; shot-noise scatter suggests 256 groups of 16, our inference). Chips hold fewer values: the engine reported data-qubit capacities of 448 (fez, marrakesh), 378 (torino) and 360 (127-qubit Eagles); ibm_fez real hardware took 448 values. Physical qubits per circuit are not reported by the engine.", "hardware": "ibm_fez", "jobs": 14, "honesty": "Oscillation physics is computed classically (NuFIT 6.0, vacuum); qpixl-v1 only encodes and measures the curves; fake_* are IBM noise models on a simulator; only ibm_fez is real hardware; plugin binaries come from CI and were not built here.", "url": "pieces/07-flavour/index.html", "hw_qubits": null, "mascot": "img/mascots/07-flavour.png"}, {"slug": "08-pbit-or-qubit", "challenge": "08", "title": "p-bit or qubit?", "hook": "Sauna or fridge? Guess who sent the noise.", "sub": "Fire against ice: one 20-spin Ising problem sampled as p-bits, which flip on room-temperature thermal noise (simulated here with Extropic's THRML on a CPU), and by 20 superconducting qubits (Atlas's emulator, and IBM's ibm_fez, kept in a dilution fridge at roughly ten-odd millikelvin). Each sealed envelope holds 16 real samples drawn as magnets: guess which room sent it.", "you_control": ["Turn the coupling-J dial and pick a graph", "Read the 16 magnet boards in each sealed envelope", "Guess the sauna (p-bits) or the fridge (qubits); a thermometer keeps score against a coin", "Flip to Data for the fingerprints: edge correlations and magnetisation", "Run graph-v1 live from the web app (node server.js)"], "engines": ["graph-v1"], "qubits": 20, "qubits_note": "graph-v1 num_qubits = 20 (engine maximum, one qubit per Ising node), reported by every job; shots = 20 so the top-20 output holds every shot", "hardware": "ibm_fez", "jobs": 8, "honesty": "Emulated qubits are a classical simulation; ibm_fez batches are real hardware but only 20 shots each; THRML ran on a CPU; the qubits were handed the Boltzmann pair correlations, so no advantage is claimed.", "url": "pieces/08-pbit-or-qubit/index.html", "hw_qubits": 20, "mascot": "img/mascots/08-pbit-or-qubit.png"}, {"slug": "09-syndrome-loom", "challenge": "09", "title": "Syndrome Loom", "hook": "Weave a picture through a noisy quantum code.", "sub": "Each pixel is a Steane codeword of seven threads; turn up the noise and threads flip, red syndrome stitches catch them, and some pixels still come out wrong.", "you_control": ["Turn the noise dial (each notch replays a real tamagotchi-v1 job) and choose where the noise lives", "Weave from the top or scrub the picks: Ada the weaver moth throws the shuttle and Inspector Hamming flags every row whose syndrome pick caught a flip", "Click any block to have the inspector read its syndrome; switch between threads as read and after correction; load your own image", "Copy the WIF 1.1 draft or a link to the view; the logical-vs-physical chart is under Data"], "engines": ["tamagotchi-v1"], "qubits": 3584, "qubits_note": "512 Steane logical qubits x 7 = 3584 physical data qubits in the largest completed job (size ladder); every calibration job used 256 logical = 1792 data qubits. Counted from the code (7 per logical); ancillas exist but are not documented, so not counted. Aer stabilizer simulator.", "hardware": "", "jobs": 30, "honesty": "Rates come from tamagotchi-v1 jobs on Atlas's Aer stabilizer simulator (no hardware); the weave samples them classically, drawing syndrome and logical flip independently and red stitches at half the engine's X+Z syndrome count (our assumption).", "url": "pieces/09-syndrome-loom/index.html", "hw_qubits": null, "mascot": "img/mascots/09-syndrome-loom.png"}, {"slug": "10-squeezed-chirp", "challenge": "10", "title": "Squeezed Chirp", "hook": "Squeeze the first black-hole collision ever heard.", "sub": "Real LIGO data from GW150914, blurred by an 18-qubit quantum circuit (run on Atlas's simulator) that trades sharpness in time for sharpness in pitch at a fixed product, the way LIGO's squeezed light trades one kind of quantum noise for another.", "you_control": ["Squeeze: slide the ratio s_time/s_freq from 1/4 to 4 across five real engine outputs, and Squeezie (the ridge's measured spread) changes shape in the press", "Listen: play each version (Griffin-Lim, 8x slower, 4x higher) and watch the black holes spiral and merge on the real chirp", "Scrub: drag the sky through the chirp; LIGO's arms stretch with the real ridge power", "Cut: in Data view, drag time and frequency cuts through the ridge and read the widths live"], "engines": ["blur-core-v1"], "qubits": 18, "qubits_note": "257 x 257 grid padded by the engine to 512 x 512 = 9 + 9 qubits; engine status reports 'Recovered 18-qubit grid from measurement' for every job. 24 and 22 qubits were blocked by the API's 1 MiB request limit (413, measured); 20 qubits (640 x 640) ran but failed twice on Atlas's internal 2 MB result-payload limit (TMPRL1103). A 2-D grid cannot exceed 18 under these limits.", "hardware": "", "jobs": 6, "honesty": "An analogy to squeezed light, not a simulation of it: blur-core-v1 ran on Atlas's classical statevector simulator, and a classical Gaussian blur shows the same trade.", "url": "pieces/10-squeezed-chirp/index.html", "hw_qubits": null, "mascot": "img/mascots/10-squeezed-chirp.png"}, {"slug": "11-maxwells-ribbon", "challenge": "11", "title": "Maxwell's Ribbon", "hook": "Rebuild a qubit the way Maxwell rebuilt colour.", "sub": "You can't look at a qubit, just as Maxwell couldn't photograph colour in 1861. He used three filters, and physicists use three measurements. Pick any colour and see what a quantum run gave back for it.", "you_control": ["Pick a colour for the Bloch-ball sitter, or click a pixel of Maxwell's ribbon, and have Maxwell photograph it through X, Y and Z filters", "Slide the shots: 16, 128 or 1024 measurements, and watch the plates and the rebuilt portrait sharpen", "Switch machines: perfect simulator, Fez and Brisbane noise models, the real ibm_fez chip (the studio swaps in a computer or IBM's chip in its fridge)", "Open the Data view to turn the 3D colour/qubit ball and see every test colour drift", "Measure a hidden arrow along Z, X and Y to rebuild a hidden colour behind a curtain (classical tomography toy)"], "engines": ["qpixl-v1"], "qubits": 156, "qubits_note": "ibm_fez hardware run: 448 values filled the chip's full capacity, 64 data + 92 address = all 156 qubits in one joint circuit (IBM job db1jcnuegvvc73bhn5ng). qpixl-v1 does not report a qubit count. topology.py computes it from the chip's coupling map with the engine's documented checkerboard rule, which reproduces the capacities measured on the live engine (Fez 448, Brisbane 360, Torino 378). The fake_fez/fake_brisbane rows use the 156/127-qubit layouts, but the emulator simulates each data-qubit group (at most 4 qubits) separately. The aer lattice size is not reported. The guide's ceil(log2 #values)+1 shorthand would give 10 for 448 values; README explains the difference.", "hardware": "ibm_fez", "jobs": 10, "honesty": "Every rebuilt colour comes from a real cached qpixl-v1 job, labelled by where it ran (aer simulator, fake_fez/fake_brisbane noise models, one ibm_fez hardware run). The colour split and rebuild are classical; photography and the colour ball are labelled analogies; this is not three-basis tomography of one qubit and no advantage is claimed.", "url": "pieces/11-maxwells-ribbon/index.html", "hw_qubits": 156, "mascot": "img/mascots/11-maxwells-ribbon.png"}, {"slug": "12-chirp-instrument", "challenge": "02", "title": "Chirp Instrument", "hook": "Play the last fifth of a second of two black holes.", "sub": "Real LIGO strain from GW150914, tracked half-wave by half-wave into MIDI. A quantum blur on a simulated 20-qubit register then scatters it. Tap through it, scrub the blur, loop the merger, and jam over it.", "you_control": ["Tap the black holes in the scene (or the pad, or Z/X): each tap sends out one real half-wave, and you watch it land on the LIGO maps, or press Play", "Scrub the quantum blur's reach (off, 0, 0.5) and watch its cloud of real notes spread; mute the H1/L1 voices by tapping their maps", "Loop any stretch by dragging the tape under the scene (or the roll in Data), or pick Inspiral / Merger", "Jam on the keyboard over the loop (on-screen or A-; keys)"], "engines": ["blur-midi-v1"], "qubits": 20, "qubits_note": "qubits=20 is the engine's maximum budget per pass, and the cached job records show qubits=20 and resolution=2 were sent. Each GW150914 track's piano roll is 42 pitch rows x ~11.6k steps (resolution 2 ticks), which needs ceil(log2 42)+ceil(log2 11633) = 6+14 = 20 qubits by the Quantum Blur grid rule. That is our calculation; the engine does not report its width. The reach-0.5 output span of MIDI 41-82 (42 rows) matches it.", "hardware": "", "jobs": 2, "honesty": "A classical sonification of public LIGO data (CC BY 4.0). Only the blur is quantum, and it was simulated on Atlas, not run on hardware. GW170817's pitch is model-guided and it has no blur.", "url": "pieces/12-chirp-instrument/index.html", "hw_qubits": null, "mascot": "img/mascots/12-chirp-instrument.png"}, {"slug": "13-moth-to-flame", "challenge": "05", "title": "Moth to Flame", "hook": "Fly a moth home before the lamps catch it.", "sub": "Every hedge in this night town was read from the shots of a quantum circuit, and one real shot decides which lamps are lit. The moth's own light reflex will try to keep it circling.", "you_control": ["Steer and flap against the lamp pull", "Pick a shot to re-light the town", "Let go and watch the reflex trap the moth", "Compare the planned streets with the measured hedges, or flip to the Data view"], "engines": ["labyrinth-v1"], "qubits": 156, "qubits_note": "L1 Lamp Lane: 4x5 = 20 qubits (Aer emulator, its 20-qubit ceiling), engine-reported num_qubits; L2 Hedge Row: 10x12 = 120 qubits (IBM ibm_miami), engine-reported num_qubits; L3 Night Town: 12x13 = 156 qubits (IBM ibm_fez), engine-reported num_qubits", "hardware": "ibm_fez", "jobs": 3, "honesty": "The flight model is a classical, simplified 2D steering rule inspired by Fabian et al. 2024; labyrinth-v1 only supplies hedges (signs of <ZZ> measured from the shots) and lit lamps (measured bits); one level is a noiseless emulator run, two ran on IBM ibm_fez and ibm_miami; no quantum advantage is claimed.", "url": "pieces/13-moth-to-flame/index.html", "hw_qubits": 156, "mascot": "img/mascots/13-moth-to-flame.png"}, {"slug": "14-hemibrain-ising", "challenge": "08", "title": "Fly Brain Metro", "hook": "Ride the metro inside a fly's head.", "sub": "Twenty real hemibrain neurons are the stations of a transit map inside a drawn fruit fly's head, and their strongest synapses are the lines. A classical Gibbs steam train and a 20-qubit Atlas maglev bring real samples of an Ising toy that switch the station lamps.", "you_control": ["Pick a network (compass, memory, smell)", "Choose a train: Gibbs steam (classical), Atlas maglev (20-qubit emulator) or the exact blueprint", "Drag the conductor through real samples, or press Depart to ride", "Tap a station for its synapses; open Data for the departures board and correlations"], "engines": ["graph-v1"], "qubits": 20, "qubits_note": "graph-v1 num_qubits=20 (engine maximum); both completed emulator jobs echo num_qubits 20. The ibm_fez job at 20 qubits was cancelled.", "hardware": "", "jobs": 2, "honesty": "An Ising toy on 20-neuron hemibrain subgraphs, not a brain simulation; lamps are spins, not firing; quantum results are 2 graph-v1 jobs on the Atlas Aer emulator (no hardware data: the ibm_fez job was cancelled); THRML Gibbs and exact replicas are classical and labelled so; trains, the light wave, the fly's mood and the chime are decoration.", "url": "pieces/14-hemibrain-ising/index.html", "hw_qubits": null, "mascot": "img/mascots/14-hemibrain-ising.png"}, {"slug": "15-tissue-blur", "challenge": "01", "title": "Tissue Blur", "hook": "Slide a quantum lens across a mouse brain's genes.", "sub": "95,104 measured cells from one real mouse brain section, six genes, 20 qubits per blur. Wipe back to the measurement to see what the blur kept, and hunt the ghosts it made up.", "you_control": ["Pick a gene, or all three genes of a set", "Move the lens: drag the lens or the lab mouse holding it (snaps to computed positions), or pick the whole-section mask", "Wipe to compare blurred vs measured expression", "Catch the ghosts (real pixels where the blur invented expression), probe any pixel, push reach to 0.5, copy a link"], "engines": ["blur-v1"], "qubits": 20, "qubits_note": "Every job: 20 qubits from the engine's documented rule ceil(log2 w)+ceil(log2 h); lens disks have a 541x541 px box, the whole-section mask a 1012x575 px box (10+10). The engine does not report a qubit count.", "hardware": "", "jobs": 8, "honesty": "Real CC BY 4.0 MERFISH mouse-brain data; blur-v1 ran on Atlas's classical statevector simulator (no QPU); the blur is a visual effect, not an analysis method, and the page measures the expression it invents.", "url": "pieces/15-tissue-blur/index.html", "hw_qubits": null, "mascot": "img/mascots/15-tissue-blur.png"}, {"slug": "16-busy-beaver-score", "challenge": "02", "title": "Busy Beaver Score", "hook": "Scrub through the longest run a five-state machine can make.", "sub": "This Turing machine halts after 47,176,870 steps, and in 2024 it was proved that no five-state machine that halts runs longer. Its head is a beaver in a hard hat damming a river one log at a time, every hop plays a note, and a quantum blur, run at the engine's 20-qubit maximum, turns that score into echoes.", "you_control": ["Play, then scrub anywhere in the run: a beaver in a hard hat stands where the machine's head really is, its hat shows the state (A to E), and the river is the tape, a log for every 1", "Flip between the raw score and six quantum-blurred scores (reach 0/1, strength 0.2/0.5, 1/16 or 1/32 grid) and watch the echo pool spread", "Change the tempo from 4 to 40 notes a second, jump to the halt where the dam is finished, or copy a link to this exact moment", "Hear the three full WAV renders on the page, or switch to the Data view for the falling score and the tape's history"], "engines": ["blur-midi-v1"], "qubits": 20, "qubits_note": "qubits=20 (engine maximum) on all 6 jobs. The engine reports no qubit count; by QuantumBlur's grid rule (ceil log2 time + ceil log2 pitch) the melody roll needs 14+6 = 20 qubits per pass on the two resolution-60 jobs and 13+6 = 19 on the four auto-resolution jobs (pitch: melody spans 49 semitones + 7-row margin = 56-63 rows = 6 qubits). Computed, not engine-reported.", "hardware": "", "jobs": 6, "honesty": "The machine, score and sound are classical. blur-midi-v1 ran on Atlas's classical statevector simulator (no hardware), computes nothing about the machine and claims no advantage. The qubit count is computed, not reported, and the time compression and pitch mapping are artistic choices documented in the README.", "url": "pieces/16-busy-beaver-score/index.html", "hw_qubits": null, "mascot": "img/mascots/16-busy-beaver-score.png"}, {"slug": "17-quantum-lenia", "challenge": "04", "title": "Quantum Lenia", "hook": "Paint creatures, then blur their sense of touch with quantum noise.", "sub": "Lenia is a smooth Game of Life. Every cell feels its neighbours through a ring-shaped kernel. We sent that kernel through a quantum blur on an 18-qubit register. Swap it in and watch Orbium slow down, break up or flood the world.", "you_control": ["Paint the petri dish: drag the pipette to aim and drop an Orbium, brush on random soup, or erase (pointer or keyboard)", "Swap the lens: the original kernel or one of three real quantum-blurred kernels (strength 0.25 / 0.5 / 1.0), in four kernel shells, and watch Orbi replay the measured fate", "Play, pause, step, reset or clear the live dish; set speed, brush size and growth mu / sigma", "Seed the dish from a quantum-blurred 528 x 528 snapshot plate (strength 0.25 or 0.5) and see what regrows"], "engines": ["blur-core-v1"], "qubits": 20, "qubits_note": "Engine-reported ('Recovered N-qubit grid from measurement'). Snapshot: 528 x 528 world, each axis padded to 1024, so 10 + 10 = 20 qubits (the world fills about 27% of the register). Kernel bank: [4, 256, 256], 2 + 8 + 8 = 18 qubits. Not 24: Atlas rejects request bodies over 1 MiB (413, probed for free), so a 2-D world tops out at 20, and results over the platform payload limit fail (TMPRL1103). At reach 0 only the lower qubits of each axis carry rotation (measured from the output support).", "hardware": "", "jobs": 5, "honesty": "The dynamics are classical Lenia (Chan 2019). Only the kernels and a world snapshot went through blur-core-v1, on Atlas's classical statevector simulator (no QPU). There is no quantum-advantage claim.", "url": "pieces/17-quantum-lenia/index.html", "hw_qubits": null, "mascot": "img/mascots/17-quantum-lenia.png"}, {"slug": "18-oldest-light", "challenge": "11", "title": "Oldest Light", "hook": "Blur the oldest light in the universe.", "sub": "A 48-degree patch of NASA WMAP's cosmic microwave background under an 18-qubit quantum blur, a stand-in for a telescope's blurry eye: watch which ripples survive.", "you_control": ["Drag Mapper the satellite across the sky to wipe between the original and its blurry view", "Slide the blur through 6 real engine strengths and watch its eye go fuzzy", "Plant galaxy seeds on the hottest spots: count which ones the blur keeps, loses or invents", "Switch quantum / Gaussian beam / COBE 7-degree view, flip Scene / Data, then take the quiz"], "engines": ["blur-core-v1"], "qubits": 18, "qubits_note": "257 x 257 grid -> each axis padded to 512 -> 9 + 9 = 18 qubits (documented rule; every job's status also reports 'Recovered 18-qubit grid from measurement'). Sky fills 25% of the 2^18 amplitudes. 24/22/21 qubits refused by the 1 MiB request limit (free probes); 20 qubits failed for sibling pieces; our 19-qubit job 89f0fcee ran then failed on the platform's result-size limit (TMPRL1103).", "hardware": "", "jobs": 6, "honesty": "Real NASA WMAP 9-year ILC data; the quantum blur is an analogy for telescope resolution (not a model of inflation), run on Atlas's classical statevector simulator, with all classical steps labelled.", "url": "pieces/18-oldest-light/index.html", "hw_qubits": null, "mascot": "img/mascots/18-oldest-light.png"}, {"slug": "19-frog-chorus", "challenge": "07", "title": "Frog Chorus", "hook": "Seat the frogs, then hear them learn to take turns.", "sub": "We asked a 22-qubit circuit to make every pair of neighbours on this pond alternate. The locks it actually delivered now decide who answers whom.", "you_control": ["Seat, lift or drag pixel frogs between lily pads and the log, or roll a night measured from the engine's state", "Start and stop the chorus; set coupling, tempo, individuality and volume", "Switch between the alternating and sync ponds, and between engine-delivered and asked-for couplings", "Watch each frog's throat puff on its real calls, in the live pond and in the four rendered chorus lines", "Copy a link that reopens the exact chorus"], "engines": ["qdrive-api-v1"], "qubits": 22, "qubits_note": "22 qubits per pond build (n_qubits; confirmed by the returned QASM `qubit[22]` and 22-character Pauli keys). 24-qubit builds timed out twice (engine_timeout, after about 5 min 45 s each), so 24 is above what qdrive completes for this recipe; 22 completed. qdrive documents no qubit ceiling.", "hardware": "", "jobs": 4, "honesty": "Frogs are classical oscillators; a classical Kuramoto model runs the chorus in the browser. qdrive-api-v1 results from Atlas's Aer simulator (no hardware) set the couplings, starting phases and who is calling.", "url": "pieces/19-frog-chorus/index.html", "hw_qubits": null, "mascot": "img/mascots/19-frog-chorus.png"}, {"slug": "20-antimatter-drop", "challenge": "11", "title": "Antimatter Drop", "hook": "Drop antimatter. See which way it falls.", "sub": "Tilt a magnetic trap the way CERN's ALPHA-g experiment did (Nature, 2023), open it, and count where the antihydrogen escapes. Every atom's fate is rolled with the paper's own odds, using random bits measured on all 156 qubits of IBM's ibm_fez.", "you_control": ["Set the magnetic bias (11 settings from -3 g to +3 g, plus the +/-10 g calibration)", "Stack antihydrogen: one trial or a full series, sized from the paper's Table 1", "Ramp the mirror coils down: drag the one-way slider or press Ramp, pause any time, switch the dice source mid-ramp", "Read where your atoms balance (the antihydrogen host walks to your fit), flip to Data for the escape curve, overlay the 1-D 'other worlds', run the whole campaign, take the quiz"], "engines": ["comet-qrng-v1"], "qubits": 156, "qubits_note": "comet-qrng-v1 on ibm_fez: 148 register + 8 Bell-witness = 156 qubits, reported by the job's provenance.circuit (n_rand 148, n_total 156); initial_layout covers physical qubits 0-155, the whole chip. Emulator bank at the 20-qubit emu cap (20 + 0).", "hardware": "ibm_fez", "jobs": 2, "honesty": "The physics is Table 1 of Anderson et al., Nature 621, 716-722 (2023) (background-corrected, not efficiency-corrected, nominal biases); the only quantum step is the dice: 110,710 conditioned bytes from all 156 qubits of ibm_fez (entropy-accounted under the engine's stated pairwise-independence assumption, CHSH S = 2.548 +/- 0.015 as a fidelity witness, not device-independent certification), with an Aer emulator bank and the browser's classical RNG as interchangeable alternatives; timing, motion, tracks, the logistic balance-point fit and the 'other worlds' are classical cartoons, not the paper's 3-D analysis.", "url": "pieces/20-antimatter-drop/index.html", "hw_qubits": 156, "mascot": "img/mascots/20-antimatter-drop.png"}, {"slug": "21-quantum-nose", "challenge": "02", "title": "The Quantum Nose Test", "hook": "Swap hydrogen for deuterium. Hear the molecule fall.", "sub": "A contested theory says your nose reads molecular vibrations. We slowed three odorants' vibrations 120 billion times into hearing range and ran them through a 20-qubit quantum blur. You get to smell by ear.", "you_control": ["Pick a molecule (acetophenone, cyclopentadecanone, muscone): it rides a sniff up the nose on an anatomy plate, and a loupe shows it on the mucus at molecular scale", "Sniff: hear a sniff, watch the puffs ride the airflow, and the odorant land and bind (the neuron fires, the bulb flashes)", "Play its vibrational chord: the magnified atoms wobble with the notes, and the caption names the loudest line", "Swap H for D while it sounds: the hydrogen lines glide down 5.35 semitones and a neutron flies into every hydrogen", "Blur the chord through blur-midi-v1: strength 0.25/0.5/1 x reach local/halfway/global (9 real jobs)", "Play the WAV deliverable for the current molecule, isotope and blur setting, and stop it, from the instrument", "Drag the hypothetical receptor gap in Fig. d: when it matches a line the electron tunnels and kicks that mode", "Take the blind test: pick the deuterated sample, optionally with pitch disguised, scored against chance; the pixel nose sniffs along", "Open evidence-for and evidence-against drawers that load molecules and shade bands on the instrument"], "engines": ["blur-midi-v1"], "qubits": 20, "qubits_note": "Computed, not reported by the engine: each of the 6 tracks is a piano roll of 77-111 pitch rows (7 qubits) x 6,720 time steps (13 qubits) = 20 qubits per pass, the engine maximum (qubits param 20). Quantum Blur grid rule ceil(log2 w)+ceil(log2 h).", "hardware": "", "jobs": 9, "honesty": "The vibration theory of olfaction is stated as unproven and contested; vibrational lines are approximate textbook values with harmonic H->D estimates; the quantum blur ran on Atlas's classical statevector simulator and is a sound effect, not a model of tunnelling or a nose; qubit count is computed from the grid rule.", "url": "pieces/21-quantum-nose/index.html", "hw_qubits": null, "mascot": "img/mascots/21-quantum-nose.png"}, {"slug": "22-scroll-unroll", "challenge": "01", "title": "Scroll Unroll", "hook": "Unroll the scroll. Find the line hidden at its core.", "sub": "A synthetic papyrus, rolled almost eight turns tight. A 20-qubit quantum blur plays the damage and scrambles its ink. Flatten it, slide the reading window, and see how much damage a line of Greek survives.", "you_control": ["Unroll the scroll: push the roll on the desk or in the CT slice, the slider, or a pausable 'Unroll it'", "Send the archaeologist moth (the reading window) along the sheet: tap the desk or the CT slice, drag the strip, slider, arrow keys", "Step through nine blur-v1 damage jobs (slider or the ink-moved bars); flip blurred vs clean ink; view the raw ink layer", "Find the hidden Greek line, then share a link to the exact view"], "engines": ["blur-v1"], "qubits": 20, "qubits_note": "Every job: 20 qubits from the engine's documented rule ceil(log2 w)+ceil(log2 h) on the mask disk's 1001x1001 px bounding box (10+10), size 1024 so no downscaling or tiling. The engine does not report a qubit count.", "hardware": "", "jobs": 9, "honesty": "Synthetic scroll and ink, no real scroll data; blur-v1 ran on Atlas's classical statevector simulator (no QPU) and only stands in for damage; the unwrapping is classical and knows the spiral exactly; this is not the Vesuvius Challenge method.", "url": "pieces/22-scroll-unroll/index.html", "hw_qubits": null, "mascot": "img/mascots/22-scroll-unroll.png"}];
+const CH = [
+ {n:'01',t:'One image, one engine',tier:'Beginner'},{n:'02',t:'Make it audible',tier:'Beginner'},{n:'03',t:'Three dimensions',tier:'Beginner'},
+ {n:'04',t:'Moving image',tier:'Intermediate'},{n:'05',t:'Quantum game',tier:'Intermediate'},{n:'06',t:'Daisy Chain',tier:'Intermediate'},
+ {n:'07',t:'Make a VST or AU',tier:'Intermediate'},{n:'08',t:'Make a web app',tier:'Intermediate'},
+ {n:'09',t:'Quantum-native 1',tier:'Expert'},{n:'10',t:'Quantum-native 2',tier:'Expert'},{n:'11',t:'FQxI Challenge',tier:'Guest challenge'}];
+const esc = s => String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+const hw = p => p.hardware && p.hardware !== 'None' ? String(p.hardware) : '';
+const short = s => s.length > 14 ? s.slice(0, 13) + '\u2026' : s;
+
+// stats
+(function(){
+  const jobs = P.reduce((s,p)=>s+(+p.jobs||0),0), onHw = P.filter(hw).length, maxHw = Math.max(0,...P.map(p=>+p.hw_qubits||0));
+  const items = [[P.length,'Pieces to play'],[jobs,'Real Atlas quantum jobs'],[onHw,'Pieces that ran on IBM hardware'],[maxHw,'Most qubits used on one IBM chip']];
+  document.getElementById('stats').innerHTML = items.map(([v,l])=>`<div><b>${v}</b><span class="label">${l}</span></div>`).join('');
+  document.getElementById('n-pieces').textContent = P.length;
+  const p01 = P.find(p=>p.slug==='01-penrose-hole'); if (p01 && p01.url) document.getElementById('cta-01').href = p01.url;
+})();
+
+// meet the cast: one clickable mascot per piece, with a speech bubble
+(function(){
+  const parade = document.getElementById('parade'), bubble = document.getElementById('bubble');
+  const say = p => { bubble.innerHTML = `<b>${esc(p.title)}</b> (challenge ${p.challenge}): ${esc(p.hook)} Click to play.`; };
+  P.slice().sort((a,b)=>a.slug.localeCompare(b.slug)).filter(p=>p.mascot).forEach(p => {
+    const a = document.createElement('a');
+    a.href = p.url || ('#c' + p.challenge);
+    a.innerHTML = `<img src="${esc(p.mascot)}" alt="" width="64" height="64"><span>${esc(p.title)}</span><span class="nn">${p.slug.slice(0,2)}</span>`;
+    a.setAttribute('aria-label', `${p.title}: ${p.hook}`);
+    a.addEventListener('mouseenter', () => say(p)); a.addEventListener('focus', () => say(p));
+    parade.appendChild(a);
+  });
+})();
+
+// three easy starters
+(function(){
+  const picks = [['05-jam-the-bat','Play a game'],['19-frog-chorus','Make some sound'],['01-penrose-hole','Fix a pattern']];
+  document.getElementById('starters').innerHTML = picks.map(([slug, verb]) => {
+    const p = P.find(x => x.slug === slug); if (!p) return '';
+    return `<a class="starter" href="${esc(p.url || '#c' + p.challenge)}">${p.mascot ? `<img src="${esc(p.mascot)}" alt="" width="72" height="72">` : ''}<span class="label">${verb}</span><strong>${esc(p.title)}</strong><span class="go">${esc(p.hook)} &rarr;</span></a>`;
+  }).join('');
+})();
+
+// challenge index
+const root = document.getElementById('chals');
+let lastTier = '';
+CH.forEach(c => {
+  if (c.tier !== lastTier) { lastTier = c.tier; const t = document.createElement('div'); t.className = 'tier'; t.innerHTML = `<span>${c.tier}</span><span>${CH.filter(x=>x.tier===c.tier).length} challenge${CH.filter(x=>x.tier===c.tier).length>1?'s':''}</span>`; root.appendChild(t); }
+  const ps = P.filter(p => p.challenge === c.n).sort((a,b)=>a.slug.localeCompare(b.slug));
+  const d = document.createElement('details'); d.className = 'chal'; d.id = 'c' + c.n;
+  d.innerHTML = `<summary><span class="n">${c.n}</span><span class="ms">${ps.filter(p=>p.mascot).slice(0,3).map(p=>`<img src="${esc(p.mascot)}" alt="" width="30" height="30">`).join('')}</span><span class="t">${esc(c.t)}<small>${ps.map(p=>esc(p.title)).join(' \u00b7 ')}</small></span><span class="c">${ps.length} piece${ps.length===1?'':'s'}</span></summary><div class="cards"></div>`;
+  const g = d.querySelector('.cards');
+  ps.forEach(p => {
+    const a = document.createElement('article'); a.className = 'card';
+    a.dataset.hw = hw(p) ? 1 : 0;
+    const pct = Math.min(100, Math.log2(Math.max(2,+p.qubits||2)) / Math.log2(256) * 100);
+    const you = (p.you_control || []).slice(0,4).map(x=>`<li>${esc(x)}</li>`).join('');
+    a.innerHTML = `<div class="top"><span class="pill solid">Challenge ${p.challenge}</span>${hw(p)?`<span class="pill">IBM \u00b7 ${esc(hw(p))}${p.hw_qubits?' \u00b7 '+p.hw_qubits+' qubits':''}</span>`:`<span class="pill soft">Atlas simulator</span>`}</div>
+      <div class="head">${p.mascot?`<img class="mascot" src="${esc(p.mascot)}" alt="" width="72" height="72">`:''}<h3>${esc(p.title)}</h3></div><p class="hook">${esc(p.hook)}</p>${p.sub?`<p class="sub">${esc(p.sub)}</p>`:''}
+      ${you?`<div class="you"><span class="label">You control</span><ul>${you}</ul></div>`:''}
+      <dl class="facts"><dt>Engines</dt><dd><code>${esc((p.engines||[]).join(', '))}</code></dd>
+      <dt>Qubits</dt><dd><div class="qb"><div class="track"><i style="width:${pct}%"></i></div><span class="n">${esc(p.qubits)}</span></div></dd>
+      <dt>Jobs</dt><dd>${esc(p.jobs)} real Atlas jobs</dd></dl>
+      <p class="honest">${esc(p.honesty)}</p>
+      ${p.url ? `<a class="btn" href="${esc(p.url)}">Play ${esc(p.title)}</a>` : `<span class="soon">Page publishing</span>`}`;
+    g.appendChild(a);
+  });
+  root.appendChild(d);
+});
+document.getElementById('c01').open = true;
+document.getElementById('open-all').addEventListener('click',()=>document.querySelectorAll('.chal').forEach(d=>d.open=true));
+document.getElementById('close-all').addEventListener('click',()=>document.querySelectorAll('.chal').forEach(d=>d.open=false));
+function filt(f){
+  document.querySelectorAll('[data-f]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.f===f)));
+  document.querySelectorAll('.card').forEach(c=>c.hidden = f==='hw' ? c.dataset.hw!=='1' : false);
+  document.querySelectorAll('.chal').forEach(d=>{ const any = d.querySelector('.card:not([hidden])'); d.hidden = !any; if (f!=='all' && any) d.open = true; });
+}
+document.querySelectorAll('[data-f]').forEach(b=>b.addEventListener('click',()=>filt(b.dataset.f)));
+
+// qubit chart
+const svg = document.getElementById('chart'), NS = 'http://www.w3.org/2000/svg';
+let scale = 'log';
+function chart(){
+  svg.innerHTML = '';
+  const W=1040,H=300,L=40,R=8,T=20,B=62, s = P.slice().sort((a,b)=>a.slug.localeCompare(b.slug)), max = Math.max(256,...s.map(p=>+p.qubits||0));
+  const y = v => scale==='log' ? T+(H-T-B)*(1-Math.log2(Math.max(v,1))/Math.log2(max)) : T+(H-T-B)*(1-v/max);
+  const mk=(tag,at)=>{const e=document.createElementNS(NS,tag);for(const k in at)e.setAttribute(k,at[k]);svg.appendChild(e);return e;};
+  (scale==='log'?[2,8,32,128]:[0,50,100,150,200,250]).forEach(t=>{const yy=y(Math.max(t,1));mk('line',{x1:L,x2:W-R,y1:yy,y2:yy,stroke:'#D3D3E6','stroke-width':1});
+    mk('text',{x:L-8,y:yy+4,'text-anchor':'end',fill:'#545BA9','font-size':11}).textContent=t;});
+  const yy=y(156); mk('line',{x1:L,x2:W-R,y1:yy,y2:yy,stroke:'#19238E','stroke-dasharray':'4 4','stroke-width':1});
+  mk('text',{x:W-R,y:yy-6,'text-anchor':'end',fill:'#19238E','font-size':11}).textContent='one IBM Heron chip \u00b7 156 qubits';
+  const bw=(W-L-R)/s.length;
+  s.forEach((p,i)=>{const x=L+i*bw+bw*.2,w=bw*.6,top=y(+p.qubits||1),h=!!hw(p);
+    const hq=+p.hw_qubits||0;
+    const r=mk('rect',{x,y:top,width:w,height:H-B-top,fill:'#FFFFFF',stroke:'#19238E','stroke-width':1.2,tabindex:0,role:'img','aria-label':`${p.title}: up to ${p.qubits} qubits${hq?', '+hq+' of them on IBM '+hw(p):h?', also ran on IBM '+hw(p):' on Atlas simulators'}`});
+    if(hq){const ht=y(hq);mk('rect',{x:x+1,y:ht,width:w-2,height:H-B-ht,fill:'#19238E','pointer-events':'none'});}
+    mk('text',{x:x+w/2,y:top-6,'text-anchor':'middle',fill:'#19238E','font-size':11}).textContent=p.qubits;
+    mk('text',{x:x+w/2,y:H-B+16,'text-anchor':'middle',fill:'#19238E','font-size':11}).textContent=p.slug.slice(0,2);
+    const lab=mk('text',{x:x+w/2,y:H-B+30,'text-anchor':'end',fill:'#545BA9','font-size':9,transform:`rotate(-35 ${x+w/2} ${H-B+30})`});lab.textContent=short(p.title);
+    const show=()=>{document.getElementById('chart-note').textContent=`${p.slug.slice(0,2)} \u00b7 ${p.title} \u00b7 up to ${p.qubits} qubits${hq?' \u00b7 '+hq+' on IBM '+hw(p):h?' \u00b7 also ran on IBM '+hw(p)+' (qubit count not reported)':' \u00b7 Atlas simulator'} \u00b7 ${p.qubits_note||''}`;svg.querySelectorAll('rect[tabindex]').forEach(z=>z.setAttribute('opacity',z===r?1:.45));};
+    r.addEventListener('mouseenter',show);r.addEventListener('focus',show);r.addEventListener('click',show);});
+}
+document.querySelectorAll('[data-scale]').forEach(b=>b.addEventListener('click',()=>{scale=b.dataset.scale;document.querySelectorAll('[data-scale]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));chart();}));
+chart();
+
+// hero wipe
+(function(){const w=document.getElementById('wipe');let down=false;
+  const set=p=>{p=Math.max(0,Math.min(100,p));w.style.setProperty('--cut',p+'%');w.setAttribute('aria-valuenow',Math.round(p));};
+  const at=e=>{const r=w.getBoundingClientRect();set((e.clientX-r.left)/r.width*100);};
+  w.addEventListener('pointerdown',e=>{down=true;w.setPointerCapture(e.pointerId);at(e);});
+  w.addEventListener('pointermove',e=>{if(down)at(e);});w.addEventListener('pointerup',()=>down=false);
+  w.addEventListener('keydown',e=>{const v=+w.getAttribute('aria-valuenow');if(e.key==='ArrowLeft'){set(v-5);e.preventDefault();}if(e.key==='ArrowRight'){set(v+5);e.preventDefault();}});
+  set(50);})();
+</script>
+
+</body>
+</html>

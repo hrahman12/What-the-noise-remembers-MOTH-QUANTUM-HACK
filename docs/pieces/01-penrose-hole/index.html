@@ -1,0 +1,739 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="What the Noise Remembers: 22 playable quantum pieces for Moth Hack 2026, built on real Moth Quantum Atlas jobs.">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:#FBFAF9}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>The Hole in the Penrose</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap");
+/* What the Noise Remembers: shared brand kit for all 22 pieces.
+   Look: in the spirit of the Moth Hack 2026 brief pages. Warm paper ground, a single ultramarine
+   ink, small uppercase monospace labels, thin rules, pill buttons and solid-ink section bars.
+   Deliberately single-theme (light). This is an independent entry; use no Moth logo or wordmark.
+   Layout concept: the instrument is the hero; story and science live in drawers. */
+:root{
+  --paper:#FBFAF9;    /* page ground */
+  --panel:#FFFFFF;    /* raised surfaces */
+  --panel-2:#F0F0F4;  /* control wells */
+  --rule:#D3D3E6;     /* hairlines */
+  --ink:#19238E;      /* the one ink: text, rules, buttons, accents */
+  --ink-2:#545BA9;    /* secondary text */
+  --ink-3:#A1A4CE;    /* tertiary text, disabled */
+  --link:#194BBA;
+  --on-ink:#FBFAF9;   /* text on solid ink */
+  --good:#1F7A4D;
+  --warn:#B4541A;
+  --tint:rgba(25,35,142,.07);
+
+  /* compatibility aliases for pages built on the first (dark) kit: keep them working */
+  --night:var(--paper); --dusk:var(--panel); --dusk-2:var(--panel-2); --line:var(--rule);
+  --moon:var(--ink); --haze:var(--ink-2); --wing:var(--ink); --wing-ink:var(--on-ink);
+  --glow:rgba(25,35,142,.14);
+
+  --display:"Geist", "Helvetica Neue", Arial, Helvetica, sans-serif;
+  --body:"Geist", "Helvetica Neue", Arial, Helvetica, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  color-scheme:light;
+}
+html,body{background:var(--paper);color:var(--ink)}
+body{font:400 1rem/1.55 var(--body);padding-inline:clamp(16px,3vw,40px);padding-block:0 3rem;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance;letter-spacing:-.015em;color:var(--ink)}
+h1 em,h2 em{font-style:normal;color:var(--ink);background:var(--tint);padding-inline:.12em;border-radius:.1em}
+p{margin:0}
+a{color:var(--link)}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+::selection{background:var(--ink);color:var(--on-ink)}
+
+/* brand bar: monospace, hairline below, like the brief pages */
+.wtnr-bar{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding-block:1.1rem .9rem;border-bottom:1px solid var(--ink);font:500 .74rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
+.wtnr-bar a{color:var(--ink);text-decoration:none}
+.wtnr-bar a:hover{text-decoration:underline;text-underline-offset:3px}
+.wtnr-bar .count b{font-weight:500}
+
+/* solid ink strip, like the "JUDGING CRITERIA" bar */
+.ink-bar{display:flex;justify-content:space-between;align-items:center;gap:1rem;background:var(--ink);color:var(--on-ink);padding:.9rem 1.1rem;font:500 .76rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+
+/* proof chips: real, verified numbers */
+.proof{display:flex;flex-wrap:wrap;gap:.5rem}
+.proof span{font:500 .72rem/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:.5rem .75rem;border:1px solid var(--rule);background:var(--panel);color:var(--ink-2);border-radius:999px}
+.proof span b{color:var(--ink);font-weight:500}
+.proof span.hot{border-color:var(--ink);background:var(--ink);color:var(--on-ink)}
+.proof span.hot b{color:var(--on-ink)}
+
+/* controls: segmented pills and pill buttons */
+.seg{display:inline-flex;flex-wrap:wrap;background:var(--panel);border:1px solid var(--ink);border-radius:999px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;padding:.55rem .95rem;border-radius:999px;cursor:pointer;font:500 .76rem/1 var(--mono);letter-spacing:.04em;color:var(--ink)}
+.seg button:hover{background:var(--tint)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--on-ink)}
+.seg button:disabled{color:var(--ink-3);cursor:not-allowed;background:transparent}
+.btn{display:inline-flex;align-items:center;gap:.5rem;border:1px solid var(--ink);background:var(--ink);color:var(--on-ink);padding:.78rem 1.25rem;border-radius:999px;font:500 .92rem/1 var(--body);cursor:pointer;text-decoration:none}
+.btn:hover{background:#121A6E}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost:hover{background:var(--tint)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+input[type=range]{accent-color:var(--ink);width:100%}
+.label{font:500 .7rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+
+/* drawers for the science: hairline-ruled list like the challenge index */
+details.drawer{border-top:1px solid var(--rule)}
+details.drawer:last-of-type{border-bottom:1px solid var(--rule)}
+details.drawer summary{cursor:pointer;list-style:none;padding:1.05rem 0;display:flex;justify-content:space-between;gap:1rem;font:400 1.3rem/1.2 var(--display);color:var(--ink)}
+details.drawer summary::after{content:"+";font:400 1.1rem/1.2 var(--mono);color:var(--ink)}
+details.drawer[open] summary::after{content:"\2212"}
+details.drawer summary::-webkit-details-marker{display:none}
+details.drawer .body{padding-bottom:1.25rem;color:var(--ink-2);max-width:68ch;display:grid;gap:.75rem}
+
+.honesty{font-size:.84rem;color:var(--ink-2);border-inline-start:2px solid var(--ink);padding-inline-start:.8rem}
+
+/* footer line every page carries */
+.wtnr-foot{margin-top:2.5rem;border-top:1px solid var(--rule);padding-top:1rem;font:400 .72rem/1.5 var(--mono);letter-spacing:.04em;color:var(--ink-2)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* Layout: the scene (tiling + cast) is the hero. Desktop: scene left, story right. Phone: headline, scene, story. */
+.wrap{max-width:76rem;margin-inline:auto}
+.hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);grid-template-areas:"stage head" "stage side";grid-template-rows:auto 1fr;column-gap:clamp(1.25rem,3vw,2.5rem);row-gap:1.1rem;align-items:start;padding-block:2rem 1rem}
+.head{grid-area:head;display:grid;gap:.9rem;min-width:0}
+.side{grid-area:side;display:grid;gap:1.1rem;min-width:0}
+.stage{grid-area:stage;position:relative;overflow:hidden;border:1px solid var(--ink);touch-action:none;user-select:none;-webkit-user-select:none;background:var(--panel)}
+.pad{position:relative}
+#cv{display:block;width:100%;height:auto;aspect-ratio:1/1}
+#fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;image-rendering:pixelated}
+#cv:focus-visible{outline-offset:-4px}
+.stage[data-tool="move"] #cv{cursor:grab}
+.stage[data-tool="brush"] #cv{cursor:none}
+.stage[data-tool="wipe"] #cv{cursor:ew-resize}
+.toolbar{position:absolute;z-index:2;left:.75rem;top:.75rem;right:.75rem;display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap;pointer-events:none}
+.toolbar>*{pointer-events:auto}
+.meter{position:absolute;z-index:2;left:.75rem;bottom:.75rem;right:.75rem;display:flex;align-items:center;gap:.75rem;background:rgba(251,250,249,.94);border:1px solid var(--ink);border-radius:999px;padding:.55rem .9rem}
+.meter .bar{flex:1;height:6px;border-radius:99px;background:var(--rule);overflow:hidden}
+.meter .bar i{display:block;height:100%;width:0;background:var(--ink);transition:width .15s}
+.meter .num{font:500 .78rem/1 var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.kicker{font:500 .74rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+h1{font-size:clamp(2.2rem,5vw,4.2rem);line-height:.98;letter-spacing:-.01em}
+.sub{font-size:1.08rem;color:var(--ink-2);max-width:46ch}
+.steps{display:grid;gap:.6rem;counter-reset:s;margin:0;padding:0;list-style:none}
+.steps li{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:.6rem;align-items:baseline;font-size:.95rem}
+.steps li::before{counter-increment:s;content:counter(s);font:500 .8rem/1.6 var(--mono);color:var(--on-ink);background:var(--ink);border-radius:99px;width:1.6rem;height:1.6rem;display:grid;place-items:center}
+/* the cast: who is who, and which of their behaviour is data */
+.cast{display:grid;gap:.7rem;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding-block:.9rem}
+.cast figure{margin:0;display:grid;grid-template-columns:5.5rem minmax(0,1fr);gap:.85rem;align-items:center}
+.cast .pic{display:grid;place-items:center;height:5.4rem;background:var(--panel);border:1px solid var(--rule)}
+.cast img{image-rendering:pixelated;display:block}
+.cast figcaption{font-size:.88rem;color:var(--ink-2);line-height:1.45}
+.cast figcaption b{color:var(--ink);font-weight:500}
+.cast .tag{display:block;font:500 .66rem/1.3 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin-bottom:.15rem}
+.panel{display:grid;gap:.9rem;background:var(--panel);border:1px solid var(--rule);padding:1.1rem 1.2rem}
+.row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.row.split{justify-content:space-between}
+.readout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.25rem .9rem;font:400 .78rem/1.5 var(--mono);color:var(--ink-2);margin:0}
+.readout dd{margin:0}
+.readout b{color:var(--ink);font-weight:500;overflow-wrap:anywhere}
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:var(--ink);color:var(--on-ink);font:500 .85rem/1 var(--mono);padding:.8rem 1.1rem;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:5;max-width:calc(100vw - 2rem);text-align:center}
+.toast.on{opacity:1}
+.more{margin-top:2.5rem}
+.wrap [hidden]{display:none !important}   /* .seg sets display, so hidden needs the help (the blur-setting group hides in sweep mode) */
+/* Scene / Data: the cast and the job table share one slot; Data also takes the cast off the canvas */
+.wrap[data-show="scene"] .only-data,.wrap[data-show="data"] .only-scene{display:none !important}
+.wrap[data-show="data"] .stage[data-tool="brush"] #cv{cursor:crosshair}
+.jobs{display:grid;gap:.6rem;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding-block:.9rem}
+.jobs .tbl{overflow-x:auto;max-width:100%}
+.jobs table{width:100%;border-collapse:collapse;font:400 .74rem/1.35 var(--mono);color:var(--ink-2);font-variant-numeric:tabular-nums}
+.jobs th{font:500 .62rem/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);text-align:left;padding:.35rem .4rem;border-bottom:1px solid var(--ink);vertical-align:bottom}
+.jobs th small{display:block;letter-spacing:.04em;text-transform:none;color:var(--ink-2);font-weight:400}
+.jobs td{padding:.2rem .4rem;border-bottom:1px solid var(--rule);vertical-align:middle}
+.jobs tbody th{border-bottom:1px solid var(--rule);font-size:.7rem;letter-spacing:.02em;vertical-align:middle}
+.jobs .jb{display:block;width:100%;text-align:left;border:1px solid var(--rule);background:var(--panel);color:var(--ink);font:inherit;padding:.35rem .5rem;border-radius:0;cursor:pointer;min-height:2.25rem}
+.jobs .jb:hover{background:var(--tint)}
+.jobs .jb[aria-current="true"]{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
+.jobs .jb small{display:block;font-size:.66rem;opacity:.8}
+.jobs .id{color:var(--ink);overflow-wrap:anywhere}
+.jobs .note{font-size:.8rem;color:var(--ink-2);line-height:1.45;margin:0}
+.tune{display:grid;gap:.5rem}
+@media (max-width:900px){
+  .hero{grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "stage" "side";grid-template-rows:auto;padding-block:1.4rem 1rem}
+}
+@media (max-width:600px){
+  h1{font-size:2.15rem}
+  .toolbar{position:static;padding:.5rem;border-bottom:1px solid var(--ink);background:var(--paper)}
+  .toolbar .seg button{padding:.5rem .7rem}
+  .meter{position:static;border:0;border-top:1px solid var(--ink);border-radius:0;background:var(--paper)}
+}
+</style>
+
+<div class="wrap" id="wrap" data-show="scene">
+  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count"><b>01</b> / 11 &#183; Recover</span></nav>
+
+  <div class="hero">
+    <div class="head">
+      <p class="kicker">Challenge 01 &#183; One image, one engine</p>
+      <h1>Tear a hole in a pattern that never repeats.</h1>
+    </div>
+
+    <div class="stage" id="stage" data-tool="brush">
+      <div class="toolbar">
+        <div class="seg" role="group" aria-label="Tool" id="g-tool">
+          <button type="button" id="t-brush" data-tool="brush" aria-pressed="true">Repair brush</button>
+          <button type="button" id="t-move" data-tool="move" aria-pressed="false">Move hole</button>
+          <button type="button" id="t-wipe" data-tool="wipe" aria-pressed="false">Compare</button>
+        </div>
+        <div class="seg" role="group" aria-label="Blur setting" id="g-setting">
+          <button type="button" id="s-scr" data-set="scrambled" aria-pressed="true">Scrambled</button>
+          <button type="button" id="s-mem" data-set="memory" aria-pressed="false">Faint memory</button>
+        </div>
+      </div>
+      <div class="pad">
+        <canvas id="cv" width="1024" height="1024" tabindex="0" aria-label="Penrose tiling with a quantum-blurred hole. A small moth, the mender, is your repair brush; a guilty moth, the nibbler, sits on the rim. Use the tools to paint tiles back, move the hole (arrow keys), or compare (hold Space)."></canvas>
+        <canvas id="fx" aria-hidden="true"></canvas>
+      </div>
+      <div class="meter"><span class="label">Restored</span><div class="bar"><i id="m-bar"></i></div><span class="num" id="m-num">0 / 0 tiles</span></div>
+    </div>
+
+    <div class="side">
+      <p class="sub">A 20-qubit quantum blur scrambled this hole, and a guilty moth is sitting on the evidence. Fly the mender over it to put the pattern back, tile by tile.</p>
+      <div class="proof">
+        <span class="hot"><b>20</b> qubits per blur</span>
+        <span><b>30</b> real Atlas jobs</span>
+        <span><b>0</b> repeats, ever</span>
+      </div>
+      <ol class="steps">
+        <li><span><b>Paint</b>: fly the mender over the hole and every tile under its brush drops back in.</span></li>
+        <li><span><b>Move</b> the hole (drag, or arrow keys). The nibbler follows, and a different engine job fills it.</span></li>
+        <li><span><b>Compare</b>: drag across to peek at the original beneath the blur, or hold Space.</span></li>
+        <li><span><b>Check</b> the numbers: flip to Data for all 30 jobs, or open the 12-job sweep below.</span></li>
+      </ol>
+
+      <div class="row split">
+        <span class="label">View</span>
+        <div class="seg" role="group" aria-label="View" id="g-view">
+          <button type="button" data-view="scene" aria-pressed="true">Scene</button>
+          <button type="button" data-view="data" aria-pressed="false">Data</button>
+        </div>
+      </div>
+
+      <div class="cast only-scene" aria-label="The cast">
+        <figure><div class="pic"><img id="cast-mender" alt="Pixel-art moth carrying a rhombus tile" width="75" height="84"></div>
+          <figcaption><span class="tag">The mender</span>Your brush. It rebuilds tiles from the tiling's own substitution rule: classical geometry, no decoder.</figcaption></figure>
+        <figure><div class="pic"><img id="cast-nibbler" alt="Pixel-art moth looking guilty, with crumbs" width="75" height="69"></div>
+          <figcaption><span class="tag">The nibbler</span>Stands in for the blur. Its belly and crumb pile are measured from the job image: <b id="nib-cap">-</b>.</figcaption></figure>
+      </div>
+
+      <div class="jobs only-data" id="jobs" aria-label="All 30 engine jobs">
+        <p class="note">The cast is off the canvas. Re-erase any tiles you have painted back and the hole shows the engine output exactly as downloaded. Every job on the page is listed here; pick one to load it.</p>
+        <span class="label">9 hole positions &times; 2 settings &middot; 18 jobs</span>
+        <div class="tbl"><table id="tab-pos">
+          <thead><tr><th scope="col">Hole</th><th scope="col">Scrambled<small>1.0 &middot; rx &middot; reach 1</small></th><th scope="col">Faint memory<small>0.3 &middot; rx &middot; reach 0</small></th></tr></thead>
+          <tbody></tbody></table></div>
+        <span class="label">12-job sweep at the original hole (580, 440)</span>
+        <div class="tbl"><table id="tab-sweep">
+          <thead><tr><th scope="col">Strength &middot; gate &middot; reach</th><th scope="col">Changed</th><th scope="col">Shift</th><th scope="col">Job</th></tr></thead>
+          <tbody></tbody></table></div>
+        <p class="note">Each cell reads <b>changed &middot; shift</b>: the share of hole pixels whose colour moved by more than 10% of full scale, and the mean largest-channel shift. Both are classical measurements of the downloaded image against the original, made at build time.</p>
+      </div>
+
+      <div class="panel">
+        <div class="row split">
+          <span class="label">Brush size</span>
+          <span class="label" id="brush-val">48 px</span>
+        </div>
+        <input type="range" id="brush" min="16" max="140" value="48" aria-label="Brush size">
+        <div class="row">
+          <button type="button" class="btn" id="auto">Restore the rest</button>
+          <button type="button" class="btn ghost" id="reset">Re-erase</button>
+          <button type="button" class="btn ghost" id="share">Copy link to this view</button>
+        </div>
+        <div class="row split">
+          <span class="label">Tune the engine</span>
+          <button type="button" class="btn ghost" id="tune-toggle" aria-expanded="false" aria-controls="tune">Show the 12-job sweep</button>
+        </div>
+        <div class="tune" id="tune" hidden>
+          <div class="row"><span class="label" style="min-width:5.5rem">Strength</span><div class="seg" id="t-strength"></div></div>
+          <div class="row"><span class="label" style="min-width:5.5rem">Gate</span><div class="seg" id="t-style"></div></div>
+          <div class="row"><span class="label" style="min-width:5.5rem">Reach</span><div class="seg" id="t-reach"></div></div>
+        </div>
+        <dl class="readout">
+          <dt>Engine</dt><dd><b>blur-v1 v1.1.9</b> &#183; statevector simulator</dd>
+          <dt>Params</dt><dd><b id="r-params">&#8211;</b></dd>
+          <dt>Hole</dt><dd><b id="r-hole">&#8211;</b></dd>
+          <dt>Nibbled</dt><dd><b id="r-nib">&#8211;</b></dd>
+          <dt>Job</dt><dd><b id="r-job">&#8211;</b></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <section class="more">
+    <details class="drawer"><summary>Why a Penrose tiling?</summary><div class="body">
+      <p>Two rhombs cover the plane forever without repeating. Every finite patch still shows up again and again, so the surroundings of a hole pin down what used to be inside it.</p>
+      <p>Li &amp; Boyle (arXiv:2311.13040) turned that property into a quantum error-correcting code: erase any finite region and it can be diagnosed and repaired from the rest. Your mender moth is a hand-drawn cartoon of that idea.</p>
+    </div></details>
+    <details class="drawer"><summary>What the quantum engine did</summary><div class="body">
+      <p>Atlas blur-v1 encodes the pixels inside the hole as a quantum state on a Gray-coded register. The hole's 541-pixel bounding box needs 10 + 10 = 20 qubits, which is the engine's maximum. One rotation is applied per qubit and the state is read back out. At full strength and reach, the aperiodic pattern comes back on a square grid: a periodic ghost of the qubit register itself.</p>
+      <p>Every image you see inside the hole is a downloaded engine output: 9 hole positions &#215; 2 settings, plus a 12-job parameter sweep. Outside the hole each output is bit-identical to the original tiling, so the page stores a lossless crop of each job around its hole and lays it over the original. The build checks that this rebuilds every downloaded image pixel for pixel. The job ID updates as you go.</p>
+    </div></details>
+    <details class="drawer"><summary>Who are the moths?</summary><div class="body">
+      <p>Cartoons. The mender is your cursor and the nibbler is a stand-in for the blur; neither ran on a quantum computer. Only one thing they show is data: the nibbler's belly and crumb pile come from a classical measurement of each job image against the original, made at build time (the share of hole pixels whose colour moved by more than 10%, and the mean colour shift). Strong settings make it plump with a big pile; the faint-memory setting leaves it slim. Everything else they do, from flapping to fleeing, is decoration.</p>
+    </div></details>
+    <details class="drawer"><summary>What this does not claim</summary><div class="body">
+      <p class="honesty">blur-v1 runs on a classical statevector simulator and has no QPU mode. The repair is classical geometry: your browser re-runs the same Robinson-triangle deflation. Atlas didn't encode or correct anything. The hole snaps to the nearest of nine computed positions.</p>
+    </div></details>
+  </section>
+  <style>
+.wtnr-nav{margin-top:2.5rem;border-top:1px solid var(--ink,#19238E);padding-top:1.1rem;display:grid;gap:1rem}
+.wtnr-nav .wn-row{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:space-between;align-items:center}
+.wtnr-nav a.wn-btn{display:inline-flex;align-items:center;gap:.45rem;min-height:44px;padding:.6rem 1rem;border:1px solid var(--ink,#19238E);border-radius:999px;color:var(--ink,#19238E);text-decoration:none;font:500 .82rem/1.2 var(--body,system-ui,sans-serif);max-width:100%}
+.wtnr-nav a.wn-btn:hover,.wtnr-nav a.wn-btn:focus-visible{background:rgba(25,35,142,.07)}
+.wtnr-nav a.wn-hub{background:var(--ink,#19238E);color:var(--on-ink,#FBFAF9)}
+.wtnr-nav a.wn-hub:hover{background:#121A6E}
+.wtnr-nav details{border:1px solid var(--rule,#D3D3E6);background:var(--panel,#fff)}
+.wtnr-nav summary{cursor:pointer;padding:.75rem 1rem;font:500 .72rem/1.2 var(--mono,monospace);letter-spacing:.12em;text-transform:uppercase;color:var(--ink,#19238E)}
+.wtnr-nav ol{list-style:none;margin:0;padding:.25rem 1rem 1rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(14rem,1fr));gap:.15rem .9rem}
+.wtnr-nav ol a{display:flex;gap:.6rem;padding:.4rem 0;color:var(--ink,#19238E);text-decoration:none;font-size:.9rem;border-bottom:1px solid var(--rule,#D3D3E6)}
+.wtnr-nav ol a:hover{text-decoration:underline}
+.wtnr-nav ol a b{font:500 .78rem/1.6 var(--mono,monospace);min-width:1.6rem}
+.wtnr-nav ol a[aria-current="page"]{font-weight:600}
+.wtnr-nav ol a small{color:var(--ink-2,#545BA9);font-size:.72rem}
+</style><nav class="wtnr-nav" aria-label="All pieces"><div class="wn-row"><a class="wn-btn" href="../22-scroll-unroll/index.html" rel="prev">&larr; 22 Scroll Unroll</a><a class="wn-btn wn-hub" href="../../index.html">All 22 pieces</a><a class="wn-btn" href="../02-coda-reservoir/index.html" rel="next">02 Coda Reservoir &rarr;</a></div><details><summary>Jump to any piece (22)</summary><ol><li><a href="../01-penrose-hole/index.html" aria-current="page"><b>01</b><span>The Hole in the Penrose</span></a></li><li><a href="../02-coda-reservoir/index.html"><b>02</b><span>Coda Reservoir</span></a></li><li><a href="../03-moth-eye/index.html"><b>03</b><span>Moth Eye</span></a></li><li><a href="../04-magic-angle/index.html"><b>04</b><span>Magic Angle</span></a></li><li><a href="../05-jam-the-bat/index.html"><b>05</b><span>Jam the Bat</span></a></li><li><a href="../06-tweezer/index.html"><b>06</b><span>Tweezer</span></a></li><li><a href="../07-flavour/index.html"><b>07</b><span>FLAVOUR</span></a></li><li><a href="../08-pbit-or-qubit/index.html"><b>08</b><span>p-bit or qubit?</span></a></li><li><a href="../09-syndrome-loom/index.html"><b>09</b><span>Syndrome Loom</span></a></li><li><a href="../10-squeezed-chirp/index.html"><b>10</b><span>Squeezed Chirp</span></a></li><li><a href="../11-maxwells-ribbon/index.html"><b>11</b><span>Maxwell&#x27;s Ribbon</span></a></li><li><a href="../12-chirp-instrument/index.html"><b>12</b><span>Chirp Instrument</span></a></li><li><a href="../13-moth-to-flame/index.html"><b>13</b><span>Moth to Flame</span></a></li><li><a href="../14-hemibrain-ising/index.html"><b>14</b><span>Fly Brain Metro</span></a></li><li><a href="../15-tissue-blur/index.html"><b>15</b><span>Tissue Blur</span></a></li><li><a href="../16-busy-beaver-score/index.html"><b>16</b><span>Busy Beaver Score</span></a></li><li><a href="../17-quantum-lenia/index.html"><b>17</b><span>Quantum Lenia</span></a></li><li><a href="../18-oldest-light/index.html"><b>18</b><span>Oldest Light</span></a></li><li><a href="../19-frog-chorus/index.html"><b>19</b><span>Frog Chorus</span></a></li><li><a href="../20-antimatter-drop/index.html"><b>20</b><span>Antimatter Drop</span></a></li><li><a href="../21-quantum-nose/index.html"><b>21</b><span>The Quantum Nose Test</span></a></li><li><a href="../22-scroll-unroll/index.html"><b>22</b><span>Scroll Unroll</span></a></li></ol></details></nav>
+  <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>/* InkSprite: common/inksprite.js */
+(function (root) {
+  const PALETTE = { K: '#19238E', B: '#545BA9', L: '#A1A4CE', T: '#D3D3E6', W: '#FBFAF9', O: '#B4541A', G: '#1F7A4D' };
+  const cache = new Map();
+  let uid = 0;
+
+  function make(def) {
+    const frames = (def.frames || [def.rows]).map(f => f.map(r => r.replace(/\s/g, '.')));
+    const h = frames[0].length, w = Math.max(...frames[0].map(r => r.length));
+    return { id: ++uid, frames, w, h, fps: def.fps || 6, palette: Object.assign({}, PALETTE, def.palette || {}) };
+  }
+
+  function bake(sp, f, scale) {
+    const key = sp.id + ':' + f + ':' + scale;
+    if (cache.has(key)) return cache.get(key);
+    const c = document.createElement('canvas');
+    c.width = sp.w * scale; c.height = sp.h * scale;
+    const x = c.getContext('2d');
+    const rows = sp.frames[f % sp.frames.length];
+    for (let j = 0; j < rows.length; j++) for (let i = 0; i < rows[j].length; i++) {
+      const ch = rows[j][i];
+      if (ch === '.' || !sp.palette[ch]) continue;
+      x.fillStyle = sp.palette[ch];
+      x.fillRect(i * scale, j * scale, scale, scale);
+    }
+    cache.set(key, c);
+    return c;
+  }
+
+  function draw(ctx, sp, f, cx, cy, scale, o) {
+    o = o || {};
+    const img = bake(sp, f | 0, Math.max(1, Math.round(scale)));
+    ctx.save();
+    ctx.imageSmoothingEnabled = false;
+    if (o.alpha != null) ctx.globalAlpha *= o.alpha;
+    ctx.translate(Math.round(cx), Math.round(cy));
+    if (o.rotate) ctx.rotate(o.rotate);
+    if (o.flipX) ctx.scale(-1, 1);
+    if (o.flipY) ctx.scale(1, -1);
+    ctx.drawImage(img, -img.width / 2, -img.height / 2);
+    ctx.restore();
+  }
+
+  function frameAt(sp, t) {
+    if (root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches) return 0;
+    return Math.floor(t * sp.fps) % sp.frames.length;
+  }
+
+  function toDataURL(sp, f, scale) { return bake(sp, f || 0, scale || 4).toDataURL('image/png'); }
+
+  root.InkSprite = { make, draw, frameAt, toDataURL, PALETTE };
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>
+const POS = [{"x":300,"y":300,"r":270,"setting":"scrambled","strength":1.0,"style":"rx","reach":1.0,"job_id":"1c3d8cd2-a733-41be-b851-6c9a7d6576eb","file":"img/pos_300_300_scrambled.webp","crop":[30,30,541,541],"changed":0.517,"shift":0.282},{"x":300,"y":300,"r":270,"setting":"memory","strength":0.3,"style":"rx","reach":0.0,"job_id":"8bf80a51-a4e8-4800-b67e-dd47bf31431c","file":"img/pos_300_300_memory.webp","crop":[30,30,541,541],"changed":0.397,"shift":0.13},{"x":512,"y":300,"r":270,"setting":"scrambled","strength":1.0,"style":"rx","reach":1.0,"job_id":"94fae1e1-e565-4c86-ae86-a6bb0e8211a5","file":"img/pos_512_300_scrambled.webp","crop":[242,30,541,541],"changed":0.535,"shift":0.295},{"x":512,"y":300,"r":270,"setting":"memory","strength":0.3,"style":"rx","reach":0.0,"job_id":"31505e69-375a-482d-84e5-2e23c502aa94","file":"img/pos_512_300_memory.webp","crop":[242,30,541,541],"changed":0.39,"shift":0.127},{"x":724,"y":300,"r":270,"setting":"scrambled","strength":1.0,"style":"rx","reach":1.0,"job_id":"d6e5cc43-31c0-4ccd-8e9f-0529db92b3d2","file":"img/pos_724_300_scrambled.webp","crop":[454,30,541,541],"changed":0.527,"shift":0.29},{"x":724,"y":300,"r":270,"setting":"memory","strength":0.3,"style":"rx","reach":0.0,"job_id":"bedaf3b0-8038-4b5a-b056-cd2101eb186d","file":"img/pos_724_300_memory.webp","crop":[454,30,541,541],"changed":0.393,"shift":0.133},{"x":300,"y":512,"r":270,"setting":"scrambled","strength":1.0,"style":"rx","reach":1.0,"job_id":"2af80ca8-e2f0-48ee-8dbf-304c60182b59","file":"img/pos_300_512_scrambled.webp","crop":[30,242,541,541],"changed":0.531,"shift":0.29},{"x":300,"y":512,"r":270,"setting":"memory","strength":0.3,"style":"rx","reach":0.0,"job_id":"b127de92-c5f0-457a-9abc-2159435f33df","file":"img/pos_300_512_memory.webp","crop":[30,242,541,541],"changed":0.395,"shift":0.131},{"x":512,"y":512,"r":270,"setting":"scrambled","strength":1.0,"style":"rx","reach":1.0,"job_id":"30eddfc5-1db4-42d2-b373-b89a0bbdb8fe","file":"img/pos_512_512_scrambled.webp","crop":[242,242,541,541],"changed":0.538,"shift":0.296},{"x":512,"y":512,"r":270,"setting":"memory","strength":0.3,"style":"rx","reach":0.0,"job_id":"6b3c10bf-a4f1-4c18-b325-5d7fcfb07be0","file":"img/pos_512_512_memory.webp","crop":[242,242,541,541],"changed":0.398,"shift":0.13},{"x":724,"y":512,"r":270,"setting":"scrambled","strength":1.0,"style":"rx","reach":1.0,"job_id":"90a84ee0-8fe1-4e19-84ae-3667fe49b134","file":"img/pos_724_512_scrambled.webp","crop":[454,242,541,541],"changed":0.526,"shift":0.287},{"x":724,"y":512,"r":270,"setting":"memory","strength":0.3,"style":"rx","reach":0.0,"job_id":"ae04b564-7f49-410b-b4d6-06f915419beb","file":"img/pos_724_512_memory.webp","crop":[454,242,541,541],"changed":0.389,"shift":0.128},{"x":300,"y":724,"r":270,"setting":"scrambled","strength":1.0,"style":"rx","reach":1.0,"job_id":"64202b7f-543b-44ec-9088-bfe50ad66c37","file":"img/pos_300_724_scrambled.webp","crop":[30,454,541,541],"changed":0.524,"shift":0.284},{"x":300,"y":724,"r":270,"setting":"memory","strength":0.3,"style":"rx","reach":0.0,"job_id":"09765451-683d-4a0e-89be-37297bd9f986","file":"img/pos_300_724_memory.webp","crop":[30,454,541,541],"changed":0.391,"shift":0.128},{"x":512,"y":724,"r":270,"setting":"scrambled","strength":1.0,"style":"rx","reach":1.0,"job_id":"93dd0828-e092-4082-a13f-1c305211d3d6","file":"img/pos_512_724_scrambled.webp","crop":[242,454,541,541],"changed":0.526,"shift":0.287},{"x":512,"y":724,"r":270,"setting":"memory","strength":0.3,"style":"rx","reach":0.0,"job_id":"e284d3fe-7e14-450b-bafb-95ea707c69b6","file":"img/pos_512_724_memory.webp","crop":[242,454,541,541],"changed":0.388,"shift":0.127},{"x":724,"y":724,"r":270,"setting":"scrambled","strength":1.0,"style":"rx","reach":1.0,"job_id":"3241d420-144b-4171-83dc-ecad2d113b07","file":"img/pos_724_724_scrambled.webp","crop":[454,454,541,541],"changed":0.528,"shift":0.289},{"x":724,"y":724,"r":270,"setting":"memory","strength":0.3,"style":"rx","reach":0.0,"job_id":"aaf05f21-c45f-4bea-b958-9882e39425a1","file":"img/pos_724_724_memory.webp","crop":[454,454,541,541],"changed":0.392,"shift":0.13}];
+const SWEEP = [{"strength":0.3,"style":"rx","reach":0.0,"job_id":"293d1eab-c60e-45c6-861c-0ca577bc6600","file":"img/sweep_s0.3_rx_r0.0.webp","crop":[310,170,541,541],"changed":0.392,"shift":0.136},{"strength":0.3,"style":"rx","reach":1.0,"job_id":"503dbecb-ad36-49c7-a249-d7bf48c0e421","file":"img/sweep_s0.3_rx_r1.0.webp","crop":[310,170,541,541],"changed":0.939,"shift":0.286},{"strength":0.3,"style":"ry","reach":0.0,"job_id":"626a30d7-0a25-4362-bffc-53e5b17c7794","file":"img/sweep_s0.3_ry_r0.0.webp","crop":[310,170,541,541],"changed":0.885,"shift":0.279},{"strength":0.3,"style":"ry","reach":1.0,"job_id":"6a9f3ccd-ffd8-45e8-9812-7c85180b0f8d","file":"img/sweep_s0.3_ry_r1.0.webp","crop":[310,170,541,541],"changed":0.98,"shift":0.463},{"strength":0.6,"style":"rx","reach":0.0,"job_id":"ae326af2-6b1a-4740-a5e2-df1d03303d3b","file":"img/sweep_s0.6_rx_r0.0.webp","crop":[310,170,541,541],"changed":0.934,"shift":0.218},{"strength":0.6,"style":"rx","reach":1.0,"job_id":"5a2b9604-fac6-4aaf-9a38-50da7f588e8c","file":"img/sweep_s0.6_rx_r1.0.webp","crop":[310,170,541,541],"changed":0.882,"shift":0.284},{"strength":0.6,"style":"ry","reach":0.0,"job_id":"a9799da5-622a-451f-8184-538b21d14f73","file":"img/sweep_s0.6_ry_r0.0.webp","crop":[310,170,541,541],"changed":0.972,"shift":0.445},{"strength":0.6,"style":"ry","reach":1.0,"job_id":"c9ea8972-b017-4a07-9fb2-ab024b316a41","file":"img/sweep_s0.6_ry_r1.0.webp","crop":[310,170,541,541],"changed":0.981,"shift":0.467},{"strength":1.0,"style":"rx","reach":0.0,"job_id":"d6fa2e88-1f36-4701-b5eb-608e1bf8866c","file":"img/sweep_s1.0_rx_r0.0.webp","crop":[310,170,541,541],"changed":0.917,"shift":0.233},{"strength":1.0,"style":"rx","reach":1.0,"job_id":"c868dccb-e0e4-4b14-a101-943fb3d5d2d8","file":"img/sweep_s1.0_rx_r1.0.webp","crop":[310,170,541,541],"changed":0.531,"shift":0.291},{"strength":1.0,"style":"ry","reach":0.0,"job_id":"c5050cda-a591-462f-9d8a-838fffd1b033","file":"img/sweep_s1.0_ry_r0.0.webp","crop":[310,170,541,541],"changed":0.975,"shift":0.455},{"strength":1.0,"style":"ry","reach":1.0,"job_id":"991947d2-7401-47f8-8ccf-a4ecc9681ce0","file":"img/sweep_s1.0_ry_r1.0.webp","crop":[310,170,541,541],"changed":0.53,"shift":0.292}];
+const SPRITES = {"mender":{"frames":[[".......B.........B.......",".......KK.......KK.......","........BKB...BKB........",".KKKKK...BK...KB...KKKKK.","KBBTTTKK...KKK...KKTTTBBK","KBBTTTTTKKKTTTKKKTTTTTBBK","KBBLLKLLLKTKTKTKLLLKLLBBK","KBBLKWKLLKTTTTTKLLKWKLBBK","KBBLLKLLLLKTTTKLLLLKLLBBK","KBBLLLLLLLKTTTKLLLLLLLBBK",".KBLLLLLLKTTTTTKLLLLLLBK.","..KKLLLLLLKTTTKLLLLLLKK..","....KKKKKKKBTBKKKKKKK....","...KLTTTTTKBBBKTTTTTLK...","...KLTTTTTKBLBKTTTTTLK...","....KTTTTTKBBBKTTTTTK....","....KTTTTTKBLBKTTTTTK....",".....KKKKKKBBBKKKKKK.....","...........KBK...........","..........KKKKK..........",".........KKTTTKK.........","........KTTTTLLLK........",".......KTTTTLLLBBK.......",".......KTTTLLLBBBK.......","........KLLLLBBBK........",".........KLBBBBK.........","..........KKBKK..........","............K............"],["..KBBK.B.........B.KBBK..","..KBBTKKK.......KKKTBBK..",".KBBBLLKBKB...BKBKLLBBBK.",".KBBBLLLKBK...KBKLLLBBBK.",".KBBBLKLLK.KKK.KLLKLBBBK.","..KBBKWKLLKTTTKLLKWKBBK..","..KBBLKLLKTKTKTKLLKLBBK..","...KBLLLLKTTTTTKLLLLBK...","...KBLLLLLKTTTKLLLLLBK...","....KKLLLLKTTTKLLLLKK....",".....KKKLKTTTTTKLKKK.....","....KLTTKKKTTTKKKTTLK....","....KLTTTTKBTBKTTTTLK....","....KLTTTTKBBBKTTTTLK....",".....KTTTTKBLBKTTTTK.....","......KKTKKBBBKKTKK......","........K.KBLBK.K........","..........KBBBK..........","...........KBK...........","..........KKKKK..........",".........KKTTTKK.........","........KTTTTLLLK........",".......KTTTTLLLBBK.......",".......KTTTLLLBBBK.......","........KLLLLBBBK........",".........KLBBBBK.........","..........KKBKK..........","............K............"],[".......B.........B.......",".......KK.......KK.......","........BKB...BKB........",".KKKKK...BK...KB...KKKKK.","KBBTTTKK...KKK...KKTTTBBK","KBBTTTTTKKKTTTKKKTTTTTBBK","KBBLLKLLLKTKTKTKLLLKLLBBK","KBBLKWKLLKTTTTTKLLKWKLBBK","KBBLLKLLLLKTTTKLLLLKLLBBK","KBBLLLLLLLKTTTKLLLLLLLBBK",".KBLLLLLLKTTTTTKLLLLLLBK.","..KKLLLLLLKTTTKLLLLLLKK..","....KKKKKKKBTBKKKKKKK....","...KLTTTTTKBBBKTTTTTLK...","...KLTTTTTKBLBKTTTTTLK...","....KTTTTTKBBBKTTTTTK....","....KTTTTTKBLBKTTTTTK....",".....KKKKKKBBBKKKKKK.....","...........KBK...........","..........KKKKK..........",".........KKTTTKK.........","........KTTTTLLLK........",".......KTTTTLLLBBK.......",".......KTTTLLLBBBK.......","........KLLLLBBBK........",".........KLBBBBK.........","..........KKBKK..........","............K............"],[".......B.........B.......",".......KK.......KK.......","........BKB...BKB........",".........BK...KB.........","...........KKK...........","..........KTTTK..........",".........KTKTKTK.........","....KKKKKKTTTTTKKKKKK....",".KKKTTTTTTKTTTKTTTTTTKKK.","KBBBTTTTTTKTTTKTTTTTTBBBK","KBBBLKLLLKTTTTTKLLLKLBBBK","KBBBKWKLLLKTTTKLLLKWKBBBK",".KBBLKLLLLKBTBKLLLLKLBBK.",".KBBLLLLLKKBBBKKLLLLLBBK.","..KKKLLKKTKBLBKTKKLLKKK..",".....KKTTTKBBBKTTTKK.....",".....KLTTTKBLBKTTTLK.....","......KTTTKBBBKTTTK......",".......KKTKKBKKTKK.......",".........KKKKKKK.........",".........KKTTTKK.........","........KTTTTLLLK........",".......KTTTTLLLBBK.......",".......KTTTLLLBBBK.......","........KLLLLBBBK........",".........KLBBBBK.........","..........KKBKK..........","............K............"]],"fps":10},"mender_rest":{"frames":[[".......B.........B.......",".......KK.......KK.......","........BKB...BKB........",".KKKKK...BK...KB...KKKKK.","KBBTTTKK...KKK...KKTTTBBK","KBBTTTTTKKKTTTKKKTTTTTBBK","KBBLLKLLLKTKTKTKLLLKLLBBK","KBBLKWKLLKTTTTTKLLKWKLBBK","KBBLLKLLLLKTTTKLLLLKLLBBK","KBBLLLLLLLKTTTKLLLLLLLBBK",".KBLLLLLLKTTTTTKLLLLLLBK.","..KKLLLLLLKTTTKLLLLLLKK..","....KKKKKKKBTBKKKKKKK....","...KLTTTTTKBBBKTTTTTLK...","...KLTTTTTKBLBKTTTTTLK...","....KTTTTTKBBBKTTTTTK....","....KTTTTTKBLBKTTTTTK....",".....KKKKKKBBBKKKKKK.....","...........KBK...........","..........KKKKK..........",".........KKTTTKK.........","........KTTTTLLLK........",".......KTTTTLLLBBK.......",".......KTTTLLLBBBK.......","........KLLLLBBBK........",".........KLBBBBK.........","..........KKBKK..........","............K............"],[".......B.........B.......",".......KK.......KK.......","........BKB...BKB........",".KKKKK...BK...KB...KKKKK.","KBBTTTKK...KKK...KKTTTBBK","KBBTTTTTKKKTTTKKKTTTTTBBK","KBBLLKLLLKTKTKTKLLLKLLBBK","KBBLKWKLLKTTTTTKLLKWKLBBK","KBBLLKLLLLKTTTKLLLLKLLBBK","KBBLLLLLLLKTTTKLLLLLLLBBK",".KBLLLLLLKTTTTTKLLLLLLBK.","..KKLLLLLLKTTTKLLLLLLKK..","....KKKKKKKBTBKKKKKKK....","...KLTTTTTKBBBKTTTTTLK...","...KLTTTTTKBLBKTTTTTLK...","....KTTTTTKBBBKTTTTTK....","....KTTTTTKBLBKTTTTTK....",".....KKKKKKBBBKKKKKK.....","...........KBK...........","..........KKKKK..........",".........KKTTTKK.........","........KTTTTLLLK........",".......KTTTTLLLBBK.......",".......KTTTLLLBBBK.......","........KLLLLBBBK........",".........KLBBBBK.........","..........KKBKK..........","............K............"],[".......B.........B.......",".......KK.......KK.......","........BKB...BKB........",".KKKKK...BK...KB...KKKKK.","KBBTTTKK...KKK...KKTTTBBK","KBBTTTTTKKKTTTKKKTTTTTBBK","KBBLLKLLLKTKTKTKLLLKLLBBK","KBBLKWKLLKTTTTTKLLKWKLBBK","KBBLLKLLLLKTTTKLLLLKLLBBK","KBBLLLLLLLKTTTKLLLLLLLBBK",".KBLLLLLLKTTTTTKLLLLLLBK.","..KKLLLLLLKTTTKLLLLLLKK..","....KKKKKKKBTBKKKKKKK....","...KLTTTTTKBBBKTTTTTLK...","...KLTTTTTKBLBKTTTTTLK...","....KTTTTTKBBBKTTTTTK....","....KTTTTTKBLBKTTTTTK....",".....KKKKKKBBBKKKKKK.....","...........KBK...........","..........KKKKK..........",".........KKTTTKK.........","........KTTTTLLLK........",".......KTTTTLLLBBK.......",".......KTTTLLLBBBK.......","........KLLLLBBBK........",".........KLBBBBK.........","..........KKBKK..........","............K............"],[".......B.........B.......",".......KK.......KK.......","........BKB...BKB........",".KKKKK...BK...KB...KKKKK.","KBBTTTKK...KKK...KKTTTBBK","KBBTTTTTKKKTTTKKKTTTTTBBK","KBBLLKLLLKTBTBTKLLLKLLBBK","KBBLKWKLLKTTTTTKLLKWKLBBK","KBBLLKLLLLKTTTKLLLLKLLBBK","KBBLLLLLLLKTTTKLLLLLLLBBK",".KBLLLLLLKTTTTTKLLLLLLBK.","..KKLLLLLLKTTTKLLLLLLKK..","....KKKKKKKBTBKKKKKKK....","...KLTTTTTKBBBKTTTTTLK...","...KLTTTTTKBLBKTTTTTLK...","....KTTTTTKBBBKTTTTTK....","....KTTTTTKBLBKTTTTTK....",".....KKKKKKBBBKKKKKK.....","...........KBK...........","..........KKKKK..........",".........KKTTTKK.........","........KTTTTLLLK........",".......KTTTTLLLBBK.......",".......KTTTLLLBBBK.......","........KLLLLBBBK........",".........KLBBBBK.........","..........KKBKK..........","............K............"]],"fps":2},"nibbler":{"frames":[[".........................",".........................",".........................",".....BBB.........BBB.....","....BKKKB.......BKKKB....","...BK...KB.....BK...KB...","...K.....K.....K.....K...",".......KKKKKKKKKKK.......","......KLTKLLLLLKTLK......",".....KLLKLKTTTKLKLLK.....","....KLLKKKTTTTTKKKLLK....","....KLKLKWWTTTKWWLKLK....","...KLLKLKWWTTTKWWLKLLK...","...KLKLLTTTTTTTTTLLKLK...","...KLKLLTTTKTKTTTLLKLK...","..KBLKLLLLKTKTKLLLLKLBK..","..KBBKLLLLLLLLLBLLLKBBK..","..KBBBKLBBBBBBBBBLKBBBK..","..KBBBKLLLLLLLLLLLKBBBK..","...KBBKKBBBBBBBBBKKBBK...","....KK..KKLLLLLKK..KK....","..........KKKKK..........",".........KK...KK.........","........................."],[".........................",".........................",".........................",".....BBB.........BBB.....","....BKKKB.......BKKKB....","...BK...KB.....BK...KB...","...K.....K.....K.....K...",".......KKKKKKKKKKK.......","......KLTKLLLLLKTLK......",".....KLLKLKTTTKLKLLK.....","....KLLKKKTTTTTKKKLLK....","....KLKLKWWTTTKWWLKLK....","...KLLKLKWWTTTKWWLKLLK...","...KLKLLTTTTTTTTTLLKLK...","...KLKLLTTTKTKTTTLLKLK...","..KBLKLLLLKTKTKLLLLKLBK..","..KBBKLLLLLLLLLBLLLKBBK..","..KBBBKLBBBBBBBBBLKBBBK..","..KBBBKLLLLLLLLLLLKBBBK..","...KBBKKBBBBBBBBBKKBBK...","....KK..KKLLLLLKK..KK....","..........KKKKK..........",".........KK...KK.........","........................."],[".........................",".........................",".........................",".....BBB.........BBB.....","....BKKKB.......BKKKB....","...BK...KB.....BK...KB...","...K.....K.....K.....K...",".......KKKKKKKKKKK.......","......KLTKLLLLLKTLK......",".....KLLKLKTTTKLKLLK.....","....KLLKKKTTTTTKKKLLK....","....KLKLTTTTTTTTTLKLK....","...KLLKLKKKTTTKKKLKLLK...","...KLKLLTTTTTTTTTLLKLK...","...KLKLLTTTKTKTTTLLKLK...","..KBLKLLLLKTKTKLLLLKLBK..","..KBBKLLLLLLLLLBLLLKBBK..","..KBBBKLBBBBBBBBBLKBBBK..","..KBBBKLLLLLLLLLLLKBBBK..","...KBBKKBBBBBBBBBKKBBK...","....KK..KKLLLLLKK..KK....","..........KKKKK..........",".........KK...KK.........","........................."],[".........................",".........................",".........................",".....BBB.........BBB.....","....BKKKB.......BKKKB....","...BK...KB.....BK...KB...","...K.....K.....K.....K...",".......KKKKKKKKKKK.......","......KLTKLLLLLKTLK......",".....KLLKLKTTTKLKLLK.....","....KLLKKKTTTTTKKKLLK....","....KLKLWWKTTTWWKLKLK....","...KLLKLWWKTTTWWKLKLLK...","...KLKLLTTTTTTTTTLLKLK...","...KLKLLTTTKTKTTTLLKLK...","..KBLKLLLLKTKTKLLLLKLBK..","..KBBKLLLLLLLLLBLLLKBBK..","..KBBBKLBBBBBBBBBLKBBBK..","..KBBBKLLLLLLLLLLLKBBBK..","...KBBKKBBBBBBBBBKKBBK...","....KK..KKLLLLLKK..KK....","..........KKKKK..........",".........KK...KK.........","........................."],[".........................",".........................",".........................",".....BBB.........BBB.....","....BKKKB.......BKKKB....","...BK...KB.....BK...KB...","...K.....K.....K.....K...",".......KKKKKKKKKKK.......","......KLTKLLLLLKTLK......",".....KLLKLKTTTKLKLLK.....","....KLLKKKTTTTTKKKLLK....","....KLKLWWKTTTWWKLKLK....","...KLLKLWWKTTTWWKLKLLK...","...KLKLLTTTTTTTTTLLKLK...","...KLKLLTTTKTKTTTLLKLK...","..KBLKLLLLKTKTKLLLLKLBK..","..KBBKLLLLLLLLLBLLLKBBK..","..KBBBKLBBBBBBBBBLKBBBK..","..KBBBKLLLLLLLLLLLKBBBK..","...KBBKKBBBBBBBBBKKBBK...","....KK..KKLLLLLKK..KK....","..........KKKKK..........",".........KK...KK.........","........................."],[".........................",".........................",".........................",".....BBB.........BBB.....","....BKKKB.......BKKKB....","...BK...KB.....BK...KB...","...K.....K.....K.....K...",".......KKKKKKKKKKK.......","......KLTKLLLLLKTLK......",".....KLLKLKTTTKLKLLK.....","....KLLKKKTTTTTKKKLLK....","....KLKLKWWTTTKWWLKLK....","...KLLKLKWWTTTKWWLKLLK...","...KLKLLTTTTTTTTTLLKLK...","...KLKLLTTTKTKTTTLLKLK...","..KBLKLLLLKTKTKLLLLKLBK..","..KBBKLLLLLLLLLBLLLKBBK..","..KBBBKLBBBBBBBBBLKBBBK..","..KBBBKLLLLLLLLLLLKBBBK..","...KBBKKBBBBBBBBBKKBBK...","....KK..KKLLLLLKK..KK....","..........KKKKK..........",".........KK...KK.........","........................."]],"fps":2},"nibbler_fat":{"frames":[[".........................",".........................",".....BBB.........BBB.....","....BKKKB.......BKKKB....","...BK...KB.....BK...KB...","...K.....K.....K.....K...","..........K...K..........","......KKKKKKKKKKKKK......",".....KLTKLLLLLLLKTLK.....","....KLLKLTKTTTKTLKLLK....","...KLLKLKKTTTTTKKLKLLK...","...KLKLTKWWTTTKWWTLKLK...","..KLLKLTKWWTTTKWWTLKLLK..","..KLKLLTTTTTTTTTTTLLKLK..","..KLKLLLTTTKTKTTTLLLKLK..",".KBLKLLLLTKTKTKTLLLLKLBK.",".KBBKLLLLLLLLLLBLLLLKBBK.",".KBBBKLBBBBBBBBBBBLKBBBK.",".KBBBKLLLLLLLLLLLLLKBBBK.","..KBBKKBBBBBBBBBBBKKBBK..","...KK..KKLLLLLLLKK..KK...",".........KKKLKKK.........",".........KK.K.KK.........","........................."],[".........................",".........................",".....BBB.........BBB.....","....BKKKB.......BKKKB....","...BK...KB.....BK...KB...","...K.....K.....K.....K...","..........K...K..........","......KKKKKKKKKKKKK......",".....KLTKLLLLLLLKTLK.....","....KLLKLTKTTTKTLKLLK....","...KLLKLKKTTTTTKKLKLLK...","...KLKLTKWWTTTKWWTLKLK...","..KLLKLTKWWTTTKWWTLKLLK..","..KLKLLTTTTTTTTTTTLLKLK..","..KLKLLLTTTKTKTTTLLLKLK..",".KBLKLLLLTKTKTKTLLLLKLBK.",".KBBKLLLLLLLLLLBLLLLKBBK.",".KBBBKLBBBBBBBBBBBLKBBBK.",".KBBBKLLLLLLLLLLLLLKBBBK.","..KBBKKBBBBBBBBBBBKKBBK..","...KK..KKLLLLLLLKK..KK...",".........KKKLKKK.........",".........KK.K.KK.........","........................."],[".........................",".........................",".....BBB.........BBB.....","....BKKKB.......BKKKB....","...BK...KB.....BK...KB...","...K.....K.....K.....K...","..........K...K..........","......KKKKKKKKKKKKK......",".....KLTKLLLLLLLKTLK.....","....KLLKLTKTTTKTLKLLK....","...KLLKLKKTTTTTKKLKLLK...","...KLKLTTTTTTTTTTTLKLK...","..KLLKLTKKKTTTKKKTLKLLK..","..KLKLLTTTTTTTTTTTLLKLK..","..KLKLLLTTTKTKTTTLLLKLK..",".KBLKLLLLTKTKTKTLLLLKLBK.",".KBBKLLLLLLLLLLBLLLLKBBK.",".KBBBKLBBBBBBBBBBBLKBBBK.",".KBBBKLLLLLLLLLLLLLKBBBK.","..KBBKKBBBBBBBBBBBKKBBK..","...KK..KKLLLLLLLKK..KK...",".........KKKLKKK.........",".........KK.K.KK.........","........................."],[".........................",".........................",".....BBB.........BBB.....","....BKKKB.......BKKKB....","...BK...KB.....BK...KB...","...K.....K.....K.....K...","..........K...K..........","......KKKKKKKKKKKKK......",".....KLTKLLLLLLLKTLK.....","....KLLKLTKTTTKTLKLLK....","...KLLKLKKTTTTTKKLKLLK...","...KLKLTWWKTTTWWKTLKLK...","..KLLKLTWWKTTTWWKTLKLLK..","..KLKLLTTTTTTTTTTTLLKLK..","..KLKLLLTTTKTKTTTLLLKLK..",".KBLKLLLLTKTKTKTLLLLKLBK.",".KBBKLLLLLLLLLLBLLLLKBBK.",".KBBBKLBBBBBBBBBBBLKBBBK.",".KBBBKLLLLLLLLLLLLLKBBBK.","..KBBKKBBBBBBBBBBBKKBBK..","...KK..KKLLLLLLLKK..KK...",".........KKKLKKK.........",".........KK.K.KK.........","........................."],[".........................",".........................",".....BBB.........BBB.....","....BKKKB.......BKKKB....","...BK...KB.....BK...KB...","...K.....K.....K.....K...","..........K...K..........","......KKKKKKKKKKKKK......",".....KLTKLLLLLLLKTLK.....","....KLLKLTKTTTKTLKLLK....","...KLLKLKKTTTTTKKLKLLK...","...KLKLTWWKTTTWWKTLKLK...","..KLLKLTWWKTTTWWKTLKLLK..","..KLKLLTTTTTTTTTTTLLKLK..","..KLKLLLTTTKTKTTTLLLKLK..",".KBLKLLLLTKTKTKTLLLLKLBK.",".KBBKLLLLLLLLLLBLLLLKBBK.",".KBBBKLBBBBBBBBBBBLKBBBK.",".KBBBKLLLLLLLLLLLLLKBBBK.","..KBBKKBBBBBBBBBBBKKBBK..","...KK..KKLLLLLLLKK..KK...",".........KKKLKKK.........",".........KK.K.KK.........","........................."],[".........................",".........................",".....BBB.........BBB.....","....BKKKB.......BKKKB....","...BK...KB.....BK...KB...","...K.....K.....K.....K...","..........K...K..........","......KKKKKKKKKKKKK......",".....KLTKLLLLLLLKTLK.....","....KLLKLTKTTTKTLKLLK....","...KLLKLKKTTTTTKKLKLLK...","...KLKLTKWWTTTKWWTLKLK...","..KLLKLTKWWTTTKWWTLKLLK..","..KLKLLTTTTTTTTTTTLLKLK..","..KLKLLLTTTKTKTTTLLLKLK..",".KBLKLLLLTKTKTKTLLLLKLBK.",".KBBKLLLLLLLLLLBLLLLKBBK.",".KBBBKLBBBBBBBBBBBLKBBBK.",".KBBBKLLLLLLLLLLLLLKBBBK.","..KBBKKBBBBBBBBBBBKKBBK..","...KK..KKLLLLLLLKK..KK...",".........KKKLKKK.........",".........KK.K.KK.........","........................."]],"fps":2},"nibbler_chomp":{"frames":[[".........................",".........................",".........................",".....BBB.........BBB.....","....BKKKB.......BKKKB....","...BK...KB.....BK...KB...","...K.....K.....K.....K...",".......KKKKKKKKKKK.......","......KLTKLLLLLKTLK......",".....KLLKLKTTTKLKLLK.....","....KLLKKKTTTTTKKKLLK....","....KLKLKWWTTTKWWLKLK....","...KLLKLKWWTTTKWWLKLLK...","...KLKLLTTTTTTTTTLLKLK...","...KLKLLTTTKKKTTTLLKLK...","..KBLKLLLLTKBKTLLLLKLBK..","..KBBKLLLLLLLLLBLLLKBBK..","..KBBBKLBBBBBBBBBLKBBBK..","..KBBBKLLLLLLLLLLLKBBBK..","...KBBKKBBBBBBBBBKKBBK...","....KK..KKLLLLLKK..KK....","..........KKKKK..........",".........KK...KK.........","........................."],[".........................",".........................",".........................",".....BBB.........BBB.....","....BKKKB.......BKKKB....","...BK...KB.....BK...KB...","...K.....K.....K.....K...",".......KKKKKKKKKKK.......","......KLTKLLLLLKTLK......",".....KLLKLKTTTKLKLLK.....","....KLLKKKTTTTTKKKLLK....","....KLKLWWKTTTWWKLKLK....","...KLLKLWWKTTTWWKLKLLK...","...KLKLLTTTTTTTTTLLKLK...","...KLKLLTTTKTKTTTLLKLK...","..KBLKLLLLKTKTKLLLLKLBK..","..KBBKLLLLLLLLLLLLLKBBK..","..KBBBKLBBBBBBBBBLKBBBK..","..KBBBKLLLLLLLLLLLKBBBK..","...KBBKKBBBBBBBBBKKBBK...","....KK..KKLLLLLKK..KK....","..........KKKKK..........",".........KK...KK.........","........................."]],"fps":7},"nibbler_chomp_fat":{"frames":[[".........................",".........................",".....BBB.........BBB.....","....BKKKB.......BKKKB....","...BK...KB.....BK...KB...","...K.....K.....K.....K...","..........K...K..........","......KKKKKKKKKKKKK......",".....KLTKLLLLLLLKTLK.....","....KLLKLTKTTTKTLKLLK....","...KLLKLKKTTTTTKKLKLLK...","...KLKLTKWWTTTKWWTLKLK...","..KLLKLTKWWTTTKWWTLKLLK..","..KLKLLTTTTTTTTTTTLLKLK..","..KLKLLLTTTKKKTTTLLLKLK..",".KBLKLLLLTTKBKTTLLLLKLBK.",".KBBKLLLLLLLLLLBLLLLKBBK.",".KBBBKLBBBBBBBBBBBLKBBBK.",".KBBBKLLLLLLLLLLLLLKBBBK.","..KBBKKBBBBBBBBBBBKKBBK..","...KK..KKLLLLLLLKK..KK...",".........KKKLKKK.........",".........KK.K.KK.........","........................."],[".........................",".........................",".....BBB.........BBB.....","....BKKKB.......BKKKB....","...BK...KB.....BK...KB...","...K.....K.....K.....K...","..........K...K..........","......KKKKKKKKKKKKK......",".....KLTKLLLLLLLKTLK.....","....KLLKLTKTTTKTLKLLK....","...KLLKLKKTTTTTKKLKLLK...","...KLKLTWWKTTTWWKTLKLK...","..KLLKLTWWKTTTWWKTLKLLK..","..KLKLLTTTTTTTTTTTLLKLK..","..KLKLLLTTTKTKTTTLLLKLK..",".KBLKLLLLTKTKTKTLLLLKLBK.",".KBBKLLLLLLLLLLLLLLLKBBK.",".KBBBKLBBBBBBBBBBBLKBBBK.",".KBBBKLLLLLLLLLLLLLKBBBK.","..KBBKKBBBBBBBBBBBKKBBK..","...KK..KKLLLLLLLKK..KK...",".........KKKLKKK.........",".........KK.K.KK.........","........................."]],"fps":7},"nibbler_startled":{"frames":[[".........................","......BK.........KB......","......BK.B.....B.KB......","........K.......K........",".......BK.B...B.KB.......",".........K.....K.........","........BK.....KB........",".......KKKKKKKKKKK.......","......KLTKLLLLLKTLK......",".....KLLKLKTTTKLKLLK.....","....KLLKLTTTTTTTLKLLK....","....KLKLWKWTTTWKWLKLK....","...KLLKLWKWTTTWKWLKLLK...","...KLKLLTTTTTTTTTLLKLK...","...KLKLLTTTTKTTTTLLKLK...","..KBLKLLLLTKTKTLLLLKLBK..","..KBBKLLLLLLKLLLLLLKBBK..","..KBBBKLBBBBBBBBBLKBBBK..","..KBBBKLLLLLLLLLLLKBBBK..","...KBBKKBBBBBBBBBKKBBK...","....KK..KKLLLLLKK..KK....","..........KKKKK..........",".........KK...KK.........","........................."]],"fps":1},"nibbler_startled_fat":{"frames":[["......BK.........KB......","......BK.B.....B.KB......","........K.......K........",".......BK.B...B.KB.......",".........K.....K.........","........BK.....KB........","..........K...K..........","......KKKKKKKKKKKKK......",".....KLTKKLLLLLKKTLK.....","....KLLKKTKTTTKTKKLLK....","...KLLKLTTTTTTTTTLKLLK...","...KLKLTWKWTTTWKWTLKLK...","..KLLKLTWKWTTTWKWTLKLLK..","..KLKLLTTTTTTTTTTTLLKLK..","..KLKLLLTTTTKTTTTLLLKLK..",".KBLKLLLLTTKTKTTLLLLKLBK.",".KBBKLLLLLLLKLLLLLLLKBBK.",".KBBBKLBBBBBBBBBBBLKBBBK.",".KBBBKLLLLLLLLLLLLLKBBBK.","..KBBKKBBBBBBBBBBBKKBBK..","...KK..KKLLLLLLLKK..KK...",".........KKKLKKK.........",".........KK.K.KK.........","........................."]],"fps":1},"nibbler_flee":{"frames":[[".........................","......BK.........KB......","......BK.B.....B.KB......","...KKK..K.......K..KKK...","..KBBTKBK.B...B.KBKTBBK..","..KBBTTK.K.....K.KTTBBK..",".KBBBLLLBK.....KBLLLBBBK.",".KBBBLKLK.KKKKK.KLKLBBBK.",".KBBBKWKLKLLLLLKLKWKBBBK.","..KBBLKLKLKTTTKLKLKLBBK..","..KBBLLKLTTTTTTTLKLLBBK..","...KBLKLWKWTTTWKWLKLBK...","...KBLKLWKWTTTWKWLKLBK...","....KKLLTTTTTTTTTLLKK....","....KKLLTTTTKTTTTLLKK....","....KKLLLLTKTKTLLLLKK....","....KKLLLLLLKLLLLLLKK....","....KLKLBBBBBBBBBLKLK....",".....KKLLLLLLLLLLLKK.....",".......KBBBBBBBBBK.......","........KKLLLLLKK........","..........KKKKK..........",".........KK...KK.........","........................."],[".........................","......BK.........KB......","......BK.B.....B.KB......","........K.......K........",".......BK.B...B.KB.......",".........K.....K.........","..K.....BK.....KB.....K..",".KBKKKK...KKKKK...KKKKBK.","KBBTTTTKKKLLLLLKKKTTTTBBK","KBBLLKLLKLKTTTKLKLLKLLBBK","KBBLKWKKLTTTTTTTLKKWKLBBK","KBBLLKKLWKWTTTWKWLKKLLBBK","KBBLLLKLWKWTTTWKWLKLLLBBK","KBBLLKLLTTTTTTTTTLLKLLBBK",".KBLLKLLTTTTKTTTTLLKLLBK.","..KKKKLLLLTKTKTLLLLKKKK..","...KLKLLLLLLKLLLLLLKLK...","...KLTKLBBBBBBBBBLKTLK...","...KLTKLLLLLLLLLLLKTLK...","....KTTKBBBBBBBBBKTTK....",".....KKTKKLLLLLKKTKK.....",".......KK.KKKKK.KK.......",".........KK...KK.........","........................."]],"fps":12},"sparkle":{"frames":[[".........",".........",".........","....K....","...KWK...","....K....",".........",".........","........."],[".........",".........","....K....","...KWK...","..KWWWK..","...KWK...","....K....",".........","........."],["....K....","...KTK...","...KWK...",".KKKWKKK.","KTWWWWWTK",".KKKWKKK.","...KWK...","...KTK...","....K...."],[".........","....K....","...KTK...","..KKTKK..",".KTTTTTK.","..KKTKK..","...KTK...","....K....","........."]],"fps":12},"crumb":{"frames":[[".......","..KKK..",".KLLLK.",".KLLLK.","..KKK..","......."],[".......","..KKK..",".KTTTK.","..KTK..","...K...","......."]],"fps":1},"sweat":{"frames":[["..K..",".KTK.",".KTK.","KTWTK","KTTTK",".KTK.","..K.."]],"fps":1}};
+const TUNE_CENTRE = {x:580, y:440, r:270};
+const XS = [300, 512, 724];
+const RM = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+const SP = {}; for (const k in SPRITES) SP[k] = InkSprite.make(SPRITES[k]);
+const now = () => performance.now() / 1000;
+
+// ---- Penrose P3 by Robinson-triangle deflation (same rule as tiling.py) ----
+const PHI=(1+Math.sqrt(5))/2, N=1024, RADIUS=1.08*Math.hypot(N,N)/2;
+function tiling(iter){
+  const C=(re,im)=>({re,im}), add=(a,b)=>C(a.re+b.re,a.im+b.im), sub=(a,b)=>C(a.re-b.re,a.im-b.im), sc=(a,k)=>C(a.re*k,a.im*k);
+  let t=[];
+  for(let i=0;i<10;i++){
+    let b=C(RADIUS*Math.cos((2*i-1)*Math.PI/10),RADIUS*Math.sin((2*i-1)*Math.PI/10));
+    let c=C(RADIUS*Math.cos((2*i+1)*Math.PI/10),RADIUS*Math.sin((2*i+1)*Math.PI/10));
+    if(i%2===0){const s=b;b=c;c=s;}
+    t.push([0,C(0,0),b,c]);
+  }
+  for(let k=0;k<iter;k++){
+    const o=[];
+    for(const [kind,a,b,c] of t){
+      if(kind===0){const p=add(a,sc(sub(b,a),1/PHI));o.push([0,c,p,b],[1,p,c,a]);}
+      else{const q=add(b,sc(sub(a,b),1/PHI)),r=add(b,sc(sub(c,b),1/PHI));o.push([1,r,c,a],[1,q,r,b],[0,r,q,a]);}
+    }
+    t=o;
+  }
+  return t.map(([k,a,b,c])=>{const p=[a,b,c].map(z=>[z.re+N/2,z.im+N/2]);
+    return {k,p,cx:(p[0][0]+p[1][0]+p[2][0])/3,cy:(p[0][1]+p[1][1]+p[2][1])/3};})
+    .filter(({p})=>!(Math.max(...p.map(v=>v[0]))<0||Math.min(...p.map(v=>v[0]))>N||Math.max(...p.map(v=>v[1]))<0||Math.min(...p.map(v=>v[1]))>N));
+}
+const TILES=tiling(7);
+const THICK='rgb(233,196,106)', THIN='rgb(58,74,92)', EDGE='rgb(24,22,20)';   // the tiling's own colours (as in intact.png)
+
+// ---- state ----
+const cv=document.getElementById('cv'), ctx=cv.getContext('2d'), stage=document.getElementById('stage');
+const $=id=>document.getElementById(id);
+const imgs={}; function img(src){if(!imgs[src]){const i=new Image();i.decoding='async';i.src=src;i.onload=draw;imgs[src]=i;}return imgs[src];}
+const ready=i=>i&&i.complete&&i.naturalWidth>0;
+const st={tool:'brush', setting:'scrambled', tuning:false, hole:{x:512,y:512,r:270},
+          tune:{strength:1,style:'rx',reach:1}, restored:new Set(), born:new Map(), brush:48, cursor:null, wipe:.5,
+          drag:null, peek:false, painting:false, complete:false, popping:false, view:'scene'};
+img('img/intact.webp');
+
+const hole=()=>st.tuning?TUNE_CENTRE:st.hole;
+function current(){
+  if(st.tuning){const t=st.tune;return SWEEP.find(s=>s.strength===t.strength&&s.style===t.style&&s.reach===t.reach);}
+  return POS.find(p=>p.x===st.hole.x&&p.y===st.hole.y&&p.setting===st.setting);
+}
+function inHole(t,h){
+  const ins=([x,y])=>(x-h.x)**2+(y-h.y)**2<=h.r*h.r;
+  return t.p.some(ins)||ins([t.cx,t.cy]);
+}
+let holeTiles=[], holeKey='';
+function tilesFor(h){const key=h.x+','+h.y;if(key!==holeKey){holeKey=key;holeTiles=TILES.map((t,i)=>i).filter(i=>inHole(TILES[i],h));}return holeTiles;}
+function progress(){const list=tilesFor(hole());let d=0;for(const i of list)if(st.restored.has(i))d++;return {done:d,total:list.length};}
+
+function pathTile(t){ctx.beginPath();ctx.moveTo(t.p[0][0],t.p[0][1]);ctx.lineTo(t.p[1][0],t.p[1][1]);ctx.lineTo(t.p[2][0],t.p[2][1]);ctx.closePath();}
+function drawTile(t){
+  pathTile(t);ctx.fillStyle=t.k===0?THICK:THIN;ctx.fill();
+  ctx.beginPath();ctx.moveTo(t.p[1][0],t.p[1][1]);ctx.lineTo(t.p[0][0],t.p[0][1]);ctx.lineTo(t.p[2][0],t.p[2][1]);
+  ctx.strokeStyle=EDGE;ctx.lineWidth=1.4;ctx.stroke();
+}
+const POP=.22, backOut=a=>1+2.70158*(a-1)**3+1.70158*(a-1)**2;
+function addTile(i){st.restored.add(i);if(!RM)st.born.set(i,now());}
+
+let castKey='';
+function draw(){
+  const job=current(), h=hole(), intact=img('img/intact.webp'), crop=job?img(job.file):null, t=now();
+  ctx.imageSmoothingEnabled=false;
+  ctx.fillStyle='#FBFAF9';ctx.fillRect(0,0,N,N);
+  if(ready(intact))ctx.drawImage(intact,0,0,N,N);
+  // the engine output: a lossless crop of the downloaded job image, laid over the identical original
+  if(job){if(ready(crop))ctx.drawImage(crop,job.crop[0],job.crop[1]);
+    else{ctx.fillStyle='#F0F0F4';ctx.beginPath();ctx.arc(h.x,h.y,h.r,0,2*Math.PI);ctx.fill();}}
+  // restored tiles, clipped to the hole; new ones pop in
+  ctx.save();ctx.beginPath();ctx.arc(h.x,h.y,h.r,0,2*Math.PI);ctx.clip();
+  let popping=false;
+  for(const i of st.restored){
+    const b=st.born.get(i), a=b==null?1:(t-b)/POP;
+    if(a>=1){if(b!=null)st.born.delete(i);drawTile(TILES[i]);continue;}
+    popping=true;const T=TILES[i], s=.3+.7*backOut(Math.max(0,a));
+    ctx.save();ctx.translate(T.cx,T.cy);ctx.scale(s,s);ctx.translate(-T.cx,-T.cy);drawTile(T);ctx.restore();
+  }
+  ctx.restore();st.popping=popping;
+  // compare: original on the left of the wipe line
+  if(st.tool==='wipe'||st.peek){
+    const x=st.peek?N:st.wipe*N;
+    if(ready(intact)){ctx.save();ctx.beginPath();ctx.rect(0,0,x,N);ctx.clip();ctx.drawImage(intact,0,0,N,N);ctx.restore();}
+    if(!st.peek){ctx.fillStyle='#FBFAF9';ctx.fillRect(x-3,0,6,N);ctx.fillStyle='#19238E';ctx.fillRect(x-1,0,2,N);
+      ctx.beginPath();ctx.arc(x,N/2,26,0,2*Math.PI);ctx.fill();
+      ctx.fillStyle='#FBFAF9';ctx.beginPath();ctx.moveTo(x-17,N/2);ctx.lineTo(x-6,N/2-9);ctx.lineTo(x-6,N/2+9);ctx.closePath();ctx.fill();
+      ctx.beginPath();ctx.moveTo(x+17,N/2);ctx.lineTo(x+6,N/2-9);ctx.lineTo(x+6,N/2+9);ctx.closePath();ctx.fill();}
+  }
+  // hole ring
+  ctx.setLineDash([14,10]);ctx.lineWidth=7;ctx.strokeStyle='#19238E';ctx.beginPath();ctx.arc(h.x,h.y,h.r+4,0,2*Math.PI);ctx.stroke();
+  ctx.lineWidth=3;ctx.strokeStyle='#FBFAF9';ctx.stroke();ctx.setLineDash([]);
+  if(st.drag){ctx.lineWidth=4;ctx.strokeStyle='#19238E';ctx.setLineDash([6,8]);ctx.beginPath();ctx.arc(st.drag.x,st.drag.y,h.r,0,2*Math.PI);ctx.stroke();ctx.setLineDash([]);}
+  // readouts
+  const p=progress();
+  $('m-num').textContent=`${p.done} / ${p.total} tiles`;
+  $('m-bar').style.width=(p.total?100*p.done/p.total:0)+'%';
+  $('r-params').textContent=job?`strength ${job.strength} \u00b7 ${job.style} \u00b7 reach ${job.reach}`:'\u2013';
+  $('r-hole').textContent=`(${h.x}, ${h.y}) \u00b7 r ${h.r} px \u00b7 20 qubits`;
+  $('r-job').textContent=job?job.job_id:'loading\u2026';
+  const nib=job?`${Math.round(job.changed*100)}% of hole pixels changed \u00b7 mean shift ${Math.round(job.shift*100)}%`:'\u2013';
+  $('r-nib').textContent=nib;
+  $('auto').disabled=p.done===p.total;
+  $('reset').disabled=p.done===0;
+  const key=job?job.job_id:'';
+  if(key!==castKey){castKey=key;const k=job?jobKey(job):'';
+    document.querySelectorAll('.jb').forEach(b=>b.setAttribute('aria-current',String(b.dataset.k===k)));$('nib-cap').textContent=job?`${Math.round(job.changed*100)}% of the hole's pixels changed, mean shift ${Math.round(job.shift*100)}%`:'-';
+    castPic('cast-nibbler',isFat(job)?'nibbler_fat':'nibbler',0);}
+}
+
+// ---- the cast (pixel sprites on a device-resolution overlay; integer scale, no smoothing) ----
+const fx=$('fx'), fctx=fx.getContext('2d');
+const F={k:1,u:2,dpr:1,css:1};
+function sizeFx(){const r=cv.getBoundingClientRect(), dpr=window.devicePixelRatio||1;
+  const w=Math.max(1,Math.round(r.width*dpr)), hh=Math.max(1,Math.round(r.height*dpr));
+  if(fx.width!==w||fx.height!==hh){fx.width=w;fx.height=hh;}
+  F.k=w/N;F.dpr=dpr;F.css=r.width;F.u=Math.max(1,Math.round((r.width>=520?3:2)*dpr));}
+if(window.ResizeObserver)new ResizeObserver(sizeFx).observe(cv);
+addEventListener('resize',sizeFx);sizeFx();
+const sp=()=>F.u/F.k;                                   // canvas units per sprite pixel
+function put(name,f,x,y){InkSprite.draw(fctx,SP[name],f,x*F.k,y*F.k,F.u);}
+const isFat=job=>!!job&&job.shift>=.2;                  // measured mean colour shift inside the hole
+function castPic(id,name,f){const el=$(id), s=Math.max(1,Math.round(3*(window.devicePixelRatio||1))), d=window.devicePixelRatio||1;
+  el.src=InkSprite.toDataURL(SP[name],f,s);el.width=Math.round(SP[name].w*s/d);el.height=Math.round(SP[name].h*s/d);}
+castPic('cast-mender','mender',0);
+
+const NIB_ANG=[-45,-28,-62,-12,8,-118,28,152,172,196,214];
+const MEN_ANG=[135,155,115,175,95,200,60,40,225,250,20];
+function band(){
+  const c=cv.getBoundingClientRect(), s=N/(c.height||1); let top=6,bot=N-6;
+  for(const el of [document.querySelector('.toolbar'),document.querySelector('.meter')]){
+    const r=el.getBoundingClientRect(); if(r.bottom<=c.top||r.top>=c.bottom)continue;
+    if(r.top-c.top<c.height/2)top=Math.max(top,(r.bottom-c.top)*s+6);else bot=Math.min(bot,(r.top-c.top)*s-6);
+  }
+  return {top,bot};
+}
+const angDist=(a,b)=>Math.abs(((a-b)%360+540)%360-180);
+function seat(h,cands,name,avoid,b){               // a rim angle where the sprite stands fully visible, feet on the ring
+  const S=SP[name], s=sp(), w=S.w*s, hg=S.h*s; let first=null;
+  for(const d of cands){
+    if(avoid!=null&&angDist(d,avoid)<110)continue;
+    const a=d*Math.PI/180, x=h.x+Math.cos(a)*(h.r+6), y=h.y+Math.sin(a)*(h.r+6)-hg/2, c={x,y,deg:d};
+    if(!first)first=c;
+    if(x-w/2>=6&&x+w/2<=N-6&&y-hg/2>=b.top&&y+hg/2<=b.bot)return c;
+  }
+  return first;
+}
+
+const M={x:null,y:null,happyUntil:0,ax:0,ay:0};       // the mender
+const NB={mode:'idle',until:0,t0:0};                  // the nibbler: idle | chomp | flee | gone | return
+let sparks=[];
+function sparkleAt(x,y,t0){if(!RM&&sparks.length<60)sparks.push({x,y,t0:t0||now()});}
+function nibChomp(){if(NB.mode==='idle'||NB.mode==='chomp'){NB.mode='chomp';NB.until=now()+.9;}}
+function nibReturn(){if(NB.mode==='gone'||NB.mode==='flee'){NB.mode=RM?'idle':'return';NB.t0=now();}}
+function celebrate(){
+  toast('Restored! The nibbler flew off.');
+  if(RM){NB.mode='gone';return;}
+  const t=now(), arr=[...st.restored];NB.mode='flee';NB.t0=t;M.happyUntil=t+1.4;
+  for(let k=0;k<18&&arr.length;k++){const T=TILES[arr[(Math.random()*arr.length)|0]];sparkleAt(T.cx,T.cy,t+k*.05);}
+}
+function checkDone(){const p=progress(), full=p.total>0&&p.done===p.total;
+  if(full&&!st.complete){st.complete=true;celebrate();}
+  else if(!full&&st.complete){st.complete=false;nibReturn();}}
+
+function frame(t,dt){
+  sizeFx();
+  fctx.setTransform(1,0,0,1,0,0);fctx.clearRect(0,0,fx.width,fx.height);fctx.imageSmoothingEnabled=false;
+  if(st.view==='data'){brushRing();return;}
+  const h0=hole(), h=st.drag?{x:st.drag.x,y:st.drag.y,r:h0.r}:h0, job=current(), s=sp(), fat=isFat(job), b=band();
+  const nseat=seat(h,NIB_ANG,'nibbler_fat',null,b);
+  // -- mender goal --
+  const MS=SP.mender, halfH=MS.h*s/2, TILE=9.5*s;       // the carried tile sits 9.5 sprite px below the centre
+  let gx,gy,snap=false,fly=false,fast=false;
+  if(anim){gx=M.ax;gy=M.ay-TILE;fly=fast=true;}
+  else if(t<M.happyUntil){gx=h.x;gy=h.y-TILE-Math.abs(Math.sin(t*9))*10*s;fly=true;}
+  else if(st.tool==='brush'&&st.cursor){gx=st.cursor.x;gy=st.cursor.y-TILE;snap=true;fly=true;fast=st.painting;}
+  else if(st.tool==='wipe'){gx=st.wipe*N;gy=N/2-26-halfH;}
+  else{const m=seat(h,MEN_ANG,'mender',nseat.deg,b);gx=m.x;gy=m.y;}
+  if(M.x==null||snap||RM){M.x=gx;M.y=gy;}
+  else{const e=Math.min(1,dt*(anim?10:7));M.x+=(gx-M.x)*e;M.y+=(gy-M.y)*e;}
+  const moving=Math.hypot(gx-M.x,gy-M.y)>2*s;
+  // -- nibbler --
+  if(NB.mode==='chomp'&&t>NB.until)NB.mode='idle';
+  let nx=nseat.x, ny=nseat.y, nname=fat?'nibbler_fat':'nibbler', nf=InkSprite.frameAt(SP[nname],t), sweat=false, show=NB.mode!=='gone';
+  const away=(()=>{const dx=nx-h.x,dy=ny-h.y,l=Math.hypot(dx,dy)||1;return {x:dx/l,y:dy/l};})();
+  if(st.drag){nname=fat?'nibbler_chomp_fat':'nibbler_chomp';nf=InkSprite.frameAt(SP[nname],t);}
+  else if(NB.mode==='chomp'){nname=fat?'nibbler_chomp_fat':'nibbler_chomp';nf=RM?0:Math.floor(t*7)%2;}
+  else if(NB.mode==='flee'||NB.mode==='return'){
+    const a=(t-NB.t0)/(NB.mode==='flee'?1.3:.7);
+    if(a>=1){if(NB.mode==='flee'){NB.mode='gone';show=false;}else{NB.mode='chomp';NB.until=t+.9;}}
+    else{const d=NB.mode==='flee'?a*a:(1-a)*(1-a);nx+=away.x*d*760;ny+=away.y*d*760-Math.sin(a*14)*12;nname='nibbler_flee';nf=Math.floor(t*12)%2;}
+  }
+  else if(NB.mode==='idle'){
+    const near=(snap||fly||moving)&&Math.hypot(M.x-nx,(M.y+TILE)-ny)<200;
+    if(near){nname=fat?'nibbler_startled_fat':'nibbler_startled';nf=0;sweat=true;if(!RM)ny-=(Math.floor(t*6)%2)*s*2;}
+    else{const p=progress();sweat=p.total>0&&p.done/p.total>=.5;}
+  }
+  // crumbs: the measured nibble (more mean colour shift, bigger pile). Left on the rim even after it flees.
+  if(job&&!st.drag){
+    const n=Math.max(1,Math.min(10,Math.round(job.shift*20))), side=nseat.x>N/2?-1:1, NS=SP.nibbler_fat;
+    const bx=nseat.x+side*(NS.w*s/2+3*s), by=nseat.y+NS.h*s/2-3*s;
+    const OFF=[[0,0],[5,0],[10,0],[15,0],[2.5,-3.5],[7.5,-3.5],[12.5,-3.5],[5,-7],[10,-7],[7.5,-10.5]];
+    for(let i=0;i<n;i++)put('crumb',i%2,bx+side*OFF[i][0]*s,by+OFF[i][1]*s);
+  }
+  if(show){put(nname,nf,nx,ny);if(sweat)put('sweat',0,nx+10*s,ny-9*s+(RM?0:(Math.floor(t*5)%3))*s);}
+  brushRing();   // under the mender
+  // mender
+  const flying=fly||moving;
+  let mname=flying?'mender':'mender_rest', mf;
+  if(RM)mf=0;else if(flying)mf=Math.floor(t*(fast?18:10))%4;else mf=InkSprite.frameAt(SP.mender_rest,t);
+  put(mname,mf,M.x,M.y);
+  // sparkles on freshly restored tiles
+  sparks=sparks.filter(p=>t-p.t0<.34);
+  for(const p of sparks){const a=t-p.t0;if(a>=0)put('sparkle',Math.min(3,Math.floor(a*12)),p.x,p.y);}
+}
+
+function brushRing(){
+  if(st.tool!=='brush'||!st.cursor||anim)return;const k=F.k;
+  fctx.lineWidth=3*F.dpr;fctx.strokeStyle='#FBFAF9';fctx.beginPath();fctx.arc(st.cursor.x*k,st.cursor.y*k,st.brush*k,0,2*Math.PI);fctx.stroke();
+  fctx.lineWidth=1.25*F.dpr;fctx.strokeStyle='#19238E';fctx.beginPath();fctx.arc(st.cursor.x*k,st.cursor.y*k,st.brush*k+2*F.dpr,0,2*Math.PI);fctx.stroke();
+}
+
+let raf=0,lastT=0,onScreen=true;
+function loop(ms){const t=ms/1000, dt=lastT?Math.min(.05,t-lastT):0;lastT=t;
+  if(st.popping)draw();
+  frame(now(),dt);
+  raf=(onScreen&&!document.hidden)?requestAnimationFrame(loop):0;}
+function kick(){if(!raf){lastT=0;raf=requestAnimationFrame(loop);}}
+if(window.IntersectionObserver)new IntersectionObserver(es=>{onScreen=es[0].isIntersecting;if(onScreen)kick();}).observe(stage);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)kick();});
+
+// ---- pointer ----
+function pt(e){const r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)/r.width*N,y:(e.clientY-r.top)/r.height*N};}
+function paint(p){
+  const h=hole(), added=[];
+  for(const i of tilesFor(h)){const t=TILES[i];if(!st.restored.has(i)&&Math.hypot(t.cx-p.x,t.cy-p.y)<st.brush){addTile(i);added.push(i);}}
+  if(added.length&&sparks.length<14){const T=TILES[added[(Math.random()*added.length)|0]];sparkleAt(T.cx,T.cy);}
+  if(added.length){draw();checkDone();}
+  return added.length;
+}
+function snapHole(q){
+  let best=POS[0],bd=1e9;for(const p of POS){if(p.setting!==st.setting)continue;const d=Math.hypot(p.x-q.x,p.y-q.y);if(d<bd){bd=d;best=p;}}
+  return best;
+}
+function moveHole(x,y){st.hole={x,y,r:270};st.restored.clear();st.born.clear();draw();checkDone();nibChomp();}
+let down=false;
+cv.addEventListener('pointerdown',e=>{
+  stopAuto();down=true;try{cv.setPointerCapture(e.pointerId);}catch(_){}
+  const p=pt(e);st.cursor=p;
+  if(st.tool==='brush'){st.painting=true;paint(p);}
+  else if(st.tool==='move'&&!st.tuning){st.drag=p;}
+  else if(st.tool==='wipe'){st.wipe=Math.max(0,Math.min(1,p.x/N));}
+  draw();
+});
+cv.addEventListener('pointermove',e=>{
+  const p=pt(e);st.cursor=p;
+  if(!down)return;
+  if(st.tool==='brush')paint(p);
+  else if(st.tool==='move'&&st.drag){st.drag=p;draw();}
+  else if(st.tool==='wipe'){st.wipe=Math.max(0,Math.min(1,p.x/N));draw();}
+});
+function up(e){
+  down=false;st.painting=false;
+  if(st.drag){const q=snapHole(st.drag);st.drag=null;moveHole(q.x,q.y);}
+  if(e&&e.pointerType&&e.pointerType!=='mouse')st.cursor=null;   // finger lifted: the mender flies home
+  draw();
+}
+cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
+cv.addEventListener('pointerleave',()=>{if(!down)st.cursor=null;});
+cv.addEventListener('keydown',e=>{
+  const m={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key];
+  if(m&&!st.tuning){e.preventDefault();const ix=XS.indexOf(st.hole.x),iy=XS.indexOf(st.hole.y);
+    const nx=XS[Math.max(0,Math.min(2,ix+m[0]))], ny=XS[Math.max(0,Math.min(2,iy+m[1]))];
+    if(nx!==st.hole.x||ny!==st.hole.y)moveHole(nx,ny);}
+  if(e.key===' '){e.preventDefault();st.peek=true;draw();}
+});
+cv.addEventListener('keyup',e=>{if(e.key===' '){st.peek=false;draw();}});
+
+// ---- controls ----
+const toast=(msg)=>{const t=$('toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),1900);};
+function press(sel,attr,val){document.querySelectorAll(sel).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset[attr]===val)));}
+document.querySelectorAll('#g-tool [data-tool]').forEach(b=>b.addEventListener('click',()=>{st.tool=b.dataset.tool;stage.dataset.tool=st.tool;press('#g-tool [data-tool]','tool',st.tool);draw();}));
+document.querySelectorAll('#g-setting [data-set]').forEach(b=>b.addEventListener('click',()=>{if(st.setting!==b.dataset.set){st.setting=b.dataset.set;nibChomp();}press('#g-setting [data-set]','set',st.setting);draw();}));
+function setView(v){st.view=v;$('wrap').dataset.show=v;press('#g-view [data-view]','view',v);draw();frame(now(),0);kick();}   // redraw the cast overlay now, not on the next frame
+document.querySelectorAll('#g-view [data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
+const brush=$('brush');
+brush.addEventListener('input',()=>{st.brush=+brush.value;$('brush-val').textContent=brush.value+' px';draw();});
+let anim=null;
+function stopAuto(){if(anim){cancelAnimationFrame(anim);anim=null;$('auto').textContent='Restore the rest';}}
+$('auto').addEventListener('click',()=>{   // user-started; any canvas touch stops it
+  if(anim){stopAuto();return;}
+  const h=hole(), rest=tilesFor(h).filter(i=>!st.restored.has(i)).sort((a,b)=>Math.hypot(TILES[b].cx-h.x,TILES[b].cy-h.y)-Math.hypot(TILES[a].cx-h.x,TILES[a].cy-h.y));
+  if(RM){rest.forEach(i=>st.restored.add(i));draw();checkDone();return;}
+  $('auto').textContent='Pause';
+  const step=()=>{let sx=0,sy=0,n=0;
+    for(let k=0;k<6&&rest.length;k++){const i=rest.shift();addTile(i);sx+=TILES[i].cx;sy+=TILES[i].cy;n++;}
+    if(n){M.ax=sx/n;M.ay=sy/n;if(Math.random()<.5)sparkleAt(M.ax,M.ay);}
+    draw();
+    if(rest.length)anim=requestAnimationFrame(step);else{anim=null;$('auto').textContent='Restore the rest';checkDone();}};
+  anim=requestAnimationFrame(step);
+});
+$('reset').addEventListener('click',()=>{stopAuto();st.restored.clear();st.born.clear();draw();checkDone();nibChomp();cv.focus({preventScroll:true});});
+$('share').addEventListener('click',async()=>{
+  const tag=jobKey(current())+(st.view==='data'?'-data':'');
+  try{history.replaceState(null,'','#'+tag);}catch(_){}
+  const url=location.href;
+  try{await navigator.clipboard.writeText(url);toast('Link copied');}catch(e){toast('Copy failed: the link is in your address bar');}
+});
+const tuneBtn=$('tune-toggle'), tunePanel=$('tune');
+function setTuning(on){stopAuto();st.tuning=on;tunePanel.hidden=!on;tuneBtn.setAttribute('aria-expanded',String(on));
+  tuneBtn.textContent=on?'Back to the movable hole':'Show the 12-job sweep';$('g-setting').hidden=on;}
+const fresh=()=>{st.restored.clear();st.born.clear();refresh();checkDone();nibChomp();};
+tuneBtn.addEventListener('click',()=>{setTuning(!st.tuning);fresh();});
+function seg(id,values,label,get,set){
+  const el=$(id);
+  values.forEach(v=>{const b=document.createElement('button');b.type='button';b.id=id+'-'+String(v).replace('.','_');b.textContent=label(v);
+    b.addEventListener('click',()=>{stopAuto();set(v);fresh();});el.appendChild(b);});
+  el._sync=()=>[...el.children].forEach((b,i)=>b.setAttribute('aria-pressed',String(get()===values[i])));
+}
+seg('t-strength',[0.3,0.6,1],v=>v.toFixed(1),()=>st.tune.strength,v=>st.tune.strength=v);
+seg('t-style',['rx','ry'],v=>v,()=>st.tune.style,v=>st.tune.style=v);
+seg('t-reach',[0,1],v=>v===0?'0 local':'1 global',()=>st.tune.reach,v=>st.tune.reach=v);
+function refresh(){['t-strength','t-style','t-reach'].forEach(id=>$(id)._sync());
+  $('t-move').disabled=st.tuning;$('t-move').title=st.tuning?'The 12-job sweep was run at one hole, (580, 440). Go back to the movable hole to move it.':'';
+  if(st.tuning&&st.tool==='move'){st.tool='brush';stage.dataset.tool='brush';press('#g-tool [data-tool]','tool','brush');}
+  const j=current();if(j)img(j.file);draw();}
+
+// one key per job, used by the share link and the Data table: p512-300-scrambled (a hole position) or t10rx1 (a sweep job)
+function jobKey(j){return !j?'':j.setting?`p${j.x}-${j.y}-${j.setting}`:`t${Math.round(j.strength*10)}${j.style}${j.reach}`;}
+function loadJob(j){
+  stopAuto();
+  if(j.setting){if(st.tuning)setTuning(false);st.setting=j.setting;press('#g-setting [data-set]','set',j.setting);st.hole={x:j.x,y:j.y,r:270};}
+  else{if(!st.tuning)setTuning(true);st.tune={strength:j.strength,style:j.style,reach:j.reach};}
+  fresh();
+}
+// restore a shared view from the link (#p512-300-scrambled or #t10rx1, plus -data for the Data view)
+function applyHash(){
+  const m=location.hash.match(/^#(p\d+-\d+-(?:scrambled|memory)|t\d+r[xy]\d)(-data)?$/);
+  const j=m&&POS.concat(SWEEP).find(x=>jobKey(x)===m[1]);
+  if(!j)return false;
+  loadJob(j);setView(m[2]?'data':'scene');return true;
+}
+addEventListener('hashchange',applyHash);
+// the Data view: every job on the page; each one loads into the scene
+(function(){
+  const pct=v=>Math.round(v*100)+'%', short=id=>id.slice(0,8);
+  function jb(j,html,aria){const b=document.createElement('button');b.type='button';b.className='jb';b.dataset.k=jobKey(j);b.title='Job '+j.job_id;
+    b.setAttribute('aria-label',aria);b.innerHTML=html;b.addEventListener('click',()=>loadJob(j));return b;}
+  const pb=$('tab-pos').tBodies[0];
+  for(const y of XS)for(const x of XS){
+    const tr=pb.insertRow(), th=document.createElement('th');th.scope='row';th.textContent=`(${x}, ${y})`;tr.appendChild(th);
+    for(const set of ['scrambled','memory']){const j=POS.find(p=>p.x===x&&p.y===y&&p.setting===set), td=tr.insertCell();
+      if(j)td.appendChild(jb(j,`${pct(j.changed)} &middot; ${pct(j.shift)}<small>${short(j.job_id)}</small>`,
+        `Load hole (${x}, ${y}), ${set==='memory'?'faint memory':'scrambled'}: ${pct(j.changed)} changed, ${pct(j.shift)} shift, job ${j.job_id}`));}
+  }
+  const sb=$('tab-sweep').tBodies[0];
+  for(const j of SWEEP){const tr=sb.insertRow();
+    tr.insertCell().appendChild(jb(j,`${j.strength.toFixed(1)} &middot; ${j.style} &middot; ${j.reach}`,
+      `Load sweep job: strength ${j.strength.toFixed(1)}, gate ${j.style}, reach ${j.reach}, job ${j.job_id}`));
+    tr.insertCell().textContent=pct(j.changed);tr.insertCell().textContent=pct(j.shift);
+    const id=tr.insertCell();id.className='id';id.textContent=short(j.job_id);id.title=j.job_id;}
+  castKey='';   // the next draw() marks the job on screen
+})();
+applyHash();
+// preload what the user is most likely to touch next (crops are small)
+POS.forEach(p=>img(p.file));setTimeout(()=>SWEEP.forEach(p=>img(p.file)),1200);
+refresh();
+kick();
+</script>
+
+</body>
+</html>

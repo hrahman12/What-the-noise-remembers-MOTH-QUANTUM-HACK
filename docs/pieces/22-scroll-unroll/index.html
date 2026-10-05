@@ -1,0 +1,1110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="What the Noise Remembers: 22 playable quantum pieces for Moth Hack 2026, built on real Moth Quantum Atlas jobs.">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:#FBFAF9}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Scroll Unroll</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap");
+/* What the Noise Remembers: shared brand kit for all 22 pieces.
+   Look: in the spirit of the Moth Hack 2026 brief pages. Warm paper ground, a single ultramarine
+   ink, small uppercase monospace labels, thin rules, pill buttons and solid-ink section bars.
+   Deliberately single-theme (light). This is an independent entry; use no Moth logo or wordmark.
+   Layout concept: the instrument is the hero; story and science live in drawers. */
+:root{
+  --paper:#FBFAF9;    /* page ground */
+  --panel:#FFFFFF;    /* raised surfaces */
+  --panel-2:#F0F0F4;  /* control wells */
+  --rule:#D3D3E6;     /* hairlines */
+  --ink:#19238E;      /* the one ink: text, rules, buttons, accents */
+  --ink-2:#545BA9;    /* secondary text */
+  --ink-3:#A1A4CE;    /* tertiary text, disabled */
+  --link:#194BBA;
+  --on-ink:#FBFAF9;   /* text on solid ink */
+  --good:#1F7A4D;
+  --warn:#B4541A;
+  --tint:rgba(25,35,142,.07);
+
+  /* compatibility aliases for pages built on the first (dark) kit: keep them working */
+  --night:var(--paper); --dusk:var(--panel); --dusk-2:var(--panel-2); --line:var(--rule);
+  --moon:var(--ink); --haze:var(--ink-2); --wing:var(--ink); --wing-ink:var(--on-ink);
+  --glow:rgba(25,35,142,.14);
+
+  --display:"Geist", "Helvetica Neue", Arial, Helvetica, sans-serif;
+  --body:"Geist", "Helvetica Neue", Arial, Helvetica, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  color-scheme:light;
+}
+html,body{background:var(--paper);color:var(--ink)}
+body{font:400 1rem/1.55 var(--body);padding-inline:clamp(16px,3vw,40px);padding-block:0 3rem;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance;letter-spacing:-.015em;color:var(--ink)}
+h1 em,h2 em{font-style:normal;color:var(--ink);background:var(--tint);padding-inline:.12em;border-radius:.1em}
+p{margin:0}
+a{color:var(--link)}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+::selection{background:var(--ink);color:var(--on-ink)}
+
+/* brand bar: monospace, hairline below, like the brief pages */
+.wtnr-bar{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding-block:1.1rem .9rem;border-bottom:1px solid var(--ink);font:500 .74rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
+.wtnr-bar a{color:var(--ink);text-decoration:none}
+.wtnr-bar a:hover{text-decoration:underline;text-underline-offset:3px}
+.wtnr-bar .count b{font-weight:500}
+
+/* solid ink strip, like the "JUDGING CRITERIA" bar */
+.ink-bar{display:flex;justify-content:space-between;align-items:center;gap:1rem;background:var(--ink);color:var(--on-ink);padding:.9rem 1.1rem;font:500 .76rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+
+/* proof chips: real, verified numbers */
+.proof{display:flex;flex-wrap:wrap;gap:.5rem}
+.proof span{font:500 .72rem/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:.5rem .75rem;border:1px solid var(--rule);background:var(--panel);color:var(--ink-2);border-radius:999px}
+.proof span b{color:var(--ink);font-weight:500}
+.proof span.hot{border-color:var(--ink);background:var(--ink);color:var(--on-ink)}
+.proof span.hot b{color:var(--on-ink)}
+
+/* controls: segmented pills and pill buttons */
+.seg{display:inline-flex;flex-wrap:wrap;background:var(--panel);border:1px solid var(--ink);border-radius:999px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;padding:.55rem .95rem;border-radius:999px;cursor:pointer;font:500 .76rem/1 var(--mono);letter-spacing:.04em;color:var(--ink)}
+.seg button:hover{background:var(--tint)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--on-ink)}
+.seg button:disabled{color:var(--ink-3);cursor:not-allowed;background:transparent}
+.btn{display:inline-flex;align-items:center;gap:.5rem;border:1px solid var(--ink);background:var(--ink);color:var(--on-ink);padding:.78rem 1.25rem;border-radius:999px;font:500 .92rem/1 var(--body);cursor:pointer;text-decoration:none}
+.btn:hover{background:#121A6E}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost:hover{background:var(--tint)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+input[type=range]{accent-color:var(--ink);width:100%}
+.label{font:500 .7rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+
+/* drawers for the science: hairline-ruled list like the challenge index */
+details.drawer{border-top:1px solid var(--rule)}
+details.drawer:last-of-type{border-bottom:1px solid var(--rule)}
+details.drawer summary{cursor:pointer;list-style:none;padding:1.05rem 0;display:flex;justify-content:space-between;gap:1rem;font:400 1.3rem/1.2 var(--display);color:var(--ink)}
+details.drawer summary::after{content:"+";font:400 1.1rem/1.2 var(--mono);color:var(--ink)}
+details.drawer[open] summary::after{content:"\2212"}
+details.drawer summary::-webkit-details-marker{display:none}
+details.drawer .body{padding-bottom:1.25rem;color:var(--ink-2);max-width:68ch;display:grid;gap:.75rem}
+
+.honesty{font-size:.84rem;color:var(--ink-2);border-inline-start:2px solid var(--ink);padding-inline-start:.8rem}
+
+/* footer line every page carries */
+.wtnr-foot{margin-top:2.5rem;border-top:1px solid var(--rule);padding-top:1rem;font:400 .72rem/1.5 var(--mono);letter-spacing:.04em;color:var(--ink-2)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* Layout: scene first. Headline, then the stage: the pixel-art desk (the archaeologist moth, the roll, the ash)
+   over the CT slice of the same scroll; the reading strip, the cast and the data panels follow.
+   Look: the brief-page kit. Paper ground, one ultramarine ink, square panels, pill buttons, hairlines. */
+.wrap{max-width:76rem;margin-inline:auto}
+.hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:1.1rem clamp(1rem,3vw,2.5rem);align-items:end;padding-top:1.6rem}
+.head{display:grid;gap:.8rem;min-width:0}
+.intro{display:grid;gap:.9rem;min-width:0;align-content:end}
+.hero .stage{grid-column:1/-1}
+.kicker{font:500 .74rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+h1{font-size:clamp(2.1rem,4.3vw,3.6rem);line-height:.98;letter-spacing:-.02em}
+.sub{font-size:1.02rem;color:var(--ink-2);max-width:52ch}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.6rem 1.2rem;counter-reset:s;margin:1.1rem 0 0;padding:0;list-style:none}
+.steps li{display:grid;grid-template-columns:1.7rem minmax(0,1fr);gap:.5rem;align-items:baseline;font-size:.88rem;line-height:1.4}
+.steps li::before{counter-increment:s;content:counter(s);font:500 .74rem/1.5 var(--mono);color:var(--on-ink);background:var(--ink);border-radius:99px;width:1.45rem;height:1.45rem;display:grid;place-items:center}
+.stage{position:relative;border:1px solid var(--ink);background:var(--paper)}
+.desk-wrap{position:relative;display:flex;justify-content:center;background:var(--paper);touch-action:pan-y;user-select:none;cursor:pointer;overflow:hidden}
+#desk{display:block;image-rendering:pixelated;image-rendering:crisp-edges}
+.stage .tag{position:absolute;left:.6rem;top:.55rem;pointer-events:none}
+/* Scene / Data: the desk illustration, or the measured numbers of the nine jobs; the CT slice stays in both */
+.stage[data-view="scene"] .only-data,.stage[data-view="data"] .only-scene{display:none !important}
+.viewseg{position:absolute;right:.6rem;top:.5rem;z-index:2}
+.viewseg button{padding:.45rem .8rem;font-size:.7rem}
+.datav{position:relative;background:var(--paper)}
+#chart{display:block;width:100%}
+#chart .g{stroke:var(--rule);stroke-width:1}
+#chart .ax{stroke:var(--ink);stroke-width:1}
+#chart .tk{font:500 10px var(--mono);fill:var(--ink-2)}
+#chart .al{font:500 10px var(--mono);fill:var(--ink);letter-spacing:.08em}
+#chart .th{stroke:var(--ink-3);stroke-width:1;stroke-dasharray:5 4}
+#chart .th.on{stroke:var(--ink);stroke-width:1.5}
+#chart .thl{font:500 10px var(--mono);fill:var(--ink-3)}
+#chart .thl.on{fill:var(--ink)}
+#chart .mk{stroke:var(--ink);stroke-width:1.5;fill:var(--paper)}
+#chart .mk.ok{fill:var(--ink)}
+#chart .ring{fill:none;stroke:var(--ink);stroke-width:1.5}
+#chart .mk,#chart .ring{pointer-events:none}
+#chart .hit{fill:transparent;stroke:none}
+#chart [data-pt]{cursor:pointer;outline:none}
+#chart [data-pt]:hover .hit{fill:var(--tint)}
+#chart [data-pt]:focus-visible .hit{fill:var(--tint);stroke:var(--ink);stroke-width:1;stroke-dasharray:3 2}
+#chart .co{fill:var(--paper);stroke:var(--ink);stroke-width:1}
+#chart .cot{font:500 11px var(--mono);fill:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:.3rem 1.2rem;justify-content:space-between;align-items:center;padding:.5rem .75rem;border-top:1px solid var(--rule);min-height:2.1rem;border-bottom:1px solid var(--ink);font:500 .66rem/1.35 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2);background:var(--panel)}
+.legend b{color:var(--ink);font-weight:500}
+.ct{position:relative;overflow:hidden;touch-action:pan-y;user-select:none}
+.ctv{position:relative}
+.ct #gl{display:block;width:100%;height:auto}
+#ov{position:absolute;inset:0;width:100%;height:100%;cursor:grab;image-rendering:pixelated}
+#ov.dragging{cursor:grabbing}
+.hud{position:absolute;left:.75rem;top:.75rem;right:.75rem;display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap;pointer-events:none}
+.hud>*{pointer-events:auto}
+.chip{font:500 .72rem/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:.5rem .7rem;border:1px solid var(--ink);background:rgba(251,250,249,.94);color:var(--ink-2);border-radius:999px}
+.chip b{color:var(--ink);font-weight:500}
+.chip.found{background:var(--ink);color:var(--on-ink)}
+.chip.found b{color:var(--on-ink)}
+.notice{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-width:30ch;text-align:center;font-size:.9rem;color:var(--ink);background:var(--panel);border:1px solid var(--ink);padding:.8rem 1rem}
+.notice[hidden]{display:none}
+.unroll{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:.8rem;align-items:center;margin-top:.9rem}
+.unroll .num{font:500 .8rem/1 var(--mono);font-variant-numeric:tabular-nums;min-width:8.5ch;text-align:right;color:var(--ink)}
+.unroll input{height:2rem}
+.reader{margin-top:1.25rem;display:grid;gap:.6rem}
+.reader .frame{position:relative;border:1px solid var(--ink);overflow:hidden;background:var(--paper);touch-action:pan-y;cursor:ew-resize}
+#rd{display:block;width:100%;height:auto}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1rem;margin-top:1.25rem}
+.panel{display:grid;gap:.85rem;background:var(--panel);border:1px solid var(--rule);padding:1.1rem 1.2rem;align-content:start}
+.row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.row.split{justify-content:space-between}
+.readout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.3rem .9rem;font:400 .78rem/1.5 var(--mono);color:var(--ink-2);margin:0;border-top:1px solid var(--rule);padding-top:.85rem}
+.readout dd{margin:0}
+.readout b{color:var(--ink);font-weight:500;overflow-wrap:anywhere}
+.ladder{display:flex;gap:3px;height:34px;align-items:flex-end;border-bottom:1px solid var(--rule)}
+.ladder button{flex:1;min-width:0;padding:0;border:1px solid var(--rule);border-bottom:0;background:var(--panel-2);cursor:pointer}
+.ladder button.on{background:var(--ink-3);border-color:var(--ink-3)}
+.ladder button.cur{background:var(--ink);border-color:var(--ink)}
+.ladder-cap{display:flex;justify-content:space-between;font:500 .62rem/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.cast{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-top:1.25rem}
+.card{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.9rem;align-items:center;background:var(--panel);border:1px solid var(--rule);padding:.8rem 1rem}
+.card .pic{width:100px;height:88px;display:grid;place-items:center;border:1px solid var(--rule);background:var(--paper)}
+.card .pic img,.card .pic canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
+.card h3{font:500 .7rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin-bottom:.3rem}
+.card p{font-size:.84rem;line-height:1.45;color:var(--ink-2)}
+.card p b{color:var(--ink);font-weight:500}
+.reveal{border:1px solid var(--ink);margin-top:1.25rem;background:var(--panel)}
+.reveal[hidden]{display:none}
+.reveal .in{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.6rem 1.2rem;padding:1.1rem 1.2rem;align-items:center}
+.reveal .in>div{display:grid;gap:.6rem;min-width:0}
+.reveal .pic{image-rendering:pixelated;image-rendering:crisp-edges}
+.reveal .greek{font:400 clamp(1.05rem,2.2vw,1.5rem)/1.35 var(--display);letter-spacing:.04em;overflow-wrap:anywhere;color:var(--ink)}
+.reveal #trans{color:var(--ink-2)}
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:var(--ink);color:var(--on-ink);font:500 .82rem/1.3 var(--mono);padding:.8rem 1.1rem;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.on{opacity:1}
+.more{margin-top:2.5rem}
+.more .ink-bar{margin-bottom:.25rem}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:900px){.grid2{grid-template-columns:minmax(0,1fr)}.hero{display:flex;flex-direction:column;align-items:stretch}.head{order:1}.hero .stage{order:2}.intro{order:3}
+  .steps{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.cast{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:520px){.wtnr-bar{font-size:.64rem;letter-spacing:.08em}.unroll{grid-template-columns:minmax(0,1fr) auto}.unroll .label{grid-column:1/-1}.hud{position:static;padding:.5rem;background:var(--panel);border-bottom:1px solid var(--rule)}.hud .chip{font-size:.62rem;padding:.4rem .5rem}
+  .steps{grid-template-columns:minmax(0,1fr)}.legend{font-size:.6rem}.stage .tag{font-size:.58rem;padding:.3rem .45rem;top:.35rem;left:.35rem}.tag .wide{display:none}.viewseg{right:.35rem;top:.3rem}.viewseg button{padding:.38rem .6rem;font-size:.62rem}.reveal .in{grid-template-columns:minmax(0,1fr)}.card .pic{width:84px;height:76px}}
+</style>
+
+<div class="wrap">
+  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count"><b>Bonus</b> &middot; Challenge 01</span></nav>
+
+  <div class="hero">
+    <div class="head">
+      <p class="kicker">Bonus &middot; Challenge 01 &middot; One image, one engine</p>
+      <h1>Unroll the scroll. Find the line hidden at its core.</h1>
+    </div>
+    <div class="intro">
+      <p class="sub">A synthetic papyrus, rolled almost eight turns tight. A 20-qubit quantum blur plays the damage and scrambles its ink. Unroll it, send the archaeologist moth and its lantern along the sheet, and see how much damage a line of Greek survives.</p>
+      <div class="proof">
+        <span class="hot"><b>20</b> qubits per blur</span>
+        <span><b>9</b> real Atlas jobs</span>
+        <span><b>12,653</b> px of sheet</span>
+        <span><b>0</b> real scroll data</span>
+      </div>
+    </div>
+
+    <div class="stage" id="stage" data-view="scene">
+      <div class="desk-wrap only-scene" id="desk-wrap">
+        <canvas id="desk" width="600" height="168" tabindex="0" aria-label="The desk: a pixel-art side view of the scroll. Drag the roll sideways to unroll it; tap or drag along the sheet to send the archaeologist moth, which is the reading window, there. Arrow keys move the moth."></canvas>
+        <span class="chip tag">The desk<span class="wide"> &middot; drag the roll, tap the sheet</span></span>
+      </div>
+      <div class="seg viewseg" role="group" aria-label="View: the desk illustration, or the measured numbers of the nine jobs" id="g-view">
+        <button type="button" data-v="scene" aria-pressed="true">Scene</button>
+        <button type="button" data-v="data" aria-pressed="false">Data</button>
+      </div>
+      <div class="datav only-data" id="datav">
+        <svg id="chart" role="group" aria-label="The nine blur-v1 jobs: line kept r against ink moved, as measured from each job's output. Each job is a button that loads it."></svg>
+        <span class="chip tag">Data<span class="wide"> &middot; the nine jobs, measured from their outputs</span></span>
+      </div>
+      <div class="legend" id="legend">
+        <span class="only-scene">Illustration &middot; places along the sheet to scale, roll drawn larger</span>
+        <span id="ash-cap" class="only-scene">Ash = ink this job moved: <b id="ash-n">&ndash;</b></span>
+        <span class="only-data">&#9679; reach 0 &middot; &#9670; reach 0.5 &middot; &#9632; reach 1 &middot; filled = line readable in this view</span>
+        <span class="only-data">Tap a job to load it</span>
+      </div>
+      <div class="ct">
+        <div class="ctv">
+          <canvas id="gl" width="1200" height="480"></canvas>
+          <canvas id="ov" width="1200" height="480" tabindex="0" aria-label="CT slice of the rolled scroll. Drag sideways to unroll or roll it back; tap the sheet to move the reading window there. Arrow keys unroll."></canvas>
+        </div>
+        <div class="hud">
+          <span class="chip" id="c-view"><b>CT slice</b> &middot; blurred ink</span>
+          <span class="chip" id="c-found">Hidden line: <b>not found yet</b></span>
+        </div>
+        <p class="notice" id="notice" hidden></p>
+      </div>
+    </div>
+  </div>
+  <div class="unroll">
+    <span class="label" id="unroll-label">Unroll</span>
+    <input type="range" id="u" min="0" max="1000" value="0" step="1" aria-labelledby="unroll-label" aria-describedby="u-num">
+    <span class="num" id="u-num">0 % flat</span>
+  </div>
+  <div class="row" style="margin-top:.6rem">
+    <button type="button" class="btn" id="play">Unroll it</button>
+    <button type="button" class="btn ghost" id="share">Copy link to this view</button>
+    <button type="button" class="btn ghost" id="reset" title="Back to the view the page opened with, and forget what you have read">Start over</button>
+  </div>
+  <ol class="steps" aria-label="You control">
+    <li><span><b>Unroll</b>: push the roll on the desk or in the CT slice, or drag the slider.</span></li>
+    <li><span><b>Read</b>: tap the sheet to send the moth and its lantern (the reading window) there.</span></li>
+    <li><span><b>Damage</b>: step through nine blur jobs, or flip to the clean ink.</span></li>
+    <li><span><b>Find</b> the hidden line. It counts once it lies flat under light enough damage.</span></li>
+  </ol>
+
+  <div class="reader">
+    <div class="row split">
+      <span class="label">Reading window &middot; what the lantern lights, magnified</span>
+      <span class="label" id="w-pos">turn 7.7</span>
+    </div>
+    <div class="frame"><canvas id="rd" width="1200" height="250" tabindex="0" aria-label="Reading window: the flattened sheet. Drag sideways or use the arrow keys to move along the sheet."></canvas></div>
+    <input type="range" id="w" min="0" max="12000" value="0" step="1" aria-label="Reading window position along the sheet">
+  </div>
+
+  <div class="cast" aria-label="The cast">
+    <div class="card"><div class="pic" id="pic-moth"></div><div><h3>The archaeologist</h3><p>Your reading window. Its lantern lights the stretch of sheet the window shows. It reads only what lies flat, and only through damage light enough to read; it asks <b>?</b> over the roll and scowls at scrambled ink.</p></div></div>
+    <div class="card"><div class="pic" id="pic-roll"></div><div><h3>The roll</h3><p>The same synthetic papyrus as the CT slice below it, seen from the side. It turns with the real spiral as the sheet comes off: <b id="roll-turns">7.75 turns</b> still rolled.</p></div></div>
+    <div class="card"><div class="pic" id="pic-ash"></div><div><h3>The ash</h3><p>Stands in for the blur. One fleck per 2 % of ink brightness the current job threw off the true ink, measured from its output: <b id="ash-card">&ndash;</b>. Clean ink makes none.</p></div></div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <div class="row split"><span class="label">Damage &middot; blur-v1 job</span><span class="label" id="d-name">&ndash;</span></div>
+      <input type="range" id="d" min="0" max="8" value="0" step="1" aria-label="Damage level: which blur-v1 job scrambles the ink">
+      <div class="ladder" id="ladder" role="group" aria-label="The nine jobs; bar height is the share of ink each one moved"></div>
+      <div class="ladder-cap"><span>Bar height: ink moved, per job</span><span>light &rarr; heavy damage</span></div>
+      <div class="row">
+        <div class="seg" role="group" aria-label="Ink shown">
+          <button type="button" data-ink="blur" aria-pressed="true">Blurred ink</button>
+          <button type="button" data-ink="clean" aria-pressed="false">Clean ink</button>
+        </div>
+        <div class="seg" role="group" aria-label="Layer">
+          <button type="button" data-layer="scan" aria-pressed="true">Scan</button>
+          <button type="button" data-layer="ink" aria-pressed="false">Ink layer only</button>
+        </div>
+      </div>
+      <p class="honesty">At reach 1 the scrambled ink spreads so thin that the scan looks blank. Switch to &ldquo;Ink layer only&rdquo; to see the raw engine output on its own, in its own greyscale (white ink on black).</p>
+      <div class="row split"><span class="label">Contrast (classical window/level)</span><span class="label" id="k-val">35</span></div>
+      <input type="range" id="k" min="0" max="100" value="35" aria-label="Display contrast">
+      <div class="row split"><span class="label">Zoom on the window</span><span class="label" id="z-val">1&times;</span></div>
+      <input type="range" id="z" min="3" max="80" value="10" aria-label="Zoom the main view toward the reading window">
+      <div class="row">
+        <button type="button" class="btn ghost" id="tint" aria-pressed="false">Tint the ink</button>
+        <button type="button" class="btn ghost" id="close" aria-pressed="false">Closer look</button>
+      </div>
+    </div>
+    <div class="panel">
+      <span class="label">Live readout</span>
+      <dl class="readout">
+        <dt>Engine</dt><dd><b>blur-v1 v1.1.9</b> &middot; Atlas statevector simulator (no QPU)</dd>
+        <dt>Params</dt><dd><b id="r-params">&ndash;</b></dd>
+        <dt>Job</dt><dd><b id="r-job">&ndash;</b></dd>
+        <dt>Qubits</dt><dd><b>20</b> &middot; 1001 &times; 1001 px mask box &rarr; 10 + 10</dd>
+        <dt>Line kept</dt><dd><b id="r-line">&ndash;</b></dd>
+        <dt>Ink moved</dt><dd><b id="r-off">&ndash;</b></dd>
+        <dt>Unwrap</dt><dd><b>classical</b>, along the known spiral, in your browser</dd>
+        <dt>Window</dt><dd><b id="r-win">&ndash;</b></dd>
+      </dl>
+      <p class="honesty">The scroll, its papyrus and its ink are synthetic. The blur stands in for damage; it is not a model of carbonisation, and this is not the Vesuvius Challenge method.</p>
+    </div>
+  </div>
+
+  <section class="reveal" id="reveal" hidden aria-live="polite">
+    <div class="ink-bar"><span>You read it</span><span id="rv-turns">the hidden line</span></div>
+    <div class="in">
+      <canvas class="pic" id="rv-pic" width="96" height="84" aria-hidden="true"></canvas>
+      <div>
+        <p class="greek" id="greek"></p>
+        <p id="trans"></p>
+        <p class="honesty">The Epicurean &ldquo;four-part cure&rdquo; (tetrapharmakos), in the form Philodemus gives it in a real Herculaneum papyrus, PHerc. 1005. We wrote it into our synthetic scroll in capitals, with word spaces; the translation is ours.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="more">
+    <div class="ink-bar"><span>Behind the scroll</span><span>4 drawers</span></div>
+    <details class="drawer"><summary>Why a rolled scroll?</summary><div class="body">
+      <p>Some scrolls can never be opened: the En-Gedi scroll was burnt to a lump, and the Herculaneum papyri were carbonised by Vesuvius in 79 CE. X-ray CT can see inside, and &ldquo;virtual unwrapping&rdquo; reads them without touching them: find the sheet in the scan, sample the scan along it, and lay it flat (Seales et al., <i>Science Advances</i> 2016).</p>
+      <p>En-Gedi was readable because its ink absorbs X-rays more strongly than the parchment. Herculaneum's carbon ink barely shows in CT; Parker et al. (<i>PLoS ONE</i> 2019) showed it still leaves a subtle signature, and machine learning has since been trained to find it.</p>
+      <p>This piece uses none of that data. The scroll is generated from scratch: an Archimedean spiral of papyrus with a gentle wobble, fibres, cracks, CT ring artefacts, grain, carbon flecks and abraded strokes, and one line of Greek written into one inner stretch of the sheet.</p>
+    </div></details>
+    <details class="drawer"><summary>What the quantum engine did</summary><div class="body">
+      <p>Atlas <b>blur-v1</b> took the ink layer alone (a 1024 px image, white ink on black) and a mask disk around the roll. The mask's 1001 &times; 1001 px bounding box needs &lceil;log<sub>2</sub>1001&rceil; + &lceil;log<sub>2</sub>1001&rceil; = 10 + 10 = <b>20 qubits</b>, the engine's maximum. This count comes from the engine's documented rule; the engine does not report one.</p>
+      <p>The engine encodes each pixel's brightness into a quantum state (the QuantumBlur library maps pixel coordinates to qubits with a Gray code), applies one rotation gate per qubit (rx here) with an angle set by <i>strength</i>, and reads the state back into pixels. <i>Reach</i> sets how far a pixel can travel: at reach 0 the letters break into little Gray-code blocks but stay put; at reach 0.5 or 1 the ink is thrown across the whole roll as a plaid of echoes.</p>
+      <p>The damage slider steps through the nine completed jobs, sorted by how much ink brightness lands off the true ink. &ldquo;Line kept&rdquo; is the Pearson correlation between the blurred and clean ink over the hidden line, measured on the flattened sheet. Every scrambled ink layer is a downloaded engine output, added to the papyrus in your browser; &ldquo;Ink layer only&rdquo; shows it untouched. The job ID updates as you go.</p>
+    </div></details>
+    <details class="drawer"><summary>What is classical here</summary><div class="body">
+      <p>Everything except the blur: generating the scroll, compositing the ink onto the papyrus (scan = papyrus + <span id="g-gain">0.2</span> &times; ink), the contrast window, the tint, the unrolling animation, and the virtual unwrapping. The unwrap samples the scan along the spiral we generated, so it knows the sheet exactly. A real pipeline must first find the sheet in a noisy 3D volume, which is the hard part.</p>
+      <p>The scan is printed in the page's ink: denser material is a deeper blue and empty air is paper. That colouring is a classical display choice too. &ldquo;Ink layer only&rdquo; is the exception: it shows the engine output in its own greyscale.</p>
+      <p>The desk above the CT slice is a classical pixel-art illustration of the same state. Places along the sheet are to scale; the roll is drawn larger than it would be at that scale, and its spiral turns with the real one. The moth stands where the reading window is and reacts to the real numbers: it reads only where the job's measured &ldquo;line kept&rdquo; passes the same threshold the page uses to count the line as read, and the letters it uncovers are the stretches you have actually read. The ash is one fleck per 2 % of ink the current job moved off the true ink. Nothing on the desk is a new measurement.</p>
+    </div></details>
+    <details class="drawer"><summary>What this does not claim</summary><div class="body">
+      <p class="honesty">No real scroll was scanned and no real scroll data was used. The blur is a stand-in for damage, not a physical model of fire or carbonisation. blur-v1 ran on Atlas's classical statevector simulator; nothing ran on quantum hardware. Nothing is recovered by the quantum step: it only destroys. This is not the Vesuvius Challenge method and says nothing about how well that method works.</p>
+      <p class="honesty">One artistic liberty: in a real scroll a line of text runs across many CT slices. Here the letters are written into the thickness of the layer within one slice, so a single 1024 px image can carry a readable line.</p>
+    </div></details>
+  </section>
+  <style>
+.wtnr-nav{margin-top:2.5rem;border-top:1px solid var(--ink,#19238E);padding-top:1.1rem;display:grid;gap:1rem}
+.wtnr-nav .wn-row{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:space-between;align-items:center}
+.wtnr-nav a.wn-btn{display:inline-flex;align-items:center;gap:.45rem;min-height:44px;padding:.6rem 1rem;border:1px solid var(--ink,#19238E);border-radius:999px;color:var(--ink,#19238E);text-decoration:none;font:500 .82rem/1.2 var(--body,system-ui,sans-serif);max-width:100%}
+.wtnr-nav a.wn-btn:hover,.wtnr-nav a.wn-btn:focus-visible{background:rgba(25,35,142,.07)}
+.wtnr-nav a.wn-hub{background:var(--ink,#19238E);color:var(--on-ink,#FBFAF9)}
+.wtnr-nav a.wn-hub:hover{background:#121A6E}
+.wtnr-nav details{border:1px solid var(--rule,#D3D3E6);background:var(--panel,#fff)}
+.wtnr-nav summary{cursor:pointer;padding:.75rem 1rem;font:500 .72rem/1.2 var(--mono,monospace);letter-spacing:.12em;text-transform:uppercase;color:var(--ink,#19238E)}
+.wtnr-nav ol{list-style:none;margin:0;padding:.25rem 1rem 1rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(14rem,1fr));gap:.15rem .9rem}
+.wtnr-nav ol a{display:flex;gap:.6rem;padding:.4rem 0;color:var(--ink,#19238E);text-decoration:none;font-size:.9rem;border-bottom:1px solid var(--rule,#D3D3E6)}
+.wtnr-nav ol a:hover{text-decoration:underline}
+.wtnr-nav ol a b{font:500 .78rem/1.6 var(--mono,monospace);min-width:1.6rem}
+.wtnr-nav ol a[aria-current="page"]{font-weight:600}
+.wtnr-nav ol a small{color:var(--ink-2,#545BA9);font-size:.72rem}
+</style><nav class="wtnr-nav" aria-label="All pieces"><div class="wn-row"><a class="wn-btn" href="../21-quantum-nose/index.html" rel="prev">&larr; 21 The Quantum Nose Test</a><a class="wn-btn wn-hub" href="../../index.html">All 22 pieces</a><a class="wn-btn" href="../01-penrose-hole/index.html" rel="next">01 The Hole in the Penrose &rarr;</a></div><details><summary>Jump to any piece (22)</summary><ol><li><a href="../01-penrose-hole/index.html"><b>01</b><span>The Hole in the Penrose</span></a></li><li><a href="../02-coda-reservoir/index.html"><b>02</b><span>Coda Reservoir</span></a></li><li><a href="../03-moth-eye/index.html"><b>03</b><span>Moth Eye</span></a></li><li><a href="../04-magic-angle/index.html"><b>04</b><span>Magic Angle</span></a></li><li><a href="../05-jam-the-bat/index.html"><b>05</b><span>Jam the Bat</span></a></li><li><a href="../06-tweezer/index.html"><b>06</b><span>Tweezer</span></a></li><li><a href="../07-flavour/index.html"><b>07</b><span>FLAVOUR</span></a></li><li><a href="../08-pbit-or-qubit/index.html"><b>08</b><span>p-bit or qubit?</span></a></li><li><a href="../09-syndrome-loom/index.html"><b>09</b><span>Syndrome Loom</span></a></li><li><a href="../10-squeezed-chirp/index.html"><b>10</b><span>Squeezed Chirp</span></a></li><li><a href="../11-maxwells-ribbon/index.html"><b>11</b><span>Maxwell&#x27;s Ribbon</span></a></li><li><a href="../12-chirp-instrument/index.html"><b>12</b><span>Chirp Instrument <small>bonus</small></span></a></li><li><a href="../13-moth-to-flame/index.html"><b>13</b><span>Moth to Flame <small>bonus</small></span></a></li><li><a href="../14-hemibrain-ising/index.html"><b>14</b><span>Fly Brain Metro <small>bonus</small></span></a></li><li><a href="../15-tissue-blur/index.html"><b>15</b><span>Tissue Blur <small>bonus</small></span></a></li><li><a href="../16-busy-beaver-score/index.html"><b>16</b><span>Busy Beaver Score <small>bonus</small></span></a></li><li><a href="../17-quantum-lenia/index.html"><b>17</b><span>Quantum Lenia <small>bonus</small></span></a></li><li><a href="../18-oldest-light/index.html"><b>18</b><span>Oldest Light <small>bonus</small></span></a></li><li><a href="../19-frog-chorus/index.html"><b>19</b><span>Frog Chorus <small>bonus</small></span></a></li><li><a href="../20-antimatter-drop/index.html"><b>20</b><span>Antimatter Drop <small>bonus</small></span></a></li><li><a href="../21-quantum-nose/index.html"><b>21</b><span>The Quantum Nose Test <small>bonus</small></span></a></li><li><a href="../22-scroll-unroll/index.html" aria-current="page"><b>22</b><span>Scroll Unroll <small>bonus</small></span></a></li></ol></details></nav>
+  <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* InkSprite: tiny pixel-art sprite helper shared by every piece of "What the Noise Remembers".
+   Inline it into a page by putting the comment marker for INKSPRITE inside a <script> and replacing it
+   in build_web.py with this file's text (see common/SPRITES.md).
+
+   Sprites are authored as arrays of strings, one char per pixel, using the shared ink palette:
+     '.' or ' ' transparent   'K' ink #19238E (outline)   'B' ink-2 #545BA9   'L' ink-3 #A1A4CE
+     'T' tint #D3D3E6         'W' paper #FBFAF9 (white)    'O' warm accent #B4541A (light, fire, heat ONLY)
+     'G' good #1F7A4D (sparingly)
+   Extra keys can be passed per sprite.
+
+   const moth = InkSprite.make({ frames: [ ["..K..", ".KBK.", ...], [...] ], fps: 8 });
+   InkSprite.draw(ctx, moth, frameIndex, x, y, scale, {flipX, alpha, rotate});   // x,y = centre
+   const t = InkSprite.frameAt(moth, timeSeconds);                                 // looping frame index
+   InkSprite.toDataURL(moth, 0, 4) -> PNG data URL (for <img>, favicons, CSS backgrounds)
+*/
+(function (root) {
+  const PALETTE = { K: '#19238E', B: '#545BA9', L: '#A1A4CE', T: '#D3D3E6', W: '#FBFAF9', O: '#B4541A', G: '#1F7A4D' };
+  const cache = new Map();
+  let uid = 0;
+
+  function make(def) {
+    const frames = (def.frames || [def.rows]).map(f => f.map(r => r.replace(/\s/g, '.')));
+    const h = frames[0].length, w = Math.max(...frames[0].map(r => r.length));
+    return { id: ++uid, frames, w, h, fps: def.fps || 6, palette: Object.assign({}, PALETTE, def.palette || {}) };
+  }
+
+  function bake(sp, f, scale) {
+    const key = sp.id + ':' + f + ':' + scale;
+    if (cache.has(key)) return cache.get(key);
+    const c = document.createElement('canvas');
+    c.width = sp.w * scale; c.height = sp.h * scale;
+    const x = c.getContext('2d');
+    const rows = sp.frames[f % sp.frames.length];
+    for (let j = 0; j < rows.length; j++) for (let i = 0; i < rows[j].length; i++) {
+      const ch = rows[j][i];
+      if (ch === '.' || !sp.palette[ch]) continue;
+      x.fillStyle = sp.palette[ch];
+      x.fillRect(i * scale, j * scale, scale, scale);
+    }
+    cache.set(key, c);
+    return c;
+  }
+
+  function draw(ctx, sp, f, cx, cy, scale, o) {
+    o = o || {};
+    const img = bake(sp, f | 0, Math.max(1, Math.round(scale)));
+    ctx.save();
+    ctx.imageSmoothingEnabled = false;
+    if (o.alpha != null) ctx.globalAlpha *= o.alpha;
+    ctx.translate(Math.round(cx), Math.round(cy));
+    if (o.rotate) ctx.rotate(o.rotate);
+    if (o.flipX) ctx.scale(-1, 1);
+    if (o.flipY) ctx.scale(1, -1);
+    ctx.drawImage(img, -img.width / 2, -img.height / 2);
+    ctx.restore();
+  }
+
+  function frameAt(sp, t) {
+    if (root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches) return 0;
+    return Math.floor(t * sp.fps) % sp.frames.length;
+  }
+
+  function toDataURL(sp, f, scale) { return bake(sp, f || 0, scale || 4).toDataURL('image/png'); }
+
+  root.InkSprite = { make, draw, frameAt, toDataURL, PALETTE };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+const SCROLL = {"geometry": {"N": 1024, "CX": 512.0, "CY": 512.0, "R0": 58.0, "PITCH": 52.0, "TURNS": 7.75, "WOB": [[5.0, 2, 0.7], [3.0, 3, 2.1]], "DPHI": 0.0001}, "L": 12653, "H": 52, "text": "\u0391\u03a6\u039f\u0392\u039f\u039d \u039f \u0398\u0395\u039f\u03a3 \u00b7 \u0391\u039d\u03a5\u03a0\u039f\u03a0\u03a4\u039f\u039d \u039f \u0398\u0391\u039d\u0391\u03a4\u039f\u03a3 \u00b7 \u039a\u0391\u0399 \u03a4\u0391\u0393\u0391\u0398\u039f\u039d \u039c\u0395\u039d \u0395\u03a5\u039a\u03a4\u0397\u03a4\u039f\u039d \u00b7 \u03a4\u039f \u0394\u0395 \u0394\u0395\u0399\u039d\u039f\u039d \u0395\u03a5\u0395\u039a\u039a\u0391\u03a1\u03a4\u0395\u03a1\u0397\u03a4\u039f\u039d", "translation": "God is nothing to fear, death nothing to worry about; the good is easy to get, and the terrible easy to endure.", "text_s": [1548.8, 3213.6], "text_turns": [2.15, 3.449], "ink_gain": 0.2};
+const JOBS = [{"img": "img/ink_s0.25_r0.0.webp", "job_id": "4a8c15c6-cea0-4133-b8eb-2c2845e657ff", "strength": 0.25, "reach": 0.0, "r_line": 0.98293, "off_ink": 0.01096}, {"img": "img/ink_s0.50_r0.0.webp", "job_id": "e3de765a-0d60-459e-8d60-88b87589bff2", "strength": 0.5, "reach": 0.0, "r_line": 0.85933, "off_ink": 0.05075}, {"img": "img/ink_s0.75_r0.0.webp", "job_id": "f019131c-62b4-4638-ae64-2b177c9430b9", "strength": 0.75, "reach": 0.0, "r_line": 0.71533, "off_ink": 0.10525}, {"img": "img/ink_s1.00_r0.0.webp", "job_id": "90ccfce7-74ea-44d9-898d-1cd2661bccc0", "strength": 1.0, "reach": 0.0, "r_line": 0.59422, "off_ink": 0.16394}, {"img": "img/ink_s0.10_r1.0.webp", "job_id": "81c74d15-0fd3-4a8a-93bf-b3b06c34b72e", "strength": 0.1, "reach": 1.0, "r_line": 0.85935, "off_ink": 0.30982}, {"img": "img/ink_s0.25_r1.0.webp", "job_id": "dffc66de-5587-4110-99b8-c07fd38a282b", "strength": 0.25, "reach": 1.0, "r_line": 0.03139, "off_ink": 0.79489}, {"img": "img/ink_s0.50_r0.5.webp", "job_id": "fae87570-6918-4b57-898d-bae1ea107953", "strength": 0.5, "reach": 0.5, "r_line": 0.00278, "off_ink": 0.80494}, {"img": "img/ink_s0.50_r1.0.webp", "job_id": "b5894864-e463-44df-9292-95aafd25080f", "strength": 0.5, "reach": 1.0, "r_line": 0.00985, "off_ink": 0.9209}, {"img": "img/ink_s1.00_r1.0.webp", "job_id": "a257d715-991d-41e7-853f-6594e70c811d", "strength": 1.0, "reach": 1.0, "r_line": -0.00495, "off_ink": 0.95216}];
+const SPR = {"archaeologist":{"fps":3,"frames":[[".........LK..........KL.........","..........LK........KL..........","...........LKKKKKKKKL...........","...........KWWTTTTWWK...........","..........KWWTTTTTTWWK..........","..........KWTTTTTTTTWK..........","KK........KTTTTTTTTTTK........KK","KLKK......KBBBBBBBBBBK......KKLK","KBLLKKKKKKKKKKKKKKKKKKKKKKKKLLBK","KBLLLKTTTTTTTTTTTTTTTTTTTTKLLLBK","KBLLLLKKKKKKKKKKKKKKKKKKKKLLLLBK","KBLLLLLLKBBBBBBBBBBBBBBKLLLLLLBK","KBLTLLLLKTTKKKTTTTKKKTTKLLLLTLBK","KBTKTLLLKTKWWWKTTKWWWKTKLLLTKTBK","KBLTLLLLKTKWKWKKKKWKWKTKLLLLTLBK","KBLLLLLLKTKWWWKTTKWWWKTKLLLLLLBK",".KBLLLLLKTTKKKTTTTKKKTTKLLLLLBK.",".KBBLLLLKLTTTTTBBTTTTTLKLLLLBBK.","..KBBLLLLKTTTTTTTTTTTTKLLLLBBK..","...KBBLLLLKKTTTTTTTTKKLLLLBKK...","....KKKKKKKKKKKKKKKKKKKKKKKK.K..","...KLLTLLLLKKBBBBBBKKLLLLKKKKKK.","...KLTKTLLKKBBLBBLBBKKLLTKTOOTK.","...KLLTLLLKKKTTTTTTKKKLLLKOWWOK.","....KLLLLKKLLKLLLLKLLKKLLKTOOTK.",".....KKKK.LLLKTTTTKLLL.KKKKKKKK.","............K.KKKK.K......KBBK..","...........K........K..........."],[".........LK..........KL.........","..........LK........KL..........","...........LKKKKKKKKL...........","...........KWWTTTTWWK...........","..........KWWTTTTTTWWK..........","KK........KWTTTTTTTTWK........KK","KLKK......KTTTTTTTTTTK......KKLK","KBLLKK....KBBBBBBBBBBK....KKLLBK","KBLLL.KKKKKKKKKKKKKKKKKKKK.LLLBK","KBLLLKTTTTTTTTTTTTTTTTTTTTKLLLBK","KBLLLLKKKKKKKKKKKKKKKKKKKKLLLLBK","KBLTLLLLKBBBBBBBBBBBBBBKLLLLTLBK","KBTKTLLLKTTKKKTTTTKKKTTKLLLTKTBK","KBLTLLLLKTKWWWKTTKWWWKTKLLLLTLBK","KBLLLLLLKTKWKWKKKKWKWKTKLLLLLLBK",".KBLLLLLKTKWWWKTTKWWWKTKLLLLLBK.",".KBBLLLLKTTKKKTTTTKKKTTKLLLLBBK.","..KBBLLLKLTTTTTBBTTTTTLKLLLBBK..","...KBBLLLKTTTTTTTTTTTTKLLLBBK...","....KKKKKKKKTTTTTTTTKKKKKKBKK...","...KLLTLLLKKKKKKKKKKKKLLLTKLKK..","...KLTKTLLKKKBBBBBBKKKLLTKKKKKK.","...KLLTLLLKKBBLBBLBBKKLLLKTTOTK.","....KLLLLKKKKTTTTTTKKKKLLKOWOOK.",".....KKKK.LLLKLLLLKLLL.KKKTOOTK.",".............KTTTTK......KKKKKK.","............K.KKKK.K......KBBK..","...........K........K..........."],[".........LK..........KL.........","..........LK........KL..........","...........LKKKKKKKKL...........","...........KWWTTTTWWK...........","..........KWWTTTTTTWWK..........","..........KWTTTTTTTTWK..........","KK........KTTTTTTTTTTK........KK","KLKK......KBBBBBBBBBBK......KKLK","KBLLKKKKKKKKKKKKKKKKKKKKKKKKLLBK","KBLLLKTTTTTTTTTTTTTTTTTTTTKLLLBK","KBLLLLKKKKKKKKKKKKKKKKKKKKLLLLBK","KBLLLLLLKBBBBBBBBBBBBBBKLLLLLLBK","KBLTLLLLKTTKKKTTTTKKKTTKLLLLTLBK","KBTKTLLLKTKWWWKTTKWWWKTKLLLTKTBK","KBLTLLLLKTKWWKKKKKWWKKTKLLLLTLBK","KBLLLLLLKTKWWWKTTKWWWKTKLLLLLLBK",".KBLLLLLKTTKKKTTTTKKKTTKLLLLLBK.",".KBBLLLLKLTTTTTBBTTTTTLKLLLLBBK.","..KBBLLLLKTTTTTTTTTTTTKLLLLBBK..","...KBBLLLLKKTTTTTTTTKKLLLLBKK...","....KKKKKKKKKKKKKKKKKKKKKKKK.K..","...KLLTLLLLKKBBBBBBKKLLLLKKKKKK.","...KLTKTLLKKBBLBBLBBKKLLTKTOOTK.","...KLLTLLLKKKTTTTTTKKKLLLKOWWOK.","....KLLLLKKLLKLLLLKLLKKLLKTOOTK.",".....KKKK.LLLKTTTTKLLL.KKKKKKKK.","............K.KKKK.K......KBBK..","...........K........K..........."],[".........LK..........KL.........","..........LK........KL..........","...........LKKKKKKKKL...........","...........KWWTTTTWWK...........","..........KWWTTTTTTWWK..........","..........KWTTTTTTTTWK..........","..........KTTTTTTTTTTK..........","KK........KBBBBBBBBBBK........KK","KLKK..KKKKKKKKKKKKKKKKKKKK..KKLK","KBLLKKTTTTTTTTTTTTTTTTTTTTKKLLBK","KBLLL.KKKKKKKKKKKKKKKKKKKK.LLLBK","KBLLLL..KBBBBBBBBBBBBBBK..LLLLBK","KBLLLLLLKTTKKKTTTTKKKTTKLLLLLLBK","KBLTLLLLKTKWWWKTTKWWWKTKLLLLTLBK","KBTKTLLLKTKKKKKKKKKKKKTKLLLTKTBK","KBLTLLLLKTKWWWKTTKWWWKTKLLLLTLBK","KBLLLLLLKTTKKKTTTTKKKTTKLLLLLLBK",".KBLLLLLKLTTTTTBBTTTTTLKLLLLLBK.",".KBBLLLLLKTTTTTTTTTTTTKLLLLLBBK.","..KBBLLLLLKKTTTTTTTTKKLLLLBKKK..","...KBBLLLLKKKKKKKKKKKKLLLLKBKK..","....KKKKKKLKKBBBBBBKKLKKKKKKKKK.","...KLLTLLLLKBBLBBLBBKLLLLKTTOTK.","...KLTKTLLKKKTTTTTTKKKLLTKOWOOK.","...KLLTLLLKLLKLLLLKLLKLLLKTOOTK.","....KLLLLKKLLKTTTTKLLKKLLKKKKKK.",".....KKKK.LLK.KKKK.KLL.KKKKBBK..","...........K........K..........."]]},"archFly":{"fps":10,"frames":[["..........LK........KL..........","...........LKKKKKKKKL...........","...........KWWTTTTWWK...........","..........KWWTTTTTTWWK..........","KK........KWTTTTTTTTWK........KK","KLKK......KTTTTTTTTTTK......KKLK","KBLLKK....KBBBBBBBBBBK....KKLLBK","KBLLL.KKKKKKKKKKKKKKKKKKKK.LLLBK","KBLLLKTTTTTTTTTTTTTTTTTTTTKLLLBK","KBLLLLKKKKKKKKKKKKKKKKKKKKLLLLBK","KBLTLLLLKBBBBBBBBBBBBBBKLLLLTLBK","KBTKTLLLKTTKKKTTTTKKKTTKLLLTKTBK","KBLTLLLLKTKWWWKTTKWWWKTKLLLLTLBK","KBLLLLLLKTKWKWKKKKWKWKTKLLLLLLBK",".KBLLLLLKTKWWWKTTKWWWKTKLLLLLBK.",".KBBLLLLKTTKKKTTTTKKKTTKLLLLBBK.","..KBBLLLKLTTTTTBBTTTTTLKLLLBBK..","...KBBLLLKTTTTTTTTTTTTKLLLBBK...","....KKKKKKKKTTTTTTTTKKKKKKBKK...","...KLLTLLLKKKKKKKKKKKKLLLTKLKK..","...KLTKTLLKKKBBBBBBKKKLLTKKKKKK.","...KLLTLLLKKBBLBBLBBKKLLLKTOOTK.","....KLLLLKKKKTTTTTTKKKKLLKOWWOK.",".....KKKK.LLLKLLLLKLLL.KKKTOOTK.",".............KTTTTK......KKKKKK.","............K.KKKK.K......KBBK..","...........K........K...........","................................"],[".........LK..........KL.........","..........LK........KL..........","...........LKKKKKKKKL...........","...........KWWTTTTWWK...........","..........KWWTTTTTTWWK..........","..........KWTTTTTTTTWK..........","..........KTTTTTTTTTTK..........","KK........KBBBBBBBBBBK........KK","KLKK..KKKKKKKKKKKKKKKKKKKK..KKLK","KBLLKKTTTTTTTTTTTTTTTTTTTTKKLLBK","KBLLL.KKKKKKKKKKKKKKKKKKKK.LLLBK","KBLLLL..KBBBBBBBBBBBBBBK..LLLLBK","KBLLLLLLKTTKKKTTTTKKKTTKLLLLLLBK","KBLTLLLLKTKWWWKTTKWWWKTKLLLLTLBK","KBTKTLLLKTKWKWKKKKWKWKTKLLLTKTBK","KBLTLLLLKTKWWWKTTKWWWKTKLLLLTLBK","KBLLLLLLKTTKKKTTTTKKKTTKLLLLLLBK",".KBLLLLLKLTTTTTBBTTTTTLKLLLLLBK.",".KBBLLLLLKTTTTTTTTTTTTKLLLLLBBK.","..KBBLLLLLKKTTTTTTTTKKLLLLBKKK..","...KBBLLLLKKKKKKKKKKKKLLLLKBKK..","....KKKKKKLKKBBBBBBKKLKKKKKKKKK.","...KLLTLLLLKBBLBBLBBKLLLLKTTOTK.","...KLTKTLLKKKTTTTTTKKKLLTKOWOOK.","...KLLTLLLKLLKLLLLKLLKLLLKTOOTK.","....KLLLLKKLLKTTTTKLLKKLLKKKKKK.",".....KKKK.LLK.KKKK.KLL.KKKKBBK..","...........K........K..........."]]},"archRead":{"fps":3,"frames":[[".........LK..........KL.........","..........LK........KL..........","...........LKKKKKKKKL...........","...........KWWTTTTWWK...........","..........KWWTTTTTTWWK..........","..........KWTTTTTTTTWK..........","KK........KTTTTTTTTTTK........KK","KLKK......KBBBBBBBBBBK......KKLK","KBLLKKKKKKKKKKKKKKKKKKKKKKKKLLBK","KBLLLKTTTTTTTTTTTTTTTTTTTTKLLLBK","KBLLLLKKKKKKKKKKKKKKKKKKKKLLLLBK","KBLLLLLLKBBBBBBBBBBBBBBKLLLLLLBK","KBLTLLLLKTTKKKTTTTKKKTTKLLLLTLBK","KBTKTLLLKTKWWLKTTKWWLKTKLLLTKTBK","KBLTLLLLKTKWLWKKKKWLWKTKLLLLTLBK","KBLLLLLLKTKLWWKTTKLWWKTKLLLLLLBK",".KBLLLLLKTTKKKTTTTKKKTTKLLLLLBK.",".KBBLLLLKLTTTTTKBTTTTTLKLLLLBBK.","..KBBLLLLKTTTTTTTTTTTTKLLLLBBK..","...KBBLLLLKKTTTTTTTTKKLLLLBBK...","....KKKKKKKKKKKKKKKKKKKKKBKK....","...KLLTLLLLKKBBBBBBKKLLLLKLLK...","...KLTKTLLKKBBLBBLBBKKLLKKKKKK..","...KLLTLLLKKKTTTTTTKKKLLKTOOTK..","....KLLLLKKLLKLLLLKLLKKLKOWWOK..",".....KKKK.LLLKTTTTKLLL.KKTOOTK..","............K.KKKK.K....KKKKKK..","...........K........K..........."],[".........LK..........KL.........","..........LK........KL..........","...........LKKKKKKKKL...........","...........KWWTTTTWWK...........","..........KWWTTTTTTWWK..........","..........KWTTTTTTTTWK..........","KK........KTTTTTTTTTTK........KK","KLKK......KBBBBBBBBBBK......KKLK","KBLLKKKKKKKKKKKKKKKKKKKKKKKKLLBK","KBLLLKTTTTTTTTTTTTTTTTTTTTKLLLBK","KBLLLLKKKKKKKKKKKKKKKKKKKKLLLLBK","KBLLLLLLKBBBBBBBBBBBBBBKLLLLLLBK","KBLTLLLLKTTKKKTTTTKKKTTKLLLLTLBK","KBTKTLLLKTKWWWKTTKWWWKTKLLLTKTBK","KBLTLLLLKTKWWWKKKKWWWKTKLLLLTLBK","KBLLLLLLKTKWKWKTTKWKWKTKLLLLLLBK",".KBLLLLLKTTKKKTTTTKKKTTKLLLLLBK.",".KBBLLLLKLTTTTTKBTTTTTLKLLLLBBK.","..KBBLLLLKTTTTTTTTTTTTKLLLLBBK..","...KBBLLLLKKTTTTTTTTKKLLLLBBK...","....KKKKKKKKKKKKKKKKKKKKKBKK....","...KLLTLLLLKKBBBBBBKKLLLLKLLK...","...KLTKTLLKKBBLBBLBBKKLLKKKKKK..","...KLLTLLLKKKTTTTTTKKKLLKTTOTK..","....KLLLLKKLLKLLLLKLLKKLKOWOOK..",".....KKKK.LLLKTTTTKLLL.KKTOOTK..","............K.KKKK.K....KKKKKK..","...........K........K..........."]]},"archPuzzled":{"fps":2,"frames":[[".....................KL.........","....................KL..........","......LLKKKKKKKKKKKKL...........","......KK...KWWTTTTWWK...........","..........KWWTTTTTTWWK..........","..........KWTTTTTTTTWK..........","KK........KTTTTTTTTTTK........KK","KLKK......KBBBBBBBBBBK......KKLK","KBLLKKKKKKKKKKKKKKKKKKKKKKKKLLBK","KBLLLKTTTTTTTTTTTTTTTTTTTTKLLLBK","KBLLLLKKKKKKKKKKKKKKKKKKKKLLLLBK","KBLLLLLLKBBBBBBBBBBBBBBKLLLLLLBK","KBLTLLLLKTTKKKTTTTKKKTTKLLLLTLBK","KBTKTLLLKTKWKWKTTKWKWKTKLLLTKTBK","KBLTLLLLKTKWWWKKKKWWWKTKLLLLTLBK","KBLLLLLLKTKWWWKTTKWWWKTKLLLLLLBK",".KBLLLLLKTTKKKTTTTKKKTTKLLLLLBK.",".KBBLLLLKLTTTTTKBTTTTTLKLLLLBBK.","..KBBLLLLKTTTTTTTTTTTTKLLLLBBK..","...KBBLLLLKKTTTTTTTTKKLLLLBKK...","....KKKKKKKKKKKKKKKKKKKKKKKK.K..","...KLLTLLLLKKBBBBBBKKLLLLKKKKKK.","...KLTKTLLKKBBLBBLBBKKLLTKTOOTK.","...KLLTLLLKKKTTTTTTKKKLLLKOWWOK.","....KLLLLKKLLKLLLLKLLKKLLKTOOTK.",".....KKKK.LLLKTTTTKLLL.KKKKKKKK.","............K.KKKK.K......KBBK..","...........K........K..........."],[".....................KL.........","....................KL..........","......LLKKKKKKKKKKKKL...........","......KK...KWWTTTTWWK...........","..........KWWTTTTTTWWK..........","..........KWTTTTTTTTWK..........","KK........KTTTTTTTTTTK........KK","KLKK......KBBBBBBBBBBK......KKLK","KBLLKKKKKKKKKKKKKKKKKKKKKKKKLLBK","KBLLLKTTTTTTTTTTTTTTTTTTTTKLLLBK","KBLLLLKKKKKKKKKKKKKKKKKKKKLLLLBK","KBLLLLLLKBBBBBBBBBBBBBBKLLLLLLBK","KBLTLLLLKTTKKKTTTTKKKTTKLLLLTLBK","KBTKTLLLKTKWWWKTTKWWWKTKLLLTKTBK","KBLTLLLLKTKKWWKKKKKWWKTKLLLLTLBK","KBLLLLLLKTKWWWKTTKWWWKTKLLLLLLBK",".KBLLLLLKTTKKKTTTTKKKTTKLLLLLBK.",".KBBLLLLKLTTTTTKBTTTTTLKLLLLBBK.","..KBBLLLLKTTTTTTTTTTTTKLLLLBBK..","...KBBLLLLKKTTTTTTTTKKLLLLBKK...","....KKKKKKKKKKKKKKKKKKKKKKKK.K..","...KLLTLLLLKKBBBBBBKKLLLLKKKKKK.","...KLTKTLLKKBBLBBLBBKKLLTKTTOTK.","...KLLTLLLKKKTTTTTTKKKLLLKOWOOK.","....KLLLLKKLLKLLLLKLLKKLLKTOOTK.",".....KKKK.LLLKTTTTKLLL.KKKKKKKK.","............K.KKKK.K......KBBK..","...........K........K..........."]]},"archCheer":{"fps":6,"frames":[[".........LK..........KL...BKK...","..........LK........KL....K..K..","...........LKKKKKKKKL....KKKKKK.","...........KWWTTTTWWK....KTOOTK.","..........KWWTTTTTTWWK...KOWWOK.","KK........KWTTTTTTTTWK...KTOOTKK","KLKK......KTTTTTTTTTTK...KKKKKKK","KBLLKKB...KBBBBBBBBBBK...KKKLLBK","KBLLL.KKKKKKKKKKKKKKKKKKKK.LLLBK","KBLLLKTTKTTTTTTTTTTTTTTKTTKLLLBK","KBLLLLKKKKKKKKKKKKKKKKKKKKLLLLBK","KBLTLLLLKBKBBBBBBBBBBKBKLLLLTLBK","KBTKTLLLKTTKKKTTTTKKKTTKLLLTKTBK","KBLTLLLLKTKWWWKTTKWWWKTKLLLLTLBK","KBLLLLLLKTKKWKKKKKKWKKTKLLLLLLBK",".KBLLLLLKTKWKWKTTKWKWKTKLLLLLBK.",".KBBLLLLKTTKKKTTTTKKKTTKLLLLBBK.","..KBBLLLKLTTTTKWWKTTTTLKLLLBBK..","...KBBLLLKTTTTTKKTTTTTKLLLBBK...","....KKKKKKKKTTTTTTTTKKKKKKKK....","...KLLTLLLKKKKKKKKKKKKLLLTLLK...","...KLTKTLLKKKBBBBBBKKKLLTKTLK...","...KLLTLLLKKBBLBBLBBKKLLLTLLK...","....KLLLLKKKKTTTTTTKKKKLLLLK....",".....KKKK.LLLKLLLLKLLL.KKKK.....",".............KTTTTK.............","............K.KKKK.K............","...........K........K..........."],["..........LK........KL....K..K..","...........LKKKKKKKKL....KKKKKK.","...........KWWTTTTWWK....KTTOTK.","..........KWWTTTTTTWWK...KOWOOK.","..........KWTTTTTTTTWK...KTOOTK.","..........KTTTTTTTTTTK...KKKKKK.","KK....B...KBBBBBBBBBBK...K....KK","KLKK..KKKKKKKKKKKKKKKKKKKK..KKLK","KBLLKKTTKTTTTTTTTTTTTTTKTTKKLLBK","KBLLL.KKKKKKKKKKKKKKKKKKKK.LLLBK","KBLLLL..KBKBBBBBBBBBBKBK..LLLLBK","KBLLLLLLKTTKKKTTTTKKKTTKLLLLLLBK","KBLTLLLLKTKWWWKTTKWWWKTKLLLLTLBK","KBTKTLLLKTKKWKKKKKKWKKTKLLLTKTBK","KBLTLLLLKTKWKWKTTKWKWKTKLLLLTLBK","KBLLLLLLKTTKKKTTTTKKKTTKLLLLLLBK",".KBLLLLLKLTTTTKWWKTTTTLKLLLLLBK.",".KBBLLLLLKTTTTTKKTTTTTKLLLLLBBK.","..KBBLLLLLKKTTTTTTTTKKLLLLLBBK..","...KBBLLLLKKKKKKKKKKKKLLLLBBK...","....KKKKKKLKKBBBBBBKKLKKKKKK....","...KLLTLLLLKBBLBBLBBKLLLLTLLK...","...KLTKTLLKKKTTTTTTKKKLLTKTLK...","...KLLTLLLKLLKLLLLKLLKLLLTLLK...","....KLLLLKKLLKTTTTKLLKKLLLLK....",".....KKKK.LLK.KKKK.KLL.KKKK.....","...........K........K...........","................................"]]},"archCough":{"fps":8,"frames":[[".........LK..........KL.........","..........LK........KL..........","...........LKKKKKKKKL...........","...........KWWTTTTWWK...........","..........KWWTTTTTTWWK..........","..........KWTTTTTTTTWK..........","KK........KTTTTTTTTTTK........KK","KLKK......KBBBBBBBBBBK......KKLK","KBLLKKKKKKKKKKKKKKKKKKKKKKKKLLBK","KBLLLKTTTTTTTTTTTTTTTTTTTTKLLLBK","KBLLLLKKKKKKKKKKKKKKKKKKKKLLLLBK","KBLLLLLLKBBBBBBBBBBBBBBKLLLLLLBK","KBLTLLLLKTTKKKTTTTKKKTTKLLLLTLBK","KBTKTLLLKTKKWWKTTKWWKKTKLLLTKTBK","KBLTLLLLKTKWKWKKKKWKWKTKLLLLTLBK","KBLLLLLLKTKKWWKTTKWWKKTKLLLLLLBK",".KBLLLLLKTTKKKTTTTKKKTTKLLLLLBK.",".KBBLLLLKLTTTTTKKTTTTTLKLLLLBBK.","..KBBLLLLKTTTBBKKTTTTTKLLLLBKK..","...KBBLLLLKKKTTTTTTTKKLLLLBKK.K.","....KKKKKKKKKKKKKKKKKKKKKKKKKKKK","...KLLTLLLLKKBBBBBBKKLLLLTKTOOTK","...KLTKTLLKKBBLBBLBBKKLLTKKOWWOK","...KLLTLLLKKKTTTTTTKKKLLLTKTOOTK","....KLLLLKKLLKLLLLKLLKKLLLKKKKKK",".....KKKK.LLLKTTTTKLLL.KKKK.....","............K.KKKK.K............","...........K........K..........."],[".........LK..........KL.........","..........LK........KL..........","...........LKKKKKKKKL...........","...........KWWTTTTWWK...........","..........KWWTTTTTTWWK..........","..........KWTTTTTTTTWK..........","..........KTTTTTTTTTTK..........","KK........KBBBBBBBBBBK........KK","KLKK..KKKKKKKKKKKKKKKKKKKK..KKLK","KBLLKKTTTTTTTTTTTTTTTTTTTTKKLLBK","KBLLL.KKKKKKKKKKKKKKKKKKKK.LLLBK","KBLLLL..KBBBBBBBBBBBBBBK..LLLLBK","KBLLLLLLKTTKKKTTTTKKKTTKLLLLLLBK","KBLTLLLLKTKKWWKTTKWWKKTKLLLLTLBK","KBTKTLLLKTKWKWKKKKWKWKTKLLLTKTBK","KBLTLLLLKTKKWWKTTKWWKKTKLLLLTLBK","KBLLLLLLKTTKKKTTTTKKKTTKLLLLLLBK",".KBLLLLLKLTTTTTKKTTTTTLKLLLLLBK.",".KBBLLLLLKTTTBBKKTTTTTKLLLLBKKK.","..KBBLLLLLKKKTTTTTTTKKLLLLLKBKK.","...KBBLLLLKKKKKKKKKKKKLLLLKKKKKK","....KKKKKKLKKBBBBBBKKLKKKKKTTOTK","...KLLTLLLLKBBLBBLBBKLLLLTKOWOOK","...KLTKTLLKKKTTTTTTKKKLLTKKTOOTK","...KLLTLLLKLLKLLLLKLLKLLLTKKKKKK","....KLLLLKKLLKTTTTKLLKKLLLLK....",".....KKKK.LLK.KKKK.KLL.KKKK.....","...........K........K..........."]]},"bubbleQ":{"frames":[[".KKKKKKKKK..","KWWWKKKWWWK.","KWWKWWWKWWK.","KWWWWWKWWWK.","KWWWWKWWWWK.","KWWWWWWWWWK.","KWWWWKWWWWK.","KWWWWWWWWWK.",".KKKWWKKKK..","....KWK.....","....KK......","............"]]},"bubbleScribble":{"frames":[[".KKKKKKKKK..","KWWWWWWWWWK.","KWKWKKWKWWK.","KWWKWWKWKWK.","KWKWKWWKWWK.","KWWKWKKWKWK.","KWKWWKWWKWK.","KWWWWWWWWWK.",".KKKWWKKKK..","....KWK.....","....KK......","............"]]},"sparkle":{"fps":6,"frames":[["...G....","...G....",".GGWGG..","GGWWWGG.",".GGWGG..","...G....","...G....","........"],["........","...G....","..GWG...",".GWWWG..","..GWG...","...G....","........","........"]]},"stone":{"frames":[["...KKKK...","..KLLTTK..",".KLTTTTBK.","KLTTTTBBBK","KBTTTBBBBK","KKKKKKKKKK"]]},"amphora":{"frames":[["..KKKK..","...KK...",".KKLLKK.","K.KLTK.K","K.KTTK.K",".KLTTTK.","KLTTTTBK","KTTTTTBK","KTBBBTBK","KTTTTBBK",".KTTTBK.",".KTTBBK.","..KTBK..","...KK..."]]},"cubby":{"frames":[["LLLLLLLLLLLLLLLLLLLL","L..................L","L.LLL...LLL...LLL..L","LLTTTL.LTTTL.LTTTL.L","LLTLTL.LTLTL.LTLTL.L","LLTTTL.LTTTL.LTTTL.L","L.LLL...LLL...LLL..L","LLLLLLLLLLLLLLLLLLLL","L..................L","L.LLLLLLLLLLLLLL...L","LLTTTTTTTTTTTTTTL..L","L.LLLLLLLLLLLLLL...L","L..................L","LLLLLLLLLLLLLLLLLLLL"]]},"books":{"frames":[["...KKKKKKKKKK.","...KBBBBBBBBK.","...KWTWTWTWLK.",".KKKKKKKKKKKK.",".KLLLLLLLLLLK.",".KTWTWTWTWTLK.","KKKKKKKKKKKKKK","KBBBBLBBBBBBBK","KWTWTWTWTWTWLK","KKKKKKKKKKKKKK"]]},"inkpot":{"frames":[["......K.","......K.",".....K..",".....K..","..KKKKK.",".KBBBKBK","KBBBBBBK","KBLBBBBK","KBLBBBBK",".KKKKKK."]]},"candle":{"fps":4,"frames":[["..O...",".OWO..",".OWO..","..K...",".KTTK.",".KWTK.",".KWTK.",".KWTK.",".KWTK.","KKKKKK",".KBBK.","KKKKKK"],["...O..","..OO..",".OWO..","..K...",".KTTK.",".KWTK.",".KWTK.",".KWTK.",".KWTK.","KKKKKK",".KBBK.","KKKKKK"]]}};
+
+/*GEO-START*/
+// ---- spiral geometry: the same rules as geometry.py ----
+function makeGeo(P){
+  const TAU=2*Math.PI, PHI_MAX=TAU*P.TURNS, ALPHA0=Math.PI/2+PHI_MAX, H=Math.floor(P.PITCH);
+  const wob=a=>{let w=0;for(const [amp,k,ph] of P.WOB)w+=amp*Math.sin(k*a+ph);return w;};
+  const radius=phi=>P.R0+P.PITCH*phi/TAU+wob(ALPHA0-phi);
+  // arc length of the centre curve, by chords at step DPHI (as in Python)
+  const n=Math.floor(PHI_MAX/P.DPHI+0.5)+1, S=new Float64Array(n);
+  let px=0,py=0;
+  for(let i=0;i<n;i++){const phi=i*P.DPHI,a=ALPHA0-phi,r=radius(phi),x=P.CX+r*Math.cos(a),y=P.CY+r*Math.sin(a);
+    S[i]=i?S[i-1]+Math.hypot(x-px,y-py):0;px=x;py=y;}
+  const L=Math.floor(S[n-1]);
+  // phi at every whole px of arc, for fast lookup
+  const PHI=new Float64Array(L+2);let j=0;
+  for(let s=0;s<=L+1;s++){while(j<n-2&&S[j+1]<s)j++;const f=Math.min(1,Math.max(0,(s-S[j])/(S[j+1]-S[j])));PHI[s]=(j+f)*P.DPHI;}
+  const phiOfS=s=>{s=Math.max(0,Math.min(L+0.999,s));const i=Math.floor(s),f=s-i;return PHI[i]+(PHI[i+1]-PHI[i])*f;};
+  const sOfPhi=phi=>{phi=Math.max(0,Math.min(PHI_MAX,phi));const x=phi/P.DPHI,i=Math.min(n-2,Math.floor(x));return S[i]+(S[i+1]-S[i])*(x-i);};
+  function toImage(s,t){const phi=phiOfS(s),a=ALPHA0-phi,rho=radius(phi)+t;return [P.CX+rho*Math.cos(a),P.CY+rho*Math.sin(a)];}
+  function toSheet(x,y){
+    const dx=x-P.CX,dy=y-P.CY,rho=Math.hypot(dx,dy),beta=Math.atan2(dy,dx);
+    const phic=(rho-P.R0-wob(beta))*TAU/P.PITCH,base=ALPHA0-beta,k=Math.round((phic-base)/TAU),phi=base+TAU*k;
+    return {s:sOfPhi(phi),t:rho-radius(phi),valid:phi>=0&&phi<=PHI_MAX};
+  }
+  const turnOf=s=>phiOfS(s)/TAU;
+  // rigid motion that lays the sheet beyond sp flat on the line y = 0 (outward = +y), roll rolling along it
+  function frame(sp){
+    const p=toImage(sp,0),a=toImage(Math.max(0,sp-0.5),0),b=toImage(Math.min(L,sp+0.5),0);
+    let tx=b[0]-a[0],ty=b[1]-a[1];const m=Math.hypot(tx,ty)||1;tx/=m;ty/=m;
+    return {p,tx,ty,ox:sp-L};
+  }
+  function world(fr,sp,s,t){   // sheet (s,t) -> world (x,y)
+    if(s>=sp)return [s-L,t];
+    const q=toImage(s,t),dx=q[0]-fr.p[0],dy=q[1]-fr.p[1];
+    return [fr.tx*dx+fr.ty*dy+fr.ox,-fr.ty*dx+fr.tx*dy];
+  }
+  function unworld(fr,sp,wx,wy){  // world -> sheet, or null off the sheet
+    if(sp<L&&wx>=sp-L&&wx<=0&&Math.abs(wy)<=H/2)return {s:wx+L,t:wy};
+    const dx=wx-fr.ox,dy=wy,qx=fr.tx*dx-fr.ty*dy+fr.p[0],qy=fr.ty*dx+fr.tx*dy+fr.p[1];
+    const r=toSheet(qx,qy);return r.valid&&r.s<sp&&Math.abs(r.t)<=H/2?{s:r.s,t:r.t}:null;
+  }
+  function rollRadius(sp){return radius(phiOfS(sp))+H/2+8;}
+  return {L,H,PHI_MAX,ALPHA0,radius,phiOfS,sOfPhi,toImage,toSheet,turnOf,frame,world,unworld,rollRadius};
+}
+// ---- pure helpers (unit-tested in tests/test_page.js) ----
+function fmtR(x){const s=x.toFixed(2);return s==='-0.00'?'0.00':s;}
+function contrastWindow(k){const c=k/100;return {lo:0.02+0.3*c,hi:0.95-0.35*c};}
+// The scan is drawn as ink on paper: X-ray density d -> mix(paper, ink, d). The raw engine output ("ink layer
+// only") keeps its own greyscale. "Tint" lays the ink layer over the papyrus in the kit's warm accent.
+const PAPER=[251,250,249], INK=[25,35,142], TINT=[180,84,26];
+function shade(base,ink,o){   // one pixel, 0..1 inputs -> [r,g,b] 0..255; o = {gain,lo,hi,tint,inkOnly}
+  if(o.inkOnly){const v=Math.round(255*ink);return [v,v,v];}
+  const cl=x=>Math.max(0,Math.min(1,x)),w=o.hi-o.lo,g=(base-o.lo)/w,k=o.gain*ink/w;
+  if(!o.tint){const d=cl(g+k);return [0,1,2].map(i=>Math.round(PAPER[i]+(INK[i]-PAPER[i])*d));}
+  const d=cl(g),a=cl(2.2*k);
+  return [0,1,2].map(i=>{const p=PAPER[i]+(INK[i]-PAPER[i])*d;return Math.round(p+(TINT[i]-p)*a);});
+}
+function encodeHash(st){return 'u'+Math.round(st.u*1000)+'.w'+Math.round(st.w0)+'.d'+st.d+'.c'+(st.clean?1:0)+'.l'+(st.inkOnly?1:0)+'.t'+(st.tint?1:0)+'.k'+st.k+'.z'+Math.round(st.zoom*10)+'.x'+(st.close?1:0)+'.v'+(st.view==='data'?1:0);}
+function decodeHash(h,maxD,L){
+  const m=/^#?u(\d+)\.w(\d+)\.d(\d+)\.c([01])\.l([01])\.t([01])\.k(\d+)\.z(\d+)\.x([01])(?:\.v([01]))?$/.exec(h||'');
+  if(!m)return null;
+  return {u:Math.min(1000,+m[1])/1000,w0:Math.min(L,+m[2]),d:Math.min(maxD,+m[3]),clean:m[4]==='1',inkOnly:m[5]==='1',tint:m[6]==='1',
+          k:Math.min(100,+m[7]),zoom:Math.max(0.3,Math.min(8,+m[8]/10)),close:m[9]==='1',view:m[10]==='1'?'data':'scene'};
+}
+/*GEO-END*/
+
+const GEO=makeGeo(SCROLL.geometry), L=GEO.L, H=GEO.H, N=SCROLL.geometry.N, GAIN=SCROLL.ink_gain;
+const TEXT0=SCROLL.text_s[0], TEXT1=SCROLL.text_s[1];
+const $=id=>document.getElementById(id);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ---- state ----
+const st={u:0.12,w0:Math.round(L-620),d:1,clean:false,inkOnly:false,tint:false,k:35,zoom:1,close:innerWidth<700,found:false,focus:'roll',view:'scene'};
+const ST0={...st};                              // the opening view, for "Start over"
+const seen=new Uint8Array(Math.ceil((TEXT1-TEXT0)/10));
+const sp=()=>L*(1-st.u);                        // sheet beyond sp lies flat
+const winW=()=>st.close?300:600;                // reading window, px of sheet
+const job=()=>JOBS[st.d];
+const readable=()=>st.clean||job().r_line>=(st.inkOnly?0.55:0.8);   // the line counts as read only through light damage
+
+// ---- image data (grey arrays) ----
+const pix={}, pend={};
+function loadGrey(src){
+  if(pix[src]||pend[src])return pend[src]||Promise.resolve(pix[src]);
+  pend[src]=new Promise((res,rej)=>{const im=new Image();im.decoding='async';im.onload=()=>{
+      const c=document.createElement('canvas');c.width=N;c.height=N;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(im,0,0);
+      let d;try{d=x.getImageData(0,0,N,N).data;}catch(e){rej(e);return;}
+      const a=new Uint8Array(N*N);for(let i=0;i<N*N;i++)a[i]=d[i*4];pix[src]=a;delete pend[src];res(a);};
+    im.onerror=()=>rej(new Error('could not load '+src));im.src=src;});
+  return pend[src];
+}
+const inkSrc=()=>st.clean?'img/ink_clean.webp':job().img;
+function sample(a,x,y){   // bilinear, 0..1
+  if(x<0||y<0||x>N-1||y>N-1)return 0;
+  const i=Math.floor(x),j=Math.floor(y),fx=x-i,fy=y-j,i1=Math.min(N-1,i+1),j1=Math.min(N-1,j+1);
+  return ((a[j*N+i]*(1-fx)+a[j*N+i1]*fx)*(1-fy)+(a[j1*N+i]*(1-fx)+a[j1*N+i1]*fx)*fy)/255;
+}
+
+// ---- WebGL main view ----
+const glc=$('gl'), ov=$('ov'), octx=ov.getContext('2d');
+let gl=null, prog=null, bgProg=null, buf={}, tex={}, nV=0, glOK=false;
+const DS=4, NS=Math.ceil(L/DS)+1;
+const VS=`attribute vec2 aW;attribute vec2 aUV;attribute float aS;uniform vec2 uC;uniform vec2 uK;varying vec2 vUV;varying float vS;
+void main(){vUV=aUV;vS=aS;vec2 p=(aW-uC)*uK;gl_Position=vec4(p.x,-p.y,0.,1.);}`;
+const FS=`precision mediump float;varying vec2 vUV;varying float vS;uniform sampler2D uB;uniform sampler2D uI;
+uniform float uGain;uniform float uLo;uniform float uHi;uniform float uTint;uniform float uInkOnly;uniform vec2 uWin;
+void main(){float b=texture2D(uB,vUV).r,k=texture2D(uI,vUV).r;vec3 col;float inw=step(uWin.x,vS)*step(vS,uWin.y);
+ vec3 paper=vec3(251.,250.,249.)/255.,ink=vec3(25.,35.,142.)/255.,tint=vec3(180.,84.,26.)/255.;
+ if(uInkOnly>.5){col=vec3(k)*mix(.78,1.,inw);}else{float w=uHi-uLo,g=(b-uLo)/w,kk=uGain*k/w;
+  vec3 plain=mix(paper,ink,clamp(g+kk,0.,1.));vec3 tinted=mix(mix(paper,ink,clamp(g,0.,1.)),tint,clamp(2.2*kk,0.,1.));
+  col=mix(plain,tinted,uTint);col=mix(paper,col,mix(.74,1.,inw));}
+ gl_FragColor=vec4(col,1.);}`;
+const BVS=`attribute vec2 aP;void main(){gl_Position=vec4(aP,0.,1.);}`;
+const BFS=`precision mediump float;uniform float uLo;uniform float uHi;uniform float uInkOnly;
+float h(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453);}
+void main(){vec2 q=floor(gl_FragCoord.xy/1.5);float n=(h(q)+h(q+17.)+h(q+31.)-1.5)*.11;float v=.075+n;
+ vec3 paper=vec3(251.,250.,249.)/255.,ink=vec3(25.,35.,142.)/255.;
+ vec3 c=uInkOnly>.5?paper:mix(paper,ink,.62*clamp((v-uLo)/(uHi-uLo),0.,1.));gl_FragColor=vec4(c,1.);}`;
+function shader(type,src){const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));return s;}
+function program(v,f){const p=gl.createProgram();gl.attachShader(p,shader(gl.VERTEX_SHADER,v));gl.attachShader(p,shader(gl.FRAGMENT_SHADER,f));gl.linkProgram(p);
+  if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(p));return p;}
+function initGL(){
+  try{gl=glc.getContext('webgl',{antialias:true,preserveDrawingBuffer:true});}catch(e){gl=null;}
+  if(!gl)return false;
+  try{prog=program(VS,FS);bgProg=program(BVS,BFS);}catch(e){console.error(e);return false;}
+  nV=NS*2;const uv=new Float32Array(nV*2),ss=new Float32Array(nV);
+  for(let i=0;i<NS;i++){const s=Math.min(L,i*DS);for(let e=0;e<2;e++){const t=e?H/2:-H/2,q=GEO.toImage(s,t),v=i*2+e;uv[v*2]=q[0]/N;uv[v*2+1]=q[1]/N;ss[v]=s;}}
+  buf.w=gl.createBuffer();buf.uv=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf.uv);gl.bufferData(gl.ARRAY_BUFFER,uv,gl.STATIC_DRAW);
+  buf.s=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf.s);gl.bufferData(gl.ARRAY_BUFFER,ss,gl.STATIC_DRAW);
+  buf.bg=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf.bg);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+  tex.b=gl.createTexture();tex.i=gl.createTexture();tex.iSrc='';
+  return true;
+}
+function upload(t,arr){gl.bindTexture(gl.TEXTURE_2D,t);gl.pixelStorei(gl.UNPACK_ALIGNMENT,1);
+  gl.texImage2D(gl.TEXTURE_2D,0,gl.LUMINANCE,N,N,0,gl.LUMINANCE,gl.UNSIGNED_BYTE,arr);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);}
+
+// camera: fit the roll + flat ribbon while it fits; past that, keep a readable scale with the roll at the
+// left edge and the freshly laid sheet to its right. Zoom > 1 slides the view toward the reading window.
+let cam={cx:0,cy:0,k:1};
+const KMIN=0.45;
+function camera(fr,s0){
+  const p=sp(), rr=GEO.rollRadius(p), q=fr.p, dx=SCROLL.geometry.CX-q[0], dy=SCROLL.geometry.CY-q[1];
+  const rcx=fr.tx*dx+fr.ty*dy+fr.ox, rcy=-fr.ty*dx+fr.tx*dy;
+  let x0=rcx-rr,x1=rcx+rr,y0=rcy-rr,y1=rcy+rr;
+  if(p<L){x0=Math.min(x0,p-L);x1=Math.max(x1,0);y0=Math.min(y0,-H/2);y1=Math.max(y1,H/2);}
+  const W=glc.width,Hc=glc.height,kfit=0.92*Math.min(W/(x1-x0),Hc/(y1-y0));
+  let k=Math.max(kfit,KMIN)*st.zoom; if(st.zoom<1)k=Math.max(kfit,k);
+  const vw=W/k,vh=Hc/k,pad=40/k;
+  let cx=(x0+x1)/2,cy=(y0+y1)/2;
+  if(vw<x1-x0)cx=Math.max(x0+vw/2-pad,Math.min(x1-vw/2+pad,x0+vw/2-pad));
+  if(vh<y1-y0)cy=Math.max(y0+vh/2-pad,Math.min(y1-vh/2+pad,cy));
+  const wm=GEO.world(fr,p,Math.min(L,s0+winW()/2),0), f=Math.max(0,Math.min(1,(st.zoom-1)/1.5));
+  if(st.focus==='win'){   // the user is reading: keep the window in view
+    const mx=vw*0.3,my=vh*0.3;
+    cx=Math.max(wm[0]-vw/2+mx,Math.min(wm[0]+vw/2-mx,cx));cy=Math.max(wm[1]-vh/2+my,Math.min(wm[1]+vh/2-my,cy));
+  }
+  return {cx:cx+(wm[0]-cx)*f,cy:cy+(wm[1]-cy)*f,k};
+}
+// ease the camera toward its target after each action (a short glide, never on its own)
+let camInit=false;
+function ease(T){
+  if(!camInit||reduce){cam=T;camInit=true;return;}
+  const a=0.35,n={cx:cam.cx+(T.cx-cam.cx)*a,cy:cam.cy+(T.cy-cam.cy)*a,k:cam.k*Math.pow(T.k/cam.k,a)};
+  if(Math.abs(T.cx-n.cx)*T.k<0.5&&Math.abs(T.cy-n.cy)*T.k<0.5&&Math.abs(Math.log(T.k/n.k))<0.002){cam=T;return;}
+  cam=n;render();
+}
+const toScreen=(w)=>[(w[0]-cam.cx)*cam.k+glc.width/2,(w[1]-cam.cy)*cam.k+glc.height/2];
+// chrome drawn on canvas uses the kit's paper/ink palette
+const CSS_PAPER='#FBFAF9', CSS_INK='#19238E', CSS_INK2='#545BA9', CSS_RULE='#D3D3E6', CSS_PANEL2='#F0F0F4', CSS_GOOD='#1F7A4D';
+function pill(c,x,y,w,h,f){c.beginPath();if(c.roundRect)c.roundRect(x,y,w,h,h/2);else c.rect(x,y,w,h);
+  c.fillStyle='rgba(251,250,249,.95)';c.fill();c.lineWidth=Math.max(1,f);c.strokeStyle=CSS_INK;c.stroke();}
+
+function drawMain(){
+  const p=sp(), fr=GEO.frame(p), cw=contrastWindow(st.k);
+  ease(camera(fr,st.w0));
+  if(glOK&&pix['img/base.webp']&&pix[inkSrc()]){
+    if(tex.iSrc!==inkSrc()){upload(tex.i,pix[inkSrc()]);tex.iSrc=inkSrc();}
+    const w=new Float32Array(nV*2);
+    for(let i=0;i<NS;i++){const s=Math.min(L,i*DS);for(let e=0;e<2;e++){const v=GEO.world(fr,p,s,e?H/2:-H/2);w[(i*2+e)*2]=v[0];w[(i*2+e)*2+1]=v[1];}}
+    gl.viewport(0,0,glc.width,glc.height);
+    gl.useProgram(bgProg);gl.bindBuffer(gl.ARRAY_BUFFER,buf.bg);let a=gl.getAttribLocation(bgProg,'aP');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,2,gl.FLOAT,false,0,0);
+    gl.uniform1f(gl.getUniformLocation(bgProg,'uLo'),cw.lo);gl.uniform1f(gl.getUniformLocation(bgProg,'uHi'),cw.hi);gl.uniform1f(gl.getUniformLocation(bgProg,'uInkOnly'),st.inkOnly?1:0);
+    gl.drawArrays(gl.TRIANGLE_STRIP,0,4);gl.disableVertexAttribArray(a);
+    gl.useProgram(prog);
+    const at=(name,b,size,data)=>{const l=gl.getAttribLocation(prog,name);gl.bindBuffer(gl.ARRAY_BUFFER,b);if(data)gl.bufferData(gl.ARRAY_BUFFER,data,gl.DYNAMIC_DRAW);gl.enableVertexAttribArray(l);gl.vertexAttribPointer(l,size,gl.FLOAT,false,0,0);return l;};
+    const l1=at('aW',buf.w,2,w),l2=at('aUV',buf.uv,2),l3=at('aS',buf.s,1);
+    const U=n=>gl.getUniformLocation(prog,n);
+    gl.uniform2f(U('uC'),cam.cx,cam.cy);gl.uniform2f(U('uK'),2*cam.k/glc.width,2*cam.k/glc.height);
+    gl.uniform1f(U('uGain'),GAIN);gl.uniform1f(U('uLo'),cw.lo);gl.uniform1f(U('uHi'),cw.hi);gl.uniform1f(U('uTint'),st.tint?1:0);gl.uniform1f(U('uInkOnly'),st.inkOnly?1:0);
+    gl.uniform2f(U('uWin'),st.w0,st.w0+winW());
+    gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,tex.b);gl.uniform1i(U('uB'),0);
+    gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,tex.i);gl.uniform1i(U('uI'),1);
+    gl.drawArrays(gl.TRIANGLE_STRIP,0,nV);
+    [l1,l2,l3].forEach(l=>gl.disableVertexAttribArray(l));
+  }
+  drawOverlay(fr,p);
+}
+let flat2d=null, flat2dKey='';
+// The overlay canvas is sized to the device pixels it covers (so the moth sprite is drawn at an integer scale and
+// stays crisp); everything else on it is drawn in the GL canvas's coordinates through a scale transform.
+function drawOverlay(fr,p){
+  const W=glc.width,Hc=glc.height,S=ov.width/W;
+  octx.setTransform(1,0,0,1,0,0);octx.clearRect(0,0,ov.width,ov.height);octx.setTransform(S,0,0,S,0,0);
+  if(!glOK){   // fallback: the scan, still rolled, drawn in 2D
+    const b=pix['img/base.webp'],k=pix[inkSrc()],cw=contrastWindow(st.k),key=inkSrc()+st.k+st.tint+st.inkOnly;
+    if(b&&k){if(flat2dKey!==key){flat2d=document.createElement('canvas');flat2d.width=N;flat2d.height=N;const x=flat2d.getContext('2d'),id=x.createImageData(N,N);
+        const o={gain:GAIN,lo:cw.lo,hi:cw.hi,tint:st.tint,inkOnly:st.inkOnly};
+        for(let i=0;i<N*N;i++){const c=shade(b[i]/255,k[i]/255,o);id.data[i*4]=c[0];id.data[i*4+1]=c[1];id.data[i*4+2]=c[2];id.data[i*4+3]=255;}
+        x.putImageData(id,0,0);flat2dKey=key;}
+      const s=Math.min(W,Hc)/N;octx.drawImage(flat2d,(W-N*s)/2,(Hc-N*s)/2,N*s,N*s);}
+    octx.setTransform(1,0,0,1,0,0);return;
+  }
+  // reading window outline along both edges of the band
+  const w0=st.w0,w1=Math.min(L,st.w0+winW()),edge=(t)=>{const pts=[];for(let s=w0;s<=w1;s+=Math.max(2,4/cam.k))pts.push(toScreen(GEO.world(fr,p,s,t)));pts.push(toScreen(GEO.world(fr,p,w1,t)));return pts;};
+  const cssW=Math.max(1,ov.getBoundingClientRect().width), f=W/cssW, fs=Math.round(12*f);
+  const A=edge(-H/2-2),B=edge(H/2+2);
+  // paper halo under an ink line, so the outline reads over the ink-coloured scan
+  octx.lineJoin='round';octx.beginPath();A.forEach((q,i)=>i?octx.lineTo(q[0],q[1]):octx.moveTo(q[0],q[1]));
+  for(let i=B.length-1;i>=0;i--)octx.lineTo(B[i][0],B[i][1]);octx.closePath();
+  octx.lineWidth=5*f;octx.strokeStyle=CSS_PAPER;octx.stroke();octx.lineWidth=2*f;octx.strokeStyle=CSS_INK;octx.stroke();
+  // the archaeologist moth hovers over the window with its lantern (the same moth, mood and frame as on the desk)
+  const m=toScreen(GEO.world(fr,p,(w0+w1)/2,-H/2-2));
+  octx.font=`500 ${fs}px "IBM Plex Mono", ui-monospace, monospace`;octx.textBaseline='middle';
+  if(m[0]>-10&&m[0]<W+10&&m[1]>-10&&m[1]<Hc+10){
+    const dpr=window.devicePixelRatio||1, cs=Math.max(1,Math.round((cssW>=700?2:1)*dpr)), spr=SP[M.sprite]||SP.archaeologist;
+    const hw=spr.w*cs/2, hh=spr.h*cs/2;
+    const mx=Math.max(hw,Math.min(ov.width-hw,m[0]*S)), my=Math.max(hh,Math.min(ov.height-hh,m[1]*S-hh-3*cs));
+    octx.setTransform(1,0,0,1,0,0);
+    InkSprite.draw(octx,spr,M.frame%spr.frames.length,mx,my,cs,{flipX:M.face<0});
+    if(cssW>=700){   // name the window once, beside the moth
+      octx.font=`500 ${Math.round(11*dpr)}px "IBM Plex Mono", ui-monospace, monospace`;
+      const tw=octx.measureText('READING WINDOW').width,right=mx+hw+tw+30*dpr<ov.width,lx=right?mx+hw+6*dpr:mx-hw-tw-26*dpr,ly=my;
+      pill(octx,lx,ly-10*dpr,tw+20*dpr,20*dpr,dpr);octx.textAlign='left';octx.fillStyle=CSS_INK;octx.fillText('READING WINDOW',lx+10*dpr,ly+0.5*dpr);
+    }
+    octx.setTransform(S,0,0,S,0,0);
+  }else{   // off screen: point to it from the nearest edge
+    const right=m[0]>W/2,lbl=right?'READING WINDOW \u2192':'\u2190 READING WINDOW',tw=octx.measureText(lbl).width;
+    const lx=right?W-tw-18*f:18*f,ly=Math.max(fs*2,Math.min(Hc-fs*2,m[1]));
+    pill(octx,lx-10*f,ly-fs*0.9,tw+20*f,fs*1.8,f);
+    octx.textAlign='left';octx.fillStyle=CSS_INK;octx.fillText(lbl,lx,ly);
+  }
+  if(st.found){  // mark the line once found
+    const pts=[];for(let s=TEXT0;s<=TEXT1;s+=Math.max(2,4/cam.k))pts.push(toScreen(GEO.world(fr,p,s,H/2+5)));
+    const path=()=>{octx.beginPath();pts.forEach((q,i)=>i?octx.lineTo(q[0],q[1]):octx.moveTo(q[0],q[1]));};
+    path();octx.lineWidth=5*f;octx.strokeStyle=CSS_PAPER;octx.stroke();
+    path();octx.lineWidth=2*f;octx.strokeStyle=CSS_GOOD;octx.setLineDash([6*f,5*f]);octx.stroke();octx.setLineDash([]);
+  }
+  octx.setTransform(1,0,0,1,0,0);
+}
+
+// ---- reading window ----
+const rd=$('rd'), rctx=rd.getContext('2d'); let rbuf=null;
+function drawReader(){
+  const b=pix['img/base.webp'],k=pix[inkSrc()],W=winW(),p=sp();
+  const f=rd.width/Math.max(1,rd.getBoundingClientRect().width||rd.width), ruler=Math.round(22*f), sc=rd.width/W;
+  const want=Math.round(H*sc+ruler+8*f);if(rd.height!==want)rd.height=want;
+  rctx.fillStyle=CSS_PAPER;rctx.fillRect(0,0,rd.width,rd.height);
+  const top=Math.round((rd.height-ruler-H*sc)/2);
+  if(b&&k){
+    if(!rbuf||rbuf.width!==W){rbuf=document.createElement('canvas');rbuf.width=W;rbuf.height=H;}
+    const x=rbuf.getContext('2d'),id=x.createImageData(W,H),cw=contrastWindow(st.k),o={gain:GAIN,lo:cw.lo,hi:cw.hi,tint:st.tint,inkOnly:st.inkOnly};
+    for(let c=0;c<W;c++){const s=st.w0+c+0.5;if(s>L)continue;for(let r=0;r<H;r++){const t=r-(H-1)/2,q=GEO.toImage(s,t),v=shade(sample(b,q[0],q[1]),sample(k,q[0],q[1]),o),i=(r*W+c)*4;
+      id.data[i]=v[0];id.data[i+1]=v[1];id.data[i+2]=v[2];id.data[i+3]=255;}}
+    x.putImageData(id,0,0);
+    rctx.imageSmoothingEnabled=true;rctx.drawImage(rbuf,0,0,W,H,0,top,W*sc,H*sc);
+    // the part still on the roll cannot be read: hatch it
+    const cut=Math.max(0,Math.min(W,p-st.w0));
+    if(cut>0){rctx.save();rctx.fillStyle='rgba(251,250,249,.88)';rctx.fillRect(0,top,cut*sc,H*sc);
+      rctx.strokeStyle='rgba(25,35,142,.3)';rctx.lineWidth=1.5*f;rctx.beginPath();for(let xx=-H*sc;xx<cut*sc;xx+=14*f){rctx.moveTo(xx,top+H*sc);rctx.lineTo(xx+H*sc,top);}
+      rctx.save();rctx.beginPath();rctx.rect(0,top,cut*sc,H*sc);rctx.clip();rctx.stroke();rctx.restore();
+      if(cut<W){rctx.fillStyle=CSS_INK;rctx.fillRect(cut*sc-f,top,2*f,H*sc);}rctx.restore();
+      const msg='STILL ROLLED: UNROLL FURTHER TO READ THIS';rctx.font=`500 ${Math.round(12*f)}px "IBM Plex Mono", ui-monospace, monospace`;
+      const mw=rctx.measureText(msg).width;
+      if(cut*sc>mw+40*f){pill(rctx,14*f,top+H*sc/2-11*f,mw+24*f,22*f,f);rctx.fillStyle=CSS_INK;rctx.textAlign='left';rctx.textBaseline='middle';
+        rctx.fillText(msg,26*f,top+H*sc/2+f*.5);}}
+  }else{rctx.fillStyle=CSS_INK2;rctx.font=`500 ${Math.round(13*f)}px "IBM Plex Mono", ui-monospace, monospace`;rctx.textAlign='center';rctx.textBaseline='middle';rctx.fillText('LOADING THE SCAN\u2026',rd.width/2,rd.height/2);}
+  // ruler: px of sheet and turn boundaries
+  const y0=rd.height-ruler;rctx.fillStyle=CSS_PANEL2;rctx.fillRect(0,y0,rd.width,ruler);
+  rctx.fillStyle=CSS_INK;rctx.fillRect(0,y0,rd.width,Math.max(1,f));
+  rctx.strokeStyle=CSS_INK2;rctx.lineWidth=Math.max(1,f);rctx.fillStyle=CSS_INK2;rctx.font=`500 ${Math.round(11*f)}px "IBM Plex Mono", ui-monospace, monospace`;rctx.textBaseline='middle';rctx.textAlign='left';
+  for(let s=Math.ceil(st.w0/50)*50;s<st.w0+W;s+=50){const xx=(s-st.w0)*sc;rctx.beginPath();rctx.moveTo(xx,y0);rctx.lineTo(xx,y0+(s%250?5:9)*f);rctx.stroke();
+    if(s%(st.close?250:500)===0)rctx.fillText(s.toLocaleString('en-US')+' px',xx+4*f,y0+ruler*0.6);}
+  const t0=Math.ceil(GEO.turnOf(st.w0)),t1=GEO.turnOf(Math.min(L,st.w0+W));
+  for(let tn=t0;tn<=t1;tn++){const s=GEO.sOfPhi(tn*2*Math.PI),xx=(s-st.w0)*sc,lbl='TURN '+tn,lw=rctx.measureText(lbl).width;
+    rctx.fillStyle=CSS_PAPER;rctx.fillRect(xx-2.5*f,0,5*f,y0);rctx.fillStyle=CSS_INK;rctx.fillRect(xx-f,0,2*f,y0);
+    pill(rctx,xx+4*f,3*f,lw+14*f,16*f,f);rctx.fillStyle=CSS_INK;rctx.fillText(lbl,xx+11*f,11.5*f);}
+  // coverage: count the hidden line as read where it lies flat, under readable ink
+  if(b&&k&&readable()){const a=Math.max(st.w0,p,TEXT0),z=Math.min(st.w0+W,TEXT1);
+    for(let s=a;s<z;s+=10)seen[Math.floor((s-TEXT0)/10)]=1;checkFound();}
+}
+const coverage=()=>{let n=0;for(const v of seen)n+=v;return n/seen.length;};
+function checkFound(){
+  if(st.found)return;
+  if(coverage()>=0.85){st.found=true;showFound();celebrate();toast('You read the hidden line. Its translation is below the controls.');}
+}
+function showFound(){$('reveal').hidden=false;$('rv-turns').textContent='turns '+SCROLL.text_turns[0].toFixed(1)+'\u2013'+SCROLL.text_turns[1].toFixed(1)+' from the core';$('c-found').classList.add('found');$('c-found').innerHTML='Hidden line: <b>found</b>, turns '+SCROLL.text_turns[0].toFixed(1)+'\u2013'+SCROLL.text_turns[1].toFixed(1);
+  const c=$('rv-pic'),d=window.devicePixelRatio||1,s=Math.max(1,Math.round(3*d)),sp_=SP.archCheer;c.width=sp_.w*s;c.height=sp_.h*s;c.style.width=(sp_.w*3)+'px';c.style.height=(sp_.h*3)+'px';
+  const x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);InkSprite.draw(x,sp_,0,c.width/2,c.height/2,s);}
+
+// ---- readouts ----
+function readouts(){
+  const j=job();
+  $('u-num').textContent=Math.round(st.u*100)+' % flat';
+  $('d-name').textContent=st.clean?'clean ink':'s '+j.strength+' \u00b7 reach '+j.reach;
+  $('r-params').textContent=st.clean?'clean ink (no job)':`strength ${j.strength} \u00b7 rx \u00b7 reach ${j.reach} \u00b7 size 1024`;
+  $('r-job').textContent=st.clean?'none: the ink as written':j.job_id;
+  $('r-line').textContent=st.clean?'r = 1 (the original)':`r = ${fmtR(j.r_line)} vs clean ink, over the hidden line`;
+  $('r-off').textContent=st.clean?'0 %':`${Math.round(j.off_ink*100)} % of ink brightness off the true ink`;
+  const tn=GEO.turnOf(st.w0+winW()/2);
+  $('r-win').textContent=`turn ${tn.toFixed(2)} of ${SCROLL.geometry.TURNS} \u00b7 ${Math.round(st.w0).toLocaleString('en-US')}\u2013${Math.round(Math.min(L,st.w0+winW())).toLocaleString('en-US')} px`;
+  $('w-pos').textContent=`turn ${tn.toFixed(1)} \u00b7 ${Math.round(st.w0).toLocaleString('en-US')} px from the core`;
+  $('c-view').innerHTML=`<b>${st.inkOnly?'Ink layer':'CT slice'}</b> \u00b7 ${st.clean?'clean ink':(st.inkOnly?'raw blur-v1 output':'blurred ink')}`;
+  if(!st.found){const cv=coverage();$('c-found').innerHTML='Hidden line: <b>'+(cv>0?Math.round(cv*100)+' % read':'not found yet')+'</b>';}
+  const ashTxt=st.clean?'none (clean ink)':`${Math.round(j.off_ink*100)} % (${ashTarget()} flecks)`;
+  $('ash-n').textContent=ashTxt;$('ash-card').textContent=ashTxt;
+  $('roll-turns').textContent=GEO.turnOf(sp()).toFixed(2)+' turns';
+  $('k-val').textContent=st.k;$('z-val').textContent=st.zoom.toFixed(1).replace('.0','')+'\u00d7';
+  [...$('ladder').children].forEach((el,i)=>{el.classList.toggle('on',!st.clean&&i<st.d);el.classList.toggle('cur',!st.clean&&i===st.d);el.setAttribute('aria-pressed',String(!st.clean&&i===st.d));});
+  if(castKey!==(st.clean?-1:st.d))drawCastAsh();
+  document.querySelectorAll('[data-ink]').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.ink==='clean')===st.clean)));
+  document.querySelectorAll('[data-layer]').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.layer==='ink')===st.inkOnly)));
+  $('tint').setAttribute('aria-pressed',String(st.tint));$('close').setAttribute('aria-pressed',String(st.close));
+  $('play').textContent=playLabel();
+  $('stage').dataset.view=st.view;document.querySelectorAll('#g-view button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===st.view)));
+  if(st.view==='data')drawChart();
+  $('u').value=Math.round(st.u*1000);$('w').max=L-winW();$('w').value=Math.round(st.w0);$('d').value=st.d;$('k').value=st.k;$('z').value=Math.round(st.zoom*10);
+}
+let raf=0;
+function render(){if(raf)return;raf=requestAnimationFrame(()=>{raf=0;st.w0=Math.max(0,Math.min(L-winW(),st.w0));readouts();drawMain();drawReader();
+  if(reduce||!deskVis)deskFrame(performance.now());else kickDesk();});}
+function need(){Promise.all([loadGrey('img/base.webp'),loadGrey(inkSrc())]).then(()=>{if(glOK&&!tex.bOK){upload(tex.b,pix['img/base.webp']);tex.bOK=true;}render();})
+  .catch(e=>{$('notice').hidden=false;$('notice').textContent='The scan images could not be read here ('+e.message+'). Open the page from its published link.';});render();}
+
+// ---- controls ----
+const toast=(msg)=>{const t=$('toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2600);};
+let anim=0,animTarget=1,paused=false;
+const playLabel=()=>anim?'Pause':paused?(animTarget===1?'Resume unrolling':'Resume rolling up'):(st.u>=1?'Roll it up':'Unroll it');
+function stopAnim(){if(anim){cancelAnimationFrame(anim);anim=0;}paused=false;$('play').textContent=playLabel();}
+$('u').addEventListener('input',e=>{stopAnim();st.focus='roll';st.u=+e.target.value/1000;render();});
+$('w').addEventListener('input',e=>{st.focus='win';st.w0=+e.target.value;render();});
+// a change of damage: if the new ink layer moved more ink, the moth coughs and the roll puffs ash
+function setDamage(d,clean){
+  const before=st.clean?0:job().off_ink;st.d=d;st.clean=!!clean;const after=st.clean?0:job().off_ink;
+  if(after>before+0.005)cough();need();}
+$('d').addEventListener('input',e=>setDamage(+e.target.value,false));
+$('k').addEventListener('input',e=>{st.k=+e.target.value;render();});
+$('z').addEventListener('input',e=>{st.zoom=+e.target.value/10;render();});
+document.querySelectorAll('[data-ink]').forEach(b=>b.addEventListener('click',()=>setDamage(st.d,b.dataset.ink==='clean')));
+document.querySelectorAll('[data-layer]').forEach(b=>b.addEventListener('click',()=>{st.inkOnly=b.dataset.layer==='ink';render();}));
+$('tint').addEventListener('click',()=>{st.tint=!st.tint;render();});
+document.querySelectorAll('#g-view button').forEach(b=>b.addEventListener('click',()=>{st.view=b.dataset.v;chartKey='';if(st.view==='scene')sizeDesk();render();}));
+$('close').addEventListener('click',()=>{const c=st.w0+winW()/2;st.close=!st.close;st.focus='win';st.w0=c-winW()/2;render();});
+$('play').addEventListener('click',()=>{   // user-started, pausable, respects reduced motion
+  if(anim){cancelAnimationFrame(anim);anim=0;paused=true;$('play').textContent=playLabel();return;}
+  const target=paused?animTarget:(st.u>=1?0:1);paused=false;animTarget=target;
+  if(reduce){st.u=target;stopAnim();render();return;}
+  st.focus='roll';let last=performance.now();
+  const step=(now)=>{const dt=Math.min(50,now-last);last=now;st.u+=Math.sign(target-st.u)*dt/9000;
+    if((target===1&&st.u>=1)||(target===0&&st.u<=0)){st.u=target;anim=0;stopAnim();render();return;}
+    render();anim=requestAnimationFrame(step);};
+  anim=requestAnimationFrame(step);$('play').textContent=playLabel();
+});
+// start over: the view the page opened with, and nothing read yet
+$('reset').addEventListener('click',()=>{
+  stopAnim();Object.assign(st,ST0);seen.fill(0);M.cheerUntil=0;chartKey='';
+  $('reveal').hidden=true;$('c-found').classList.remove('found');
+  try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}
+  sizeDesk();need();toast('Back to the start: 12 % unrolled, nothing read yet');
+});
+$('share').addEventListener('click',async()=>{
+  history.replaceState(null,'','#'+encodeHash(st));
+  try{await navigator.clipboard.writeText(location.href);toast('Link copied');}catch(e){toast('Copy failed: the link is in your address bar');}
+});
+// main canvas: drag sideways to push the roll, tap to send the reading window there
+function evPt(e,cv){const r=cv.getBoundingClientRect();return [(e.clientX-r.left)/r.width*cv.width,(e.clientY-r.top)/r.height*cv.height];}
+let drag=null;
+ov.addEventListener('pointerdown',e=>{stopAnim();drag={x:e.clientX,y:e.clientY,u:st.u,k:cam.k*ov.getBoundingClientRect().width/glc.width,moved:false,pt:evPt(e,glc)};ov.setPointerCapture(e.pointerId);});
+ov.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x;if(Math.abs(dx)>6||Math.abs(e.clientY-drag.y)>6)drag.moved=true;
+  if(drag.moved){ov.classList.add('dragging');st.focus='roll';st.u=Math.max(0,Math.min(1,drag.u-2*(dx/drag.k)/L));render();}});
+function endDrag(e){if(!drag)return;ov.classList.remove('dragging');
+  if(!drag.moved){const p=sp(),fr=GEO.frame(p),wx=(drag.pt[0]-glc.width/2)/cam.k+cam.cx,wy=(drag.pt[1]-glc.height/2)/cam.k+cam.cy,hit=GEO.unworld(fr,p,wx,wy);
+    if(hit){st.focus='win';st.w0=hit.s-winW()/2;render();}else toast('Tap on the sheet to move the reading window there');}
+  drag=null;}
+ov.addEventListener('pointerup',endDrag);ov.addEventListener('pointercancel',()=>{drag=null;ov.classList.remove('dragging');});
+ov.addEventListener('keydown',e=>{const m={ArrowLeft:0.02,ArrowRight:-0.02,ArrowUp:0.02,ArrowDown:-0.02}[e.key];
+  if(m!==undefined){e.preventDefault();stopAnim();st.focus='roll';st.u=Math.max(0,Math.min(1,st.u+m*(e.shiftKey?5:1)));render();}});
+// reading strip: drag to pan, arrows to step
+let rdrag=null;
+rd.addEventListener('pointerdown',e=>{rdrag={x:e.clientX,w0:st.w0,k:rd.getBoundingClientRect().width/winW()};rd.setPointerCapture(e.pointerId);});
+rd.addEventListener('pointermove',e=>{if(!rdrag)return;st.focus='win';st.w0=rdrag.w0-(e.clientX-rdrag.x)/rdrag.k;render();});
+rd.addEventListener('pointerup',()=>rdrag=null);rd.addEventListener('pointercancel',()=>rdrag=null);
+rd.addEventListener('keydown',e=>{const m={ArrowLeft:-1,ArrowRight:1}[e.key];if(m){e.preventDefault();st.focus='win';st.w0+=m*(e.shiftKey?winW():40);render();}});
+
+// ---- the desk: a pixel-art side view of the same scroll -------------------------------------------------------
+// An illustration in the shared ink palette (common/inksprite.js; the pixels live in web/sprites.json). What it shows
+// is tied to the real state: places along the sheet are to scale (the roll is drawn larger), the roll turns with the
+// real spiral, the moth stands where the reading window is, the letters appear only where you have read the hidden
+// line, and the ash is one fleck per 2 % of ink the current blur job moved off the true ink (measured from its output).
+const SP={};for(const k in SPR)SP[k]=InkSprite.make(SPR[k]);
+const PAL=InkSprite.PALETTE;
+SP.amphoraFaint=InkSprite.make({frames:SPR.amphora.frames,palette:{K:PAL.L,B:PAL.L,L:PAL.T,T:PAL.W}});
+const desk=$('desk'),dctx=desk.getContext('2d'),DB=document.createElement('canvas'),bx=DB.getContext('2d');
+const BH=84,TOP=60,BOT=68,DEPTH=BOT-TOP;      // the sheet lies on the table between y=TOP (far edge) and y=BOT (near edge)
+const DK={bw:300,s:3,dpr:1,x0:13,kx:0.02,R0:3,R1:15};
+const RR0=GEO.rollRadius(0),RR1=GEO.rollRadius(L);
+let bgCache=null,sheetCache=null,deskVis=true;
+function sizeDesk(){
+  const w=$('stage').clientWidth||300,dpr=window.devicePixelRatio||1,css=w<560?2:3,s=Math.max(1,Math.round(css*dpr));
+  const bw=Math.max(140,Math.floor(w*dpr/s));
+  Object.assign(DK,{bw,s,dpr,R0:3,R1:bw<240?12:15});
+  DK.x0=10+DK.R0;DK.kx=(bw-DK.x0-DK.R1-10)/L;
+  desk.width=bw*s;desk.height=BH*s;desk.style.width=(bw*s/dpr)+'px';desk.style.height=(BH*s/dpr)+'px';
+  DB.width=bw;DB.height=BH;bgCache=null;sheetCache=null;
+}
+const dS=s=>DK.x0+s*DK.kx, sOfDesk=x=>(x-DK.x0)/DK.kx;
+const rollPx=p=>Math.round(DK.R0+(DK.R1-DK.R0)*(GEO.rollRadius(p)-RR0)/(RR1-RR0));
+const hash=(x,y)=>{let h=Math.imul(x|0,374761393)^Math.imul(y|0,668265263);h=Math.imul(h^(h>>>13),1274126177);return ((h^(h>>>16))>>>0)/4294967296;};
+function px(g,c,x,y,w,h){g.fillStyle=c;g.fillRect(x,y,w||1,h||1);}
+function deskBg(){   // the archive wall, the shelf and the table (redrawn only on resize)
+  const c=document.createElement('canvas');c.width=DK.bw;c.height=BH;const g=c.getContext('2d');
+  px(g,PAL.W,0,0,DK.bw,BH);
+  const cub=SP.cubby;let i=0;
+  for(let x=6;x+cub.w<=DK.bw-4;x+=cub.w+16,i++){InkSprite.draw(g,cub,0,x+cub.w/2,4+cub.h/2,1);
+    if(i%2===0&&x+cub.w+12<DK.bw-4)InkSprite.draw(g,SP.amphoraFaint,0,x+cub.w+8,4+cub.h-SP.amphoraFaint.h/2+1,1);}
+  px(g,PAL.L,0,19,DK.bw,1);px(g,PAL.T,0,20,DK.bw,1);
+  px(g,PAL.L,0,55,DK.bw,1);px(g,PAL.T,0,56,DK.bw,14);
+  for(let x=0;x<DK.bw;x++){if(hash(x,3)<.2)px(g,PAL.L,x,57);if(hash(x,7)<.12)px(g,PAL.L,x,69);}
+  px(g,PAL.K,0,70,DK.bw,1);px(g,PAL.B,0,71,DK.bw,3);px(g,PAL.K,0,74,DK.bw,1);
+  for(const lx of [6,DK.bw-12]){px(g,PAL.K,lx,75,6,BH-75);px(g,PAL.B,lx+1,75,4,BH-75);}
+  // the archaeologist's things, standing at the back of the table (the sheet unrolls in front of them)
+  InkSprite.draw(g,SP.books,0,Math.round(DK.bw*.07)+7,58-5,1);
+  InkSprite.draw(g,SP.inkpot,0,Math.round(DK.bw*.33)+4,58-5,1);
+  return c;
+}
+const candleX=()=>Math.round(DK.bw*.55)+3;
+function sheetBg(){   // the whole flattened sheet, papyrus fibres and all, cut to length each frame
+  const c=document.createElement('canvas');c.width=DK.bw;c.height=DEPTH+1;const g=c.getContext('2d');
+  px(g,PAL.W,0,0,DK.bw,DEPTH);
+  // long horizontal strands only, so nothing on the sheet looks like writing except the letters you have read
+  for(let y=2;y<DEPTH;y+=2)for(let x=0;x<DK.bw;){if(hash(x,y)<.5){const n=4+Math.floor(hash(x,y+50)*9);px(g,PAL.T,x,y,n,1);x+=n+2+Math.floor(hash(x,y+90)*5);}else x+=3;}
+  px(g,PAL.L,0,0,DK.bw,1);px(g,PAL.B,0,DEPTH,DK.bw,1);
+  return c;
+}
+function drawRollAt(g,cx,bot,R,ac,depth){   // a roll standing on y=bot: body (cylinder seen from above) then its end face
+  const fx=cx+.5,fy=bot+1-R,by=fy-depth;
+  const inBody=(X,Y)=>{const yy=Math.max(by,Math.min(fy,Y));return Math.hypot(X-fx,Y-yy)<=R+.2;};
+  const inFace=(X,Y)=>Math.hypot(X-fx,Y-fy)<=R+.2;
+  for(let y=Math.floor(by-R)-1;y<=bot+1;y++)for(let x=cx-R-1;x<=cx+R+1;x++){
+    const X=x+.5,Y=y+.5;if(!inBody(X,Y)||inFace(X,Y))continue;
+    let c=X>fx+R*.4?PAL.L:PAL.T;if(Math.abs(X-(fx-R*.45))<.7)c=PAL.W;
+    if(!inBody(X+1,Y)||!inBody(X-1,Y)||!inBody(X,Y-1))c=PAL.K;
+    px(g,c,x,y);}
+  for(let y=Math.floor(fy-R)-1;y<=bot+1;y++)for(let x=cx-R-1;x<=cx+R+1;x++){
+    const X=x+.5,Y=y+.5;if(!inFace(X,Y))continue;
+    const edge=!inFace(X+1,Y)||!inFace(X-1,Y)||!inFace(X,Y+1)||!inFace(X,Y-1);
+    px(g,edge?PAL.K:(Math.hypot(X-fx,Y-fy)>R-1.6?PAL.T:PAL.W),x,y);}
+  // the spiral turns with the real roll: its inner end sits at the real core angle
+  const turns=Math.max(.75,Math.min(3.2,(R-1.5)/2.2)),TT=turns*2*Math.PI;
+  for(let q=0;q<=TT;q+=.025){const r=.6+(R-1.9)*q/TT,a=ac-q;px(g,PAL.B,Math.floor(fx+r*Math.cos(a)),Math.floor(fy+r*Math.sin(a)));}
+}
+const coreAngle=fr=>GEO.ALPHA0+Math.atan2(-fr.ty,fr.tx);
+
+// the moth: one state shared by the desk and the CT slice
+const M={x:null,y:null,face:1,sprite:'archaeologist',frame:0,bubble:null,moving:false,cheerUntil:0,coughUntil:0,spark:[],t:0};
+const LANT={archaeologist:[12,9],archFly:[12,9],archPuzzled:[12,9],archRead:[11,9],archCheer:[12,-10],archCough:[13,7]};
+function mothTarget(p){
+  const c=st.w0+winW()/2,R=rollPx(p);
+  if(c<p)return {x:dS(p)+Math.round(R*.25),y:BOT+1-R-DEPTH-R-13};   // still rolled: perch on the roll
+  return {x:dS(c),y:TOP+4-13};                                     // flat: stand on the sheet under the window
+}
+function mothMood(t,p){
+  const c=st.w0+winW()/2,w0=Math.max(st.w0,p),w1=st.w0+winW(),over=w1>w0&&w1>TEXT0&&w0<TEXT1;
+  if(t<M.cheerUntil)return ['archCheer',null];
+  if(t<M.coughUntil)return ['archCough',null];
+  if(M.moving)return ['archFly',null];
+  if(c<p)return ['archPuzzled','bubbleQ'];                         // the window is still on the roll
+  if(!st.clean&&!readable()&&(over||job().reach>0))return ['archPuzzled','bubbleScribble'];   // the real r says: scrambled
+  if(over&&readable())return ['archRead',null];                    // reading the hidden line
+  return ['archaeologist',null];
+}
+function celebrate(){const t=performance.now()/1000;M.cheerUntil=t+2.8;M.spark=[];for(let i=0;i<8;i++)M.spark.push({dx:(hash(i,11)-.5)*56,dy:-6-hash(i,12)*26,ph:hash(i,13)*2});
+  if(reduce)setTimeout(render,2900);}   // with reduced motion there is no loop: redraw once when the cheer ends
+function cough(){if(reduce)return;M.coughUntil=performance.now()/1000+.9;ashBurst=true;}
+
+// ash: exactly ashTarget() flecks alive; each one rises from the roll or the flat sheet and fades
+const ash=[];let ashBurst=false;
+const ashTarget=()=>st.clean?0:Math.round(50*job().off_ink);
+function newFleck(p,burst,age){
+  const R=rollPx(p),cx=dS(p),a=dS(p),b=dS(L),fromRoll=burst||b-a<6||Math.random()<.5;
+  const f={x:fromRoll?cx+(Math.random()*2-1)*R:a+Math.random()*(b-a),y:fromRoll?BOT+1-R-DEPTH-Math.random()*R:TOP-1,
+    vx:(Math.random()-.5)*(burst?14:4),vy:-(3+Math.random()*5)*(burst?2.4:1),age:age||0,life:3+Math.random()*3,ph:Math.random()*6.28,big:Math.random()<.2};
+  if(f.age){f.age=Math.min(f.age,f.life*.9);f.x+=f.vx*f.age;f.y+=f.vy*f.age;}   // a fleck that started earlier has already risen
+  return f;
+}
+function stepAsh(dt,p){
+  const want=ashTarget();
+  while(ash.length>want)ash.shift();
+  while(ash.length<want)ash.push(newFleck(p,ashBurst,ash.length&&!ashBurst?0:Math.random()*3));
+  if(ashBurst){for(const f of ash)if(Math.random()<.5)Object.assign(f,newFleck(p,true));ashBurst=false;}
+  for(const f of ash){f.age+=dt;f.x+=(f.vx+Math.sin(f.age*2+f.ph)*2)*dt;f.y+=f.vy*dt;f.vx*=Math.pow(.6,dt);
+    if(f.age>f.life||f.y<1)Object.assign(f,newFleck(p,false));}
+}
+function drawAsh(p){
+  if(reduce){   // a still picture: the same number of flecks, placed by a fixed hash
+    const n=ashTarget(),R=rollPx(p),cx=dS(p),a=dS(p),b=dS(L);
+    for(let i=0;i<n;i++){const r=i%2===0||b-a<6,x=r?cx+(hash(i,1)*2-1)*R:a+hash(i,2)*(b-a),y=(r?BOT-R*2-DEPTH:TOP)-2-hash(i,3)*24;
+      px(bx,[PAL.K,PAL.B,PAL.L][i%3],Math.round(x),Math.round(y));}
+    return;}
+  for(const f of ash){const k=f.age/f.life,c=k<.35?PAL.K:k<.6?PAL.B:k<.85?PAL.L:PAL.T;px(bx,c,Math.round(f.x),Math.round(f.y),f.big?2:1,1);}
+}
+function stepMoth(dt,t,p){
+  const T=mothTarget(p);
+  if(M.x===null||reduce){M.x=T.x;M.y=T.y;}
+  const dx=T.x-M.x;M.moving=!reduce&&Math.abs(dx)>2.5;
+  if(Math.abs(dx)>1.5)M.face=dx>0?1:-1;
+  const k=Math.min(1,dt*7);M.x+=dx*k;M.y+=(T.y-M.y)*k;
+  [M.sprite,M.bubble]=mothMood(t,p);
+  const sp_=SP[M.sprite];M.frame=reduce?0:InkSprite.frameAt(sp_,t);
+}
+function glow(cx,cy,r){   // a dithered pool of lantern light (warm accent = light only)
+  for(let y=Math.floor(cy-r);y<=cy+r;y++)for(let x=Math.floor(cx-r);x<=cx+r;x++){const d=Math.hypot(x+.5-cx,y+.5-cy);
+    if(d<r*.62?((x+y)&1)===0:(d<r&&(x&1)===0&&(y&1)===0))px(bx,PAL.O,x,y);}
+}
+function drawDesk(t){
+  if(!DB.width)return;
+  const p=sp(),fr=GEO.frame(p),R=rollPx(p),cx=Math.round(dS(p)),a=cx,b=Math.round(dS(L));
+  if(!bgCache)bgCache=deskBg();if(!sheetCache)sheetCache=sheetBg();
+  bx.drawImage(bgCache,0,0);
+  InkSprite.draw(bx,SP.candle,reduce?0:InkSprite.frameAt(SP.candle,t),candleX(),58-6,1);   // a candle flickers at the back
+  if(b>a){
+    bx.drawImage(sheetCache,a,0,b-a,DEPTH+1,a,TOP,b-a,DEPTH+1);px(bx,PAL.K,b-1,TOP,1,DEPTH+1);
+    // lantern light on the flat part of the window
+    const la=Math.max(a,Math.round(dS(st.w0))),lb=Math.min(b,Math.round(dS(st.w0+winW())));
+    if(lb>la)for(let y=TOP+1;y<BOT;y+=2)for(let x=la;x<lb;x++)if(((x+(y>>1))&1)===0)px(bx,PAL.O,x,y);
+    // letters appear where you have actually read the hidden line (the page's own coverage record)
+    const t0=Math.max(a,Math.floor(dS(TEXT0))),t1=Math.min(b,Math.ceil(dS(TEXT1)));
+    for(let x=t0;x<t1;x++){const s0=Math.max(TEXT0,sOfDesk(x)),s1=Math.min(TEXT1,sOfDesk(x+1));let any=false;
+      for(let s=s0;s<s1;s+=5)if(seen[Math.min(seen.length-1,Math.floor((s-TEXT0)/10))]){any=true;break;}
+      if(any){if(hash(x,1)<.72)px(bx,PAL.K,x,TOP+2,1,hash(x,2)<.4?2:1);if(hash(x,4)<.72)px(bx,PAL.K,x,TOP+5,1,hash(x,5)<.4?2:1);}}
+    if(st.found)px(bx,PAL.G,Math.max(a,Math.round(dS(TEXT0))),BOT-1,Math.max(0,Math.min(b,Math.round(dS(TEXT1)))-Math.max(a,Math.round(dS(TEXT0)))),1);
+    if(b-a>R+14)InkSprite.draw(bx,SP.stone,0,b-6,TOP+3,1);   // a paperweight holds the outer end
+  }
+  drawRollAt(bx,cx,BOT,R,coreAngle(fr),DEPTH);
+  drawAsh(p);
+  const mx=Math.round(M.x),my=Math.round(M.y),lo=LANT[M.sprite]||LANT.archaeologist;
+  glow(mx+M.face*lo[0]+(M.face<0?-1:0)+.5,my+lo[1]+.5,5.5);
+  InkSprite.draw(bx,SP[M.sprite],M.frame,mx,my,1,{flipX:M.face<0});
+  if(M.bubble){const right=mx+30<DK.bw,bxp=right?mx+21:mx-21,byp=Math.max(6,my-12);InkSprite.draw(bx,SP[M.bubble],0,bxp,byp,1);}
+  if(t<M.cheerUntil+.4)for(const s of M.spark)InkSprite.draw(bx,SP.sparkle,Math.floor(t*6+s.ph*3)%2,Math.round(mx+s.dx),Math.round(Math.max(4,my+s.dy-(t-M.cheerUntil+2.8)*4)),1);
+  dctx.imageSmoothingEnabled=false;dctx.clearRect(0,0,desk.width,desk.height);dctx.drawImage(DB,0,0,DB.width*DK.s,DB.height*DK.s);
+}
+let dLoop=0,dLast=0,ctKey='';
+function deskFrame(now){
+  const t=now/1000,dt=dLast?Math.min(.12,(now-dLast)/1000):.05;dLast=now;const p=sp();
+  stepMoth(dt,t,p);if(!reduce)stepAsh(dt,p);drawDesk(t);
+  const key=M.sprite+M.frame+M.face;   // the CT slice's moth follows the same mood and frame
+  if(key!==ctKey){ctKey=key;if(glOK)drawOverlay(GEO.frame(p),p);}
+}
+function kickDesk(){if(reduce||dLoop||!deskVis||document.hidden)return;dLoop=requestAnimationFrame(deskTick);}
+function deskTick(now){dLoop=0;if(now-dLast>=45)deskFrame(now);if(deskVis&&!document.hidden&&!reduce)dLoop=requestAnimationFrame(deskTick);}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)kickDesk();});
+if('IntersectionObserver' in window)new IntersectionObserver(es=>{deskVis=es.some(e=>e.isIntersecting);if(deskVis)kickDesk();}).observe($('stage'));
+// desk input: drag the roll to unroll it, tap or drag along the sheet to send the moth (the reading window) there
+let ddrag=null;
+function deskPt(e){const r=desk.getBoundingClientRect();return [(e.clientX-r.left)/r.width*DK.bw,(e.clientY-r.top)/r.height*BH];}
+function deskWin(x){st.focus='win';st.w0=sOfDesk(x)-winW()/2;render();}
+desk.addEventListener('pointerdown',e=>{stopAnim();const q=deskPt(e),p=sp(),R=rollPx(p),cx=dS(p);
+  const onRoll=Math.abs(q[0]-cx)<=R+3&&q[1]>=BOT+1-2*R-DEPTH-4&&q[1]<=BOT+2;
+  ddrag={roll:onRoll,x0:q[0],u0:st.u};if(!onRoll)deskWin(q[0]);desk.setPointerCapture(e.pointerId);});
+desk.addEventListener('pointermove',e=>{if(!ddrag)return;const q=deskPt(e);
+  if(ddrag.roll){st.focus='roll';st.u=Math.max(0,Math.min(1,ddrag.u0-(q[0]-ddrag.x0)/(DK.kx*L)));render();}else deskWin(q[0]);});
+desk.addEventListener('pointerup',()=>ddrag=null);desk.addEventListener('pointercancel',()=>ddrag=null);
+desk.addEventListener('keydown',e=>{const m={ArrowLeft:-1,ArrowRight:1}[e.key];if(m){e.preventDefault();st.focus='win';st.w0+=m*(e.shiftKey?winW():150);render();}});
+
+// the cast cards: the same sprites, at an integer scale
+let castKey=null;
+function pic(id,w,h){const el=$(id),d=window.devicePixelRatio||1,s=Math.max(1,Math.round(2*d));let c=el.querySelector('canvas');
+  if(!c){c=document.createElement('canvas');el.appendChild(c);}c.width=w*s;c.height=h*s;c.style.width=(w*2)+'px';c.style.height=(h*2)+'px';
+  const g=c.getContext('2d');g.imageSmoothingEnabled=false;return {g,s,c};}
+function blitSmall(o,draw,w,h){const t=document.createElement('canvas');t.width=w;t.height=h;const g=t.getContext('2d');draw(g);o.g.drawImage(t,0,0,w*o.s,h*o.s);}
+function drawCast(){
+  const m=pic('pic-moth',32,28);InkSprite.draw(m.g,SP.archaeologist,0,m.c.width/2,m.c.height/2,m.s);
+  const r=pic('pic-roll',40,36);blitSmall(r,g=>{px(g,PAL.T,0,30,40,6);px(g,PAL.K,0,35,40,1);px(g,PAL.W,20,26,20,5);px(g,PAL.L,20,26,20,1);px(g,PAL.B,20,31,20,1);
+    drawRollAt(g,15,31,11,coreAngle(GEO.frame(L)),5);},40,36);
+  drawCastAsh();
+}
+function drawCastAsh(){
+  castKey=st.clean?-1:st.d;const n=ashTarget(),a=pic('pic-ash',40,36);
+  blitSmall(a,g=>{px(g,PAL.T,0,30,40,6);px(g,PAL.K,0,35,40,1);drawRollAt(g,19,31,7,coreAngle(GEO.frame(L)),4);
+    for(let i=0;i<n;i++){const k=hash(i,9);px(g,[PAL.K,PAL.B,PAL.L][i%3],Math.round(4+hash(i,7)*32),Math.round(14-k*13+(i%2)),hash(i,8)<.2?2:1,1);}},40,36);
+}
+
+// ---- the Data view: the nine jobs' two measured numbers (from out/metrics.json, computed by unwrap.py) ----------
+// x = ink moved off the true ink, y = line kept r. Marker shape = reach; filled = the line counts as read in the
+// current view (the same threshold the page uses). Every job is a button that loads it; the ring is clean ink.
+const chart=$('chart'),SVGNS='http://www.w3.org/2000/svg';let chartKey='',chartPts=[],chartVB=[1,1];
+function drawChart(){
+  const W=Math.max(280,Math.round($('stage').clientWidth||600)),Hh=W<560?264:286,thr=st.inkOnly?0.55:0.8;
+  const key=[W,Hh,st.d,st.clean,st.inkOnly].join();if(key===chartKey)return;chartKey=key;
+  const fe=document.activeElement,refocus=fe&&fe.getAttribute&&chart.contains(fe)?fe.getAttribute('data-pt'):null;
+  const nar=W<560,L0=nar?40:64,R0=nar?12:26,T0=nar?58:64,B0=36,pw=W-L0-R0,ph=Hh-T0-B0;
+  const X=v=>L0+pw*v,Y=r=>T0+ph*(1.05-r)/1.15;
+  let s='';
+  for(const v of [0,.25,.5,.75,1])s+=`<line class="g" x1="${X(v)}" y1="${T0}" x2="${X(v)}" y2="${T0+ph}"/><text class="tk" x="${X(v)}" y="${T0+ph+14}" text-anchor="${v===0?'start':v===1?'end':'middle'}">${v*100} %</text>`;
+  for(const r of [0,.5,1])s+=`<line class="g" x1="${L0}" y1="${Y(r)}" x2="${L0+pw}" y2="${Y(r)}"/><text class="tk" x="${L0-6}" y="${Y(r)+3.5}" text-anchor="end">${r.toFixed(1)}</text>`;
+  s+=`<line class="ax" x1="${L0}" y1="${T0+ph}" x2="${L0+pw}" y2="${T0+ph}"/><line class="ax" x1="${L0}" y1="${T0}" x2="${L0}" y2="${T0+ph}"/>`;
+  s+=`<text class="al" x="${L0+pw}" y="${T0+ph+29}" text-anchor="end">INK MOVED OFF THE TRUE INK &#8594;</text>`;
+  s+=`<text class="al" x="${L0}" y="${T0-8}" text-anchor="start">LINE KEPT r</text>`;
+  for(const [v,lab] of [[0.8,'READ IN THE SCAN AT r \u2265 0.8'],[0.55,'INK LAYER ONLY: r \u2265 0.55']]){const on=v===thr?' on':'';
+    s+=`<line class="th${on}" x1="${L0}" y1="${Y(v)}" x2="${L0+pw}" y2="${Y(v)}"/><text class="thl${on}" x="${L0+pw-4}" y="${Y(v)-5}" text-anchor="end">${nar&&!on?'':lab}</text>`;}
+  const shape=(j,x,y,R,cls)=>j.reach===0?`<circle class="${cls}" cx="${x}" cy="${y}" r="${R}"/>`
+    :j.reach<1?`<path class="${cls}" d="M${x} ${y-R*1.3}L${x+R*1.3} ${y}L${x} ${y+R*1.3}L${x-R*1.3} ${y}Z"/>`
+    :`<rect class="${cls}" x="${x-R}" y="${y-R}" width="${2*R}" height="${2*R}"/>`;
+  let cur=null;
+  // where each point sits; a tap picks the nearest one, and the hit discs never overlap (jobs 6 and 7 sit ~12 px apart)
+  chartPts=[{v:'clean',x:X(0),y:Y(1)},...JOBS.map((j,i)=>({v:String(i),x:X(j.off_ink),y:Y(j.r_line)}))];chartVB=[W,Hh];
+  const hitR=q=>{let d=1e9;for(const o of chartPts)if(o!==q)d=Math.min(d,Math.hypot(o.x-q.x,o.y-q.y));return Math.max(3,Math.min(13,d/2-0.5)).toFixed(1);};
+  // clean ink: the original line, no job
+  {const x=X(0),y=Y(1),on=st.clean;s+=`<g data-pt="clean" role="button" tabindex="0" aria-pressed="${on}" aria-label="Clean ink: no job, the line as written (r = 1). Load it."><circle class="hit" cx="${x}" cy="${y}" r="${hitR(chartPts[0])}"/><circle class="mk" cx="${x}" cy="${y}" r="5" stroke-dasharray="2 2"/>${on?`<circle class="ring" cx="${x}" cy="${y}" r="10"/>`:''}</g>`;
+    if(on)cur={x,y,t:'CLEAN INK \u00b7 NO JOB \u00b7 r = 1'};}
+  JOBS.forEach((j,i)=>{const x=X(j.off_ink),y=Y(j.r_line),on=!st.clean&&i===st.d,ok=j.r_line>=thr,pct=Math.round(j.off_ink*100);
+    s+=`<g data-pt="${i}" role="button" tabindex="0" aria-pressed="${on}" aria-label="Job ${i+1}: strength ${j.strength}, reach ${j.reach}, line kept r = ${fmtR(j.r_line)}, ${pct} % of ink moved${ok?', line readable in this view':''}. Load it."><circle class="hit" cx="${x}" cy="${y}" r="${hitR(chartPts[i+1])}"/>${shape(j,x,y,on?5.5:4.5,'mk'+(ok?' ok':''))}${on?`<circle class="ring" cx="${x}" cy="${y}" r="11"/>`:''}</g>`;
+    if(on)cur={x,y,t:`JOB ${i+1} \u00b7 s ${j.strength} \u00b7 REACH ${j.reach} \u00b7 r ${fmtR(j.r_line)} \u00b7 ${pct} % MOVED`};});
+  if(cur){const tw=cur.t.length*6.65+16,th=20,above=cur.y-th-16>T0-4,cx=Math.max(L0+2,Math.min(L0+pw-tw-2,cur.x-tw/2)),cy=above?cur.y-th-14:cur.y+14;
+    s+=`<g aria-hidden="true" pointer-events="none"><rect class="co" x="${cx}" y="${cy}" width="${tw}" height="${th}" rx="${th/2}"/><text class="cot" x="${cx+8}" y="${cy+14}">${cur.t}</text></g>`;}
+  chart.setAttribute('viewBox',`0 0 ${W} ${Hh}`);chart.setAttribute('width',W);chart.setAttribute('height',Hh);chart.style.height=Hh+'px';
+  chart.innerHTML=s;
+  if(refocus!==null){const el=chart.querySelector(`[data-pt="${refocus}"]`);if(el)el.focus();}
+}
+function pickV(v){if(v==='clean')setDamage(st.d,true);else setDamage(+v,false);}
+function pickPt(el){pickV(el.getAttribute('data-pt'));}
+// a tap loads the nearest point within reach, so close neighbours (jobs 6 and 7) are each clickable at their own marker
+chart.addEventListener('click',e=>{const r=chart.getBoundingClientRect();if(!r.width||!r.height)return;
+  const x=(e.clientX-r.left)*chartVB[0]/r.width,y=(e.clientY-r.top)*chartVB[1]/r.height;let best=null,bd=22;
+  for(const q of chartPts){const d=Math.hypot(q.x-x,q.y-y);if(d<bd){bd=d;best=q;}}
+  if(best)pickV(best.v);else{const g=e.target.closest('[data-pt]');if(g)pickPt(g);}});
+chart.addEventListener('keydown',e=>{const g=e.target.closest&&e.target.closest('[data-pt]');if(g&&(e.key==='Enter'||e.key===' ')){e.preventDefault();pickPt(g);}});
+
+// ---- boot ----
+$('ladder').innerHTML=JOBS.map((j,i)=>`<button type="button" data-d="${i}" style="height:${Math.max(12,Math.round(j.off_ink*100))}%" aria-label="Job ${i+1}: strength ${j.strength}, reach ${j.reach}, ${Math.round(j.off_ink*100)} % of ink moved, line kept r = ${fmtR(j.r_line)}" title="strength ${j.strength} \u00b7 reach ${j.reach} \u00b7 ${Math.round(j.off_ink*100)} % ink moved \u00b7 r = ${fmtR(j.r_line)}"></button>`).join('');
+$('ladder').addEventListener('click',e=>{const b=e.target.closest('button[data-d]');if(b)setDamage(+b.dataset.d,false);});
+$('d').max=JOBS.length-1;
+function sizeAll(){
+  const want=($('stage').clientWidth||800)<600?600:480;if(glc.height!==want){glc.height=want;}
+  const r=glc.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
+  ov.width=Math.max(1,Math.round(r.width*dpr));ov.height=Math.max(1,Math.round(r.height*dpr));
+  sizeDesk();
+}
+let rsz=0;window.addEventListener('resize',()=>{clearTimeout(rsz);rsz=setTimeout(()=>{sizeAll();drawCast();render();},120);});
+sizeAll();drawCast();
+$('greek').textContent=SCROLL.text;$('g-gain').textContent=String(GAIN);$('trans').textContent='\u201c'+SCROLL.translation+'\u201d';
+glOK=initGL();
+if(!glOK){$('notice').hidden=false;$('notice').textContent='WebGL is off in this browser, so the roll cannot animate. The reading window below still unrolls the sheet.';}
+(function(){const s=decodeHash(location.hash,JOBS.length-1,L);if(s)Object.assign(st,s);})();
+need();
+// warm the rest of the ladder after the first frame, so stepping through damage is instant
+setTimeout(()=>{loadGrey('img/ink_clean.webp').catch(()=>{});JOBS.forEach(j=>loadGrey(j.img).catch(()=>{}));},1200);
+</script>
+
+</body>
+</html>
