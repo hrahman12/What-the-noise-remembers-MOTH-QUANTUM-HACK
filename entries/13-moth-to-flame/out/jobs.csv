@@ -1,0 +1,6 @@
+level,role,name,mode,qubits,backend,job_id,status,seconds
+L1,level,Lamp Lane,qpu,20,ibm_fez,696ead63-7383-4e03-b2e4-13ef60a1b318,completed,101.8
+L2,level,Hedge Row,qpu,120,ibm_fez,0b10df67-a232-4151-8cc3-ce7242fe045c,completed,504.2
+L3,level,Night Town,qpu,156,ibm_fez,8bbeb212-7196-4677-bd06-4fba1d71d510,completed,1960.4
+L1-emu,comparison,Lamp Lane,emu,20,aer,9d0fd5f8-691b-4913-adca-056bdfa01823,completed,27.2
+L2-miami,comparison,Hedge Row,qpu,120,ibm_miami,da6eaf6d-512c-492d-9ee4-655ac76d0e82,completed,448.1

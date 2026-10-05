@@ -1,0 +1,324 @@
+{
+ "frog": {
+  "note": "Japanese tree frog, front view. Frames: 0 idle, 1 blink, 2 vocal sac filling, 3 vocal sac full (a call). Frame 3 is the mascot.",
+  "fps": 6,
+  "frames": [
+   [
+    "...KKK........KKK...",
+    "..KWWTK......KTWWK..",
+    "..KWKKK......KKKWK..",
+    ".KLTKKKKKKKKKKKKTLK.",
+    "KLBKKKLLLLLLLLKKKBLK",
+    "KBBBBBBBBBBBBBBBBBBK",
+    "KBBBBBBBBBBBBBBBBBBK",
+    "KBKBBBBBBBBBBBBBBKBK",
+    ".KBKKBBBBBBBBBBKKBK.",
+    ".KBBBKKKKKKKKKKBBBK.",
+    "..KBBLLLLLLLLLLBBK..",
+    ".KBKBLLLLLLLLLLBKBK.",
+    "KBBKBKLLLLLLLLKBKBBK",
+    "KBBKBKLLLLLLLLKBKBBK",
+    "KKBBKBKLLLLLLKBKBBKK",
+    "KBKBKBKKKKKKKKBKBKBK",
+    ".K.K.K........K.K.K.",
+    "....................",
+    "....................",
+    "...................."
+   ],
+   [
+    "...KKK........KKK...",
+    "..KBBBK......KBBBK..",
+    "..KKKKK......KKKKK..",
+    ".KLBBBKKKKKKKKBBBLK.",
+    "KLBKKKLLLLLLLLKKKBLK",
+    "KBBBBBBBBBBBBBBBBBBK",
+    "KBBBBBBBBBBBBBBBBBBK",
+    "KBKBBBBBBBBBBBBBBKBK",
+    ".KBKKBBBBBBBBBBKKBK.",
+    ".KBBBKKKKKKKKKKBBBK.",
+    "..KBBLLLLLLLLLLBBK..",
+    ".KBKBLLLLLLLLLLBKBK.",
+    "KBBKBKLLLLLLLLKBKBBK",
+    "KBBKBKLLLLLLLLKBKBBK",
+    "KKBBKBKLLLLLLKBKBBKK",
+    "KBKBKBKKKKKKKKBKBKBK",
+    ".K.K.K........K.K.K.",
+    "....................",
+    "....................",
+    "...................."
+   ],
+   [
+    "...KKK........KKK...",
+    "..KWWTK......KTWWK..",
+    "..KWKKK......KKKWK..",
+    ".KLTKKKKKKKKKKKKTLK.",
+    "KLBKKKLLLLLLLLKKKBLK",
+    "KBBBBBBBBBBBBBBBBBBK",
+    "KBBBBBBBBBBBBBBBBBBK",
+    "KBKBBBBBBBBBBBBBBKBK",
+    ".KBKKBBBBBBBBBBKKBK.",
+    ".KBBBKKKKKKKKKKBBBK.",
+    "..KBBKTTTTTTTTKBBK..",
+    ".KBKKTWWTTTTTTKBKBK.",
+    "KBBKKTWTTTTTTLKBKBBK",
+    "KBBKKTTTTTTTLLKBKBBK",
+    "KKBBKKKLLLLLLKBKBBKK",
+    "KBKBKBKKKKKKKKBKBKBK",
+    ".K.K.K........K.K.K.",
+    "....................",
+    "....................",
+    "...................."
+   ],
+   [
+    "...KKK........KKK...",
+    "..KWWTK......KTWWK..",
+    "..KWKKK......KKKWK..",
+    ".KLTKKKKKKKKKKKKTLK.",
+    "KLBKKKLLLLLLLLKKKBLK",
+    "KBBBBBBBBBBBBBBBBBBK",
+    "KBBBBBBBBBBBBBBBBBBK",
+    "KBKBBBBBBBBBBBBBBKBK",
+    ".KBKKBBBBBBBBBBKKBK.",
+    ".KBBBKKKKKKKKKKBBBK.",
+    "..KBBKTTTTTTTTKBBK..",
+    ".KBKKTWWTTTTTTTKKBK.",
+    "KBBKTWWTTTTTTTTLKBBK",
+    "KBBKTWTTTTTTTTTLKBBK",
+    "KKBKTTTTTTTTTTLLKBKK",
+    "KBKKTTTTTTTTTLLLKKBK",
+    ".K.KKLTTTTTTLLLKK.K.",
+    ".....KKLLLLLLKK.....",
+    ".......KKKKKK.......",
+    "...................."
+   ]
+  ]
+ },
+ "frogHeld": {
+  "note": "A frog the user is dragging: legs dangle and kick.",
+  "fps": 6,
+  "frames": [
+   [
+    "...KKK........KKK...",
+    "..KWWTK......KTWWK..",
+    "..KWWTK......KTWWK..",
+    ".KLWTKKKKKKKKKKTWLK.",
+    "KLBKKKLLLLLLLLKKKBLK",
+    "KBBBBBBBBBBBBBBBBBBK",
+    "KBBBBBBBBBBBBBBBBBBK",
+    "KBKBBBBBBBBBBBBBBKBK",
+    ".KBKKBBBBBBBBBBKKBK.",
+    ".KBBBKKKKKKKKKKBBBK.",
+    "..KBBLLLLLLLLLLBBK..",
+    ".KBKBLLLLLLLLLLBKBK.",
+    ".KBKKBLLLLLLLLBKKBK.",
+    ".KKK.KBLLLLLLBK.KKK.",
+    "......KBBLLBBK......",
+    ".....KBBKKKKBBK.....",
+    ".....KBK....KBK.....",
+    "....KBK......KBK....",
+    "....KBK......KBK....",
+    "...KBBK......KBBK...",
+    "..KBKBK......KBKBK..",
+    "..K.K.K......K.K.K.."
+   ],
+   [
+    "...KKK........KKK...",
+    "..KWWTK......KTWWK..",
+    "..KWWTK......KTWWK..",
+    ".KLWTKKKKKKKKKKTWLK.",
+    "KLBKKKLLLLLLLLKKKBLK",
+    "KBBBBBBBBBBBBBBBBBBK",
+    "KBBBBBBBBBBBBBBBBBBK",
+    "KBKBBBBBBBBBBBBBBKBK",
+    ".KBKKBBBBBBBBBBKKBK.",
+    ".KBBBKKKKKKKKKKBBBK.",
+    "..KBBLLLLLLLLLLBBK..",
+    ".KBKBLLLLLLLLLLBKBK.",
+    ".KBKKBLLLLLLLLBKKBK.",
+    ".KKK.KBLLLLLLBK.KKK.",
+    "......KBBLLBBK......",
+    ".....KBBKKKKBBK.....",
+    ".....KBK....KBK.....",
+    ".....KBK....KBK.....",
+    ".....KBK....KBK.....",
+    "....KBBK....KBBK....",
+    "...KBKBK....KBKBK...",
+    "...K.K.K....K.K.K..."
+   ]
+  ]
+ },
+ "pad": {
+  "note": "Lily pad, 3/4 view, with its notch. One per qubit.",
+  "fps": 1,
+  "frames": [
+   [
+    "..........KKKKKKKK..........",
+    ".....KKKKKLLLLTLLLKKKKK.....",
+    "...KKLLLLLLLLLTLLLLLLLLKK...",
+    ".KKLLLTTTLLLLLTLLLLTTTLLLKK.",
+    "KLLLLLLLLTTLLLLLLTTLLLLLLLLK",
+    "KLLLLLLLLLLLLLTLKKKLLLLLLLLK",
+    "KLLLLLLLLTTLLLLK...KKKKKLLLK",
+    "KLLLLLTTTLLLLLLLKK......KKKK",
+    ".KBLLLLLLLLLLLLLLLKK........",
+    "..KKBLLLLLLLLLLLLLLLKK......",
+    "....KKKBBBLLLLLLLLBBBKKK....",
+    ".......KKKKKKKKKKKKKK......."
+   ]
+  ]
+ },
+ "lily": {
+  "note": "Water-lily flower (decorative).",
+  "fps": 1,
+  "frames": [
+   [
+    "....KK....",
+    "...KWWK...",
+    ".K.KWWK.K.",
+    "KWKWTTWKWK",
+    "KTWTWWTWTK",
+    ".KTWTTWTK.",
+    "..KKTTKK..",
+    "...KKKK..."
+   ]
+  ]
+ },
+ "logCap": {
+  "note": "Floating log: cut end (rings).",
+  "fps": 1,
+  "frames": [
+   [
+    "..KKKKKK",
+    ".KWWKTTW",
+    "KWTTWKLT",
+    "KTLLTKLL",
+    "KTLKTKBL",
+    "KTLLTKLB",
+    "KWTTWKLL",
+    ".KWWKBBB",
+    "..KKKKKK",
+    "........"
+   ]
+  ]
+ },
+ "logMid": {
+  "note": "Floating log: bark, tiles to any length.",
+  "fps": 1,
+  "frames": [
+   [
+    "KKKKKKKK",
+    "TTWTTTTW",
+    "LTTLTTLT",
+    "LLLLLLLL",
+    "LBLLLLBL",
+    "LLLBLLLL",
+    "BLLLLLLB",
+    "BBBBBBBB",
+    "KKKKKKKK",
+    "........"
+   ]
+  ]
+ },
+ "logEnd": {
+  "note": "Floating log: back end.",
+  "fps": 1,
+  "frames": [
+   [
+    "KK..",
+    "TWK.",
+    "LTLK",
+    "LLLK",
+    "BLLK",
+    "LBLK",
+    "LLBK",
+    "BBK.",
+    "KK..",
+    "...."
+   ]
+  ]
+ },
+ "cattail": {
+  "note": "Cattails on the bank (decorative).",
+  "fps": 1,
+  "frames": [
+   [
+    "....K.......",
+    "...KBK......",
+    "...KBK....K.",
+    "...KBK...KBK",
+    "...KBK...KBK",
+    "...KBK...KBK",
+    "...KBK...KBK",
+    "....K....KBK",
+    "....K.....K.",
+    "....K.....K.",
+    ".K..K.....K.",
+    ".KL.K....K..",
+    "..KLK....K..",
+    "..KLK...KL..",
+    "...KK..KL...",
+    "...KK.KL....",
+    "...KLKL.....",
+    "...KLKL..K..",
+    "....KLK.KL..",
+    ".K..KLKKL...",
+    ".KL.KLKL....",
+    "..KLKLKL....",
+    "..KLKLK.....",
+    "...KLKL.....",
+    "..KBBBBK....",
+    ".KKKKKKKK..."
+   ]
+  ]
+ },
+ "tuft": {
+  "note": "Grass tuft (decorative).",
+  "fps": 1,
+  "frames": [
+   [
+    "....K.....",
+    ".K..K..K..",
+    ".KK.KL.K.K",
+    "..KLKLKLKK",
+    "..KLLKLLK.",
+    ".KKKKKKKK."
+   ]
+  ]
+ },
+ "stone": {
+  "note": "Bank stone (decorative).",
+  "fps": 1,
+  "frames": [
+   [
+    "..KKKKK...",
+    ".KTWTTLK..",
+    "KTTTTLLLK.",
+    "KLLLLLBBK.",
+    ".KKKKKKK..",
+    ".........."
+   ]
+  ]
+ },
+ "moon": {
+  "note": "Crescent moon (decorative).",
+  "fps": 1,
+  "frames": [
+   [
+    ".....KKKK.....",
+    "...KKWWWWKK...",
+    "..KWWWWWWKK...",
+    ".KWWWTWWK.....",
+    ".KWWWWWK......",
+    "KWWWWWWK......",
+    "KWTWWWWK......",
+    "KWWWWWWK......",
+    "KWWWWWWWK.....",
+    ".KWWWTWWWK....",
+    ".KTWWWWWWWKK..",
+    "..KTTWWWWWWWK.",
+    "...KKTTTTTKK..",
+    ".....KKKKK...."
+   ]
+  ]
+ }
+}

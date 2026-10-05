@@ -1,0 +1,6 @@
+  graph-v1: submitted 837dae19-e175-4e0f-b20f-daee5b03d5ab
+  ladder J=1.0 qpu attempt 1 failed: graph-v1 837dae19-e175-4e0f-b20f-daee5b03d5ab failed: {"$schema": "https://api.mothquantum.com/schemas/JobStatusOutputBody.json", "job_id": "837dae19-e175-4e0f-b20f-daee5b03d5ab", "engine_id": "graph-v1", "status": "failed", "progress": {"detail": "Polling mothbackend for QPU status", "step": "collect"}, "steps": [{"extra": {"backend_name": "ibm_fez", "coupling_map": [[0, 1], [0, 10], [1, 2], [1, 
+  graph-v1: submitted 65da039d-0f27-4250-aa7f-b8003cbc983a
+  graph-v1: done 65da039d in 339.8s
+  ladder J=1.0 qpu: 65da039d-0f27-4250-aa7f-b8003cbc983a backend=ibm_fez shots=20/20
+7 jobs in out/jobs.json; ledgered spend for this piece: 60 credits

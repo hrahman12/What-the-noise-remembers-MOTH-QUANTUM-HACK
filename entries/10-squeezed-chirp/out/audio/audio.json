@@ -1,0 +1,42 @@
+{
+ "floor": 110.0,
+ "gate_percentile": 95,
+ "t0_s": -0.16,
+ "t1_s": 0.09922194480895996,
+ "slow": 8,
+ "pitch": 4,
+ "fs": 22050,
+ "gl_iters": 80,
+ "files": {
+  "original": {
+   "file": "out/audio/original.wav",
+   "seconds": 2.072,
+   "peak": 0.7966
+  },
+  "r0p25": {
+   "file": "out/audio/r0p25.wav",
+   "seconds": 2.072,
+   "peak": 0.8411
+  },
+  "r0p5": {
+   "file": "out/audio/r0p5.wav",
+   "seconds": 2.072,
+   "peak": 0.8145
+  },
+  "r1": {
+   "file": "out/audio/r1.wav",
+   "seconds": 2.072,
+   "peak": 0.7484
+  },
+  "r2": {
+   "file": "out/audio/r2.wav",
+   "seconds": 2.072,
+   "peak": 0.7483
+  },
+  "r4": {
+   "file": "out/audio/r4.wav",
+   "seconds": 2.072,
+   "peak": 0.85
+  }
+ }
+}

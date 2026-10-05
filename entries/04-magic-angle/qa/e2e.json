@@ -1,0 +1,93 @@
+{
+ "piece": "04-magic-angle",
+ "ok": true,
+ "steps": [
+  {
+   "step": "page opens on the scene at the magic angle, nothing playing",
+   "ok": true
+  },
+  {
+   "step": "brand bar, proof chips and readout match piece.json",
+   "ok": true
+  },
+  {
+   "step": "shared nav: prev / hub / next and the full list link to the published pieces",
+   "ok": true
+  },
+  {
+   "step": "drag the turntable rim from 1.1 to 3.0 deg: the FFT reads the period, Lec hops",
+   "ok": true
+  },
+  {
+   "step": "keys on the turntable step through the real frames (arrows, Home, End)",
+   "ok": true
+  },
+  {
+   "step": "the slider snaps to the 45 computed angles",
+   "ok": true
+  },
+  {
+   "step": "flip Original / Quantum morph: the readout and the cast follow the reading for that source",
+   "ok": true
+  },
+  {
+   "step": "hold Space on the scene to peek at the other source; poke Ay for a hop",
+   "ok": true
+  },
+  {
+   "step": "lens: Raw pixels shows the 1:1 crop on the record, Moire envelope the band-pass map",
+   "ok": true
+  },
+  {
+   "step": "Play the sweep runs from where you are, Pause stops it",
+   "ok": true
+  },
+  {
+   "step": "Jump to 1.1 deg lands on the magic angle zone, flagged as the register echo",
+   "ok": true
+  },
+  {
+   "step": "Frame view: the full engine frame with a magnifier while you drag",
+   "ok": true
+  },
+  {
+   "step": "Data view: the period plot jumps to a clicked twist, the profile probe reads the power",
+   "ok": true
+  },
+  {
+   "step": "picking a lens from the Data view brings the picture back",
+   "ok": true
+  },
+  {
+   "step": "the restored sections: titled, visible, both graphs with their captions, the jobs table links",
+   "ok": true
+  },
+  {
+   "step": "every science drawer opens and is filled from the data",
+   "ok": true
+  },
+  {
+   "step": "copy a link to this view (2.30 deg, Original, Raw pixels, Frame)",
+   "ok": true
+  },
+  {
+   "step": "reload with the hash: twist, source, lens and view are restored",
+   "ok": true
+  },
+  {
+   "step": "the film plays on the page and pauses (silent: no audio track)",
+   "ok": true
+  },
+  {
+   "step": "no page errors, failed requests or disallowed hosts along the way",
+   "ok": true
+  }
+ ],
+ "errors": [],
+ "failed": [],
+ "media_aborts": 2,
+ "external": [
+  "fonts.googleapis.com",
+  "fonts.gstatic.com"
+ ]
+}

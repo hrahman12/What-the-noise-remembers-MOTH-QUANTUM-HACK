@@ -1,0 +1,513 @@
+<title>Maxwell's Ribbon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+/*BRAND*/
+/* Layout: Maxwell's studio (a pixel-art scene) is the hero, with the 3D colour/qubit ball one click away under
+   "Data". Below it, titled sections: How to play, The data (the same ball, always visible), the story in numbered
+   chapters (each with its graph), quiz, glossary, How it was made, What this does not claim, Jobs and credits.
+   Look: brief-page style from common/brand.css (paper, one ink, hairlines, square panels, pill buttons). */
+.wrap{max-width:76rem;margin-inline:auto}
+.hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:clamp(1.25rem,3vw,2.5rem);align-items:start;padding-block:2rem 1rem}
+.stage{position:relative;border:1px solid var(--ink);background:var(--panel);user-select:none}
+.stage-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.5rem;padding:.6rem;border-bottom:1px solid var(--ink)}
+.scene-wrap{background:var(--paper);line-height:0;display:flex;justify-content:center}
+.scene-wrap canvas{display:block;image-rendering:pixelated;image-rendering:crisp-edges}
+.ball-wrap{position:relative;overflow:hidden;aspect-ratio:4/3;touch-action:none;background:var(--panel)}
+.ball-wrap canvas{display:block;width:100%;height:100%;cursor:grab}
+.ball-wrap canvas:active{cursor:grabbing}
+.say{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.75rem;align-items:center;padding:.6rem .8rem;border-top:1px solid var(--ink);min-height:4.2rem}
+.say canvas{width:52px;height:48px;image-rendering:pixelated;image-rendering:crisp-edges}
+.say p{font-size:.95rem;line-height:1.4;color:var(--ink)}
+.say p::before{content:"Maxwell: ";font:500 .68rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.machines{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .75rem;padding:.6rem;border-top:1px solid var(--rule)}
+.ico{image-rendering:pixelated;image-rendering:crisp-edges;vertical-align:middle;flex:none}
+.seg button[disabled]{opacity:.4;cursor:not-allowed}
+.seg button small{display:block;font-size:.62rem;color:inherit;opacity:.75;margin-top:.2rem;letter-spacing:.02em}
+.tag{position:absolute;font:500 .62rem/1.1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:rgba(251,250,249,.86);padding:.12rem .3rem;transform:translate(-50%,-50%);pointer-events:none;white-space:nowrap}
+.tag.dim{color:var(--ink-2)}
+.meter{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .8rem;border-top:1px solid var(--ink);padding:.6rem .8rem;font:500 .74rem/1.2 var(--mono);color:var(--ink)}
+.meter>span{display:inline-flex;align-items:center;gap:.45rem}
+.chip{display:inline-block;width:1.35rem;height:1.35rem;border:1px solid var(--ink);vertical-align:middle}
+.chips{display:inline-flex;gap:3px;align-items:center}
+.chips .chip{width:1rem;height:1rem}
+.arrow{color:var(--ink)}
+.copy{display:grid;gap:1.05rem;min-width:0}
+.lead{display:grid;gap:1.05rem}
+.kicker{font:500 .74rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+h1{font-size:clamp(2.3rem,5vw,4.2rem);line-height:.98;letter-spacing:-.02em}
+.sub{font-size:1.06rem;color:var(--ink-2);max-width:46ch}
+.steps{display:grid;gap:.55rem;counter-reset:s;margin:0;padding:0;list-style:none}
+.steps li{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:.6rem;align-items:baseline;font-size:.95rem}
+.steps li b{font-weight:500}
+.steps li::before{counter-increment:s;content:counter(s);font:500 .8rem/1.6 var(--mono);color:var(--on-ink);background:var(--ink);border-radius:999px;width:1.6rem;height:1.6rem;display:grid;place-items:center}
+.panel{display:grid;gap:.85rem;background:var(--panel);border:1px solid var(--rule);padding:1.1rem 1.2rem}
+.row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.row.split{justify-content:space-between}
+input[type=color]{width:3.2rem;height:2.6rem;border:1px solid var(--ink);border-radius:999px;background:var(--panel);padding:4px 6px;cursor:pointer}
+input[type=color]::-webkit-color-swatch-wrapper{padding:0}
+input[type=color]::-webkit-color-swatch{border:0;border-radius:999px}
+.ticks{display:flex;justify-content:space-between;font:500 .7rem/1 var(--mono);color:var(--ink-2)}
+.ticks span[aria-current="true"]{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.readout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.25rem .9rem;font:400 .76rem/1.5 var(--mono);color:var(--ink-2);margin:0;border-top:1px solid var(--rule);padding-top:.8rem}
+.readout dt{text-transform:uppercase;letter-spacing:.08em;font-size:.68rem;line-height:1.75}
+.readout dd{margin:0}
+.readout b{color:var(--ink);font-weight:500;overflow-wrap:anywhere}
+.where{display:inline;padding:.08rem .5rem;border-radius:999px;border:1px solid var(--ink);color:var(--ink);-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.where.hw{background:var(--ink);color:var(--on-ink)}
+.note{font-size:.82rem;color:var(--ink-2)}
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:var(--ink);color:var(--on-ink);font:500 .85rem/1 var(--mono);padding:.8rem 1.1rem;border-radius:1.4rem;width:max-content;max-width:calc(100vw - 2rem);text-align:center;line-height:1.3;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9}
+.toast.on{opacity:1}
+/* story */
+.ink-bar.story-bar{margin-top:3rem}
+.story{display:grid;gap:3.5rem;margin-top:0}
+.chapter{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(1.25rem,3vw,2.5rem);align-items:start;border-top:1px solid var(--ink);padding-top:2rem}
+.story>.chapter:first-child{border-top:0}
+.chapter .num{font:500 .74rem/1.45 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+.chapter h2{font-size:clamp(1.7rem,3.4vw,2.6rem);line-height:1.05;margin:.5rem 0 1rem}
+.chapter .txt{display:grid;gap:.85rem;color:var(--ink-2);max-width:60ch}
+.chapter .txt b{color:var(--ink);font-weight:500}
+.analogy{border:1px dashed var(--ink);padding:.75rem .9rem;font-size:.86rem;color:var(--ink)}
+.analogy .label{color:var(--ink);display:block;margin-bottom:.25rem}
+.fig{display:grid;gap:.75rem;min-width:0}
+.fig>.seg{justify-self:start}
+#g-filters button{display:inline-flex;align-items:center;gap:.45rem}
+.grid th .ico{display:block;margin-bottom:.3rem}
+[hidden]{display:none!important}
+.fig>canvas,.fig>img{width:100%;height:auto;border:1px solid var(--ink);display:block;image-rendering:pixelated;background:var(--panel)}
+.fig>img.photo{image-rendering:auto;border-color:var(--rule)}
+#filters,#rib{cursor:pointer}
+#g-hidden.peek,#g-guess{cursor:pointer}
+.cap{font:400 .74rem/1.5 var(--mono);color:var(--ink-2)}
+code{font-family:var(--mono);font-size:.9em;color:var(--ink)}
+.bars{display:grid;grid-template-columns:auto minmax(0,1fr) 3.2rem;gap:.4rem .6rem;align-items:center;font:500 .74rem/1 var(--mono);color:var(--ink)}
+.bars i{display:block;height:10px;background:var(--panel-2);position:relative;overflow:hidden}
+.bars i::after{content:"";position:absolute;inset:0 auto 0 50%;width:1px;background:var(--ink-3)}
+.bars i span{position:absolute;top:0;bottom:0;background:var(--ink)}
+.bars i span.hidden{background:var(--warn)}
+.compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
+.compare .box{display:grid;gap:.35rem;justify-items:center;font:500 .7rem/1.2 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);text-align:center}
+.compare .big{width:100%;aspect-ratio:1/1;border:1px solid var(--ink);display:flex;align-items:center;justify-content:center;background:var(--paper);line-height:0;overflow:hidden}
+.compare .big canvas{display:block;image-rendering:pixelated;image-rendering:crisp-edges}
+table.grid{width:100%;border-collapse:separate;border-spacing:4px;font:500 .74rem/1.2 var(--mono)}
+table.grid th{color:var(--ink-2);font-weight:500;text-align:left;padding:.2rem .3rem}
+table.grid td button{width:100%;border:1px solid var(--rule);background:var(--panel);color:var(--ink);padding:.5rem .4rem;cursor:pointer;font:inherit;text-align:left;display:grid;gap:.35rem}
+table.grid td button:hover{border-color:var(--ink)}
+table.grid td button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--on-ink)}
+table.grid td button[disabled]{color:var(--ink-3);cursor:not-allowed;background:transparent;border-style:dashed}
+table.grid td button i{display:block;height:5px;background:var(--ink)}
+table.grid td button[aria-pressed="true"] i{background:var(--on-ink)}
+.quiz{display:grid;gap:1.2rem}
+.quiz fieldset{border:1px solid var(--rule);background:var(--panel);padding:.9rem 1rem;display:grid;gap:.5rem;margin:0}
+.quiz legend{float:left;width:100%;font:400 1.1rem/1.3 var(--display);padding:0 0 .35rem;color:var(--ink)}
+.quiz label{display:flex;gap:.6rem;align-items:baseline;cursor:pointer;color:var(--ink-2);font-size:.95rem}
+.quiz label:hover{color:var(--ink)}
+.quiz input{accent-color:var(--ink)}
+.quiz .fb{font-size:.88rem;min-height:1.2em}
+.quiz .fb.right{color:var(--good)}
+.quiz .fb.wrong{color:var(--warn)}
+dl.gloss{display:grid;grid-template-columns:minmax(0,12rem) minmax(0,1fr);gap:0;margin:0;border-top:1px solid var(--rule)}
+dl.gloss dt,dl.gloss dd{padding:.6rem 0;border-bottom:1px solid var(--rule)}
+dl.gloss dt{font:500 .74rem/1.6 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink);padding-right:1.2rem}
+dl.gloss dd{margin:0;color:var(--ink-2);font-size:.92rem}
+.more{margin-top:3rem}
+.skip{font:500 .74rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink);text-underline-offset:3px}
+/* titled sections under the scene: How to play, The data, How it was made, What this does not claim, Jobs and credits */
+.sec{display:grid;gap:1.25rem;margin-top:3rem}
+.ink-bar h2{font:inherit;letter-spacing:inherit;color:inherit;margin:0;text-wrap:initial}
+.sec-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(1.25rem,3vw,2.5rem);align-items:start}
+.sec-grid.wide{grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr)}
+.sec figure{margin:0}
+.sec .txt{display:grid;gap:.85rem;color:var(--ink-2);min-width:0}
+.sec .txt h3{font-size:1.45rem;line-height:1.15}
+.ball-wrap.framed{border:1px solid var(--ink);aspect-ratio:1/1}
+#ball-d{touch-action:pan-y}
+.meter-d{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem .7rem;font:500 .74rem/1.2 var(--mono);color:var(--ink);border:1px solid var(--rule);background:var(--panel);padding:.55rem .75rem}
+.meter-d>span{display:inline-flex;align-items:center;gap:.45rem}
+dl.key{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.3rem .9rem;margin:0;font-size:.86rem;border-top:1px solid var(--rule);padding-top:.7rem}
+dl.key dt{font:500 .68rem/1.9 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
+dl.key dd{margin:0}
+ul.jump{list-style:none;margin:0;padding:0;display:grid}
+ul.jump li{display:grid;grid-template-columns:minmax(0,9.5rem) minmax(0,1fr);gap:.8rem;padding:.45rem 0;border-bottom:1px solid var(--rule);font-size:.9rem;color:var(--ink-2)}
+ul.jump a{font:500 .74rem/1.6 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink);text-underline-offset:3px}
+.honest{display:grid;gap:.75rem;max-width:72ch}
+.tscroll{overflow-x:auto;border:1px solid var(--rule);background:var(--panel)}
+table.jobs{width:100%;border-collapse:collapse;font:400 .72rem/1.4 var(--mono);color:var(--ink-2)}
+table.jobs th{font-weight:500;color:var(--ink);text-align:left;padding:.5rem .6rem;border-bottom:1px solid var(--ink);white-space:nowrap}
+table.jobs td{padding:.5rem .6rem;border-bottom:1px solid var(--rule);vertical-align:top}
+table.jobs td b{color:var(--ink);font-weight:500}
+table.jobs td code{overflow-wrap:anywhere;font-size:1em}
+table.jobs tr:last-child td{border-bottom:0}
+table.jobs .btn{padding:.45rem .8rem;font-size:.78rem}
+table.jobs .btn[aria-pressed="true"]{background:var(--ink);color:var(--on-ink)}
+ul.credits{margin:0;padding-left:1.1rem;display:grid;gap:.55rem;font-size:.88rem;color:var(--ink-2)}
+ul.credits b{color:var(--ink);font-weight:500}
+@media (max-width:900px){.sec-grid,.sec-grid.wide{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:600px){
+  /* the jobs table becomes one stacked card per job, so nothing scrolls sideways on a phone */
+  .tscroll{overflow:visible}
+  table.jobs thead{display:none}
+  table.jobs,table.jobs tbody,table.jobs tr,table.jobs td{display:block}
+  table.jobs tr{position:relative;padding:.6rem .7rem;border-bottom:1px solid var(--rule)}
+  table.jobs tr:last-child{border-bottom:0}
+  table.jobs td{border:0;padding:.1rem 0}
+  table.jobs td[data-l]::before{content:attr(data-l) ": ";color:var(--ink)}
+  table.jobs td.go{position:absolute;top:.6rem;right:.7rem;padding:0}
+}
+@media (max-width:900px){.hero,.chapter{grid-template-columns:minmax(0,1fr)}.copy{order:-1}dl.gloss{grid-template-columns:minmax(0,1fr)}dl.gloss dt{border-bottom:0;padding-bottom:0}dl.gloss dd{padding-top:.2rem}}
+@media (max-width:600px){
+  .hero{display:flex;flex-direction:column}
+  .copy{display:contents}
+  .lead{display:contents}
+  .lead>*{order:0}.hero>.instrument{order:1}.lead>.proof,.copy>.steps,.copy>.panel,.copy>.skip{order:2}
+  .ball-wrap{aspect-ratio:1/1}
+  .stage-head .btn{width:100%;justify-content:center}
+  #g-machine{display:grid;grid-template-columns:1fr 1fr;border-radius:1.3rem;width:100%}
+  #g-machine button{border-radius:1rem}
+  #g-filters{border-radius:1.3rem}
+  #g-filters button{border-radius:1rem}
+  .say{gap:.55rem;padding:.55rem .6rem}
+  .say p{font-size:.86rem}
+  .meter{font-size:.7rem}
+  .seg button{padding:.5rem .55rem;font-size:.72rem}
+  .ink-bar{flex-wrap:wrap}
+}
+</style>
+
+<div class="wrap">
+  <nav class="wtnr-bar"><a href="https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa">What the Noise Remembers</a><span class="count"><b>Challenge 11</b> · Recover</span></nav>
+
+  <div class="hero">
+    <div class="instrument">
+      <div class="stage" id="stage">
+        <div class="stage-head">
+          <div class="seg" role="group" aria-label="View" id="g-view">
+            <button type="button" data-view="scene" aria-pressed="true">Scene</button>
+            <button type="button" data-view="data" aria-pressed="false">Data: the colour ball</button>
+          </div>
+          <button type="button" class="btn" id="shoot">Take the three photos</button>
+        </div>
+        <div class="scene-wrap" id="scene-view">
+          <canvas id="scene" role="img" aria-label="Maxwell's studio. On the left a round Bloch-ball character, in the colour being photographed, sits on a stool. Maxwell stands at his camera. Three photographic plates, X, Y and Z, hang on a line, each as bright as the number the quantum run measured. On the right the rebuilt colour is projected on a screen, next to the machine that ran the job."></canvas>
+        </div>
+        <div class="ball-wrap" id="data-view" hidden>
+          <canvas id="sphere" tabindex="0" aria-label="The colour ball, drawn as a qubit sphere. Drag or use arrow keys to turn it. Click a dot to pick that colour."></canvas>
+          <div id="tags"></div>
+        </div>
+        <div class="say" id="say"><canvas id="say-face" width="52" height="48" aria-hidden="true"></canvas><p id="say-text" aria-live="polite"></p></div>
+        <div class="machines">
+          <span class="label">Machine</span>
+          <div class="seg" role="group" aria-label="Where the quantum run happened" id="g-machine"></div>
+        </div>
+        <div class="meter" aria-live="polite">
+          <span>You picked <span class="chip" id="m-true"></span></span>
+          <span id="m-sent-wrap"><span class="arrow">&rarr;</span> sent <span class="chip" id="m-sent"></span></span>
+          <span class="arrow">&rarr;</span>
+          <span>rebuilt <span class="chips" id="m-rebuilt"></span></span>
+          <span id="m-err">&nbsp;</span>
+        </div>
+      </div>
+      <p class="note" id="stage-note" style="margin-top:.6rem">Click the camera to shoot, or the sitter for a new test colour. The camera split and the rebuild are classical; the machine on the right is the quantum step (qpixl-v1), on the machine you pick. Every plate grey and every rebuilt colour comes from a real cached run. The flash, flying plates, blinking lights and light rays are decoration.</p>
+    </div>
+
+    <div class="copy">
+      <div class="lead">
+      <p class="kicker">Challenge 11 · FQxI · For anyone curious</p>
+      <h1>Rebuild a qubit the way Maxwell rebuilt colour.</h1>
+      <p class="sub">You can't look at a qubit, just as Maxwell couldn't photograph colour in 1861. He used three filters, and physicists use three measurements. Pick any colour and see what a quantum run gave back for it.</p>
+      <div class="proof" id="proof"></div>
+      </div>
+      <ol class="steps">
+        <li><span><b>Pick</b> a colour for the sitter, or click a pixel of Maxwell's ribbon further down.</span></li>
+        <li><span><b>Shoot:</b> Maxwell takes three photos, through X, Y and Z filters, and a quantum machine measures each plate back.</span></li>
+        <li><span><b>Switch</b> machines and slide the shots, and watch the rebuilt portrait and Maxwell's face change.</span></li>
+      </ol>
+
+      <div class="panel">
+        <div class="row split">
+          <label class="label" for="pick">Your colour</label>
+          <span class="row"><input type="color" id="pick" value="#c0306a"><button type="button" class="btn ghost" id="rand">Surprise me</button></span>
+        </div>
+        <div>
+          <div class="row split"><label class="label" for="shots">Shots (repeats of each measurement)</label><span class="label" id="shots-val"></span></div>
+          <input type="range" id="shots" min="0" max="2" step="1" value="2" aria-describedby="shots-note">
+          <div class="ticks" aria-hidden="true"><span data-i="0">16</span><span data-i="1">128</span><span data-i="2">1024</span></div>
+          <p class="note" id="shots-note"></p>
+        </div>
+        <div class="row">
+          <button type="button" class="btn ghost" id="drift" aria-pressed="false">Show every colour's drift</button>
+          <button type="button" class="btn ghost" id="reset-view" title="Show the colour ball, turned back to its starting angle">Reset view</button>
+          <button type="button" class="btn ghost" id="share">Copy link to this view</button>
+        </div>
+        <dl class="readout">
+          <dt>Engine</dt><dd><b>qpixl-v1</b> (Atlas) &middot; <span id="r-engine-note">tessa-image-v1 timed out, see chapter 4</span></dd>
+          <dt>Ran on</dt><dd><b id="r-where">&ndash;</b></dd>
+          <dt>Qubits</dt><dd><b id="r-qubits">&ndash;</b></dd>
+          <dt>Colour</dt><dd><b id="r-src">&ndash;</b></dd>
+          <dt>Plates</dt><dd><b id="r-plates">&ndash;</b></dd>
+          <dt>Job</dt><dd><b id="r-job">&ndash;</b></dd>
+        </dl>
+      </div>
+      <a class="skip" href="#ch1">New here? Start the story from 1861 &darr;</a>
+    </div>
+  </div>
+
+  <!-- How to play: the three steps of the first version, word for word, plus a map of every interactive part -->
+  <section class="sec" id="play" aria-labelledby="play-h">
+    <div class="ink-bar"><h2 id="play-h">How to play</h2><span>3 steps &middot; every part connects</span></div>
+    <div class="sec-grid">
+      <ol class="steps">
+        <li><span><b>Pick</b> any colour, or click a pixel of Maxwell's ribbon further down.</span></li>
+        <li><span><b>Slide</b> the shots: more measurements give a sharper rebuild.</span></li>
+        <li><span><b>Switch</b> machines: a perfect simulator, two noisy-chip models, a real IBM chip.</span></li>
+      </ol>
+      <div class="panel">
+        <span class="label">Everything you can play with</span>
+        <ul class="jump">
+          <li><a href="#stage">Maxwell's studio</a><span>take the three photos; click the sitter or the camera</span></li>
+          <li><a href="#data">The data</a><span>turn the colour ball and show every colour's drift</span></li>
+          <li><a href="#ch1">Chapter 1</a><span>switch Maxwell's three filters</span></li>
+          <li><a href="#ch2">Chapter 2</a><span>measure a hidden arrow, then send your rebuild up</span></li>
+          <li><a href="#ch3">Chapter 3</a><span>see where your colour sits in the ball</span></li>
+          <li><a href="#ch4">Chapter 4</a><span>load any of the real runs</span></li>
+          <li><a href="#ch5">Chapter 5</a><span>wipe across the ribbon and click a pixel</span></li>
+          <li><a href="#quiz">Check yourself</a><span>three questions</span></li>
+        </ul>
+        <p class="note">Every part shares one state: a colour, machine or shots you pick anywhere shows up in the studio, the colour ball, chapter 3, the run table and the ribbon.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- The data: the 3D colour ball, always visible here (it can also be opened in place of the scene at the top) -->
+  <section class="sec" id="data" aria-labelledby="data-h">
+    <div class="ink-bar"><h2 id="data-h">The data</h2><span>the colour ball &middot; from the cached runs</span></div>
+    <div class="sec-grid">
+      <figure class="fig">
+        <div class="ball-wrap framed" id="ball-d">
+          <canvas id="sphere-d" tabindex="0" aria-label="The colour ball, drawn as a qubit sphere. Drag or use arrow keys to turn it. Click a dot to pick that colour."></canvas>
+          <div id="tags-d"></div>
+        </div>
+        <figcaption class="cap">Drag to turn the ball. Click any dot to pick it. Every rebuilt colour is put back together from numbers a real quantum run measured. Nothing quantum is computed live.</figcaption>
+      </figure>
+      <div class="txt">
+        <h3>The colour ball</h3>
+        <p class="meter-d" aria-live="polite"><span>You picked <span class="chip" id="d-true"></span></span> <span class="arrow">&rarr;</span> <span>rebuilt <span class="chip" id="d-reb"></span></span> <span id="d-err"></span></p>
+        <p class="note" id="d-run"></p>
+        <dl class="key">
+          <dt>Solid arrow</dt><dd>the colour you picked</dd>
+          <dt>Faded arrow</dt><dd>the colour the run gave back</dd>
+          <dt>Ink ring</dt><dd>the colour sent to the engine (the nearest test colour, or the ribbon pixel itself)</dd>
+          <dt>Ink line</dt><dd>the miss, from what was sent to what came back</dd>
+          <dt>Small dots</dt><dd>the 112 test colours; with the drift on, each gets a line to where the run put it</dd>
+        </dl>
+        <div class="row"><button type="button" class="btn ghost" id="drift-d" aria-pressed="false">Show every colour's drift</button></div>
+        <p class="note">More graphs in the story: <a href="#ch1">the three filters</a>, <a href="#ch2">the hidden-arrow bars</a>, <a href="#ch3">where your colour sits</a>, <a href="#ch4">every run's miss</a> and <a href="#ch5">the ribbon, sent and rebuilt</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="ink-bar story-bar"><span>The story, from 1861</span><span>5 chapters &middot; quiz &middot; glossary</span></div>
+  <div class="story">
+    <!-- 1 -->
+    <section class="chapter" id="ch1">
+      <div class="txt">
+        <p class="num">Chapter 1 · London, 1861</p>
+        <h2>Three grey photos make one colour photo.</h2>
+        <p>In 1861 James Clerk Maxwell wanted to prove an idea: every colour we see can be built from just <b>three</b> amounts, of red, green and blue light.</p>
+        <p>The photographer Thomas Sutton took three black-and-white pictures of a tartan ribbon, each through a different coloured filter. On its own, each plate is only grey. It records <b>how much</b> of one colour got through, and nothing else.</p>
+        <p>Then they shone the three pictures through the same three filters onto one screen, on top of each other. The ribbon came back in colour.</p>
+        <p><b>Try it:</b> switch the filters on and off. With one filter you get a grey plate. With all three you get the colour back. You can also click the picture to step through the plates one at a time.</p>
+        <p class="honesty">Classical: your browser splits a modern scan of the photo into three channels. That's what the filters did, but digitally. Nothing in this chapter is quantum.</p>
+      </div>
+      <div class="fig">
+        <canvas id="filters" width="288" height="288" tabindex="0" role="button" aria-label="The tartan ribbon seen through the filters you switch on. Click or press Enter to step through the plates: red only, green only, blue only, then all three."></canvas>
+        <div class="seg" role="group" aria-label="Filters" id="g-filters">
+          <button type="button" data-f="0" aria-pressed="true">Red filter</button>
+          <button type="button" data-f="1" aria-pressed="true">Green filter</button>
+          <button type="button" data-f="2" aria-pressed="true">Blue filter</button>
+        </div>
+        <p class="cap" id="filters-cap"></p>
+        <img class="photo" src="img/ribbon_full.webp" alt="Maxwell's 1861 tartan ribbon, the first durable colour photograph" width="720" height="589" loading="lazy">
+        <p class="cap">The whole 1861 photograph. Public domain, via Wikimedia Commons (File:Tartan Ribbon.jpg).</p>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section class="chapter" id="ch2">
+      <div class="txt">
+        <p class="num">Chapter 2 · The thing you can't look at</p>
+        <h2>A qubit is an arrow you can only ask yes-or-no questions.</h2>
+        <p>Picture a qubit as an <b>arrow inside a ball</b>. You never get to see the arrow. When you measure it, you get a single click: <b>0 or 1</b>. Then it's gone, and you need a fresh copy to ask again.</p>
+        <p>If you measure along the up&ndash;down direction (called <b>Z</b>), an arrow pointing straight up always clicks 0. An arrow on the equator clicks 0 and 1 equally, like a fair coin. So many clicks tell you how far up the arrow points.</p>
+        <p>But Z clicks say nothing about which way the arrow leans around the equator. For that you have to ask along two other directions, <b>X</b> and <b>Y</b>. That gives three directions with lots of shots each, and from them you rebuild the arrow. Physicists call this <b>quantum state tomography</b>, and it's Maxwell's trick again: three filtered measurements, one picture.</p>
+        <p class="honesty">This game is a classical toy. Its clicks come from your browser's random-number generator, using the odds a real qubit would have. It shows the method. The real quantum runs are in the ball at the top. Maxwell's studio at the top shows the same runs.</p>
+      </div>
+      <div class="fig">
+        <div class="panel" id="game">
+          <div class="row split"><span class="label">Hidden colour</span><span class="label" id="g-count">0 clicks</span></div>
+          <div class="compare">
+            <div class="box"><div class="big"><canvas id="g-hidden" role="img" aria-label="The hidden colour, behind a curtain until you press Reveal or click the curtain"></canvas></div>hidden arrow</div>
+            <div class="box"><div class="big"><canvas id="g-guess" tabindex="0" role="button" aria-label="Your rebuild of the hidden colour. Click or press Enter to send it to Maxwell's studio at the top and see what the real quantum runs gave back for that colour." title="Send your rebuild to Maxwell's studio"></canvas></div>your rebuild &middot; click to send it up</div>
+          </div>
+          <div class="bars" id="g-bars"></div>
+          <div class="row">
+            <button type="button" class="btn" data-m="2">Measure Z &times;10</button>
+            <button type="button" class="btn" data-m="0">Measure X &times;10</button>
+            <button type="button" class="btn" data-m="1">Measure Y &times;10</button>
+          </div>
+          <div class="row">
+            <button type="button" class="btn ghost" id="g-reveal">Reveal</button>
+            <button type="button" class="btn ghost" id="g-new">New hidden colour</button>
+          </div>
+          <p class="note" id="g-msg" aria-live="polite">Start by measuring Z ten times. Then try only Z, 100 times. Can you get the colour without X and Y?</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section class="chapter" id="ch3">
+      <div class="txt">
+        <p class="num">Chapter 3 · Colours live in a ball too</p>
+        <h2>Grey in the middle, white on top, black underneath.</h2>
+        <p>Put every colour into a ball: <b>white</b> at the north pole, <b>black</b> at the south pole, and <b>50% grey</b> right in the centre. The bright, strong colours sit around the equator: red, then yellow, green, cyan, blue and magenta all the way round. Pale colours are near the top, dark ones near the bottom, and dull greyish ones close to the middle.</p>
+        <p>That ball has the same shape as the qubit ball. Up&ndash;down plays the part of Z, and the direction around the equator (the hue) plays the part of the X&ndash;Y lean. So every colour is an arrow with three numbers, X, Y and Z, just like a qubit's state. Atlas's Tessa engine is built on that match, and so is this page.</p>
+        <div class="analogy"><span class="label">Analogy, labelled</span>A colour isn't a qubit and photography isn't quantum. The ball is a map: it lets a program store a colour as the angles of a qubit, then measure it back.</div>
+        <p>A neat bonus: the very centre of the qubit ball is the most uncertain state possible, a perfect 50/50 coin in every direction. On the colour ball that spot is grey. <span id="ch3-noise"></span></p>
+      </div>
+      <div class="fig">
+        <div class="panel">
+          <span class="label">Where your colour sits</span>
+          <div class="bars" id="c-bars" role="img" aria-label="Where your colour sits: its Z (light to dark), X lean, Y lean and distance from the grey centre"></div>
+          <p class="note" id="c-msg"></p>
+          <p class="note">Its X, Y and Z are the three plates on Maxwell's line at the top. A white plate means +1, black means &minus;1, mid grey means 0.</p>
+          <button type="button" class="btn ghost" id="c-top">See it on the ball &uarr;</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section class="chapter" id="ch4">
+      <div class="txt">
+        <p class="num">Chapter 4 · What the quantum engine did</p>
+        <h2>Write the colour onto qubits, measure, rebuild.</h2>
+        <p>The plan was to hand the ribbon to the Atlas engine <b>tessa-image-v1</b>, which writes pictures onto qubits through a colour ball like this one. On hack night it timed out five times in a row. So we did its job by hand with its sibling engine <b>qpixl-v1</b>, which uses the same encoding library.</p>
+        <p>Each colour becomes its arrow's three numbers: how far it points along <b>X</b>, along <b>Y</b> and along <b>Z</b>. Those are exactly the three numbers tomography is after. We sent every X number, then every Y, then every Z, like three plates. qpixl stored each number as the <b>angle of a qubit</b>, measured it again and again (the <b>shots</b>), and gave the number back. Our code then put each colour back together from its three numbers.</p>
+        <p>We sent 112 test colours spread through the ball, plus the ribbon, as large as each machine had room for. We ran it on three kinds of machine: a <b>perfect simulator</b> (no noise at all), <b>simulators that copy the noise</b> of two real IBM chips, and once on a <b>real IBM quantum chip</b>.</p>
+        <p><b>Click a cell</b> to load that run into the ball. Each number is how far the 112 test colours landed from where they started, on average, in ball units where the radius is 1 (0 is perfect). Maxwell's studio at the top loads the same run.</p>
+        <p id="ch4-find"></p>
+        <p class="honesty" id="ch4-honesty"></p>
+      </div>
+      <div class="fig">
+        <table class="grid" id="runs" aria-label="All engine runs: average miss per run"></table>
+        <p class="cap" id="runs-cap"></p>
+      </div>
+    </section>
+
+    <!-- 5 -->
+    <section class="chapter" id="ch5">
+      <div class="txt">
+        <p class="num">Chapter 5 · The ribbon, again</p>
+        <h2>Maxwell's ribbon, rebuilt by measurement.</h2>
+        <p>The same runs also rebuilt the ribbon itself. Drag the divider to compare the picture we sent in (left) with what came back (right), for whichever machine and shots you picked above. The perfect simulator had room for a 35&times;35 ribbon. The Fez chip and its model hold only 448 numbers, so they got a 6&times;6 one, and the Brisbane model had no room for the ribbon at all.</p>
+        <p><b>Click any pixel</b> to send that exact pixel's colour to the ball. The rebuild you see there comes from that pixel's own three measured numbers. The arrow keys move the pixel too, and it also becomes the sitter in Maxwell's studio at the top.</p>
+        <p id="ch5-note" class="note"></p>
+      </div>
+      <div class="fig">
+        <canvas id="rib" width="480" height="480" tabindex="0" aria-label="Maxwell's ribbon, original on the left of the divider and engine rebuild on the right. Click a pixel to send it to the ball. The arrow keys move the pixel, and it also becomes the sitter in Maxwell's studio at the top."></canvas>
+        <input type="range" id="wipe" min="0" max="100" value="50" aria-label="Divider between original and rebuilt">
+        <p class="cap" id="rib-cap"></p>
+      </div>
+    </section>
+
+    <!-- quiz -->
+    <section class="chapter" id="quiz">
+      <div class="txt">
+        <p class="num">Check yourself</p>
+        <h2>Three questions.</h2>
+        <p>No marks and no sign-in. Pick an answer to see why it's right or wrong.</p>
+        <p class="label" id="q-score" aria-live="polite">0 / 3</p>
+        <button type="button" class="btn ghost" id="q-reset" style="justify-self:start" hidden>Start again</button>
+      </div>
+      <form class="quiz" id="q-form" onsubmit="return false"></form>
+    </section>
+
+    <!-- glossary -->
+    <section class="chapter" id="glossary">
+      <div class="txt">
+        <p class="num">Words</p>
+        <h2>Glossary.</h2>
+      </div>
+      <dl class="gloss">
+        <dt>Qubit</dt><dd>The quantum version of a bit. Its state is an arrow in a ball, not just 0 or 1.</dd>
+        <dt>Measurement</dt><dd>Asking a qubit one yes-or-no question along one direction. You get a single 0 or 1, and the original state is gone.</dd>
+        <dt>Shot</dt><dd>One run of the circuit ending in one measurement. Many shots turn random clicks into reliable odds.</dd>
+        <dt>Basis (X, Y, Z)</dt><dd>The direction you measure along. Z is up&ndash;down; X and Y are two directions around the equator.</dd>
+        <dt>Bloch sphere</dt><dd>The ball that every single-qubit state lives in. Pure states sit on the surface; noisy, uncertain states sit inside.</dd>
+        <dt>Tomography</dt><dd>Rebuilding a state you can't see from measurements along several directions. The name comes from medical scans, which rebuild a body from many slices.</dd>
+        <dt>Noise</dt><dd>Tiny unwanted disturbances in a real chip. They blur the arrow and pull it toward the centre of the ball.</dd>
+        <dt>Simulator</dt><dd>An ordinary computer working out what a perfect quantum computer would do. Here that's Atlas's <code>aer</code>.</dd>
+        <dt>Noise model</dt><dd>A simulator that adds the measured noise of a real chip: <code>fake_fez</code> copies IBM's Fez chip, <code>fake_brisbane</code> copies Brisbane.</dd>
+        <dt>Hardware</dt><dd>A real quantum chip. IBM's <code>ibm_fez</code> has 156 qubits, cooled close to absolute zero.</dd>
+        <dt>Three-colour photography</dt><dd>Maxwell's method: three filtered grey photos recombined into colour. Classical optics, no quantum physics.</dd>
+      </dl>
+    </section>
+  </div>
+
+  <!-- How it was made: the two drawers of the first version, word for word -->
+  <section class="sec more" id="made" aria-labelledby="made-h">
+    <div class="ink-bar"><h2 id="made-h">How it was made</h2><span>2 drawers &middot; tap to open</span></div>
+    <div>
+      <details class="drawer"><summary>Why Maxwell's ribbon?</summary><div class="body">
+        <p>Maxwell proposed three-colour photography in 1855 and showed this ribbon at the Royal Institution in London in May 1861, with photographs taken by Thomas Sutton. It's considered the first durable colour photograph.</p>
+        <p>His point was that colour is a three-number quantity, and you can measure it one filtered number at a time. A qubit's state is also a three-number quantity, the three components of its arrow, and you can also only measure it one direction at a time. The analogy stops there. Light through a filter is classical optics.</p>
+      </div></details>
+      <details class="drawer"><summary>What the quantum engine did, exactly</summary><div class="body" id="drawer-engine"></div></details>
+    </div>
+  </section>
+
+  <!-- What this does not claim: the third drawer of the first version, now always open -->
+  <section class="sec" id="claims" aria-labelledby="claims-h">
+    <div class="ink-bar"><h2 id="claims-h">What this does not claim</h2><span>honesty notes</span></div>
+    <div class="body honest" id="drawer-honest"></div>
+  </section>
+
+  <!-- Jobs and credits: every cached run on this page (built from the job data) and where everything comes from -->
+  <section class="sec" id="jobs" aria-labelledby="jobs-h">
+    <div class="ink-bar"><h2 id="jobs-h">Jobs and credits</h2><span>every run on this page</span></div>
+    <div class="sec-grid wide">
+      <div class="txt">
+        <p class="note" id="jobs-note"></p>
+        <div class="tscroll"><table class="jobs" id="jobs-table" aria-label="Every Atlas job behind this page"></table></div>
+        <p class="cap" id="jobs-tessa"></p>
+      </div>
+      <div class="txt">
+        <h3>Credits</h3>
+        <ul class="credits">
+          <li><b>Photograph:</b> Maxwell's tartan ribbon, 1861, photographs by Thomas Sutton. Public domain, via Wikimedia Commons (File:Tartan Ribbon.jpg).</li>
+          <li><b>Quantum engine:</b> Moth Quantum Atlas, qpixl-v1 (Interwoven QPIXL, from the iqpixl library), for every engine output on this page. tessa-image-v1 was tried and produced no output.</li>
+          <li><b>Machines:</b> the aer simulator, the fake_fez and fake_brisbane noise models (classical simulations of real IBM chips), and one run on IBM's ibm_fez chip.</li>
+          <li><b>3D ball:</b> three.js r128 (MIT), from cdnjs. <b>Fonts:</b> Geist and IBM Plex Mono (SIL OFL), from Google Fonts.</li>
+          <li><b>Pixel art:</b> Maxwell, his camera, the filters, the Bloch-ball sitter, the machines and the curtain were drawn for this piece in the set's ink palette. No logos.</li>
+          <li><b>Reading:</b> J. C. Maxwell, "Experiments on Colour" (Trans. R. Soc. Edinburgh, 1857), doi:10.1017/S0080456800032117; J. C. Maxwell, "On the Theory of Three Primary Colours" (1861), doi:10.1017/CBO9780511698095.025; J. Cat, <i>Maxwell, Sutton, and the Birth of Color Photography</i> (2013), doi:10.1057/9781137338310; M. A. Nielsen and I. L. Chuang, <i>Quantum Computation and Quantum Information</i>, doi:10.1017/CBO9780511976667.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  <!--NAV-->
+  <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/*BALLJS*/
+const SW = /*SW*/[];
+const JOBS = /*JOBS*/[];
+const META = /*META*/{};
+const RIB0 = /*RIB0*/"";
+const CROP_URI = "/*CROP_URI*/";
+/*INKSPRITE*/
+const SPR = /*SPRITES*/{};
+/*SCENEJS*/
+/*APPJS*/
+</script>

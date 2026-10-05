@@ -1,0 +1,156 @@
+{
+ "orbium": {
+  "ring|orig": {
+   "fate": "glides",
+   "mass": 71.2,
+   "speed": 0.6137,
+   "creatures": 1
+  },
+  "ring|s0.25": {
+   "fate": "glides",
+   "mass": 72.1,
+   "speed": 0.6078,
+   "creatures": 1
+  },
+  "ring|s0.5": {
+   "fate": "glides",
+   "mass": 78.8,
+   "speed": 0.2922,
+   "creatures": 1
+  },
+  "ring|s1.0": {
+   "fate": "fills the world",
+   "mass": 13223.1,
+   "speed": 1.2504,
+   "creatures": 3
+  },
+  "bell|orig": {
+   "fate": "glides",
+   "mass": 72.7,
+   "speed": 0.601,
+   "creatures": 1
+  },
+  "bell|s0.25": {
+   "fate": "glides",
+   "mass": 73.3,
+   "speed": 0.6085,
+   "creatures": 1
+  },
+  "bell|s0.5": {
+   "fate": "breaks up",
+   "mass": 73.0,
+   "speed": 0.2454,
+   "creatures": 0
+  },
+  "bell|s1.0": {
+   "fate": "fills the world",
+   "mass": 13416.5,
+   "speed": 0.4144,
+   "creatures": 13
+  },
+  "poly|orig": {
+   "fate": "glides",
+   "mass": 73.8,
+   "speed": 0.6124,
+   "creatures": 1
+  },
+  "poly|s0.25": {
+   "fate": "glides",
+   "mass": 73.5,
+   "speed": 0.6221,
+   "creatures": 1
+  },
+  "poly|s0.5": {
+   "fate": "glides",
+   "mass": 80.4,
+   "speed": 0.2699,
+   "creatures": 1
+  },
+  "poly|s1.0": {
+   "fate": "fills the world",
+   "mass": 13001.9,
+   "speed": 0.7622,
+   "creatures": 23
+  },
+  "step|orig": {
+   "fate": "glides",
+   "mass": 73.4,
+   "speed": 0.5913,
+   "creatures": 1
+  },
+  "step|s0.25": {
+   "fate": "glides",
+   "mass": 72.3,
+   "speed": 0.6425,
+   "creatures": 1
+  },
+  "step|s0.5": {
+   "fate": "glides",
+   "mass": 73.7,
+   "speed": 0.2715,
+   "creatures": 1
+  },
+  "step|s1.0": {
+   "fate": "fills the world",
+   "mass": 12255.3,
+   "speed": 0.7763,
+   "creatures": 13
+  }
+ },
+ "regrow": {
+  "orig": {
+   "50": {
+    "creatures": 3,
+    "mass": 212.1
+   },
+   "200": {
+    "creatures": 2,
+    "mass": 213.2
+   },
+   "500": {
+    "creatures": 3,
+    "mass": 213.1
+   },
+   "1000": {
+    "creatures": 3,
+    "mass": 213.5
+   }
+  },
+  "s0.25": {
+   "50": {
+    "creatures": 1,
+    "mass": 126.0
+   },
+   "200": {
+    "creatures": 1,
+    "mass": 71.6
+   },
+   "500": {
+    "creatures": 1,
+    "mass": 72.1
+   },
+   "1000": {
+    "creatures": 1,
+    "mass": 71.9
+   }
+  },
+  "s0.5": {
+   "50": {
+    "creatures": 1,
+    "mass": 71.5
+   },
+   "200": {
+    "creatures": 1,
+    "mass": 71.3
+   },
+   "500": {
+    "creatures": 1,
+    "mass": 70.8
+   },
+   "1000": {
+    "creatures": 1,
+    "mass": 71.2
+   }
+  }
+ }
+}

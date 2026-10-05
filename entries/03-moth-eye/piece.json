@@ -1,0 +1,51 @@
+{
+  "slug": "03-moth-eye",
+  "challenge": "03 Three dimensions",
+  "bonus": false,
+  "title": "Moth Eye",
+  "hook": "Hide a moth’s shiny eye from the bat.",
+  "sub": "Real moth eyes kill glare with nanopillars. Put a 3D nanopillar eye under the loupe, shade it with a quantum thin-film shader, stack up to six layers, and see whether the bat still spots the shine.",
+  "you_control": [
+    "Orbit the 3D eye in the loupe (drag, pinch, arrow keys); the bat flies to your viewing angle",
+    "Move the lamp on the light pad or by dragging the sky",
+    "Stack layers 1-6 (each a real shader run); switch the nonlinear interaction off at 1 and 6",
+    "Compare moth eye, bare dome and flat slab; sweep the viewing tilt"
+  ],
+  "engines": [
+    "entanglement-shader-v1"
+  ],
+  "qubits": 21,
+  "qubits_note": "6 layers x 6 rays is the largest stack the engine accepts: 7 rays at 6 layers was rejected ('at most 6'), 7+ layers allow at most 5 rays but need rays >= layers; each ray is one qubit, so 6x6 = 21. Smaller runs ~17-20 qubits from our fit q = rays + layers - floor(layers/4) + 10 to the engine's budget messages (engine reports no per-job count).",
+  "hardware": null,
+  "jobs": 8,
+  "credits_spent": 12.0,
+  "deliverables": [
+    "moth_eye.mp4",
+    "reflectance_vs_layers.png",
+    "hero.png",
+    "web/index.html",
+    "web/template.html",
+    "web/src/core.js",
+    "web/video/moth_eye.mp4 (smaller H.264 copy of the film, played on the page)",
+    "web/img/film-poster.webp",
+    "web/files.json",
+    "out/jobs/ (8 engine ZIPs: GLSL/HLSL/OSL/.frag/MaterialX + R/T EXR/HDR LUTs)",
+    "out/reflectance.json",
+    "out/view_sweep.json",
+    "out/probes.json",
+    "make_web_media.py",
+    "README.md",
+    "PARAMS.md",
+    "CREDITS.md",
+    "make_plates.py (the engraved plates: hawkmoth head, facet inset, big brown bat, lamp, bat-head meter, Plates I and II)",
+    "web/data/plates.json",
+    "web/sprites.json (the mascot sprite, rasterised from the head plate)",
+    "web/img/mascot.png",
+    "make_sprites.py"
+  ],
+  "web_entry": "web/index.html",
+  "status": "built",
+  "honesty": "Analogy only: real moth eyes are sub-wavelength graded-index; the engine models a thin conducting-sheet stack on Atlas's classical statevector simulator, and in it more layers raise reflectance (0.418 -> 0.479) rather than kill it.",
+  "blockers": [],
+  "mascot": "web/img/mascot.png"
+}

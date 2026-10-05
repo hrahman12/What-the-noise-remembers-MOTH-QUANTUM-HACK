@@ -1,0 +1,14 @@
+[
+ {
+  "status": 413,
+  "body": "{\"$schema\":\"https://api.mothquantum.com/schemas/ErrorModel.json\",\"title\":\"Request Entity Too Large\",\"status\":413,\"detail\":\"request body is too large limit=1048576 bytes\"}\n",
+  "grid": [
+   4096,
+   4096
+  ],
+  "qubits": 24,
+  "body_mb": 47.68,
+  "seconds": 6.3,
+  "t": 1791176833
+ }
+]

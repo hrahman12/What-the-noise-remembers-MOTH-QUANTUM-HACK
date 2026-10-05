@@ -1,0 +1,3 @@
+  qdrive-api-v1: submitted b4a7e89a-2ffd-41c8-a7b2-79e8500b7924
+  alt22_build_ibm_fez attempt 1 failed: qdrive-api-v1 b4a7e89a-2ffd-41c8-a7b2-79e8500b7924 failed: {"$schema": "https://api.mothquantum.com/schemas/JobStatusOutputBody.json", "job_id": "b4a7e89a-2ffd-41c8-a7b2-79e8500b7924", "engine_id": "qdrive-api-v1", "status": "failed", "progress": {}, "error": {"message": "machine 'ibm_fez' is reserved for a future IBM Quantum Runtime backend (qiskit_ibm_runtime.QiskitRuntimeService + EstimatorV2/SamplerV2 in job mode); not wired up yet", "retryable": false, "type": "invalid_machine"}, "warnings": [], "submitted_at": "2026-10-05T13:00:15Z", "updated_at": "2026-10-05T13:00:15Z"}
+ledgered spend for 19-frog-chorus: 11 of 22 credits

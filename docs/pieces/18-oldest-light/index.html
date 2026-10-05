@@ -207,13 +207,40 @@ table.t th{color:var(--ink);font-weight:500;border-bottom-color:var(--ink)}
 .tscroll{overflow-x:auto;max-width:100%}
 .more{margin-top:3rem}
 .more .ink-bar{margin-bottom:.25rem}
+/* titled sections below the scene: solid-ink bars (brief look), figures with captions, the restored beam ruler */
+.sec{margin-top:3rem;display:grid;gap:1.1rem;min-width:0}
+.bar-h{font:500 .76rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--on-ink);margin:0}
+.cols3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));gap:.9rem}
+.col{background:var(--panel);border:1px solid var(--rule);padding:1rem 1.05rem;display:grid;gap:.75rem;align-content:start;min-width:0}
+.col h3,.fig-h h3{font-size:1.25rem;line-height:1.15}
+.note{font-size:.88rem;color:var(--ink-2)}
+ul.plain{margin:0;padding-left:1.1rem;display:grid;gap:.5rem;font-size:.93rem;color:var(--ink-2)}
+ul.plain b{color:var(--ink);font-weight:500}
+.fig{margin:0;background:var(--panel);border:1px solid var(--rule);padding:1rem 1.1rem;display:grid;gap:.85rem;min-width:0}
+.fig-h{display:flex;align-items:baseline;gap:.8rem;flex-wrap:wrap}
+.fig-h .n{font:500 .7rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.fig figcaption{font-size:.86rem;color:var(--ink-2);border-top:1px solid var(--rule);padding-top:.7rem;max-width:84ch}
+.fig-cols{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:1rem 2.2rem;align-items:start}
+.fig-cols>div{display:grid;gap:.8rem;min-width:0}
+.claims{display:grid;gap:.75rem;max-width:68ch;color:var(--ink-2)}
+table.t tr.on td{background:var(--tint);color:var(--ink)}
+table.t .btn{padding:.35rem .7rem;font-size:.72rem}
+.ruler{position:relative;height:4.4rem;margin:.2rem .4rem 0}
+.ruler .axis{position:absolute;left:0;right:0;top:2.15rem;height:1px;background:var(--ink)}
+.ruler .band{position:absolute;top:1.95rem;height:9px;background:var(--tint);border:1px solid var(--rule)}
+.ruler .tick{position:absolute;top:1.6rem;width:1px;height:1.2rem;background:var(--ink-2)}
+.ruler .lab{position:absolute;font:400 .64rem/1.15 var(--mono);color:var(--ink-2);transform:translateX(-50%);white-space:nowrap;text-align:center}
+.ruler .lab.up{top:0}
+.ruler .lab.dn{top:2.95rem}
+.ruler .me{position:absolute;top:1.15rem;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:10px solid var(--ink);transform:translateX(-50%);transition:left .25s}
+@media (max-width:760px){.fig-cols{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:920px){.hero{grid-template-columns:minmax(0,1fr);grid-template-areas:"intro" "stage" "panel" "rest";grid-template-rows:auto}.stagecol>.sticky{position:static}}
 @media (max-height:860px){.stagecol>.sticky{position:static}}
-@media (max-width:520px){.meter{grid-template-columns:6.6rem minmax(0,1fr) 3rem}.tag{font-size:.6rem;padding:.4rem .55rem}.seg .long{display:none}.panel .row>.label{min-width:3.4rem!important}.lineup{margin-inline:.9rem}.lineup .ms{font-size:.52rem}.qhead img{width:54px;height:39px}}
+@media (max-width:520px){.meter{grid-template-columns:6.6rem minmax(0,1fr) 3rem}.tag{font-size:.6rem;padding:.4rem .55rem}.seg .long{display:none}.panel .row>.label{min-width:3.4rem!important}.lineup{margin-inline:.9rem}.lineup .ms{font-size:.52rem}.qhead img{width:54px;height:39px}.ruler .lab{font-size:.58rem}.ruler{margin-inline:1.1rem}.fig{padding:.9rem .85rem}table.t th,table.t td{padding:.4rem .3rem}#t-jobs td:nth-child(2){overflow-wrap:anywhere}}
 </style>
 
 <div class="wrap">
-  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count"><b>Bonus</b> &middot; Challenge 11</span></nav>
+  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count"><b>Challenge 11</b></span></nav>
 
   <div class="hero">
     <div class="stagecol"><div class="sticky">
@@ -241,7 +268,7 @@ table.t th{color:var(--ink);font-weight:500;border-bottom-color:var(--ink)}
     </div></div>
 
     <div class="copy">
-      <p class="kicker">Bonus &middot; Challenge 11 &middot; FQxI educational</p>
+      <p class="kicker">Challenge 11 &middot; FQxI educational</p>
       <h1>Blur the oldest light in the universe.</h1>
       <p class="sub">This is real NASA data: a 48&deg; patch of the cosmic microwave background, light released 380,000 years after the Big Bang. Slide an 18-qubit quantum blur over it, a stand-in for a telescope's blurry eye, and watch which ripples survive.</p>
     </div>
@@ -288,7 +315,7 @@ table.t th{color:var(--ink);font-weight:500;border-bottom-color:var(--ink)}
 
         <div>
           <span class="label">Equivalent telescope beam &middot; sharper &larr; &rarr; blurrier</span>
-          <div class="lineup" id="ruler" aria-hidden="true"><div class="axis"></div></div>
+          <div class="lineup" id="lineup" aria-hidden="true"><div class="axis"></div></div>
           <p class="hint" id="beam-txt"></p>
         </div>
 
@@ -311,6 +338,76 @@ table.t th{color:var(--ink);font-weight:500;border-bottom-color:var(--ink)}
         </dl>
       </div>
   </div>
+
+  <section class="sec" id="play" aria-labelledby="play-h">
+    <div class="ink-bar"><h2 class="bar-h" id="play-h">How to play</h2><span>The instrument, the scene, the keys</span></div>
+    <div class="cols3">
+      <div class="col">
+        <h3>The instrument</h3>
+        <ol class="steps">
+          <li><span><b>Drag</b> the sky to explore the patch; zoom with + and &minus;.</span></li>
+          <li><span><b>Slide</b> the blur from a perfect telescope to a blurry one.</span></li>
+          <li><span><b>Wipe</b> across the sky to compare the original with the blur.</span></li>
+        </ol>
+        <p class="hint" id="hint">Drag the sky to explore. Drag the round handle to wipe between the original and the blur.</p>
+        <p class="note">In the Scene view the round handle is Mapper, the little satellite; press Data under the sky for the plain handle.</p>
+      </div>
+      <div class="col">
+        <h3>The scene</h3>
+        <ul class="plain">
+          <li><b>Point</b> at the sky, or tap it: Mapper turns its beam there and catches that spot's photons, and the readout gives the temperature and galactic coordinates.</li>
+          <li><b>Plant galaxy seeds</b> on the hottest spots; the count under the sky shows which ones the blur keeps, loses or invents.</li>
+          <li><b>Mark the Cold Spot</b>, or press a story card's "Show me" button to set the sky for that stop.</li>
+          <li><b>Scene / Data</b> turns the cartoon cast on or off. <b>Copy link to this view</b> saves everything you set.</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3>Keys</h3>
+        <p class="hint">A 48 degree patch of the cosmic microwave background from NASA's WMAP. Drag to pan, drag the round handle to compare the original with the blurred sky. Keys: arrows pan, shift plus arrows move the wipe, plus and minus zoom, hold space to see the original.</p>
+        <p class="note">0 shows the whole patch again. The keys work once the sky has focus: press "Go to the sky", or click it.</p>
+      </div>
+    </div>
+    <div class="row"><button type="button" class="btn" data-goto="stage">Go to the sky</button><button type="button" class="btn ghost" data-goto="data">See the data</button></div>
+  </section>
+
+  <section class="sec" id="data" aria-labelledby="data-h">
+    <div class="ink-bar"><h2 class="bar-h" id="data-h">The data</h2><span>Measured on the engine outputs</span></div>
+    <p class="lede">Both graphs are classical measurements of the six downloaded blur-core-v1 outputs (18 qubits, Atlas statevector simulator) and follow the sky above: move the blur slider there, or pick a blur here and the sky changes with it.</p>
+    <figure class="fig" id="fig-beam">
+      <div class="fig-h"><span class="n">Fig. 1</span><h3>Equivalent telescope beam</h3></div>
+      <div class="fig-cols">
+        <div>
+          <div class="ruler" id="ruler" aria-hidden="true"><div class="axis"></div></div>
+          <p class="hint" id="beam-txt2" aria-live="polite"></p>
+        </div>
+        <div>
+          <div class="meters">
+            <div class="meter"><span class="label">Spot pattern kept</span><span class="bar"><i id="m-kept2"></i></span><span class="num" id="n-kept2">-</span></div>
+            <div class="meter"><span class="label">Contrast kept</span><span class="bar"><i id="m-std2"></i></span><span class="num" id="n-std2">-</span></div>
+          </div>
+          <div class="row">
+            <span class="label" style="min-width:4.6rem">Blur</span>
+            <div class="seg" role="group" aria-label="Which blur, in this graph and on the sky">
+              <button type="button" data-kind="q" aria-pressed="true">Quantum<span class="long"> (Atlas)</span></button>
+              <button type="button" data-kind="g" aria-pressed="false">Gaussian<span class="long"> beam</span></button>
+              <button type="button" data-kind="c" aria-pressed="false">COBE 7&deg;</button>
+            </div>
+          </div>
+          <div class="row">
+            <span class="label" style="min-width:4.6rem">Strength</span>
+            <div class="seg" id="fig-stops" role="group" aria-label="Blur strength, in this graph and on the sky"></div>
+          </div>
+        </div>
+      </div>
+      <figcaption>Log scale, sharper to the left. The triangle marks the beam of the blur on the sky: the Gaussian smoothing that best matches it (a classical least-squares fit, added in quadrature to the map's own 1&deg; resolution). Planck, WMAP (the shaded band, 0.2&ndash;0.9&deg;) and COBE sit at their published beam sizes. The two meters compare the blurred sky with the original: "Spot pattern kept" after band-passing both to spot scales, "Contrast kept" as the ratio of their standard deviations.</figcaption>
+    </figure>
+    <figure class="fig" id="fig-fit">
+      <div class="fig-h"><span class="n">Fig. 2</span><h3>What the blur does at every strength</h3></div>
+      <div class="tscroll"><table class="t" id="t-fit"></table></div>
+      <div class="row"><button type="button" class="btn ghost" id="seed-count">Count the galaxy seeds</button><span class="hint" id="seed-note">Counts the seeds for all 12 blurred maps, in your browser.</span></div>
+      <figcaption>Each of the six real engine jobs beside a classical Gaussian beam of the same fitted width. As the strength rises, the quantum blur keeps more contrast than the Gaussian but loses more of the spot pattern, which it scrambles into square blocks. The seed count uses the same rule as "Plant galaxy seeds" under the sky. The highlighted row is the strength shown on the sky.</figcaption>
+    </figure>
+  </section>
 
   <section class="block" id="story" aria-labelledby="story-h">
     <p class="kicker">The story</p>
@@ -357,40 +454,68 @@ table.t th{color:var(--ink);font-weight:500;border-bottom-color:var(--ink)}
     <div class="row"><button type="button" class="btn ghost" id="quiz-reset">Start the quiz again</button></div>
   </section>
 
-  <section class="more">
-    <div class="ink-bar"><span>The science</span><span>Open a drawer</span></div>
+  <section class="sec" id="made" aria-labelledby="made-h">
+    <div class="ink-bar"><h2 class="bar-h" id="made-h">How it was made</h2><span>Engine, qubits, limits</span></div>
+    <div>
     <details class="drawer"><summary>What the quantum engine did</summary><div class="body">
       <p>Atlas <b>blur-core-v1</b> takes a grid of non-negative numbers, amplitude-encodes it onto a Gray-coded qubit register, rotates the qubits with Rx gates and reads the probabilities back out. Neighbouring grid points differ by one bit in a Gray code, so a rotation spills a value's weight onto its neighbours: a blur. "Strength" sets the rotation angle; "reach 0" keeps the spread local.</p>
       <p>The sky grid is 257 &times; 257 temperatures. The engine pads each side to the next power of two, 512, so the register holds 512 &times; 512 = 2<sup>18</sup> amplitudes: <b>9 + 9 = 18 qubits</b>, and the engine reports it ("Recovered 18-qubit grid from measurement"). The sky fills 66,049 of those 262,144 amplitudes (25%); the rest is zero padding.</p>
       <p>The circuit ran on Atlas's classical <b>statevector simulator</b> with exact probabilities (no shots). blur-core-v1 has no hardware mode. Every blurred image on this page is a downloaded engine output; the job ID updates as you slide.</p>
-      <div class="tscroll"><table class="t" id="t-jobs"></table></div>
     </div></details>
     <details class="drawer"><summary>Why 18 qubits, not 24</summary><div class="body">
       <p>The engine allows up to 24 qubits. We stepped down one notch at a time and measured each limit. Probes marked "free" sent an invalid parameter on purpose, so the API answered without creating a job.</p>
-      <div class="tscroll"><table class="t" id="t-limits"></table></div>
       <p>The 20-qubit failures were measured by two sibling pieces in this project (jobs 43503eaa and 02b057fb on a dense 640 &times; 640 grid; a8a739fb on a 528 &times; 528 grid that was 99.6% zeros). All ran and then hit the same platform limit on the size of the returned result.</p>
     </div></details>
+    </div>
+    <figure class="fig" id="fig-limits">
+      <div class="fig-h"><span class="n">Table 1</span><h3>Every qubit limit we measured</h3></div>
+      <div class="tscroll"><table class="t" id="t-limits"></table></div>
+      <figcaption>Largest register first. "Free" rows were probes that created no job; our one 19-qubit job ran and cost 1 credit before it failed. 18 qubits is the largest register this engine returned for the dense sky grid through the API.</figcaption>
+    </figure>
+  </section>
+
+  <section class="sec" id="science" aria-labelledby="sci-h">
+    <div class="ink-bar"><h2 class="bar-h" id="sci-h">The science</h2><span>Open a drawer</span></div>
+    <div>
     <details class="drawer" id="d-beam"><summary>How the quantum blur differs from a real beam</summary><div class="body">
       <p>A telescope beam <em>averages</em> neighbouring sky, so contrast drops as it blurs. The quantum blur is unitary: it <em>shuffles</em> weight between Gray-code neighbours, so contrast stays high (about 95% even at full strength) while the spot pattern is scrambled into square blocks, the shape of the qubit register showing through. Switch to "Gaussian beam" to see a classical blur of the same width.</p>
       <p>The "equivalent beam" is a classical least-squares fit: the Gaussian smoothing of the original that comes closest to each engine output, added in quadrature to the map's own 1&deg; resolution. "Spot pattern kept" is the correlation between the original and the blurred sky after both are band-passed to spot scales (11&prime; to 45&prime;). "Contrast kept" is the ratio of their standard deviations. Both are classical measurements of the engine output.</p>
-      <div class="tscroll"><table class="t" id="t-fit"></table></div>
     </div></details>
-    <details class="drawer"><summary>What this does not claim</summary><div class="body">
+    </div>
+    <p class="note">The numbers behind these measurements are in Fig. 2 under The data; the story of the ripples is in the cards above.</p>
+  </section>
+
+  <section class="sec" id="claims" aria-labelledby="claims-h">
+    <div class="ink-bar"><h2 class="bar-h" id="claims-h">What this does not claim</h2><span>Honesty labels</span></div>
+    <div class="claims">
       <p class="honesty">The quantum blur is an analogy for a telescope's resolution. It is not a physical model of inflation, of the early universe, or of any real telescope. Nothing quantum about the cosmos was simulated: the quantum circuit only blurs a grid of numbers, and it ran on a classical simulator, not quantum hardware. There is no quantum advantage here.</p>
       <p>Classical steps, all labelled: reading and projecting the WMAP map, mapping temperatures to integers 0&ndash;999 for the engine (it accepts only non-negative numbers), removing the average shift the engine's rescaling adds (+1 to +32 &micro;K), the colour map, the Gaussian and COBE-like comparisons, and all fits. The COBE view is an idealised, noise-free smoothing, not COBE data.</p>
       <p>The ILC map is a foreground-cleaned combination meant for display. The WMAP team cautions that its structure below about 10&deg; is less certain, so it is not used here for science, only to show the sky. The account of quantum origins is the standard inflationary picture, well supported by the data but not directly observed.</p>
-    </div></details>
+    </div>
+    <div>
     <details class="drawer"><summary>The cartoon, honestly: what the sprites show</summary><div class="body">
       <p><b>Mapper</b> is a cartoon in the style of NASA's WMAP probe (two back-to-back dishes above a flat sun shield). It is not to scale, has a face, and does not fly like the real one, which spun and swept the whole sky from a point 1.5 million km beyond the Earth. Its blinking, bobbing, squinting (when its eye is very blurred), shivering (when you mark the Cold Spot) and cheering are reactions, not measurements.</p>
       <p><b>The beam circle</b> is drawn at a real size: the map's own 1&deg; on the original side, and on the blurred side the classical best-fit beam of the engine output you chose (or 7&deg; for COBE). <b>The eye</b> on the beam line sits at that beam size, and its fuzziness follows "Spot pattern kept": sharp at 100%, a smudge at COBE's 11%. The mission icons sit at the published beam sizes of Planck (about 5&prime;), WMAP (0.2&ndash;0.9&deg;) and COBE (7&deg;).</p>
       <p><b>Photons</b> leave the point you are looking at. Each is orange if the map shown there is warmer than average at that point and lilac if colder; that is all the data they carry. Their wiggle and flight are decoration: real CMB photons are microwaves about 2&nbsp;mm long.</p>
       <p><b>Galaxy seeds</b> are planted on every local hot spot in the original map hotter than <span id="thr-txt">+150</span>&nbsp;&micro;K (twice the patch's typical ripple), at least 1.1&deg; apart. A blurred map's hot spots are found by the same rule against its own typical ripple, so a blur that only dims the sky does not count as losing spots (that is "Contrast kept"). On the blurred side a seed stays a galaxy if the blurred map still has a hot spot within 0.75&deg;; otherwise it fades. A <b>phantom</b> is a hot spot in the blurred map with no hot spot within 0.75&deg; in the original: the quantum blur's square blocks make many of them, a smooth classical beam almost none. All of this is counted classically, in your browser, on the downloaded engine outputs. Drawing a galaxy on a hot spot is a cartoon: every ripple, hot or cold, seeded structure, and how a spot's temperature relates to what grew there is subtler (card 04).</p>
     </div></details>
+    </div>
+  </section>
+
+  <section class="sec" id="jobs" aria-labelledby="jobs-h">
+    <div class="ink-bar"><h2 class="bar-h" id="jobs-h">Jobs and credits</h2><span>Engine jobs, data, sources</span></div>
+    <figure class="fig" id="fig-jobs">
+      <div class="fig-h"><span class="n">Table 2</span><h3>Every engine job on this page</h3></div>
+      <div class="tscroll"><table class="t" id="t-jobs"></table></div>
+      <figcaption>All six ran on Atlas's classical statevector simulator with exact probabilities. The highlighted row is the job shown on the sky; "Show" puts that job on the sky.</figcaption>
+    </figure>
+    <div>
     <details class="drawer"><summary>Data, credits and sources</summary><div class="body">
       <p>Sky: NASA WMAP 9-year Internal Linear Combination map (<code>wmap_ilc_9yr_v5.fits</code>, HEALPix N<sub>side</sub> 512, 1&deg; resolution), from LAMBDA. Image credit: NASA / WMAP Science Team. We acknowledge the use of the Legacy Archive for Microwave Background Data Analysis (LAMBDA), part of the High Energy Astrophysics Science Archive Center (HEASARC). HEASARC/LAMBDA is a service of the Astrophysics Science Division at the NASA Goddard Space Flight Center.</p>
       <p>Patch: oblique plate-carr&eacute;e projection centred on galactic (l, b) = (209&deg;, &minus;57&deg;), 11.25&prime; per pixel, 48&deg; across. East is left, galactic north is up.</p>
       <p>Bennett et al. 2013, ApJS 208, 20 (WMAP 9-year maps). Hinshaw et al. 2013, ApJS 208, 19 (9-year cosmology). Guth &amp; Pi 1982, Phys. Rev. Lett. 49, 1110 (quantum fluctuations in inflation). Smoot et al. 1992, ApJ 396, L1 (COBE detection of the ripples). Vielva et al. 2004, ApJ 609, 22, and Cruz et al. 2005, MNRAS 356, 29 (the Cold Spot). Bennett et al. 2011, ApJS 192, 17 (are there CMB anomalies?). Wootton 2020, Foundations of Digital Games (quantum blur).</p>
     </div></details>
+    </div>
   </section>
   <style>
 .wtnr-nav{margin-top:2.5rem;border-top:1px solid var(--ink,#19238E);padding-top:1.1rem;display:grid;gap:1rem}
@@ -716,16 +841,24 @@ function updateUI(){
   const am = beamArcmin(st), eye = $('eye'); eye.style.left = (rulerPos(am) * 100) + '%';
   $('eye-lab').textContent = '\u2248' + (am / 60).toFixed(am === 420 ? 0 : 2) + '\u00b0';
   setEye(eyeFrame(keptNow(), D.cobe.kept));
-  $('beam-txt').textContent = st.kind === 'c' ? 'COBE-like: the map smoothed (classically) to a 7\u00b0 beam, as COBE saw the sky in 1992 (idealised, without its noise).'
+  const beamTxt = st.kind === 'c' ? 'COBE-like: the map smoothed (classically) to a 7\u00b0 beam, as COBE saw the sky in 1992 (idealised, without its noise).'
     : st.level === 0 ? 'No extra blur: this is the WMAP map at its own 1\u00b0 resolution.'
     : '\u2248 ' + (am / 60).toFixed(2) + '\u00b0 beam (classical best fit' + (st.kind === 'q' ? ' to the quantum blur, residual ' + L.fit_rms_uK.toFixed(0) + ' \u00b5K' : '') + '). ' +
       (am < 420 ? 'Still ' + (420 / am).toFixed(1) + '\u00d7 sharper than COBE.' : '');
-  // meters
+  $('beam-txt').textContent = beamTxt; $('beam-txt2').textContent = beamTxt;
+  $('ruler').querySelector('.me').style.left = (rulerPos(am) * 100) + '%';   // Fig. 1: the restored beam ruler
+  // meters (in the panel and mirrored in Fig. 1)
   let kept = 1, sr = 1;
   if (st.kind === 'c'){ kept = D.cobe.kept; sr = D.cobe.std_ratio; }
   else if (L){ kept = st.kind === 'q' ? L.kept : L.kept_gauss; sr = st.kind === 'q' ? L.std_ratio : L.std_ratio_gauss; }
-  $('m-kept').style.width = Math.max(0, kept) * 100 + '%'; $('n-kept').textContent = Math.round(Math.max(0, kept) * 100) + '%';
-  $('m-std').style.width = Math.min(1, sr) * 100 + '%'; $('n-std').textContent = Math.round(sr * 100) + '%';
+  for (const s of ['', '2']){
+    $('m-kept' + s).style.width = Math.max(0, kept) * 100 + '%'; $('n-kept' + s).textContent = Math.round(Math.max(0, kept) * 100) + '%';
+    $('m-std' + s).style.width = Math.min(1, sr) * 100 + '%'; $('n-std' + s).textContent = Math.round(sr * 100) + '%';
+  }
+  // Fig. 1 strength buttons, and the table rows for the blur on the sky
+  document.querySelectorAll('[data-stop]').forEach(b => b.setAttribute('aria-pressed', String(st.kind !== 'c' && +b.dataset.stop === st.level)));
+  document.querySelectorAll('#t-fit tr[data-lv]').forEach(r => r.classList.toggle('on', st.kind !== 'c' && +r.dataset.lv === st.level));
+  document.querySelectorAll('#t-jobs tr[data-lv]').forEach(r => r.classList.toggle('on', st.kind === 'q' && +r.dataset.lv === st.level));
   // readouts
   if (st.kind === 'q' && L){
     $('r-engine').innerHTML = '<span class="chip-q">blur-core-v1</span> \u00b7 Atlas statevector simulator';
@@ -1016,7 +1149,13 @@ cv.addEventListener('blur', () => { if (peek){ peek = false; draw(); } });
 
 // ---------- controls ----------
 function burst(n){ const fp = footprint(); spawnPhotons(n, fp.X, fp.Y, fp.r); }
-$('lvl').addEventListener('input', () => { st.level = +$('lvl').value; if (st.kind === 'c') st.kind = 'q'; draw(); sayBlur(); burst(4); });
+function setLevel(n){ st.level = n; if (st.kind === 'c') st.kind = 'q'; draw(); sayBlur(); burst(4); }   // slider, Fig. 1 stops
+function toStage(){                  // bring the sky into view and give it the keys (story cards, "Go to the sky", job rows)
+  const top = $('stage').getBoundingClientRect().top;
+  if (top < 0 || top > innerHeight * 0.6) $('stage').scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'center'});
+  cv.focus({preventScroll: true});
+}
+$('lvl').addEventListener('input', () => setLevel(+$('lvl').value));
 document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => { st.mode = b.dataset.mode; draw(); }));
 document.querySelectorAll('[data-kind]').forEach(b => b.addEventListener('click', () => { st.kind = b.dataset.kind; if (st.kind !== 'c' && st.level === 0) st.level = 4; draw(); sayBlur(); burst(4); }));
 document.querySelectorAll('[data-scene]').forEach(b => b.addEventListener('click', () => {
@@ -1050,13 +1189,22 @@ $('share').addEventListener('click', async () => {
 $('stops').innerHTML = ['0'].concat(LV.map(L => String(L.strength))).map(s => '<span>' + s + '</span>').join('');
 (function(){
   // mission line-up: each pixel satellite stands at its real beam size (log scale); the eye is "this view"
-  const r = $('ruler'), add = (h) => r.insertAdjacentHTML('beforeend', h), at = (a) => (rulerPos(a) * 100) + '%';
+  const r = $('lineup'), add = (h) => r.insertAdjacentHTML('beforeend', h), at = (a) => (rulerPos(a) * 100) + '%';
   add('<div class="band" style="left:' + at(13.2) + ';width:calc(' + at(52.8) + ' - ' + at(13.2) + ')"></div>');
   [5, 13.2, 52.8, 60, 420].forEach(a => add('<div class="tick" style="left:' + at(a) + '"></div>'));
   [['planck', 5, 'Planck 5\u2032'], ['wmapmini', Math.sqrt(13.2 * 52.8), 'WMAP'], ['cobe', 420, 'COBE 7\u00b0']].forEach(([sp, a, t]) =>
     add('<div class="ms" style="left:' + at(a) + '"><img class="pix" data-sprite="' + sp + '" data-frame="0" data-scale="2" alt="">' + t + '</div>'));
   add('<div class="ms txt" style="left:' + at(60) + '">map 1\u00b0</div>');
   add('<div class="eye" id="eye"><img class="pix" id="eye-img" alt=""><span id="eye-lab"></span></div>');
+  // Fig. 1 (restored from the first version): the equivalent-beam ruler, its marker set in updateUI()
+  const r2 = $('ruler'), add2 = (h) => r2.insertAdjacentHTML('beforeend', h);
+  add2('<div class="band" style="left:' + at(13.2) + ';width:calc(' + at(52.8) + ' - ' + at(13.2) + ')"></div>');
+  [[5, 'Planck', 'up'], [13.2, 'WMAP', 'dn'], [52.8, '', 'dn'], [60, 'this map 1\u00b0', 'up'], [420, 'COBE 7\u00b0', 'up']].forEach(([a, t, pos]) => {
+    add2('<div class="tick" style="left:' + at(a) + '"></div>'); if (t) add2('<div class="lab ' + pos + '" style="left:' + at(a) + '">' + t + '</div>'); });
+  add2('<div class="lab dn" style="left:' + at(4) + '">sharper</div><div class="lab dn" style="left:' + at(560) + '">blurrier</div><div class="me"></div>');
+  // Fig. 1 strength buttons: the same 7 stops as the slider, so the graph can drive the sky
+  $('fig-stops').innerHTML = ['0'].concat(LV.map(L => String(L.strength))).map((s, n) => '<button type="button" data-stop="' + n + '" aria-pressed="false">' + s + '</button>').join('');
+  document.querySelectorAll('[data-stop]').forEach(b => b.addEventListener('click', () => setLevel(+b.dataset.stop)));
   document.querySelectorAll('img[data-sprite]').forEach(im => setSpriteImg(im, im.dataset.sprite, +im.dataset.frame || 0, +im.dataset.scale || 2));
   $('thr-txt').textContent = '+' + Math.round(THR);
   const g = [], k = D.stops; for (const [x, c] of k) g.push('rgb(' + c.join(',') + ') ' + ((x + 1) * 50).toFixed(1) + '%');
@@ -1080,9 +1228,12 @@ document.querySelectorAll('[data-show]').forEach(b => b.addEventListener('click'
   Object.assign(st, SHOW[b.dataset.show]()); Object.assign(st, clampView(st));
   document.querySelectorAll('.card').forEach(c => c.classList.toggle('on', c.id === 'c' + b.dataset.show));
   draw();
-  const top = $('stage').getBoundingClientRect().top;
-  if (top < 0 || top > innerHeight * 0.6) $('stage').scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'center'});
-  cv.focus({preventScroll: true});
+  toStage();
+}));
+// "How to play" buttons: jump to the sky (and give it the keys) or to the graphs
+document.querySelectorAll('[data-goto]').forEach(b => b.addEventListener('click', () => {
+  if (b.dataset.goto === 'stage') return toStage();
+  $(b.dataset.goto).scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'start'});
 }));
 
 // ---------- quiz ----------
@@ -1124,8 +1275,11 @@ renderQuiz();
 
 // ---------- science tables, built from the job records ----------
 (function(){
-  $('t-jobs').innerHTML = '<tr><th>strength</th><th>job</th><th>qubits</th><th>seconds</th></tr>' +
-    LV.map(L => '<tr><td>' + L.strength + '</td><td>' + L.job_id + '</td><td>' + L.qubits + '</td><td>' + L.seconds + '</td></tr>').join('');
+  $('t-jobs').innerHTML = '<tr><th>strength</th><th>job</th><th>qubits</th><th>seconds</th><th>on the sky</th></tr>' +
+    LV.map((L, n) => '<tr data-lv="' + (n + 1) + '"><td>' + L.strength + '</td><td>' + L.job_id + '</td><td>' + L.qubits + '</td><td>' + L.seconds +
+      '</td><td><button type="button" class="btn ghost" data-job="' + (n + 1) + '" aria-label="Show the strength ' + L.strength + ' job on the sky">Show</button></td></tr>').join('');
+  document.querySelectorAll('[data-job]').forEach(b => b.addEventListener('click', () => {   // Table 2 -> the sky: that engine output, wiped against the original
+    st.kind = 'q'; st.level = +b.dataset.job; if (st.mode === 'o') st.mode = 'w'; draw(); sayBlur(); burst(4); toStage(); }));
   const why = {413: 'HTTP 413: request body over the 1 MiB API limit (free probe, no job)', 422: 'HTTP 422 on a deliberately invalid probe: the body size is accepted (free, no job)'};
   const rows = D.probes.map(p => [p.qubits, p.shape.join(' \u00d7 '), why[p.status] || ('HTTP ' + p.status)]);
   D.failed.forEach(f => rows.push([f.qubits, f.shape.join(' \u00d7 '), 'our job ' + f.job_id.slice(0, 8) + ' ran ("' + f.detail + '") then failed: result too large for the platform (1 credit)']));
@@ -1134,13 +1288,14 @@ renderQuiz();
   rows.sort((a, b) => b[0] - a[0] || String(a[2]).localeCompare(String(b[2])));
   $('t-limits').innerHTML = '<tr><th>qubits</th><th>grid</th><th>outcome</th></tr>' + rows.map(r => '<tr><td>' + r.join('</td><td>') + '</td></tr>').join('');
   $('t-fit').innerHTML = '<tr><th>strength</th><th>equivalent beam</th><th>spot pattern kept<br>quantum / Gaussian</th><th>contrast kept<br>quantum / Gaussian</th><th id="t-seed-h">galaxy seeds kept &middot; phantoms<br>quantum / Gaussian</th></tr>' +
-    LV.map((L, n) => '<tr><td>' + L.strength + '</td><td>' + L.beam_deg.toFixed(2) + '\u00b0</td><td>' + Math.round(L.kept * 100) + '% / ' + Math.round(L.kept_gauss * 100) + '%</td><td>' +
-      Math.round(L.std_ratio * 100) + '% / ' + Math.round(L.std_ratio_gauss * 100) + '%</td><td id="t-seed' + (n + 1) + '">open to count</td></tr>').join('');
-  $('d-beam').addEventListener('toggle', () => {         // the seed census needs every blurred map, so count only when asked
-    if (!$('d-beam').open) return;
-    LV.forEach((L, n) => { const q = seedsFor('q' + (n + 1)), g = seedsFor('g' + (n + 1)), R = roots().length;
-      $('t-seed' + (n + 1)).textContent = q.nKept + ' \u00b7 ' + q.nPhantom + ' / ' + g.nKept + ' \u00b7 ' + g.nPhantom;
-      $('t-seed-h').innerHTML = 'galaxy seeds kept (of ' + R + ') &middot; phantoms<br>quantum / Gaussian'; });
+    LV.map((L, n) => '<tr data-lv="' + (n + 1) + '"><td>' + L.strength + '</td><td>' + L.beam_deg.toFixed(2) + '\u00b0</td><td>' + Math.round(L.kept * 100) + '% / ' + Math.round(L.kept_gauss * 100) + '%</td><td>' +
+      Math.round(L.std_ratio * 100) + '% / ' + Math.round(L.std_ratio_gauss * 100) + '%</td><td id="t-seed' + (n + 1) + '">not counted yet</td></tr>').join('');
+  $('seed-count').addEventListener('click', () => {      // the seed census needs every blurred map, so count only when asked
+    const R = roots().length;
+    LV.forEach((L, n) => { const q = seedsFor('q' + (n + 1)), g = seedsFor('g' + (n + 1));
+      $('t-seed' + (n + 1)).textContent = q.nKept + ' \u00b7 ' + q.nPhantom + ' / ' + g.nKept + ' \u00b7 ' + g.nPhantom; });
+    $('t-seed-h').innerHTML = 'galaxy seeds kept (of ' + R + ') &middot; phantoms<br>quantum / Gaussian';
+    $('seed-note').textContent = 'Counted in your browser: ' + R + ' hot spots above +' + Math.round(THR) + ' \u00b5K in the original; press Plant galaxy seeds under the sky to see them.';
   });
 })();
 

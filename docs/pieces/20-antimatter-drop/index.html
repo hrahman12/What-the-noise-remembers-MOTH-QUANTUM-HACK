@@ -183,16 +183,32 @@ table.t1{border-collapse:collapse;font:400 .74rem/1.4 var(--mono);color:var(--in
 table.t1 th,table.t1 td{padding:.3rem .4rem;border-bottom:1px solid var(--rule);text-align:right}
 table.t1 th{color:var(--ink);font-weight:500;border-bottom-color:var(--ink)}
 .tscroll{overflow-x:auto;max-width:100%}
+/* titled sections below the scene: each one opens with an ink bar whose title is a real heading */
+.bar-h{font:inherit;letter-spacing:inherit;color:inherit}
+.sec{margin-top:1.25rem}
+.fig{margin:0}
+.fig figcaption{max-width:72ch}
+svg.bfield{width:100%;max-width:300px;height:auto;display:block;margin-inline:auto;border-top:1px solid var(--rule);padding-top:.4rem}
+svg.bfield text{font-family:var(--mono);fill:var(--ink-2)}
+.keys{display:grid;grid-template-columns:minmax(0,13rem) minmax(0,1fr);gap:.6rem 1.4rem;margin:0}
+.keys dt{font:500 .72rem/1.6 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.keys dd{margin:0;font-size:.93rem;color:var(--ink-2)}
+.claims p{max-width:80ch}
+table.jobs th,table.jobs td{text-align:left;vertical-align:top}
+table.jobs code{font-size:.95em;white-space:nowrap}
+.credit-list{margin:0;padding-inline-start:1.1rem;display:grid;gap:.5rem;font-size:.9rem;color:var(--ink-2);max-width:80ch}
+.credit-list b{color:var(--ink);font-weight:500}
+@media (max-width:620px){.keys{grid-template-columns:minmax(0,1fr);gap:.2rem}.keys dd{margin-bottom:.55rem}}
 @media (max-width:520px){.hud{left:.4rem;right:.4rem;top:.4rem;gap:.3rem}.chip{font-size:.6rem;letter-spacing:.03em;padding:.3rem .5rem}.chip .cal{display:none}.meter{left:.4rem;right:.4rem;bottom:.4rem;padding:.5rem .6rem}#ruler{height:102px}}
 @media (max-width:900px){.hero{grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "stage" "rest" "panel";grid-template-rows:none;row-gap:1.25rem}.hero>.panel{margin-top:0}.stage-cell{position:static}.lab{grid-template-columns:minmax(0,1fr)}}
 </style>
 
 <div class="wrap">
-  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count"><b>Bonus</b> &#183; Challenge 11</span></nav>
+  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count">Challenge <b>11</b></span></nav>
 
   <div class="hero">
     <div class="stage-cell"><div class="stage" id="stage">
-      <canvas id="cv" width="600" height="900" tabindex="0" aria-label="Illustrated side view of the ALPHA-g antihydrogen trap. Little antihydrogen atoms sit between mirror coil G (top) and mirror coil A (bottom); each escape is decided by one roll of the die on the right, and the atom flashes where it annihilates in the UP or DOWN region. Click, Space or Enter stacks, ramps or pauses; the right arrow or K steps the ramp forward (it never runs backwards)."></canvas>
+      <canvas id="cv" width="600" height="900" tabindex="0" aria-label="Side view of the ALPHA-g antihydrogen trap. Atoms sit between mirror coil G (top) and mirror coil A (bottom); escapes are counted in the up and down regions. Each escape is decided by one roll of the die on the right, and the atom flashes where it annihilates. Click, Space or Enter stacks, ramps or pauses; the right arrow or K steps the ramp forward (it never runs backwards)."></canvas>
       <div class="hud"><span class="chip hot" id="hud-bias">Bias 0 g</span><span class="chip" id="hud-phase">Trap empty</span></div>
       <div class="meter">
         <div class="top"><span>Ramp <b id="m-t">0.0</b> / 20 s</span><span>Mirror current <b id="m-i">100</b>%</span></div>
@@ -202,7 +218,7 @@ table.t1 th{color:var(--ink);font-weight:500;border-bottom-color:var(--ink)}
     </div></div>
 
     <div class="copy head">
-      <p class="kicker">Bonus &#183; Challenge 11 &#183; FQxI Challenge (educational)</p>
+      <p class="kicker">Challenge 11 &#183; FQxI Challenge (educational)</p>
       <h1>Drop antimatter. See which way it falls.</h1>
     </div>
     <div class="copy rest">
@@ -217,7 +233,7 @@ table.t1 th{color:var(--ink);font-weight:500;border-bottom-color:var(--ink)}
         <li><span><b>Set</b> the magnetic bias: tip the trap to push atoms up or down.</span></li>
         <li><span><b>Stack</b> antihydrogen in the trap, one trial or a full series.</span></li>
         <li><span><b>Ramp</b> the mirror coils down: drag the slider or press Ramp.</span></li>
-        <li><span><b>Read</b> where up and down balance, then flip to Data for your escape curve.</span></li>
+        <li><span><b>Read</b> your escape curve and find where up and down balance.</span></li>
       </ol>
     </div>
 
@@ -267,34 +283,22 @@ table.t1 th{color:var(--ink);font-weight:500;border-bottom-color:var(--ink)}
       </div>
   </div>
 
-  <div class="ink-bar"><span>Your results</span><span>Classical tally of quantum dice</span></div>
-  <section class="lab" aria-label="Your results">
+  <div class="ink-bar"><h2 id="how-h" class="bar-h">How to play</h2><span>You are in control</span></div>
+  <section class="sec card" aria-labelledby="how-h">
+    <dl class="keys">
+      <dt>Mouse or touch</dt><dd>Click or tap the trap to stack atoms, start the ramp or pause it. Drag the slider under the trap to lower the mirrors by hand.</dd>
+      <dt>Keyboard</dt><dd>Focus the trap: Space or Enter stacks, ramps or pauses; the right arrow or K steps the ramp forward half a second. The ramp never runs backwards, like the real one.</dd>
+      <dt>Beside the trap</dt><dd>Choose the bias, the atoms to stack, the ramp speed and the dice. You can switch the dice mid-ramp. Hear the dice turns on one short tone per die.</dd>
+      <dt>Your data</dt><dd>Click a column of the escape curve to choose that bias. Run the whole campaign to repeat all 11 biases with a full series each, then copy a link that reopens your exact curve.</dd>
+    </dl>
+  </section>
+
+  <div class="ink-bar"><h2 id="res-h" class="bar-h">Your results</h2><span>Classical tally of quantum dice</span></div>
+  <section class="lab" aria-labelledby="res-h">
     <div class="card">
-      <div class="viewbar">
-        <h2>Where do your atoms balance?</h2>
-        <div class="seg" role="group" aria-label="Show your results as" id="g-view">
-          <button type="button" data-view="scene" aria-pressed="true">Scene</button>
-          <button type="button" data-view="data" aria-pressed="false">Data</button>
-        </div>
-      </div>
-      <p class="label" id="c-n">0 escapes</p>
-      <div class="pane" id="pane-scene">
-        <canvas id="ruler" role="img" aria-label="The antihydrogen mascot stands on a ruler of bias values at your fitted balance point, with a bar for its 68% range. Signposts mark where a falls-down, no-gravity or falls-up world would balance (1-D cartoon); a ring marks the same fit to the paper's Table 1 counts."></canvas>
-        <p class="why" id="ruler-note">Signposts: where a falls-down world (arrow down, &#8722;1 g), a no-gravity world (dot, 0 g) or a falls-up world (arrow up, +1 g) would balance, in the naive 1-D picture. The small ring is the same fit to Table 1's raw counts. The bar under the mascot is your 68% range. Your atoms move the mascot; the signs never move.</p>
-      </div>
-      <div class="pane" id="pane-data" hidden>
-        <h3>Your escape curve</h3>
-        <svg class="curve" id="curve" viewBox="0 0 640 380" role="img" aria-label="Probability of escaping downwards versus bias. Click a column to choose that bias."></svg>
-        <div class="legend">
-          <span><i style="background:var(--ink)"></i>your atoms (68% interval)</span>
-          <span><svg viewBox="0 0 26 8" aria-hidden="true"><line x1="0" x2="26" y1="4" y2="4" stroke="var(--ink)" stroke-width="2.5"/></svg>your fit</span>
-          <span><i style="border:1.5px solid var(--ink-2);background:transparent"></i>paper, Table 1 raw counts</span>
-          <span id="lg-worlds" hidden><svg viewBox="0 0 26 8" aria-hidden="true"><line x1="0" x2="26" y1="4" y2="4" stroke="var(--ink-2)" stroke-width="1.5" stroke-dasharray="10 4"/></svg>falls down &#183; <svg viewBox="0 0 26 8" aria-hidden="true"><line x1="0" x2="26" y1="4" y2="4" stroke="var(--ink-2)" stroke-width="1.5" stroke-dasharray="4 4"/></svg>no gravity &#183; <svg viewBox="0 0 26 8" aria-hidden="true"><line x1="0" x2="26" y1="4" y2="4" stroke="var(--ink-2)" stroke-width="2" stroke-dasharray="0.5 4" stroke-linecap="round"/></svg>falls up (1-D cartoon)</span>
-        </div>
-        <div class="row"><button type="button" class="btn ghost" id="worlds" aria-pressed="false">Show other worlds</button></div>
-        <h3>Last dice</h3>
-        <ul class="dice" id="dice"><li>No atoms have escaped yet.</li></ul>
-      </div>
+      <h2>Where do your atoms balance?</h2>
+      <canvas id="ruler" role="img" aria-label="The antihydrogen mascot stands on a ruler of bias values at your fitted balance point, with a bar for its 68% range. Signposts mark where a falls-down, no-gravity or falls-up world would balance (1-D cartoon); a ring marks the same fit to the paper's Table 1 counts."></canvas>
+      <p class="why" id="ruler-note">Signposts: where a falls-down world (arrow down, &#8722;1 g), a no-gravity world (dot, 0 g) or a falls-up world (arrow up, +1 g) would balance, in the naive 1-D picture. The small ring is the same fit to Table 1's raw counts. The bar under the mascot is your 68% range. Your atoms move the mascot; the signs never move.</p>
       <div class="row">
         <button type="button" class="btn" id="campaign">Run the whole campaign</button>
         <button type="button" class="btn ghost" id="clear">Clear my data</button>
@@ -305,17 +309,40 @@ table.t1 th{color:var(--ink);font-weight:500;border-bottom-color:var(--ink)}
     <div class="card">
       <h2>Verdict</h2>
       <div class="verdict" id="verdict" aria-live="polite"></div>
+      <h2 style="font-size:1.25rem">Last dice</h2>
+      <ul class="dice" id="dice"><li>No atoms have escaped yet.</li></ul>
     </div>
   </section>
 
-  <div class="ink-bar"><h2 id="quiz-h" style="font:inherit;letter-spacing:inherit;color:inherit">Test yourself</h2><span class="score" id="q-score">0 / 6 answered</span></div>
+  <div class="ink-bar"><h2 id="data-h" class="bar-h">The data</h2><span>Live graphs of your atoms</span></div>
+  <section class="lab" aria-labelledby="data-h">
+    <figure class="card fig">
+      <div class="row split"><h2>Your escape curve</h2><span class="label" id="c-n">0 escapes</span></div>
+      <svg class="curve" id="curve" viewBox="0 0 640 380" role="img" aria-label="Probability of escaping downwards versus bias. Click a column to choose that bias."></svg>
+      <div class="legend">
+        <span><i style="background:var(--ink)"></i>your atoms (68% interval)</span>
+        <span><svg viewBox="0 0 26 8" aria-hidden="true"><line x1="0" x2="26" y1="4" y2="4" stroke="var(--ink)" stroke-width="2.5"/></svg>your fit</span>
+        <span><i style="border:1.5px solid var(--ink-2);background:transparent"></i>paper, Table 1 raw counts</span>
+        <span id="lg-worlds" hidden><svg viewBox="0 0 26 8" aria-hidden="true"><line x1="0" x2="26" y1="4" y2="4" stroke="var(--ink-2)" stroke-width="1.5" stroke-dasharray="10 4"/></svg>falls down &#183; <svg viewBox="0 0 26 8" aria-hidden="true"><line x1="0" x2="26" y1="4" y2="4" stroke="var(--ink-2)" stroke-width="1.5" stroke-dasharray="4 4"/></svg>no gravity &#183; <svg viewBox="0 0 26 8" aria-hidden="true"><line x1="0" x2="26" y1="4" y2="4" stroke="var(--ink-2)" stroke-width="2" stroke-dasharray="0.5 4" stroke-linecap="round"/></svg>falls up (1-D cartoon)</span>
+      </div>
+      <div class="row"><button type="button" class="btn ghost" id="worlds" aria-pressed="false">Show other worlds</button></div>
+      <figcaption class="why">Each filled dot is the share of your atoms that escaped downwards at one bias, with its 68% interval; the solid line is the logistic fit to your atoms, and it crosses the dashed 0.50 line at your balance point. The open rings are the same share from the paper's Table 1 raw counts. Click a column to choose that bias.</figcaption>
+    </figure>
+    <figure class="card fig">
+      <div class="row split"><h2>|B| sketch</h2><span class="label">not to scale</span></div>
+      <svg class="bfield" id="bfield" viewBox="0 0 260 392" role="img" aria-label="Schematic of the magnetic field strength along the trap axis, not to scale: two barrier peaks at mirror coils G (top) and A (bottom) that fall as the ramp runs; the bias raises one of them."></svg>
+      <figcaption class="why">Schematic on-axis |B|: the barrier heights at coils G and A fall with the ramp, and the bias raises one of them (exaggerated, as on the trap). The atoms leak out over the lower barrier. It follows the trap as you ramp and change the bias.</figcaption>
+    </figure>
+  </section>
+
+  <div class="ink-bar"><h2 id="quiz-h" class="bar-h">Test yourself</h2><span class="score" id="q-score">0 / 6 answered</span></div>
   <section class="quiz" aria-labelledby="quiz-h">
     <div class="qgrid" id="quiz"></div>
     <div class="row"><button type="button" class="btn ghost" id="q-reset">Reset the quiz</button></div>
   </section>
 
-  <div class="ink-bar"><span>The science</span><span>Open a drawer</span></div>
-  <section class="more">
+  <div class="ink-bar"><h2 id="sci-h" class="bar-h">The science</h2><span>Open a drawer</span></div>
+  <section class="more" aria-labelledby="sci-h">
     <details class="drawer"><summary>What antimatter is</summary><div class="body">
       <p>Every kind of particle has an antiparticle with the same mass and the opposite electric charge. Paul Dirac's 1928 theory of the electron led to the prediction of a positively charged twin, and Carl Anderson found that positron in cosmic rays in 1932.</p>
       <p><b>Antihydrogen</b> is the simplest anti-atom: one antiproton orbited by one positron. It is electrically neutral, which matters here: charged antiparticles are pushed around by stray fields far stronger than gravity. The ALPHA-g paper puts it starkly: gravity on a proton is equivalent to an electric field of only about 10<sup>-7</sup> V/m.</p>
@@ -331,16 +358,35 @@ table.t1 th{color:var(--ink);font-weight:500;border-bottom-color:var(--ink)}
       <div class="tscroll"><table class="t1" id="t1"><caption class="label" style="text-align:left;padding-bottom:.4rem">Table 1 of the paper (background-corrected counts), and the odds this page uses</caption></table></div>
       <p>Source: E. K. Anderson et al. (ALPHA Collaboration), "Observation of the effect of gravity on the motion of antimatter", <i>Nature</i> 621, 716&#8211;722 (2023), doi:10.1038/s41586-023-06527-1, open access under CC BY 4.0.</p>
     </div></details>
+  </section>
+
+  <div class="ink-bar"><h2 id="made-h" class="bar-h">How it was made</h2><span>The only quantum step</span></div>
+  <section class="more" aria-labelledby="made-h">
     <details class="drawer"><summary>What the quantum computer did</summary><div class="body">
       <p>Atlas's <b>comet-qrng-v1</b> engine put 148 qubits of IBM's <b>ibm_fez</b> into an equal superposition and measured them 10,000 times. It added 8 more qubits as four Bell pairs (CHSH witness S = 2.548 &#177; 0.015, above the classical limit of 2). That is 156 qubits, the whole chip. The engine estimated how much unpredictability the raw bits really carried, using NIST SP 800-90B estimators (0.679 bits of min-entropy per raw bit). It then compressed them with a Toeplitz extractor set to &#949; = 2<sup>-128</sup>, leaving 110,710 bytes. Job <code>f0a73985-b15e-42ef-870f-40a6e2b2360a</code>, IBM job <code>db1jigpb694s73dscbr0</code>.</p>
-      <p>Each escaping atom reads the next 16 bits of that bank as a number k from 0 to 65,535. If k is below round(P<sub>dn</sub> &#215; 65,536), the atom goes <b>down</b>; otherwise it goes up. P<sub>dn</sub> comes from Table 1 for the bias you set. The die beside the trap rolls once per escaping atom and shows that word and its verdict; the Data view lists the last eight comparisons. Press <b>Hear the dice</b> to hear every roll as it lands.</p>
+      <p>Each escaping atom reads the next 16 bits of that bank as a number k from 0 to 65,535. If k is below round(P<sub>dn</sub> &#215; 65,536), the atom goes <b>down</b>; otherwise it goes up. P<sub>dn</sub> comes from Table 1 for the bias you set. The dice log under the verdict shows every comparison. It keeps the last eight. The die beside the trap rolls once per escaping atom and shows that word and its verdict. Press <b>Hear the dice</b> to hear every roll as it lands.</p>
       <p>The <b>emulator</b> bank is the same engine on a classical Aer simulator: 20 qubits (the emulator's cap), 8,423 bytes, job <code>c07b1b4e-ec07-4def-8f51-dfb16765626f</code>. The <b>browser</b> dice come from your browser's crypto random generator. Switch between all three mid-ramp: the curve converges to the same place, because the physics lives in the probabilities, not the dice.</p>
     </div></details>
-    <details class="drawer"><summary>What this does not claim</summary><div class="body">
-      <p class="honesty">This page does not simulate antihydrogen. Each atom's up or down outcome is a weighted coin, and the weights are Table 1's background-corrected counts. Those counts are not corrected for detector efficiency (the &#177;10 g calibration rows suggest the up and down regions differ by a few per cent), and the bias labels are the nominal ones. The paper's own escape curve applies both corrections and puts the balance point close to &#8722;1 g; our logistic fit to the raw counts gives &#8722;0.78 g.</p>
-      <p class="honesty">Everything else here is classical and illustrative: when each atom escapes (spread evenly over 10 to 20 s of the ramp, the window where the paper counts its events), the motion in the trap, the vertex positions, the pion tracks, the detector pads lighting up and the barrier "gates" at the mirror coils. The drawing keeps heights to scale but widens the trap and the atoms so you can see them, and the bias on the gates is exaggerated. The characters' faces only react: an atom looks down or up after its die has decided, and the mascot stands wherever your own fit puts it. The optional "Hear the dice" sound is a classical sonification of the same rolls: one short tone per die, high for up and low for down; in a fast campaign some tones are skipped so they never pile up. The balance-point fit, the signposts and the "other worlds" curves are our own logistic cartoon, not the paper's simulation. The real 0.75 g comes from 3-D trajectory simulations we do not reproduce.</p>
-      <p class="honesty">The quantum computer contributes nothing to the physics: it only supplies dice. The ibm_fez bytes are entropy-accounted under the engine's stated assumption that qubits within a shot carry no more than pairwise correlations (grade "hardware-accounted"). That is not device-independent certification: the CHSH value is a fidelity witness. The emulator bank is classical pseudo-randomness.</p>
-    </div></details>
+  </section>
+
+  <div class="ink-bar"><h2 id="claim-h" class="bar-h">What this does not claim</h2><span>Honesty notes</span></div>
+  <section class="sec card claims" id="claims" aria-labelledby="claim-h">
+    <p class="honesty">This page does not simulate antihydrogen. Each atom's up or down outcome is a weighted coin, and the weights are Table 1's background-corrected counts. Those counts are not corrected for detector efficiency (the &#177;10 g calibration rows suggest the up and down regions differ by a few per cent), and the bias labels are the nominal ones. The paper's own escape curve applies both corrections and puts the balance point close to &#8722;1 g; our logistic fit to the raw counts gives &#8722;0.78 g.</p>
+    <p class="honesty">Everything else here is classical and illustrative: when each atom escapes (spread evenly over 10 to 20 s of the ramp, the window where the paper counts its events), the motion in the trap, the vertex positions, the pion tracks and the |B| sketch. The balance-point fit and the "other worlds" curves are our own logistic cartoon, not the paper's simulation. The real 0.75 g comes from 3-D trajectory simulations we do not reproduce.</p>
+    <p class="honesty">The sprite scene is illustration too: the detector pads lighting up and the barrier "gates" at the mirror coils. The drawing keeps heights to scale but widens the trap and the atoms so you can see them, and the bias on the gates is exaggerated. The characters' faces only react: an atom looks down or up after its die has decided, and the mascot stands wherever your own fit puts it. The signposts on its ruler belong to the same logistic cartoon. The optional "Hear the dice" sound is a classical sonification of the same rolls: one short tone per die, high for up and low for down; in a fast campaign some tones are skipped so they never pile up.</p>
+    <p class="honesty">The quantum computer contributes nothing to the physics: it only supplies dice. The ibm_fez bytes are entropy-accounted under the engine's stated assumption that qubits within a shot carry no more than pairwise correlations (grade "hardware-accounted"). That is not device-independent certification: the CHSH value is a fidelity witness. The emulator bank is classical pseudo-randomness.</p>
+  </section>
+
+  <div class="ink-bar"><h2 id="jobs-h" class="bar-h">Jobs and credits</h2><span>2 real Atlas jobs</span></div>
+  <section class="sec card" aria-labelledby="jobs-h">
+    <div class="tscroll"><table class="t1 jobs" id="jobs"><caption class="label" style="text-align:left;padding-bottom:.4rem">The Atlas comet-qrng-v1 jobs behind the dice (from out/jobs.json)</caption></table></div>
+    <ul class="credit-list">
+      <li><b>Physics data.</b> E. K. Anderson et al. (ALPHA Collaboration), "Observation of the effect of gravity on the motion of antimatter", <i>Nature</i> 621, 716&#8211;722 (2023), doi:10.1038/s41586-023-06527-1, open access under CC BY 4.0. Table 1 is transcribed unchanged except for re-ordering; we turn its counts into probabilities and clamp one negative count (&#8722;0.1) to 0. No figures or images from the paper are reproduced.</li>
+      <li><b>History.</b> The facts in "What antimatter is" come from the same paper's introduction, which cites P. A. M. Dirac, <i>Proc. R. Soc. A</i> 117, 610&#8211;624 (1928) and C. D. Anderson, <i>Phys. Rev.</i> 43, 491&#8211;494 (1933), an observation made in 1932.</li>
+      <li><b>Quantum engine.</b> Moth Quantum Atlas, comet-qrng-v1 v1.0.0, run on IBM Quantum ibm_fez and on an Aer simulator. The NIST SP 800-90B estimators and the Toeplitz extractor run inside the engine.</li>
+      <li><b>Fonts.</b> Geist and IBM Plex Mono from Google Fonts (SIL Open Font License).</li>
+      <li><b>Made for this piece.</b> The page code, the trap drawing, the pixel-art cast, the graphs and the sound. No third-party images are used.</li>
+    </ul>
   </section>
   <style>
 .wtnr-nav{margin-top:2.5rem;border-top:1px solid var(--ink,#19238E);padding-top:1.1rem;display:grid;gap:1rem}
@@ -880,7 +926,7 @@ function draw(now) {
   const settled = st.atoms.every(a => a.state === 'gone');
   if ((st.phase === 'empty' || (st.phase === 'done' && settled)) && !(st.campaign && st.campaign.on)) {
     let sp, lines;
-    if (st.phase === 'empty') { sp = SP.mascotWave; lines = FK > 1.1 ? ['Trap empty!', 'Tap here to stack atoms'] : ['Trap empty!', 'Click here to stack atoms', '(or press Space)']; }
+    if (st.phase === 'empty') { sp = SP.mascotWave; lines = FK > 1.1 ? ['trap empty', 'press Stack atoms', '(or tap here)'] : ['trap empty', 'press Stack atoms', '(or Space here)', 'or click the trap']; }
     else {
       sp = st.dn > st.up ? SP.mascotDn : st.up > st.dn ? SP.mascotUp : SP.mascotHmm;
       lines = [`${st.dn} down \u00b7 ${st.up} up`, st.dn > st.up ? 'mostly down!' : st.up > st.dn ? 'mostly up!' : 'a dead heat', 'Stack again?'];
@@ -900,7 +946,7 @@ function draw(now) {
   // Earth, for orientation (it turns only while the scene idles on screen)
   const er = 8 * Math.max(1, Math.round(2.8 * K)) / K;              // Earth's radius in world units
   spr(SP.earth, ANIM ? fr(SP.earth, now) : 0, 10 + er, 742 - er, 2.8);
-  txt(ctx, 'Earth', 16 + 2 * er, 742 - er, F(14), {col: PAL.ink2, base: 'middle'});
+  txt(ctx, '\u2193 Earth', 16 + 2 * er, 742 - er, F(14), {col: PAL.ink2, base: 'middle'});
   // the dice: the only quantum step
   const meta = st.src === 'cls' ? null : BANKS[st.src];
   const left = meta ? (BYTES[st.src].length - st.off[st.src]) >> 1 : null;
@@ -974,7 +1020,7 @@ function renderCurve() {
 function refit() {
   st.fit = C.fitLogistic(MAIN.map((r, i) => ({b: r.b, up: st.tally[i][0], dn: st.tally[i][1]})));
 }
-let rz = null; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { renderCurve(); draw(); drawRuler(); }, 150); });
+let rz = null; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { renderCurve(); draw(); drawRuler(); renderBField(true); }, 150); });
 $('curve').addEventListener('click', e => {
   const g = e.target.closest('.col'); if (!g) return;
   chooseBias(+g.dataset.bi);
@@ -1004,7 +1050,7 @@ const WALK_MS = 900;
 const clampB = b => Math.max(-3.75, Math.min(3.75, b));
 function updateRuler(anim) {
   const tgt = st.fit ? clampB(st.fit.b0) : null;
-  const vis = !$('pane-scene').hidden && rv.clientWidth > 0;
+  const vis = rv.clientWidth > 0;
   if (anim && ANIM && vis && rs.cur !== null && tgt !== null && Math.abs(tgt - rs.cur) > 0.004) {
     rs.from = rs.cur; rs.to = tgt; rs.t0 = performance.now();
     if (!rs.raf) rs.raf = requestAnimationFrame(rulerLoop);
@@ -1027,7 +1073,7 @@ function rulerIdle() {
   if (!ANIM || rs.idle) return;
   const tick = () => {
     rs.idle = null;
-    if (!rs.seen || document.hidden || $('pane-scene').hidden) return;
+    if (!rs.seen || document.hidden) return;
     if (!rs.raf) drawRuler();
     rs.idle = setTimeout(tick, 260);
   };
@@ -1085,12 +1131,42 @@ function drawRuler(now, walking) {
   for (let i = 0; i < 3; i++) box(tx + dir * (2 * i) - (dir < 0 ? 2 : 0), ty - 3 + i, 2, 6 - 2 * i, PAL.ink);
   lines.forEach((s, i) => write(s, bx + bw / 2, by + 5 + lh * i + fs - 1, fs, i ? PAL.ink2 : PAL.ink));
 }
-function setView(v) {
-  press('[data-view]', 'view', v);
-  $('pane-scene').hidden = v !== 'scene'; $('pane-data').hidden = v !== 'data';
-  if (v === 'data') renderCurve(); else { updateRuler(false); rulerIdle(); }
+// ---- |B| sketch (SVG, restored from the first version's trap canvas): schematic on-axis |B| along the trap.
+// Barrier heights fall with the ramp (mirror current 1 - 0.97 t/20); the bias raises one of them (exaggerated,
+// the same levels the coils and gates use in the scene). Not to scale.
+const BF = {x0: 70, bw: 150, yc: 186, k: 5.6};          // |B| baseline x, |B| scale, y of z = 0, px per cm
+const bfY = z => BF.yc - z * BF.k;                      // z from -30 to +30 cm, up = top of the trap
+let bfKey = '';
+function renderBField(force) {
+  const svg = $('bfield'); if (!svg) return;
+  const b = BIAS[st.bi].b, key = st.t.toFixed(1) + '|' + st.bi;
+  if (!force && key === bfKey) return;
+  bfKey = key;
+  const cur = 1 - 0.97 * st.t / 20;
+  const gG = Math.min(1, cur + Math.max(0, b) * 0.1), gA = Math.min(1, cur + Math.max(0, -b) * 0.1);
+  const s = [], x1 = 252;
+  // the UP and DOWN counting regions (z-cut 12.8 to 32.8 cm, clipped to the sketch)
+  for (const [za, zb, name, ty] of [[30, 12.8, 'UP region', bfY(30) + 15], [-12.8, -30, 'DOWN region', bfY(-30) - 7]]) {
+    s.push(`<rect x="${BF.x0}" y="${bfY(za)}" width="${x1 - BF.x0}" height="${(bfY(zb) - bfY(za)).toFixed(1)}" fill="${INK(.045)}"/>`);
+    s.push(`<text x="${x1 - 4}" y="${ty.toFixed(1)}" text-anchor="end" font-size="11">${name}</text>`);
+  }
+  s.push(`<line x1="${BF.x0}" x2="${BF.x0}" y1="${bfY(-30)}" y2="${bfY(30)}" stroke="${PAL.rule}" stroke-width="1.5"/>`);
+  let d = '';
+  for (let z = -30; z <= 30.0001; z += 0.5) {
+    const pk = zz => Math.exp(-((z - zz) ** 2) / (2 * 3.2 * 3.2));
+    const v = 0.04 + gG * pk(ZM) + gA * pk(-ZM);
+    d += (d ? 'L' : 'M') + (BF.x0 + v * BF.bw).toFixed(1) + ' ' + bfY(z).toFixed(1);
+  }
+  s.push(`<path d="${d}" fill="none" stroke="${PAL.ink}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`);
+  for (const [z, name] of [[ZM, 'G'], [-ZM, 'A']]) {
+    s.push(`<line x1="${BF.x0 - 7}" x2="${BF.x0}" y1="${bfY(z)}" y2="${bfY(z)}" stroke="${PAL.ink}" stroke-width="1.5"/>`);
+    s.push(`<text x="${BF.x0 - 12}" y="${(bfY(z) + 5).toFixed(1)}" text-anchor="end" font-size="15" style="fill:${PAL.ink}">${name}</text>`);
+  }
+  s.push(`<text x="10" y="${(bfY(-30) + 2).toFixed(1)}" font-size="11">\u2193 Earth</text>`);
+  s.push(`<text x="${BF.x0 + 2}" y="12" font-size="11">|B| \u2192</text>`);
+  s.push(`<text x="${x1}" y="${(bfY(-30) + 20).toFixed(1)}" text-anchor="end" font-size="11">ramp ${st.t.toFixed(1)} s \u00b7 bias ${fmtB(b)} g</text>`);
+  svg.innerHTML = s.join('');
 }
-document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
 function renderDice() {
   const el = $('dice');
   if (!st.log.length) { el.innerHTML = '<li>No atoms have escaped yet.</li>'; return; }
@@ -1140,6 +1216,7 @@ function sync() {
   $('r-job').textContent = meta ? meta.job_id : '-';
   $('r-bank').textContent = meta ? `${nf(BYTES[st.src].length)} bytes = ${nf(BYTES[st.src].length >> 1)} dice \u00b7 ${nf(st.off[st.src] >> 1)} used` : 'fresh 16 bits per atom';
   $('r-phys').textContent = `Table 1, ${fmtB(row.b)} g: ${row.trials} trials, ${row.n_up} up, ${row.n_dn} down \u2192 P(down) ${row.p.toFixed(3)}, threshold ${row.thr} / 65536`;
+  renderBField();                                   // the |B| sketch follows the ramp and the bias
 }
 document.querySelectorAll('[data-size]').forEach(b => b.addEventListener('click', () => { st.size = b.dataset.size; press('[data-size]', 'size', st.size); }));
 document.querySelectorAll('[data-speed]').forEach(b => b.addEventListener('click', () => { st.speed = b.dataset.speed; press('[data-speed]', 'speed', st.speed); }));
@@ -1247,6 +1324,20 @@ const toast = msg => { const t = $('toast'); t.textContent = msg; t.classList.ad
   const t = $('t1'), h = ['bias (g)', 'trials', 'N up', 'N down', 'P(down) used', '16-bit threshold'];
   let s = '<thead><tr>' + h.map(x => `<th scope="col">${x}</th>`).join('') + '</tr></thead><tbody>';
   for (const r of BIAS) s += `<tr><td>${fmtB(r.b)}</td><td>${r.trials}</td><td>${r.n_up}</td><td>${r.n_dn}</td><td>${r.p.toFixed(4)}</td><td>${r.thr}</td></tr>`;
+  t.insertAdjacentHTML('beforeend', s + '</tbody>');
+})();
+
+// ---- the Atlas jobs behind the dice, in "Jobs and credits" (straight from out/jobs.json via build_web.py) ----
+(function () {
+  const t = $('jobs'), h = ['dice bank', 'Atlas job', 'provider job', 'backend', 'qubits', 'bytes (dice)', 'grade', 'CHSH S'];
+  let s = '<thead><tr>' + h.map(x => `<th scope="col">${x}</th>`).join('') + '</tr></thead><tbody>';
+  for (const k of ['fez', 'emu']) {
+    const m = BANKS[k];
+    const q = m.total > m.reg ? `${m.reg} + ${m.total - m.reg} Bell = ${m.total}` : String(m.total);
+    const chsh = typeof m.S === 'number' ? `${m.S.toFixed(3)} \u00b1 ${m.sigma_S.toFixed(3)}` : '-';
+    s += `<tr><td>${k === 'fez' ? 'IBM hardware' : 'emulator (classical)'}</td><td><code>${m.job_id}</code></td><td><code>${m.provider_job_id}</code></td>` +
+      `<td>${m.backend}</td><td>${q}</td><td>${nf(m.bytes)} (${nf(m.bytes >> 1)})</td><td>${m.grade}</td><td>${chsh}</td></tr>`;
+  }
   t.insertAdjacentHTML('beforeend', s + '</tbody>');
 })();
 

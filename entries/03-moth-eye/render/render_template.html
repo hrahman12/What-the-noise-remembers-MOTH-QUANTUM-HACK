@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Moth Eye film</title>
+<style>
+/*BRAND*/
+/* Film frame in the brief-page look: paper ground, one ink, square cards, hairlines, no glows or shadows. */
+html,body{margin:0;padding:0;width:1280px;height:720px;overflow:hidden;background:var(--paper)}
+#cv{position:absolute;left:0;top:0;width:1280px;height:720px}
+.side{position:absolute;right:36px;top:64px;bottom:36px;width:372px;display:grid;align-content:start;gap:14px}
+.card{background:var(--panel);border:1px solid var(--ink);padding:14px 16px;display:grid;gap:8px}
+.big{font:400 44px/1 var(--display);letter-spacing:-.025em;color:var(--ink)}
+.mono{font:500 12px/1.45 var(--mono);color:var(--ink-2)}
+.mono b{color:var(--ink);font-weight:500}
+.bars{display:grid;grid-template-columns:86px 1fr 64px;gap:6px 10px;align-items:center;font:500 12px/1.2 var(--mono);color:var(--ink-2)}
+.bars .bar{height:8px;background:var(--panel-2);border:1px solid var(--rule);overflow:hidden}
+.bars .bar i{display:block;height:100%;background:var(--ink-3)}
+.bars .bar i.on{background:var(--ink)}
+.bars .v{color:var(--ink);text-align:right}
+.bars .cur{color:var(--ink);font-weight:600}
+.cap{position:absolute;left:36px;bottom:36px;max-width:760px;font:400 20px/1.35 var(--body);color:var(--ink);background:var(--panel);border:1px solid var(--ink);padding:12px 16px}
+.cap:empty{display:none}
+.cap small{display:block;font:500 12px/1.4 var(--mono);color:var(--ink-2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.brand{position:absolute;left:36px;right:36px;top:22px;padding-bottom:10px;border-bottom:1px solid var(--ink);display:flex;justify-content:space-between;font:500 12px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+.title{position:absolute;inset:48px 0 0 0;display:grid;place-content:center;text-align:center;justify-items:center;gap:16px;background:rgba(251,250,249,.9);padding-bottom:48px}
+.cmp{position:absolute;right:36px;top:64px;width:300px}
+.title h1{font-size:96px;line-height:1;letter-spacing:-.03em;color:var(--ink)}
+.title p{font:400 22px/1.4 var(--body);color:var(--ink);max-width:820px}
+.title .k{font:500 14px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--ink)}
+.key{display:inline-block;width:18px;height:0;border-top:2px solid var(--ink);vertical-align:middle;margin-right:6px}
+svg text{font-family:"IBM Plex Mono",monospace}
+</style></head><body>
+<canvas id="cv" width="1280" height="720"></canvas>
+<div class="brand"><span>What the Noise Remembers</span><span>Challenge 03 &middot; Hide</span></div>
+<div class="side" id="side">
+  <div class="card"><span class="label">Layers in the stack</span><span class="big" id="s-layers">1</span><span class="mono" id="s-job"></span></div>
+  <div class="card"><span class="label">How visible are you</span><div class="bars" id="s-bars"></div></div>
+  <div class="card"><span class="label">All six runs</span><svg id="s-plot" viewBox="0 0 340 150" width="340" height="150"></svg><span class="mono"><i class="key"></i>mean R &nbsp; <i class="key" style="border-top-style:dotted;border-top-color:#545BA9"></i>mean T</span></div>
+</div>
+<div class="card cmp" id="cmp"></div>
+<div class="cap" id="cap"></div>
+<div class="title" id="title"></div>
+<script src="node_modules/three/build/three.min.js"></script>
+<script>
+/*CORE*/
+const LUTS = /*LUTS*/{};
+const META = /*META*/{};
+const FPS = 30;
+const SW = META.results.filter(r => r.series === 'sweep').sort((a, b) => a.layers - b.layers);
+const V = MothEye.Viewer(THREE, document.getElementById('cv'), LUTS, {bg: '#FBFAF9'});   // brand paper
+V.setSize(1280, 720, 1);
+const $ = (id) => document.getElementById(id);
+const ease = (x) => x < 0 ? 0 : x > 1 ? 1 : x * x * (3 - 2 * x);
+const lerp = (a, b, x) => a + (b - a) * x;
+const qubitsFit = (L, R) => R + L - Math.floor(L / 4) + 10;
+// Shot list (seconds). Each layer count is shown for 5 s; every one is a separate real Atlas run.
+const T_TITLE = 5, T_LAYERS = 35, T_RAW = 41, T_CMP = 48, T_END = 52;
+const DURATION = T_END;
+
+function plot(cur) {
+  const X = (L) => 24 + (L - 1) * 60, Y = (v) => 130 - v / 0.6 * 120;
+  let s = '<line x1="20" x2="330" y1="130" y2="130" stroke="#19238E"/>';
+  for (const v of [0.2, 0.4]) s += `<line x1="20" x2="330" y1="${Y(v)}" y2="${Y(v)}" stroke="#D3D3E6"/><text x="0" y="${Y(v) + 4}" fill="#545BA9" font-size="10">${v.toFixed(1)}</text>`;
+  const shown = SW.filter(r => r.layers <= cur);
+  const line = (k, c, dash, hollow) => `<polyline fill="none" stroke="${c}" stroke-width="2.2" ${dash ? `stroke-dasharray="${dash}"` : ''} points="${shown.map(r => X(r.layers) + ',' + Y(r[k])).join(' ')}"/>` +
+    shown.map(r => `<circle cx="${X(r.layers)}" cy="${Y(r[k])}" r="${r.layers === cur ? 5 : 3}" fill="${hollow ? '#FFFFFF' : c}" stroke="${c}" stroke-width="1.5"/>`).join('');
+  s += line('lut_mean_R', '#19238E') + line('lut_mean_T', '#545BA9', '1.5 3.5', true);
+  for (const r of SW) s += `<text x="${X(r.layers)}" y="146" fill="#545BA9" font-size="10" text-anchor="middle">${r.layers}</text>`;
+  $('s-plot').innerHTML = s;
+}
+
+function frame(i) {
+  const t = i / FPS;
+  const st = {layers: 1, inter: 1, geo: 'eye', mode: 0, az: -38, el: 16, dist: 50, lx: -0.5, ly: 0.45, th: 500};
+  let cap = '', small = '', title = '';
+  const sweepT = Math.max(0, Math.min(T_LAYERS - T_TITLE, t - T_TITLE));
+  st.az = lerp(-38, 34, Math.min(1, t / T_LAYERS));
+  st.el = 16 + 12 * Math.sin(t / T_LAYERS * Math.PI);
+  const a = t * 0.42; st.lx = 0.62 * Math.cos(a + 2.2); st.ly = 0.35 + 0.35 * Math.sin(a * 0.8 + 0.5);
+  if (t < T_TITLE) {
+    title = `<span class="k">Challenge 03 &middot; Three dimensions</span><h1>Moth Eye</h1><p>A quantum thin-film shader on a 3D moth-eye facet. Six real Atlas runs, one per layer count, up to the 21-qubit limit.</p>`;
+  } else if (t < T_LAYERS) {
+    st.layers = Math.min(6, 1 + Math.floor(sweepT / 5));
+    const r = SW[st.layers - 1];
+    small = 'entanglement-shader-v1 &middot; Atlas statevector simulator';
+    cap = st.layers === 1 ? 'One conducting layer: the shader&rsquo;s reflectance table, painted onto every nanopillar by viewing angle.'
+        : st.layers === 6 ? `Six layers &times; six rays: the 21-qubit limit. Mean R ${r.lut_mean_R.toFixed(3)}, up from ${SW[0].lut_mean_R.toFixed(3)} at one layer. The shine does not die.`
+        : `${st.layers} layers. Mean reflectance ${r.lut_mean_R.toFixed(3)}, transmittance ${r.lut_mean_T.toFixed(3)}.`;
+  } else if (t < T_RAW) {
+    st.layers = 6; st.mode = 1; st.az = lerp(34, 60, ease((t - T_LAYERS) / (T_RAW - T_LAYERS))); st.el = lerp(16, 34, ease((t - T_LAYERS) / (T_RAW - T_LAYERS)));
+    small = 'Raw R &middot; no scene lighting';
+    cap = 'The engine shader&rsquo;s own reflectance output. Pillar walls are seen near grazing, where the table climbs towards 1.';
+  } else if (t < T_CMP) {
+    st.layers = 6; st.geo = 'both'; st.az = 0; st.dist = 40;
+    const x = ease((t - T_RAW) / (T_CMP - T_RAW)); st.el = lerp(0, 66, x); st.lx = -0.35; st.ly = 0.55;
+    small = `Moth eye (left) vs flat slab (right) &middot; same 6-layer run &middot; tilt ${st.el.toFixed(0)}&deg;`;
+    cap = st.el < 30 ? 'Head-on, the nanopillars send back more light than the flat slab: in this per-facet model they add glare.'
+        : 'Tilt towards grazing and the flat slab turns into a mirror, while the pillared eye stays dimmer.';
+  } else {
+    st.layers = 6; st.az = lerp(60, 80, (t - T_CMP) / (T_END - T_CMP)); st.el = 24;
+    title = `<span class="k">What this is and isn&rsquo;t</span><p>An analogy: real moth eyes cut reflection with a sub-wavelength graded index, which a per-facet shader cannot represent.<br>All circuits ran on Atlas&rsquo;s classical statevector simulator. Job IDs are in PARAMS.md.</p>`;
+  }
+  V.draw(st, {target: [0, 0, 1.5], bothZoom: 1.55, shiftX: (t < T_TITLE || t >= T_RAW) ? 0 : 200});
+  const m = V.measure(st);
+  const r = SW[st.layers - 1];
+  $('s-layers').textContent = `${st.layers} layer${st.layers > 1 ? 's' : ''} × 6 rays`;
+  $('s-job').innerHTML = `job <b>${r.job_id.slice(0, 8)}</b> &middot; ${st.layers === 6 ? '<b>21</b> qubits (limit)' : 'about <b>' + qubitsFit(st.layers, 6) + '</b> qubits'}<br>mean R <b>${r.lut_mean_R.toFixed(3)}</b> &middot; mean T <b>${r.lut_mean_T.toFixed(3)}</b>`;
+  const cur = st.geo === 'both' ? ['eye', 'slab'] : [st.geo];
+  $('s-bars').innerHTML = [['eye', 'Moth eye'], ['dome', 'Bare dome'], ['slab', 'Flat slab']].map(([k, n]) =>
+    `<span class="${cur.includes(k) ? 'cur' : ''}">${n}</span><span class="bar"><i class="${cur.includes(k) ? 'on' : ''}" style="width:${(100 * m[k].R / 0.7).toFixed(1)}%"></i></span><span class="v">${(100 * m[k].R).toFixed(1)}%</span>`).join('');
+  plot(st.layers);
+  $('cap').innerHTML = cap ? `<small>${small}</small>${cap}` : '';
+  $('title').style.display = title ? 'grid' : 'none'; $('title').innerHTML = title;
+  const cmp = st.geo === 'both';
+  $('side').style.opacity = t < T_TITLE || t >= T_CMP || cmp ? 0 : 1;
+  $('cmp').style.display = cmp ? 'grid' : 'none';
+  if (cmp) $('cmp').innerHTML = `<span class="label">How visible are you &middot; tilt ${st.el.toFixed(0)}&deg;</span><div class="bars">` + [['eye', 'Moth eye'], ['slab', 'Flat slab']].map(([k, n]) =>
+    `<span class="cur">${n}</span><span class="bar"><i class="on" style="width:${(100 * m[k].R / 0.8).toFixed(1)}%"></i></span><span class="v">${(100 * m[k].R).toFixed(1)}%</span>`).join('') + '</div>';
+  return {t, layers: st.layers, eye: m.eye.R, slab: m.slab.R};
+}
+window.FILM = {frame, frames: Math.round(DURATION * FPS), fps: FPS, ok: V.ok};
+window.MEASURE = (st) => V.measure(st);   // used by measure_views.cjs
+</script>
+</body></html>

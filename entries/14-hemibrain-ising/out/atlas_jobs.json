@@ -1,0 +1,134 @@
+[
+ {
+  "job_id": "1aca7037-b58d-4708-a219-1eebd2a8df24",
+  "cache_key": "204aa522cf700f8b",
+  "credits_ledgered": 5.0,
+  "status": "failed",
+  "mode": "emu",
+  "backend_name": null,
+  "shots": 16384,
+  "num_qubits": 20,
+  "submitted_at": "2026-10-05T05:07:24Z",
+  "updated_at": "2026-10-05T05:08:11Z",
+  "failed_step": "submit",
+  "error": {
+   "message": "failed to connect to all addresses; last error: FAILED_PRECONDITION: ipv4:172.20.173.190:8788: connect failed: addr: ipv4:172.20.173.190:8788 error: No route to host",
+   "retryable": false,
+   "type": "unavailable"
+  }
+ },
+ {
+  "job_id": "9246106d-1486-4c94-979e-af37ccf240cc",
+  "cache_key": "204aa522cf700f8b",
+  "credits_ledgered": 5.0,
+  "status": "failed",
+  "mode": "emu",
+  "backend_name": null,
+  "shots": 16384,
+  "num_qubits": 20,
+  "submitted_at": "2026-10-05T05:08:13Z",
+  "updated_at": "2026-10-05T05:08:59Z",
+  "failed_step": "submit",
+  "error": {
+   "message": "failed to connect to all addresses; last error: UNKNOWN: ipv4:172.20.173.190:8788: Failed to connect to remote host: Connection refused",
+   "retryable": false,
+   "type": "unavailable"
+  }
+ },
+ {
+  "job_id": "8494a1ad-c8cc-4e1c-a19e-02e6b352cc82",
+  "cache_key": "aadd859e8b9a786a",
+  "credits_ledgered": 5.0,
+  "status": "completed",
+  "mode": "emu",
+  "backend_name": null,
+  "shots": 4096,
+  "num_qubits": 20,
+  "submitted_at": "2026-10-05T05:11:00Z",
+  "updated_at": "2026-10-05T05:11:21Z",
+  "failed_step": null,
+  "error": null
+ },
+ {
+  "job_id": "8642a642-295f-461e-8d03-7f2c3c8478df",
+  "cache_key": "1a3a8c9168a959d3",
+  "credits_ledgered": 5.0,
+  "status": "failed",
+  "mode": "qpu",
+  "backend_name": "ibm_fez",
+  "shots": 4096,
+  "num_qubits": 20,
+  "submitted_at": "2026-10-05T05:13:15Z",
+  "updated_at": "2026-10-05T05:29:15Z",
+  "failed_step": "collect",
+  "error": {
+   "message": "QPU job ended as cancelled",
+   "retryable": false,
+   "type": "ibm_collection_failed"
+  }
+ },
+ {
+  "job_id": "ef983b89-a123-43cf-9bf0-d7d32f285c1f",
+  "cache_key": "e577a14181b7bbfa",
+  "credits_ledgered": 5.0,
+  "status": "completed",
+  "mode": "emu",
+  "backend_name": null,
+  "shots": 4096,
+  "num_qubits": 20,
+  "submitted_at": "2026-10-05T05:17:18Z",
+  "updated_at": "2026-10-05T05:17:51Z",
+  "failed_step": null,
+  "error": null
+ },
+ {
+  "job_id": "9b97ee9a-2328-4a50-bd4b-819e71794df1",
+  "cache_key": "1a3a8c9168a959d3",
+  "credits_ledgered": 5.0,
+  "status": "failed",
+  "mode": "qpu",
+  "backend_name": "ibm_fez",
+  "shots": 4096,
+  "num_qubits": 20,
+  "submitted_at": "2026-10-05T14:12:47Z",
+  "updated_at": "2026-10-05T14:15:15Z",
+  "failed_step": "collect",
+  "error": {
+   "message": "QPU job ended as failed",
+   "retryable": false,
+   "type": "ibm_collection_failed"
+  }
+ },
+ {
+  "job_id": "787c9fa8-7dae-4dcb-9f43-742c189cf85e",
+  "cache_key": "00c44abbf2922e08",
+  "credits_ledgered": 5.0,
+  "status": "failed",
+  "mode": "qpu",
+  "backend_name": "ibm_fez",
+  "shots": 4096,
+  "num_qubits": 20,
+  "submitted_at": "2026-10-05T14:54:36Z",
+  "updated_at": "2026-10-05T15:10:09Z",
+  "failed_step": "collect",
+  "error": {
+   "message": "QPU job ended as cancelled",
+   "retryable": false,
+   "type": "ibm_collection_failed"
+  }
+ },
+ {
+  "job_id": "6469b158-8538-4230-9a6d-ed535173b37c",
+  "cache_key": "00c44abbf2922e08",
+  "credits_ledgered": 5.0,
+  "status": "completed",
+  "mode": "qpu",
+  "backend_name": "ibm_fez",
+  "shots": 4096,
+  "num_qubits": 20,
+  "submitted_at": "2026-10-05T15:11:51Z",
+  "updated_at": "2026-10-05T15:20:26Z",
+  "failed_step": null,
+  "error": null
+ }
+]

@@ -1,0 +1,1043 @@
+<title>Syndrome Loom</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap");
+/* What the Noise Remembers: shared brand kit for all 22 pieces.
+   Look: in the spirit of the Moth Hack 2026 brief pages. Warm paper ground, a single ultramarine
+   ink, small uppercase monospace labels, thin rules, pill buttons and solid-ink section bars.
+   Deliberately single-theme (light). This is an independent entry; use no Moth logo or wordmark.
+   Layout concept: the instrument is the hero; story and science live in drawers. */
+:root{
+  --paper:#FBFAF9;    /* page ground */
+  --panel:#FFFFFF;    /* raised surfaces */
+  --panel-2:#F0F0F4;  /* control wells */
+  --rule:#D3D3E6;     /* hairlines */
+  --ink:#19238E;      /* the one ink: text, rules, buttons, accents */
+  --ink-2:#545BA9;    /* secondary text */
+  --ink-3:#A1A4CE;    /* tertiary text, disabled */
+  --link:#194BBA;
+  --on-ink:#FBFAF9;   /* text on solid ink */
+  --good:#1F7A4D;
+  --warn:#B4541A;
+  --tint:rgba(25,35,142,.07);
+
+  /* compatibility aliases for pages built on the first (dark) kit: keep them working */
+  --night:var(--paper); --dusk:var(--panel); --dusk-2:var(--panel-2); --line:var(--rule);
+  --moon:var(--ink); --haze:var(--ink-2); --wing:var(--ink); --wing-ink:var(--on-ink);
+  --glow:rgba(25,35,142,.14);
+
+  --display:"Geist", "Helvetica Neue", Arial, Helvetica, sans-serif;
+  --body:"Geist", "Helvetica Neue", Arial, Helvetica, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  color-scheme:light;
+}
+html,body{background:var(--paper);color:var(--ink)}
+body{font:400 1rem/1.55 var(--body);padding-inline:clamp(16px,3vw,40px);padding-block:0 3rem;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance;letter-spacing:-.015em;color:var(--ink)}
+h1 em,h2 em{font-style:normal;color:var(--ink);background:var(--tint);padding-inline:.12em;border-radius:.1em}
+p{margin:0}
+a{color:var(--link)}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+::selection{background:var(--ink);color:var(--on-ink)}
+
+/* brand bar: monospace, hairline below, like the brief pages */
+.wtnr-bar{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding-block:1.1rem .9rem;border-bottom:1px solid var(--ink);font:500 .74rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
+.wtnr-bar a{color:var(--ink);text-decoration:none}
+.wtnr-bar a:hover{text-decoration:underline;text-underline-offset:3px}
+.wtnr-bar .count b{font-weight:500}
+
+/* solid ink strip, like the "JUDGING CRITERIA" bar */
+.ink-bar{display:flex;justify-content:space-between;align-items:center;gap:1rem;background:var(--ink);color:var(--on-ink);padding:.9rem 1.1rem;font:500 .76rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+
+/* proof chips: real, verified numbers */
+.proof{display:flex;flex-wrap:wrap;gap:.5rem}
+.proof span{font:500 .72rem/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:.5rem .75rem;border:1px solid var(--rule);background:var(--panel);color:var(--ink-2);border-radius:999px}
+.proof span b{color:var(--ink);font-weight:500}
+.proof span.hot{border-color:var(--ink);background:var(--ink);color:var(--on-ink)}
+.proof span.hot b{color:var(--on-ink)}
+
+/* controls: segmented pills and pill buttons */
+.seg{display:inline-flex;flex-wrap:wrap;background:var(--panel);border:1px solid var(--ink);border-radius:999px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;padding:.55rem .95rem;border-radius:999px;cursor:pointer;font:500 .76rem/1 var(--mono);letter-spacing:.04em;color:var(--ink)}
+.seg button:hover{background:var(--tint)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--on-ink)}
+.seg button:disabled{color:var(--ink-3);cursor:not-allowed;background:transparent}
+.btn{display:inline-flex;align-items:center;gap:.5rem;border:1px solid var(--ink);background:var(--ink);color:var(--on-ink);padding:.78rem 1.25rem;border-radius:999px;font:500 .92rem/1 var(--body);cursor:pointer;text-decoration:none}
+.btn:hover{background:#121A6E}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost:hover{background:var(--tint)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+input[type=range]{accent-color:var(--ink);width:100%}
+.label{font:500 .7rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+
+/* drawers for the science: hairline-ruled list like the challenge index */
+details.drawer{border-top:1px solid var(--rule)}
+details.drawer:last-of-type{border-bottom:1px solid var(--rule)}
+details.drawer summary{cursor:pointer;list-style:none;padding:1.05rem 0;display:flex;justify-content:space-between;gap:1rem;font:400 1.3rem/1.2 var(--display);color:var(--ink)}
+details.drawer summary::after{content:"+";font:400 1.1rem/1.2 var(--mono);color:var(--ink)}
+details.drawer[open] summary::after{content:"\2212"}
+details.drawer summary::-webkit-details-marker{display:none}
+details.drawer .body{padding-bottom:1.25rem;color:var(--ink-2);max-width:68ch;display:grid;gap:.75rem}
+
+.honesty{font-size:.84rem;color:var(--ink-2);border-inline-start:2px solid var(--ink);padding-inline-start:.8rem}
+
+/* footer line every page carries */
+.wtnr-foot{margin-top:2.5rem;border-top:1px solid var(--rule);padding-top:1rem;font:400 .72rem/1.5 var(--mono);letter-spacing:.04em;color:var(--ink-2)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* Layout: the illustrated loom is the hero; the dial and copy controls sit beside it. Below it, titled sections
+   (ink bars) hold How to play, The data (the chart, always visible), The science, How it was made, What this
+   does not claim, and Jobs and credits. The stage's Data toggle shows a live copy of the chart beside the dial.
+   --syn is the syndrome red the brief asks for: the only colour besides the brand ink, used for data only
+   (red stitches, the inspector's flags and the red weft). */
+:root{--syn:#C62D2D}
+[hidden]{display:none!important}
+.wrap{max-width:78rem;margin-inline:auto}
+.hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);grid-template-areas:"stage copy" "stage panel" "stage info";grid-template-rows:auto auto 1fr;gap:1.25rem clamp(1.25rem,3vw,2.5rem);align-items:start;padding-block:1.5rem}
+.stagecol{grid-area:stage;display:grid;gap:.75rem;min-width:0}
+.copy{grid-area:copy;display:grid;gap:1rem;min-width:0}
+.hero>.panel{grid-area:panel}
+.info{grid-area:info;display:grid;gap:1.1rem;min-width:0}
+.stage{position:relative;overflow:hidden;border:1px solid var(--ink);background:var(--paper);user-select:none}
+canvas#cv{display:block;width:100%;height:auto;cursor:crosshair;touch-action:manipulation;image-rendering:pixelated;image-rendering:crisp-edges}
+.scenewrap{display:grid;gap:.45rem}
+.stagecol>.scenekey{margin-top:-.3rem}
+.scenekey{font:400 .7rem/1.5 var(--mono);color:var(--ink-2);margin:0}
+.scenekey b{color:var(--ink);font-weight:500}
+.scenekey .r{color:var(--syn);font-weight:500}
+.toolbar{display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap;align-items:center}
+.meter{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem 1rem;background:var(--panel);border:1px solid var(--rule);padding:.6rem .8rem;font:500 .72rem/1.3 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2)}
+.meter b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+.meter .r{color:var(--syn)}
+.scrub{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:.75rem;align-items:center}
+.scrub output{font:500 .74rem/1 var(--mono);color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.scrub #sound{padding:.6rem .9rem;font:500 .72rem/1 var(--mono);letter-spacing:.04em;white-space:nowrap}
+.kicker{font:500 .74rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+h1{font-size:clamp(2.2rem,4.2vw,3.6rem);line-height:1;letter-spacing:-.025em;font-weight:400}
+.sub{font-size:1.05rem;color:var(--ink-2);max-width:46ch}
+.steps{display:grid;gap:.55rem;counter-reset:s;margin:0;padding:0;list-style:none}
+.steps li{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:.6rem;align-items:baseline;font-size:.95rem}
+.steps li::before{counter-increment:s;content:counter(s);font:500 .8rem/1.6 var(--mono);color:var(--on-ink);background:var(--ink);border-radius:99px;width:1.6rem;height:1.6rem;display:grid;place-items:center}
+.panel{display:grid;gap:.85rem;background:var(--panel);border:1px solid var(--rule);padding:1rem 1.1rem;min-width:0}
+.row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.row.split{justify-content:space-between}
+.dial{display:grid;gap:.35rem}
+.ticks{display:flex;justify-content:space-between;font:500 .72rem/1 var(--mono);color:var(--ink-2)}
+.ticks button{background:none;border:0;padding:.2rem 0;cursor:pointer;color:inherit;font:inherit}
+.ticks button[aria-pressed="true"]{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.readout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.25rem .9rem;font:400 .74rem/1.5 var(--mono);color:var(--ink-2);margin:0;border-top:1px solid var(--rule);padding-top:.75rem}
+.readout dd{margin:0}
+.readout b{color:var(--ink);font-weight:500;overflow-wrap:anywhere}
+.src{font:500 .72rem/1.45 var(--mono);padding:.5rem .65rem;border:1px dashed var(--rule);color:var(--ink-2)}
+.src.user{border:1px solid var(--ink);color:var(--ink);background:var(--tint)}
+.file{position:relative;overflow:hidden}
+.file input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.file:focus-within{outline:2px solid var(--ink);outline-offset:3px}
+.inspect{display:grid;gap:.45rem;font:400 .76rem/1.45 var(--mono);color:var(--ink-2);background:var(--panel);border:1px solid var(--rule);padding:.75rem .9rem}
+.word{display:inline-flex;gap:3px;vertical-align:middle}
+.word i{display:inline-grid;place-items:center;width:1.25rem;height:1.25rem;font-style:normal;font-size:.72rem;background:var(--panel-2);color:var(--ink);border:1px solid var(--rule)}
+.word i.one{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
+.word i.hit{outline:2px solid var(--syn);outline-offset:1px}
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:var(--ink);color:var(--on-ink);font:500 .85rem/1.3 var(--body);padding:.75rem 1.1rem;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:5;max-width:calc(100vw - 32px)}
+.toast.on{opacity:1}
+.manual{display:grid;gap:.5rem}
+.manual textarea{width:100%;min-height:8rem;background:var(--panel);color:var(--ink);border:1px solid var(--rule);font:400 .7rem/1.4 var(--mono);padding:.5rem}
+.more{display:grid;gap:0}
+.datawrap{display:grid;gap:.8rem;border:1px solid var(--ink);background:var(--panel);padding:1rem 1.1rem}
+.datawrap p{color:var(--ink-2);max-width:62ch;font-size:.95rem}
+.datawrap p.aside{font:400 .72rem/1.5 var(--mono)}
+/* titled sections below the loom: a solid ink bar names each one, like the brief pages */
+.sect{display:grid;gap:0;margin-top:2.25rem;scroll-margin-top:1rem}
+.ink-bar h2{font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;margin:0}
+.ink-bar span{text-align:end}
+.jump{display:flex;flex-wrap:wrap;gap:.35rem .9rem;font:500 .7rem/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);margin:0}
+.jump a{color:var(--ink);text-underline-offset:3px}
+.sect .steps{padding-block:1.25rem .25rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));gap:.9rem 1.75rem}
+.chartwrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.5rem;align-items:center;padding-block:1.5rem .5rem}
+.chartwrap h2{font-size:clamp(1.6rem,3vw,2.3rem)}
+.chartwrap p{color:var(--ink-2);max-width:52ch}
+.chartwrap>div{display:grid;gap:.8rem}
+.claims{display:grid;gap:.8rem;padding-block:1.25rem .25rem;max-width:74ch}
+.credits{display:grid;gap:.9rem;padding-block:1.25rem 0;min-width:0}
+.credits>p,.credits li{color:var(--ink-2);font-size:.9rem;max-width:74ch}
+.credits h3{font-size:1.15rem}
+.creditlist{margin:0;padding-left:1.1rem;display:grid;gap:.4rem}
+figure.fig{margin:0;display:grid;gap:.6rem;min-width:0}
+svg.chartsvg{width:100%;height:auto;display:block;background:var(--panel);border:1px solid var(--rule)}
+.legend{display:flex;flex-wrap:wrap;gap:.35rem 1.1rem;font:400 .72rem/1.3 var(--mono);color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:.4rem}
+.legend svg{flex:none;display:block}
+svg.chartsvg text{font-family:var(--mono);fill:var(--ink-2)}
+table.jobs{border-collapse:collapse;font:400 .72rem/1.4 var(--mono);color:var(--ink-2);width:100%}
+table.jobs th,table.jobs td{border-bottom:1px solid var(--rule);padding:.35rem .5rem;text-align:left;vertical-align:top}
+table.jobs td b{color:var(--ink);font-weight:500}
+table.jobs td.id,table.jobs td.note{overflow-wrap:anywhere}
+table.jobs td.nw{white-space:nowrap}
+table.jobs tr.top td{border-bottom:0;padding-bottom:.1rem}
+.tablewrap{overflow-x:auto;max-width:100%}
+.key{display:inline-block;width:.7rem;height:.7rem;vertical-align:-1px;margin-right:.3rem}
+@media (max-width:600px){
+  .scrub{grid-template-columns:auto minmax(0,1fr)}.scrub input{grid-column:1/-1;grid-row:2}.scrub output{grid-column:1/-1;grid-row:3;justify-self:end}.scrub #sound{grid-column:2;grid-row:1;justify-self:end}
+  .wtnr-bar{letter-spacing:.08em}.wtnr-bar .count{white-space:nowrap}
+  .ink-bar{flex-wrap:wrap;gap:.35rem 1rem}
+  .seg{display:flex;width:100%}.seg button{flex:1 1 auto;padding-inline:.5rem;letter-spacing:0;font-size:.72rem;white-space:nowrap}
+  .panel .row.split{gap:.5rem}
+  .datawrap{padding:.8rem}
+  .stagecol>.scenewrap,.stagecol>.datawrap{order:0}.stagecol>.scrub{order:1}.stagecol>.toolbar{order:2}.stagecol>.scenekey{order:3;margin-top:0}.stagecol>.meter{order:4}.stagecol>.inspect{order:5}}
+@media (max-width:960px){.hero{grid-template-columns:minmax(0,1fr);grid-template-areas:"copy" "stage" "panel" "info";grid-template-rows:auto}.chartwrap{grid-template-columns:minmax(0,1fr)}}
+</style>
+
+<div class="wrap">
+  <nav class="wtnr-bar"><a href="https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa">What the Noise Remembers</a><span class="count"><b>Challenge 09</b> &#183; Lose</span></nav>
+
+  <div class="hero">
+    <div class="copy">
+      <p class="kicker">Challenge 09 &#183; Quantum-native 1</p>
+      <h1>Weave a picture through a noisy quantum code.</h1>
+      <p class="sub">Each pixel is a Steane codeword of seven threads. Turn up the noise and the threads start to flip. A red syndrome stitch marks each flip as it's caught. Some pixels still come out wrong.</p>
+    </div>
+
+    <div class="stagecol">
+      <div class="toolbar">
+        <div class="seg" role="group" aria-label="Scene or data">
+          <button type="button" data-mode="scene" aria-pressed="true">Scene</button>
+          <button type="button" data-mode="data" aria-pressed="false">Data</button>
+        </div>
+        <div class="seg" role="group" aria-label="What the threads show">
+          <button type="button" data-view="received" aria-pressed="true">Threads as read</button>
+          <button type="button" data-view="corrected" aria-pressed="false">After correction</button>
+        </div>
+      </div>
+      <div class="scenewrap" id="scene-wrap">
+        <div class="stage">
+          <canvas id="cv" width="720" height="720" tabindex="0" aria-label="An illustrated Jacquard loom weaving the cloth. Each pixel of the image is a block of 7 warp threads. Click or use the arrow keys to inspect a block."></canvas>
+        </div>
+      </div>
+      <p class="scenekey" id="scene-key"><b>Ada</b> the silk moth weaves. <b>Inspector Hamming</b> the silkworm flags each row whose syndrome pick caught a flip (<span class="r">red flags</span>). Sparks on flipped threads, flags, heddle lifts and punch cards replay this cloth's draws; grey fizz only marks where the profile puts noise.</p>
+      <div class="datawrap" id="data-wrap" hidden>
+        <span class="label">Logical vs physical &#183; 12 grid jobs, 1,792 data qubits each</span>
+        <figure class="fig">
+          <svg id="chart-live" class="chartsvg" viewBox="0 0 520 380" role="img" aria-label="Logical error rate against physical noise p for both noise profiles (live copy beside the dial)"></svg>
+          <figcaption class="legend" id="legend-live"></figcaption>
+        </figure>
+        <p id="chart-note-live"></p>
+        <p class="aside">A live copy of the chart in <a href="#the-data">The data</a>, below the loom, where its caption is. Turn the dial or switch the profile and the ring moves.</p>
+      </div>
+      <div class="scrub" id="scrub">
+        <button type="button" class="btn" id="weave">Weave from the top</button>
+        <input type="range" id="picks" min="0" max="168" value="168" aria-label="Picks woven">
+        <output id="picks-out" for="picks">168 / 168 picks</output>
+        <button type="button" class="btn ghost" id="sound" aria-pressed="false">Loom sound: off</button>
+      </div>
+      <div class="meter" aria-live="polite">
+        <span><span class="key" style="background:var(--syn)"></span>Red stitches <b class="r" id="m-red">0</b></span>
+        <span>Threads read flipped <b id="m-thr">0</b></span>
+        <span>Pixels flipped after correction <b id="m-fail">0</b> / <b id="m-blocks">0</b></span>
+      </div>
+      <div class="inspect" id="inspect" aria-live="polite"><span class="label">Block inspector</span><span>Click any pixel block in the cloth (or focus it and use the arrow keys).</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="dial">
+        <div class="row split"><span class="label">Physical noise p</span><span class="label" id="p-val">0.005</span></div>
+        <input type="range" id="dial" min="0" max="2" step="1" value="1" aria-label="Physical noise level p" aria-valuetext="p = 0.005">
+        <div class="ticks" id="ticks"></div>
+      </div>
+      <div class="row split">
+        <span class="label">Noise lives in</span>
+        <div class="seg" role="group" aria-label="Noise profile">
+          <button type="button" data-prof="loom" aria-pressed="true">The whole loom</button>
+          <button type="button" data-prof="thread" aria-pressed="false">Only the thread</button>
+        </div>
+      </div>
+      <div class="row split">
+        <span class="label">Codewords</span>
+        <div class="seg" role="group" aria-label="Codewords">
+          <button type="button" data-cw="plain" aria-pressed="true">Plain codewords</button>
+          <button type="button" data-cw="measured" aria-pressed="false">As a Z readout returns</button>
+        </div>
+      </div>
+      <div class="row">
+        <span class="btn ghost file"><span id="file-label">Load your image</span><input type="file" id="file" accept="image/*" aria-label="Load your own image"></span>
+        <button type="button" class="btn ghost" id="demo" hidden>Back to the moth</button>
+        <label class="label" for="width" style="display:flex;gap:.4rem;align-items:center">Width
+          <select id="width" style="background:var(--panel);border:1px solid var(--ink);border-radius:999px;padding:.35rem .6rem;color:var(--ink)">
+            <option value="24">24</option><option value="32" selected>32</option><option value="48">48</option>
+          </select></label>
+      </div>
+      <p class="src" id="src">Demo moth (32 &#215; 24 px), drawn by our own code. Flips are sampled from the engine's measured rates.</p>
+      <div class="row">
+        <button type="button" class="btn" id="copy-wif">Copy WIF draft</button>
+        <button type="button" class="btn ghost" id="reroll">Re-roll the shot</button>
+        <button type="button" class="btn ghost" id="share">Copy link to this view</button>
+      </div>
+      <div class="manual" id="manual" hidden>
+        <span class="label" id="manual-label">Copying is blocked here. Select all and copy by hand:</span>
+        <textarea id="manual-text" readonly aria-labelledby="manual-label"></textarea>
+      </div>
+      <dl class="readout">
+        <dt>Engine</dt><dd><b>tamagotchi-v1</b> &#183; Steane code &#183; Aer stabilizer simulator</dd>
+        <dt>Noise</dt><dd><b id="r-noise">&#8211;</b></dd>
+        <dt>Job</dt><dd><b id="r-job">&#8211;</b></dd>
+        <dt>No-SE job</dt><dd><b id="r-bare">&#8211;</b></dd>
+        <dt>Size</dt><dd><b id="r-size">&#8211;</b></dd>
+        <dt>Measured</dt><dd><b id="r-meas">&#8211;</b></dd>
+        <dt>Shot</dt><dd><b id="r-seed">&#8211;</b></dd>
+      </dl>
+    </div>
+
+    <div class="info">
+      <div class="proof" id="proof"></div>
+      <nav class="jump" aria-label="Sections on this page"><a href="#how-to-play">How to play</a><a href="#the-data">The data</a><a href="#the-science">The science</a><a href="#how-it-was-made">How it was made</a><a href="#no-claims">What this does not claim</a><a href="#jobs-credits">Jobs and credits</a></nav>
+    </div>
+  </div>
+
+  <section class="sect" id="how-to-play" aria-labelledby="h-play">
+    <div class="ink-bar"><h2 id="h-play">How to play</h2><span>You are at the loom</span></div>
+    <ol class="steps">
+      <li><span><b>Turn</b> the noise dial. Each notch replays a real tamagotchi-v1 job. The gauge on the loom follows it.</span></li>
+      <li><span><b>Weave</b> from the top, or drag through the picks, and switch between the threads as read and after correction. Watch the shuttle, the sparks and the inspector's flags, and switch the loom sound on to hear each pick.</span></li>
+      <li><span><b>Click</b> any block: the inspector rides up and reads its syndrome, and the block inspector shows its seven threads.</span></li>
+      <li><span><b>Load</b> your own image. It's woven in your browser from the engine's recorded rates. Change the width to re-weave the moth or your image.</span></li>
+      <li><span><b>Copy</b> the WIF 1.1 draft and open it in any weaving program.</span></li>
+      <li><span><b>Read</b> the chart in <a href="#the-data">The data</a>, or switch the stage to <b>Data</b> to watch it beside the dial.</span></li>
+    </ol>
+  </section>
+
+  <section class="sect" id="the-data" aria-labelledby="h-data">
+    <div class="ink-bar"><h2 id="h-data">The data &#183; Logical vs physical</h2><span>12 grid jobs, 1,792 data qubits each</span></div>
+    <div class="chartwrap">
+      <div>
+        <h2 id="chart-h">When does the code earn its keep?</h2>
+        <p>Every point is a completed tamagotchi-v1 job: 256 Steane blocks (1,792 data qubits) under noise p. Filled points ran one syndrome-extraction round; hollow points skipped it. Below the diagonal, a coded bit fails less often than the physical noise rate p. When only the stored thread is noisy, every filled point sits below it, so the code helps. When every gate is noisy too, every point sits above it. This round isn't fault tolerant, so its own gates and ancilla readouts add more errors than the round removes.</p>
+        <p id="chart-note"></p>
+      </div>
+      <figure class="fig">
+        <svg id="chart" class="chartsvg" viewBox="0 0 520 380" role="img" aria-label="Logical error rate against physical noise p for both noise profiles"></svg>
+        <figcaption class="legend" id="legend"></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="sect more" id="the-science" aria-labelledby="h-science">
+    <div class="ink-bar"><h2 id="h-science">The science</h2><span>Steane 1996 &#183; Hamming 1950</span></div>
+    <details class="drawer" open><summary>Why weave a quantum code?</summary><div class="body">
+      <p>Jacquard looms read punched cards: one hole per lifted thread, one card per pick. Babbage later borrowed those cards for his Analytical Engine. Here a loom reads a quantum error-correcting code instead. Ada Lovelace compared that engine to a Jacquard loom weaving flowers and leaves, and the weaver moth is named for her.</p>
+      <p>The Steane code (Steane, 1996) spreads one logical qubit over seven physical ones. Its bit-flip checks are the three parity checks of the classical [7,4] Hamming code (Hamming, 1950). A single flipped thread gives a 3-bit syndrome that spells out the thread's number in binary. That's the red stitch, and the decoder flips that thread back. The inspector silkworm is named for him.</p>
+      <p>Two flips in one block fool the decoder. It &#8220;corrects&#8221; the wrong thread, and the pixel comes out inverted. That's a logical error, and it's what the engine counts. The inspector can't see it either: its syndrome looks normal.</p>
+    </div></details>
+  </section>
+
+  <section class="sect more" id="how-it-was-made" aria-labelledby="h-made">
+    <div class="ink-bar"><h2 id="h-made">How it was made</h2><span>30 real Atlas jobs &#183; Aer stabilizer simulator</span></div>
+    <details class="drawer"><summary>What the quantum engine did</summary><div class="body">
+      <p>Atlas <b>tamagotchi-v1</b> builds a Qiskit circuit on a CSS code (Steane), runs it on the Aer <b>stabilizer simulator</b> under a noise model, and reports how often each logical qubit ends up in the expected state. For every notch of the dial, one job stored 256 logical bits (X on every odd-indexed logical, so 0s and 1s side by side), ran one syndrome-extraction round with in-circuit correction, and read them out. A twin job skipped the syndrome round. Each grid job ran 64 shots, which gives 16,384 block samples per job.</p>
+      <p>In both profiles the twin without a syndrome round failed less often. It skips the round's idle step and its noisy ancilla readouts, and the engine's final readout is Hamming-decoded anyway: a probe with readout noise only gave 15 errors in 8,000 shots, about 21p&#178;, not 7p. One round of extraction only pays off if errors pile up between rounds, and these jobs store each bit for a single step.</p>
+      <p>Physical qubits: 7 data qubits per logical, so 1,792 per grid job. The engine also uses ancilla qubits to measure the stabilizers, but it doesn't document how many, so they aren't counted here. The size ladder below shows how far one job stretched.</p>
+      <div class="tablewrap"><table class="jobs" id="ladder"></table></div>
+      <p>The loom then works classically. It samples each pixel's events from three measured numbers: the logical error rate for a stored 0, the same for a stored 1, and syndrome events per block. The engine counts bit-flip and phase-flip syndromes separately. A probe at readout noise 0.5 gave 1.757 events per block, against 2 &#215; (1 &#8722; 0.5&#179;) = 1.75. So a red stitch is drawn at half the measured rate. The draws use a seeded mulberry32 generator, so the page and the Python CLI weave the same cloth from the same seed.</p>
+    </div></details>
+    <details class="drawer"><summary>Quantum or classical, step by step</summary><div class="body">
+      <div class="tablewrap"><table class="jobs">
+        <tr><th>Step</th><th>Where it ran</th></tr>
+        <tr><td>Steane encoding, transversal X, one syndrome round with in-circuit Hamming correction, readout, under noise p</td><td><b>Atlas tamagotchi-v1</b>, Qiskit Aer stabilizer simulator (quantum circuit, simulated; no hardware)</td></tr>
+        <tr><td>Binarise the image (Otsu threshold)</td><td>classical (the Python CLI, or your browser for your own image)</td></tr>
+        <tr><td>Pick codewords, sample flips and syndromes from the measured rates, Hamming-decode</td><td>classical, seeded mulberry32</td></tr>
+        <tr><td>WIF 1.1 draft, shaded render, report</td><td>classical</td></tr>
+        <tr><td>The loom scene, its characters and sounds</td><td>classical illustration in your browser, driven by the sampled cloth</td></tr>
+      </table></div>
+    </div></details>
+  </section>
+
+  <section class="sect" id="no-claims" aria-labelledby="h-claims">
+    <div class="ink-bar"><h2 id="h-claims">What this does not claim</h2><span>Simulated, not hardware</span></div>
+    <div class="claims">
+      <p class="honesty">No circuit runs per pixel, and no quantum hardware was used. The engine returns aggregate counts, not per-shot records. So the loom draws each pixel's syndrome event and logical flip independently from the measured marginal rates, which drops the real correlation between them. The engine counts bit-flip and phase-flip syndromes as separate events. The loom draws bit-flip syndromes at half that count, which assumes both types are equally likely. That assumption is ours, not an engine output. Which thread flipped is drawn uniformly, because the engine doesn't report it. &#8220;Plain codewords&#8221; shows 0000000/1111111 so you can see the picture. A real Z readout returns any of the 8 codewords in the right coset, and you can switch to that view. Your own image never leaves your browser, and no new job runs for it.</p>
+      <p class="honesty">This circuit's syndrome round isn't fault tolerant. Under noise on every gate it makes things worse at all three noise levels here. That's a real result from the jobs, not a flaw in the weave.</p>
+      <p class="honesty">The loom scene is an illustration, not a picture of the circuit. Its sparks, flags, heddle lifts and punch cards replay this cloth's sampled draws, and Ada's cheer or sigh follows the measured verdict (logical flip rate below or above p). The grey fizz on the machinery or on the warp only marks where the chosen profile puts noise; it isn't a count.</p>
+    </div>
+  </section>
+
+  <section class="sect" id="jobs-credits" aria-labelledby="h-jobs">
+    <div class="ink-bar"><h2 id="h-jobs">Jobs and credits</h2><span id="jobs-count">Atlas tamagotchi-v1</span></div>
+    <div class="credits">
+      <p>The 12 grid jobs behind the noise dial and the chart, as returned by Atlas <b>tamagotchi-v1</b> on the Aer stabilizer simulator. Each stored 256 Steane blocks (1,792 data qubits) for 64 shots.</p>
+      <div class="tablewrap"><table class="jobs" id="gridjobs"></table></div>
+      <p id="jobs-more"></p>
+      <h3>Credits</h3>
+      <ul class="creditlist">
+        <li><b>Engine:</b> Moth Quantum Atlas, tamagotchi-v1 (Qiskit QEC engine: Steane code, Aer stabilizer simulator). Every error statistic on this page comes from its completed jobs.</li>
+        <li><b>Art:</b> the loom cast (Ada the weaver moth, Inspector Hamming the silkworm, the shuttle, heddles, flags, gauge, card cylinder, spools and sparks) is original pixel art made for this piece. The demo moth is drawn by our own code. No third-party images are used.</li>
+        <li><b>Names:</b> homages to Ada Lovelace, who compared Babbage's Analytical Engine to a Jacquard loom, and Richard Hamming, whose [7,4] parity checks are the code's bit-flip checks.</li>
+        <li><b>Papers and formats:</b> A. M. Steane, Physical Review Letters 77, 793 (1996); R. W. Hamming, Bell System Technical Journal 29(2), 147&#8211;160 (1950); N. Otsu, IEEE Transactions on Systems, Man, and Cybernetics 9(1), 62&#8211;66 (1979), used to binarise images; WIF, Weaving Information File, version 1.1 (1997).</li>
+        <li><b>Software:</b> mulberry32, a small public-domain PRNG by Tommy Ettinger, shared by the page and the Python CLI. Fonts: Geist and IBM Plex Mono (SIL Open Font License 1.1).</li>
+      </ul>
+    </div>
+  </section>
+  <style>
+.wtnr-nav{margin-top:2.5rem;border-top:1px solid var(--ink,#19238E);padding-top:1.1rem;display:grid;gap:1rem}
+.wtnr-nav .wn-row{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:space-between;align-items:center}
+.wtnr-nav a.wn-btn{display:inline-flex;align-items:center;gap:.45rem;min-height:44px;padding:.6rem 1rem;border:1px solid var(--ink,#19238E);border-radius:999px;color:var(--ink,#19238E);text-decoration:none;font:500 .82rem/1.2 var(--body,system-ui,sans-serif);max-width:100%}
+.wtnr-nav a.wn-btn:hover,.wtnr-nav a.wn-btn:focus-visible{background:rgba(25,35,142,.07)}
+.wtnr-nav a.wn-hub{background:var(--ink,#19238E);color:var(--on-ink,#FBFAF9)}
+.wtnr-nav a.wn-hub:hover{background:#121A6E}
+.wtnr-nav details{border:1px solid var(--rule,#D3D3E6);background:var(--panel,#fff)}
+.wtnr-nav summary{cursor:pointer;padding:.75rem 1rem;font:500 .72rem/1.2 var(--mono,monospace);letter-spacing:.12em;text-transform:uppercase;color:var(--ink,#19238E)}
+.wtnr-nav ol{list-style:none;margin:0;padding:.25rem 1rem 1rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(14rem,1fr));gap:.15rem .9rem}
+.wtnr-nav ol a{display:flex;gap:.6rem;padding:.4rem 0;color:var(--ink,#19238E);text-decoration:none;font-size:.9rem;border-bottom:1px solid var(--rule,#D3D3E6)}
+.wtnr-nav ol a:hover{text-decoration:underline}
+.wtnr-nav ol a b{font:500 .78rem/1.6 var(--mono,monospace);min-width:1.6rem}
+.wtnr-nav ol a[aria-current="page"]{font-weight:600}
+.wtnr-nav ol a small{color:var(--ink-2,#545BA9);font-size:.72rem}
+</style><nav class="wtnr-nav" aria-label="All pieces"><div class="wn-row"><a class="wn-btn" href="https://claude.ai/artifact/8s4N4nTNRYWHziRXc282Ka" rel="prev">&larr; 08 p-bit or qubit?</a><a class="wn-btn wn-hub" href="https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa">All 22 pieces</a><a class="wn-btn" href="https://claude.ai/artifact/4hJDsPGWFxY3DZehr29ScJ" rel="next">10 Squeezed Chirp &rarr;</a></div><details><summary>Jump to any piece (22)</summary><ol><li><a href="https://claude.ai/artifact/R49GmBq67MFTjLfe238rJF"><b>01</b><span>The Hole in the Penrose</span></a></li><li><a href="https://claude.ai/artifact/9fomZzSdPWphHBK6WwkMC8"><b>02</b><span>Coda Reservoir</span></a></li><li><a href="https://claude.ai/artifact/MKWjAPrvNKmSsdT6Jh1SwE"><b>03</b><span>Moth Eye</span></a></li><li><a href="https://claude.ai/artifact/JfWFoGphQmiqZkv6tLZe6X"><b>04</b><span>Magic Angle</span></a></li><li><a href="https://claude.ai/artifact/DFBxuRrKviy2L7Am6zTrkR"><b>05</b><span>Jam the Bat</span></a></li><li><a href="https://claude.ai/artifact/8EaiP4L3seGbpahavMZhzG"><b>06</b><span>Tweezer</span></a></li><li><a href="https://claude.ai/artifact/UsBvQGmks6jUsXaks1m8TD"><b>07</b><span>FLAVOUR</span></a></li><li><a href="https://claude.ai/artifact/8s4N4nTNRYWHziRXc282Ka"><b>08</b><span>p-bit or qubit?</span></a></li><li><a href="https://claude.ai/artifact/4aAMSGfrHU4qeymg9KStcK" aria-current="page"><b>09</b><span>Syndrome Loom</span></a></li><li><a href="https://claude.ai/artifact/4hJDsPGWFxY3DZehr29ScJ"><b>10</b><span>Squeezed Chirp</span></a></li><li><a href="https://claude.ai/artifact/WG635H4YESspojDKRbEfG9"><b>11</b><span>Maxwell&#x27;s Ribbon</span></a></li><li><a href="https://claude.ai/artifact/LtSumyftwmDvFqQVMPDDWB"><b>12</b><span>Chirp Instrument</span></a></li><li><a href="https://claude.ai/artifact/DBZTD3SBmR9DAbo5cWw92B"><b>13</b><span>Moth to Flame</span></a></li><li><a href="https://claude.ai/artifact/6CNturtFVEy4gcCfaeWra4"><b>14</b><span>Fly Brain Metro</span></a></li><li><a href="https://claude.ai/artifact/YWrk51Q17oiLArd6imrcWg"><b>15</b><span>Tissue Blur</span></a></li><li><a href="https://claude.ai/artifact/MfRtWR82GMtJGQ5ibWhzgW"><b>16</b><span>Busy Beaver Score</span></a></li><li><a href="https://claude.ai/artifact/BxHprzSAzDe4AQmgE1rF2k"><b>17</b><span>Quantum Lenia</span></a></li><li><a href="https://claude.ai/artifact/9eMf5s9aFntNnj7HL4F3WC"><b>18</b><span>Oldest Light</span></a></li><li><a href="https://claude.ai/artifact/LAmR6s1D5jSebSurcma2T9"><b>19</b><span>Frog Chorus</span></a></li><li><a href="https://claude.ai/artifact/Cp8F1mThkX2gMeiBU2V73j"><b>20</b><span>Antimatter Drop</span></a></li><li><a href="https://claude.ai/artifact/QPpFHW54o9HEkDSkS5Te7y"><b>21</b><span>The Quantum Nose Test</span></a></li><li><a href="https://claude.ai/artifact/593BgJqW14p8chTNNwkbYn"><b>22</b><span>Scroll Unroll</span></a></li></ol></details></nav>
+  <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const CAL = {"engine":"tamagotchi-v1","code":"steane","simulator":"Qiskit Aer stabilizer simulator on Atlas (no QPU)","credits_per_run":0.0,"grid":{"n_logical":256,"physical_data_qubits":1792,"shots":64,"seed":2026,"pattern":"X on odd-indexed logicals (stored bit 1), even-indexed stay 0"},"profiles":{"loom":{"title":"noisy loom: every gate, idle step and readout is noisy","noise":"p_1q = p_gate = p_idle = p_meas = p","levels":[{"p":0.001,"n_logical":256,"shots":64,"se":{"job_id":"00747c70-eaa2-400d-9b71-7f9d5ea2008d","seconds":208.5,"wall_seconds":208,"n_logical":256,"shots":64,"logical_error_rate":0.00762939453125,"ler_bit0":0.0068359375,"ler_bit1":0.0084228515625,"logical_error_count":53,"syndromes_detected":1075,"corrections_applied":1075,"syndrome_rate":0.06561279296875,"success_rate":0.171875},"bare":{"job_id":"065612b5-7863-45f1-88a9-a918f5433297","seconds":21.0,"wall_seconds":20,"n_logical":256,"shots":64,"logical_error_rate":0.00335693359375,"ler_bit0":0.00341796875,"ler_bit1":0.0032958984375,"logical_error_count":36,"syndromes_detected":0,"corrections_applied":0,"syndrome_rate":0.0,"success_rate":0.4375}},{"p":0.005,"n_logical":256,"shots":64,"se":{"job_id":"7a9ce534-2768-4c98-87b4-0c1ab4e939c3","seconds":217.6,"wall_seconds":217,"n_logical":256,"shots":64,"logical_error_rate":0.04058837890625,"ler_bit0":0.041015625,"ler_bit1":0.0401611328125,"logical_error_count":64,"syndromes_detected":5158,"corrections_applied":5158,"syndrome_rate":0.3148193359375,"success_rate":0},"bare":{"job_id":"38e46cd7-579a-4332-a9bd-810a5a2864df","seconds":20.5,"wall_seconds":20,"n_logical":256,"shots":64,"logical_error_rate":0.01995849609375,"ler_bit0":0.017822265625,"ler_bit1":0.0220947265625,"logical_error_count":64,"syndromes_detected":0,"corrections_applied":0,"syndrome_rate":0.0,"success_rate":0}},{"p":0.01,"n_logical":256,"shots":64,"se":{"job_id":"a5ca0dfd-dba3-48f7-a61c-ccdbf35cfc1d","seconds":261.2,"wall_seconds":259,"n_logical":256,"shots":64,"logical_error_rate":0.08837890625,"ler_bit0":0.0849609375,"ler_bit1":0.091796875,"logical_error_count":64,"syndromes_detected":9458,"corrections_applied":9458,"syndrome_rate":0.5772705078125,"success_rate":0},"bare":{"job_id":"6ce56245-be91-49b5-9766-d5ccfa972187","seconds":23.8,"wall_seconds":21,"n_logical":256,"shots":64,"logical_error_rate":0.044921875,"ler_bit0":0.044921875,"ler_bit1":0.044921875,"logical_error_count":64,"syndromes_detected":0,"corrections_applied":0,"syndrome_rate":0.0,"success_rate":0}}]},"thread":{"title":"fraying thread: only stored threads (idle) and readout are noisy, the loom's gates are clean","noise":"p_idle = p_meas = p; p_1q = p_gate = 0","levels":[{"p":0.001,"n_logical":256,"shots":64,"se":{"job_id":"2b720144-23fa-4eb6-a0c8-091b05f2c038","seconds":252.0,"wall_seconds":250,"n_logical":256,"shots":64,"logical_error_rate":0.0001220703125,"ler_bit0":0.000244140625,"ler_bit1":0.0,"logical_error_count":2,"syndromes_detected":179,"corrections_applied":179,"syndrome_rate":0.01092529296875,"success_rate":0.96875},"bare":{"job_id":"fc6aa200-c7fa-4257-9d6a-b7c54028238d","seconds":24.6,"wall_seconds":23,"n_logical":256,"shots":64,"logical_error_rate":0.0,"ler_bit0":0.0,"ler_bit1":0.0,"logical_error_count":0,"syndromes_detected":0,"corrections_applied":0,"syndrome_rate":0.0,"success_rate":1}},{"p":0.005,"n_logical":256,"shots":64,"se":{"job_id":"7f22c6d3-c544-4f0c-a5bb-1f06bbc11677","seconds":216.6,"wall_seconds":215,"n_logical":256,"shots":64,"logical_error_rate":0.00152587890625,"ler_bit0":0.0020751953125,"ler_bit1":0.0009765625,"logical_error_count":22,"syndromes_detected":1027,"corrections_applied":1027,"syndrome_rate":0.06268310546875,"success_rate":0.65625},"bare":{"job_id":"4be3d79b-653f-458e-be93-563dd1751e13","seconds":24.5,"wall_seconds":22,"n_logical":256,"shots":64,"logical_error_rate":0.0003662109375,"ler_bit0":0.0003662109375,"ler_bit1":0.0003662109375,"logical_error_count":5,"syndromes_detected":0,"corrections_applied":0,"syndrome_rate":0.0,"success_rate":0.921875}},{"p":0.01,"n_logical":256,"shots":64,"se":{"job_id":"70161217-2606-4ee1-a43c-a042bd44b3c0","seconds":216.1,"wall_seconds":215,"n_logical":256,"shots":64,"logical_error_rate":0.00555419921875,"ler_bit0":0.005859375,"ler_bit1":0.0052490234375,"logical_error_count":50,"syndromes_detected":2043,"corrections_applied":2043,"syndrome_rate":0.12469482421875,"success_rate":0.21875},"bare":{"job_id":"78350aec-f9a4-4ba7-bcd8-3e0674cec551","seconds":23.9,"wall_seconds":22,"n_logical":256,"shots":64,"logical_error_rate":0.0018310546875,"ler_bit0":0.0020751953125,"ler_bit1":0.0015869140625,"logical_error_count":23,"syndromes_detected":0,"corrections_applied":0,"syndrome_rate":0.0,"success_rate":0.640625}}]}},"ladder":[{"job_id":"97400f96-2c85-410a-b20f-2e8452eee025","seconds":75.8,"wall_seconds":75,"n_logical":64,"shots":1024,"logical_error_rate":0.0430145263671875,"ler_bit0":0.041351318359375,"ler_bit1":0.044677734375,"logical_error_count":953,"syndromes_detected":21078,"corrections_applied":21078,"syndrome_rate":0.321624755859375,"success_rate":0.0693359375,"physical_data_qubits":448},{"job_id":"1dd2fd92-a57a-4dba-9918-bca80117cb0f","seconds":474.7,"wall_seconds":473,"n_logical":128,"shots":1024,"logical_error_rate":0.04344940185546875,"ler_bit0":0.04339599609375,"ler_bit1":0.0435028076171875,"logical_error_count":1021,"syndromes_detected":41522,"corrections_applied":41522,"syndrome_rate":0.3167877197265625,"success_rate":0.0029296875,"physical_data_qubits":896},{"job_id":"0833a836-e2f0-4b45-a4b9-c42ad31140e4","seconds":3.2,"wall_seconds":3788,"n_logical":256,"shots":1024,"logical_error_rate":0.042842864990234375,"ler_bit0":0.04229736328125,"ler_bit1":0.04338836669921875,"logical_error_count":1024,"syndromes_detected":82736,"corrections_applied":82736,"syndrome_rate":0.31561279296875,"success_rate":0,"physical_data_qubits":1792},{"job_id":"7ea460be-3e71-4511-bfda-e2740171662a","seconds":234.2,"wall_seconds":233,"n_logical":512,"shots":8,"logical_error_rate":0.043212890625,"ler_bit0":0.0498046875,"ler_bit1":0.03662109375,"logical_error_count":8,"syndromes_detected":1281,"corrections_applied":1281,"syndrome_rate":0.312744140625,"success_rate":0,"physical_data_qubits":3584}],"jobs_completed":30,"ladder_note":"Also submitted: n_logical = 1,024 (7,168 data qubits, 2 shots). It had not completed when this page was built, so it is not shown or counted."};
+const DEMO = {"name":"moth.png","stem":"moth","bits":[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,1],[1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1],[1,1,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,1,1,0,0,1,1,1],[1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1],[0,1,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,0],[0,1,1,1,1,1,1,1,1,0,0,1,1,0,0,1,1,0,0,0,1,0,0,1,1,1,1,1,1,1,1,0],[0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],[0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],[0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0],[0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0],[0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,1,0,0,0,0,0],[0,0,0,0,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,0,0,0,0],[0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,1,0,0,0,0],[0,0,0,0,1,1,1,0,1,1,0,0,1,1,1,1,1,1,1,1,0,0,1,1,0,1,1,1,0,0,0,0],[0,0,0,0,1,1,1,0,0,1,0,0,1,1,1,1,1,1,1,1,0,0,1,0,0,1,1,1,0,0,0,0],[0,0,0,0,1,1,1,1,0,0,0,1,1,1,0,1,1,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0],[0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0],[0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],"widths":{"24":[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,1],[1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1],[1,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,1],[0,1,1,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,1,1,0],[0,1,1,1,1,1,1,1,1,1,0,1,1,0,1,1,0,1,1,1,1,1,1,0],[0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],[0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],[0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0],[0,0,0,1,1,1,0,0,1,1,1,1,1,1,1,1,0,0,1,1,1,0,0,0],[0,0,0,1,1,0,0,0,0,1,1,1,1,1,1,0,0,0,0,1,1,0,0,0],[0,0,0,1,1,0,1,1,0,1,1,1,1,1,1,0,1,1,0,1,1,0,0,0],[0,0,0,1,1,1,0,0,1,1,1,1,1,1,1,1,0,0,1,1,1,0,0,0],[0,0,0,0,1,1,1,1,1,1,0,0,1,0,1,1,1,1,1,1,0,0,0,0],[0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],"32":[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0],[1,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,1],[1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1],[1,1,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,1,1,0,0,1,1,1],[1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1],[0,1,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,0],[0,1,1,1,1,1,1,1,1,0,0,1,1,0,0,1,1,0,0,0,1,0,0,1,1,1,1,1,1,1,1,0],[0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],[0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],[0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0],[0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0],[0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,1,0,0,0,0,0],[0,0,0,0,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,0,0,0,0],[0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,1,0,0,0,0],[0,0,0,0,1,1,1,0,1,1,0,0,1,1,1,1,1,1,1,1,0,0,1,1,0,1,1,1,0,0,0,0],[0,0,0,0,1,1,1,0,0,1,0,0,1,1,1,1,1,1,1,1,0,0,1,0,0,1,1,1,0,0,0,0],[0,0,0,0,1,1,1,1,0,0,0,1,1,1,0,1,1,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0],[0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0],[0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],"48":[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0],[1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1],[1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1],[1,1,1,1,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,1,1,1,1,1],[1,1,1,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,1,1,1,1],[0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,1,1,1,1,1,0],[0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0],[0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0],[0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,0,0,0,1,1,1,1,0,0,0,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0],[0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0],[0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0],[0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0],[0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0],[0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0],[0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1,1,1,1,0,1,1,1,1,0,1,1,1,1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0],[0,0,0,0,0,0,1,1,1,1,0,0,0,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,0,0,0,1,1,1,1,0,0,0,0,0,0],[0,0,0,0,0,0,1,1,1,1,0,0,0,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0,0,0],[0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,0,0,0,1,1,1,1,0,0,0,0,0,0],[0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0],[0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,1,1,1,1,0,0,1,1,1,0,1,1,1,1,1,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]}};
+/*LOGIC*/
+// ---- pure logic: twins of loom/prng.py, loom/steane.py, loom/weave.py, loom/wif.py, loom/image.py ----
+function mulberry32(a){a=a>>>0;return function(){a=(a+0x6D2B79F5)|0;let t=a;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;};}
+const NQ=7, BAND=7, CODE_PICKS=6, GROUND=2, RED=3;
+const H=[0,1,2].map(r=>Array.from({length:NQ},(_,i)=>((i+1)>>r)&1));
+function syndrome(w){let s=0;for(let r=0;r<3;r++){let x=0;for(let i=0;i<NQ;i++)x+=H[r][i]&w[i];if(x%2)s|=1<<r;}return s;}
+function flip(w,pos){const v=w.slice();if(pos)v[pos-1]^=1;return v;}
+function correct(w){const s=syndrome(w);return [flip(w,s),s];}
+function parity(w){return w.reduce((a,b)=>a+b,0)%2;}
+const EVEN=(()=>{const out=[];for(let n=0;n<128;n++){const w=Array.from({length:NQ},(_,i)=>(n>>i)&1);if(syndrome(w)===0&&parity(w)===0)out.push(w);}return out;})();
+const ODD=EVEN.map(w=>w.map(b=>1-b));
+function codeword(bit,k){return (bit?ODD:EVEN)[k].slice();}
+function levelOf(cal,profile,p){return cal.profiles[profile].levels.find(l=>Math.abs(l.p-p)<=0.01*l.p);}
+function ratesOf(lv){return {L0:lv.se.ler_bit0,L1:lv.se.ler_bit1,s:Math.min(1,lv.se.syndrome_rate/2)};} // bit-flip half of the engine's X+Z syndrome count
+function sample(bits,r,seed,codewords){
+  const rng=mulberry32(seed), L=[r.L0,r.L1];
+  return bits.map(row=>row.map(bit=>{
+    const uF=rng(),uS=rng(),uP=rng(),uW=rng();
+    const failed=uF<L[bit], flagged=uS<r.s;
+    const pos=flagged?Math.min(6,Math.floor(uP*7))+1:0;
+    const k=codewords==='measured'?Math.min(7,Math.floor(uW*8)):0;
+    const sent=codeword(bit^(failed?1:0),k), received=flip(sent,pos);
+    const [corrected,syn]=correct(received);
+    return {bit,failed,flagged,pos,sent,received,syn,corrected,decoded:parity(corrected)};
+  }));
+}
+function drawdown(blocks,view){
+  const cells=[],weft=[];
+  for(const brow of blocks){
+    const word=[],red=[];
+    for(const b of brow){const w=view==='received'?b.received:b.corrected;
+      for(let i=0;i<NQ;i++){word.push(1-w[i]);red.push(b.syn&&i+1===b.syn?0:1);}}
+    for(let k=0;k<CODE_PICKS;k++){cells.push(word.slice());weft.push(GROUND);}
+    cells.push(red);weft.push(RED);
+  }
+  return {cells,weft};
+}
+function counts(blocks){let n=0,fl=0,fa=0,wr=0;for(const r of blocks)for(const b of r){n++;fl+=b.flagged?1:0;fa+=b.failed?1:0;wr+=b.decoded!==b.bit?1:0;}
+  return {blocks:n,flagged:fl,failed:fa,pixels_wrong:wr,threads:n*NQ,threads_flipped_as_read:fl};}
+const PALETTE={1:[25,35,142],2:[236,230,216],3:[198,45,45]}; // ink warp, unbleached weft, syndrome red (twin of loom/wif.py)
+function asciiOnly(s){return String(s).replace(/[\r\n]+/g,' ').replace(/[^\x00-\x7f]/gu,'?');}
+function toWif(cells,weft,title,notes){
+  const ends=cells.length?cells[0].length:0, picks=cells.length;
+  const L=['[WIF]','Version=1.1','Date=April 20, 1997','Developers=wif@mhsoft.com','Source Program=syndrome-loom','Source Version=0.1.0','',
+    '[CONTENTS]','COLOR PALETTE=true','TEXT=true','WEAVING=true','WARP=true','WEFT=true','NOTES=true','COLOR TABLE=true','THREADING=true','LIFTPLAN=true','WEFT COLORS=true','',
+    '[TEXT]','Title='+asciiOnly(title),'Author=syndrome-loom','','[NOTES]'];
+  notes.forEach((n,i)=>L.push((i+1)+'='+asciiOnly(n)));
+  L.push('','[COLOR PALETTE]','Entries=3','Form=RGB','Range=0,255','','[COLOR TABLE]');
+  for(const k of [1,2,3])L.push(k+'='+PALETTE[k].join(','));
+  L.push('','[WEAVING]','Shafts='+ends,'Treadles=0','Rising Shed=true','','[WARP]','Threads='+ends,'Color=1','','[WEFT]','Threads='+picks,'Color=2','','[THREADING]');
+  for(let e=1;e<=ends;e++)L.push(e+'='+e);
+  L.push('','[LIFTPLAN]');
+  cells.forEach((row,p)=>{const lifted=[];row.forEach((c,e)=>{if(c)lifted.push(e+1);});if(lifted.length)L.push((p+1)+'='+lifted.join(','));});
+  L.push('','[WEFT COLORS]');
+  weft.forEach((c,p)=>{if(c!==2)L.push((p+1)+'='+c);});
+  return L.join('\r\n')+'\r\n';
+}
+function wifNotes(o){
+  return ['Syndrome Loom 0.1.0: '+o.name+' at p='+o.p+' ('+o.profile+' profile), seed '+o.seed+', view '+o.view+', codewords '+o.codewords+'.',
+    'Each pixel is a Steane block of 7 warp ends; each image row is 6 code picks + 1 red syndrome pick.',
+    'Rates measured by Atlas '+o.engine+' job '+o.job+' ('+o.simulator+').',
+    'This cloth: '+o.c.flagged+' syndrome stitches, '+o.c.failed+' logical flips in '+o.c.blocks+' blocks.',
+    'Pick 1 is the top of the image; end 1 is its left edge. Rising shed; one shaft per end.'];
+}
+function otsu(grey){
+  const hist=new Float64Array(256);for(const v of grey)hist[Math.min(255,Math.max(0,Math.floor(v)))]++;
+  let total=0,mt=0;for(let i=0;i<256;i++){total+=hist[i];mt+=i*hist[i];}
+  if(!total)return 128;
+  let w0=0,m0=0,best=-1,arg=0;
+  for(let i=0;i<256;i++){w0+=hist[i];m0+=i*hist[i];const w1=total-w0;
+    const b=(w0>0&&w1>0)?Math.pow(mt*w0/total-m0,2)/(w0*w1):-1;if(b>best){best=b;arg=i;}}
+  return arg+0.5;
+}
+function binarise(grey,w,h,invert){const t=otsu(grey);const bits=[];for(let y=0;y<h;y++){const r=[];for(let x=0;x<w;x++){let b=grey[y*w+x]>=t?1:0;if(invert)b=1-b;r.push(b);}bits.push(r);}return bits;}
+/*END LOGIC*/
+/* InkSprite: tiny pixel-art sprite helper shared by every piece of "What the Noise Remembers".
+   Inline it into a page by putting the comment marker for INKSPRITE inside a script element and replacing it
+   in build_web.py with this file's text (see common/SPRITES.md).
+
+   Sprites are authored as arrays of strings, one char per pixel, using the shared ink palette:
+     '.' or ' ' transparent   'K' ink #19238E (outline)   'B' ink-2 #545BA9   'L' ink-3 #A1A4CE
+     'T' tint #D3D3E6         'W' paper #FBFAF9 (white)    'O' warm accent #B4541A (light, fire, heat ONLY)
+     'G' good #1F7A4D (sparingly)
+   Extra keys can be passed per sprite.
+
+   const moth = InkSprite.make({ frames: [ ["..K..", ".KBK.", ...], [...] ], fps: 8 });
+   InkSprite.draw(ctx, moth, frameIndex, x, y, scale, {flipX, alpha, rotate});   // x,y = centre
+   const t = InkSprite.frameAt(moth, timeSeconds);                                 // looping frame index
+   InkSprite.toDataURL(moth, 0, 4) -> PNG data URL (for <img>, favicons, CSS backgrounds)
+*/
+(function (root) {
+  const PALETTE = { K: '#19238E', B: '#545BA9', L: '#A1A4CE', T: '#D3D3E6', W: '#FBFAF9', O: '#B4541A', G: '#1F7A4D' };
+  const cache = new Map();
+  let uid = 0;
+
+  function make(def) {
+    const frames = (def.frames || [def.rows]).map(f => f.map(r => r.replace(/\s/g, '.')));
+    const h = frames[0].length, w = Math.max(...frames[0].map(r => r.length));
+    return { id: ++uid, frames, w, h, fps: def.fps || 6, palette: Object.assign({}, PALETTE, def.palette || {}) };
+  }
+
+  function bake(sp, f, scale) {
+    const key = sp.id + ':' + f + ':' + scale;
+    if (cache.has(key)) return cache.get(key);
+    const c = document.createElement('canvas');
+    c.width = sp.w * scale; c.height = sp.h * scale;
+    const x = c.getContext('2d');
+    const rows = sp.frames[f % sp.frames.length];
+    for (let j = 0; j < rows.length; j++) for (let i = 0; i < rows[j].length; i++) {
+      const ch = rows[j][i];
+      if (ch === '.' || !sp.palette[ch]) continue;
+      x.fillStyle = sp.palette[ch];
+      x.fillRect(i * scale, j * scale, scale, scale);
+    }
+    cache.set(key, c);
+    return c;
+  }
+
+  function draw(ctx, sp, f, cx, cy, scale, o) {
+    o = o || {};
+    const img = bake(sp, f | 0, Math.max(1, Math.round(scale)));
+    ctx.save();
+    ctx.imageSmoothingEnabled = false;
+    if (o.alpha != null) ctx.globalAlpha *= o.alpha;
+    ctx.translate(Math.round(cx), Math.round(cy));
+    if (o.rotate) ctx.rotate(o.rotate);
+    if (o.flipX) ctx.scale(-1, 1);
+    if (o.flipY) ctx.scale(1, -1);
+    ctx.drawImage(img, -img.width / 2, -img.height / 2);
+    ctx.restore();
+  }
+
+  function frameAt(sp, t) {
+    if (root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches) return 0;
+    return Math.floor(t * sp.fps) % sp.frames.length;
+  }
+
+  function toDataURL(sp, f, scale) { return bake(sp, f || 0, scale || 4).toDataURL('image/png'); }
+
+  root.InkSprite = { make, draw, frameAt, toDataURL, PALETTE };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+const SPR = {"weaver_idle":{"frames":[["................................","....KK....................KK....","...KLLK..................KLLK...","...KLBLK................KLBLK...","....KLBLK..............KLBLK....",".....KLBLK............KLBLK.....","......KLBK............KBLK......",".......KBK..KKKKKKKK..KBK.......",".KKK....KKKKWWWWWWWWKKKK....KKK.","KLLLKK...KWWWWWWWWWWWWK...KKLLLK","KLTTLLKKKWWKKWWWWWWKKWWKKKLLTTLK","KLTWWTLLKWKWKKWWWWKKWKWKLLTWWTLK","KLTWBBWTKWKKKKWWWWKKKKWKTWBBWTLK","KLTWBBWTKWWKKWWWWWWKKWWKTWBBWTLK","KLLTWWTLKTWWWWBWWBWWWWTKLTWWTLLK",".KLLTTLLLKWWWWWBBWWWWWKLLLTTLLK.",".KBLLLKTKKKWWWWWWWWWWKKKTKLLLBK.","..KBBKKKKKKKKKKKKKKKKKKKKKKBBK..","...KKKWWWKLLLKKKKKKLLLKWWWKKK...","...KLKWWTKLLLKWTWTKLLLKTWWKLK...","..KLKBKKKBBBBKWTWTKBBBBKKKBKLK..","..KLTKKBBBBBBKKKKKKBBBBBBKKTLK..","..KLTTLKKKKKKKKKKKKKKKKKKLTTLK..","...KLLLBBKBBBBBBBBBBBBKBBLLLK...","....KKBBBKWWWWWWWWWWWWKBBBKK....","......KKKKTBBBBBBBBBBTKKKK......","..........KWWWWWWWWWWK..........","...........KKKKKKKKKK...........","............K......K............","............K......K............","...........KK......KK...........","..........KKK......KKK.........."],["................................","....KK....................KK....","...KLLK..................KLLK...","...KLBLK................KLBLK...","....KLBLK..............KLBLK....",".....KLBLK............KLBLK.....","......KLBK............KBLK......",".......KBK..KKKKKKKK..KBK.......",".KKK....KKKKWWWWWWWWKKKK....KKK.","KLLLKK...KWWWWWWWWWWWWK...KKLLLK","KLTTLLKKKWWKKWWWWWWKKWWKKKLLTTLK","KLTWWTLLKWKWKKWWWWKKWKWKLLTWWTLK","KLTWBBWTKWKKKKWWWWKKKKWKTWBBWTLK","KLTWBBWTKWWKKWWWWWWKKWWKTWBBWTLK","KLLTWWTLKTWWWWBWWBWWWWTKLTWWTLLK",".KLLTTLLLKWWWWWBBWWWWWKLLLTTLLK.",".KBLLLKTKKKWWWWWWWWWWKKKTKLLLBK.","..KBBKKKKKKKKKKKKKKKKKKKKKKBBK..","...KKKWWWKLLLKKKKKKLLLKWWWKKK...","...KLKWWTKLLLKWTWTKLLLKTWWKLK...","..KLKBKKKBBBBKWTWTKBBBBKKKBKLK..","..KLTKKBBBBBBKKKKKKBBBBBBKKTLK..","..KLTTLKKKKKKKKKKKKKKKKKKLTTLK..","...KLLLBBKBBBBBBBBBBBBKBBLLLK...","....KKBBBKWWWWWWWWWWWWKBBBKK....","......KKKKTBBBBBBBBBBTKKKK......","..........KWWWWWWWWWWK..........","...........KKKKKKKKKK...........","............K......K............","............K......K............","...........KK......KK...........","..........KKK......KKK.........."],["................................","....KK....................KK....","...KLLK..................KLLK...","...KLBLK................KLBLK...","....KLBLK..............KLBLK....",".....KLBLK............KLBLK.....","......KLBK............KBLK......",".......KBK..KKKKKKKK..KBK.......",".KKK....KKKKWWWWWWWWKKKK....KKK.","KLLLKK...KWWWWWWWWWWWWK...KKLLLK","KLTTLLKKKWWKKWWWWWWKKWWKKKLLTTLK","KLTWWTLLKWKWKKWWWWKKWKWKLLTWWTLK","KLTWBBWTKWKKKKWWWWKKKKWKTWBBWTLK","KLTWBBWTKWWKKWWWWWWKKWWKTWBBWTLK","KLLTWWTLKTWWWWBWWBWWWWTKLTWWTLLK",".KLLTTLLLKWWWWWBBWWWWWKLLLTTLLK.",".KBLLLKTKKKWWWWWWWWWWKKKTKLLLBK.","..KBBKKKKKKKKKKKKKKKKKKKKKKBBK..","...KKKWWWKLLLKKKKKKLLLKWWWKKK...","...KLKWWTKLLLKWTWTKLLLKTWWKLK...","..KLKBKKKBBBBKWTWTKBBBBKKKBKLK..","..KLTKKBBBBBBKKKKKKBBBBBBKKTLK..","..KLTTLKKKKKKKKKKKKKKKKKKLTTLK..","...KLLLBBKBBBBBBBBBBBBKBBLLLK...","....KKBBBKWWWWWWWWWWWWKBBBKK....","......KKKKTBBBBBBBBBBTKKKK......","..........KWWWWWWWWWWK..........","...........KKKKKKKKKK...........","............K......K............","............K......K............","...........KK......KK...........","..........KKK......KKK.........."],["................................","....KK....................KK....","...KLLK..................KLLK...","...KLBLK................KLBLK...","....KLBLK..............KLBLK....",".....KLBLK............KLBLK.....","......KLBK............KBLK......",".......KBK..KKKKKKKK..KBK.......",".KKK....KKKKWWWWWWWWKKKK....KKK.","KLLLKK...KWWWWWWWWWWWWK...KKLLLK","KLTTLLKKKWWWWWWWWWWWWWWKKKLLTTLK","KLTWWTLLKWWWWWWWWWWWWWWKLLTWWTLK","KLTWBBWTKWKKKKWWWWKKKKWKTWBBWTLK","KLTWBBWTKWWWWWWWWWWWWWWKTWBBWTLK","KLLTWWTLKTWWWWBWWBWWWWTKLTWWTLLK",".KLLTTLLLKWWWWWBBWWWWWKLLLTTLLK.",".KBLLLKTKKKWWWWWWWWWWKKKTKLLLBK.","..KBBKKKKKKKKKKKKKKKKKKKKKKBBK..","...KKKWWWKLLLKKKKKKLLLKWWWKKK...","...KLKWWTKLLLKWTWTKLLLKTWWKLK...","..KLKBKKKBBBBKWTWTKBBBBKKKBKLK..","..KLTKKBBBBBBKKKKKKBBBBBBKKTLK..","..KLTTLKKKKKKKKKKKKKKKKKKLTTLK..","...KLLLBBKBBBBBBBBBBBBKBBLLLK...","....KKBBBKWWWWWWWWWWWWKBBBKK....","......KKKKTBBBBBBBBBBTKKKK......","..........KWWWWWWWWWWK..........","...........KKKKKKKKKK...........","............K......K............","............K......K............","...........KK......KK...........","..........KKK......KKK.........."],["................................","....KK....................KK....","...KLLK..................KLLK...","...KLBLK................KLBLK...","....KLBLK..............KLBLK....",".....KLBLK............KLBLK.....","......KLBK............KBLK......",".......KBK..KKKKKKKK..KBK.......",".KKK....KKKKWWWWWWWWKKKK....KKK.","KLLLKK...KWWWWWWWWWWWWK...KKLLLK","KLTTLLKKKWWKKWWWWWWKKWWKKKLLTTLK","KLTWWTLLKWKWKKWWWWKKWKWKLLTWWTLK","KLTWBBWTKWKKKKWWWWKKKKWKTWBBWTLK","KLTWBBWTKWWKKWWWWWWKKWWKTWBBWTLK","KLLTWWTLKTWWWWBWWBWWWWTKLTWWTLLK",".KLLTTLLLKWWWWWBBWWWWWKLLLTTLLK.",".KBLLLKTKKKWWWWWWWWWWKKKTKLLLBK.","..KBBKKKKKKKKKKKKKKKKKKKKKKBBK..","...KKKWWWKLLLKKKKKKLLLKWWWKKK...","...KLKWWTKLLLKWTWTKLLLKTWWKLK...","..KLKBKKKBBBBKWTWTKBBBBKKKBKLK..","..KLTKKBBBBBBKKKKKKBBBBBBKKTLK..","..KLTTLKKKKKKKKKKKKKKKKKKLTTLK..","...KLLLBBKBBBBBBBBBBBBKBBLLLK...","....KKBBBKWWWWWWWWWWWWKBBBKK....","......KKKKTBBBBBBBBBBTKKKK......","..........KWWWWWWWWWWK..........","...........KKKKKKKKKK...........","............K......K............","............K......K............","...........KK......KK...........","..........KKK......KKK.........."],["................................","....KK....................KK....","...KLLK..................KLLK...","...KLBLK................KLBLK...","....KLBLK..............KLBLK....",".....KLBLK............KLBLK.....","......KLBK............KBLK......",".KKK...KBK..KKKKKKKK..KBK...KKK.","KLLLKK..KKKKWWWWWWWWKKKK..KKLLLK","KLTTLLKK.KWWWWWWWWWWWWK.KKLLTTLK","KLTWWTLLKWWKKWWWWWWKKWWKLLTWWTLK","KLTWBBWTKWKWKKWWWWKKWKWKTWBBWTLK","KLTWBBWTKWKKKKWWWWKKKKWKTWBBWTLK","KLLTWWTLKWWKKWWWWWWKKWWKLTWWTLLK",".KLLTTLLKTWWWWBWWBWWWWTKLLTTLLK.",".KBLLLLLBKWWWWWBBWWWWWKBLLLLLBK.","..KBBLKTKKKWWWWWWWWWWKKKTKLBBK..","...KKKKKKKKKKKKKKKKKKKKKKKKKK...","...KLKWWWKLLLKKKKKKLLLKWWWKLK...","..KLTKWWTKLLLKWTWTKLLLKTWWKTLK..","..KLKBKKKBBBBKWTWTKBBBBKKKBKLK..","..KLTKKBBBBBBKKKKKKBBBBBBKKTLK..","...KLLLKKKKKKKKKKKKKKKKKKLLLK...","....KKBBBKBBBBBBBBBBBBKBBBKK....","......KKKKWWWWWWWWWWWWKKKK......",".........KTBBBBBBBBBBTK.........","..........KWWWWWWWWWWK..........","...........KKKKKKKKKK...........","............K......K............","............K......K............","...........KK......KK...........","..........KKK......KKK.........."],["................................","....KK....................KK....","...KLLK..................KLLK...","...KLBLK................KLBLK...","....KLBLK..............KLBLK....",".....KLBLK............KLBLK.....","......KLBK............KBLK......",".......KBK..KKKKKKKK..KBK.......",".KKK....KKKKWWWWWWWWKKKK....KKK.","KLLLKK...KWWWWWWWWWWWWK...KKLLLK","KLTTLLKKKWWKKWWWWWWKKWWKKKLLTTLK","KLTWWTLLKWKWKKWWWWKKWKWKLLTWWTLK","KLTWBBWTKWKKKKWWWWKKKKWKTWBBWTLK","KLTWBBWTKWWKKWWWWWWKKWWKTWBBWTLK","KLLTWWTLKTWWWWBWWBWWWWTKLTWWTLLK",".KLLTTLLLKWWWWWBBWWWWWKLLLTTLLK.",".KBLLLKTKKKWWWWWWWWWWKKKTKLLLBK.","..KBBKKKKKKKKKKKKKKKKKKKKKKBBK..","...KKKWWWKLLLKKKKKKLLLKWWWKKK...","...KLKWWTKLLLKWTWTKLLLKTWWKLK...","..KLKBKKKBBBBKWTWTKBBBBKKKBKLK..","..KLTKKBBBBBBKKKKKKBBBBBBKKTLK..","..KLTTLKKKKKKKKKKKKKKKKKKLTTLK..","...KLLLBBKBBBBBBBBBBBBKBBLLLK...","....KKBBBKWWWWWWWWWWWWKBBBKK....","......KKKKTBBBBBBBBBBTKKKK......","..........KWWWWWWWWWWK..........","...........KKKKKKKKKK...........","............K......K............","............K......K............","...........KK......KK...........","..........KKK......KKK.........."],["................................","....KK....................KK....","...KLLK..................KLLK...","...KLBLK................KLBLK...","....KLBLK..............KLBLK....",".....KLBLK............KLBLK.....","......KLBK............KBLK......",".......KBK..KKKKKKKK..KBK.......",".KKK....KKKKWWWWWWWWKKKK....KKK.","KLLLKK...KWWWWWWWWWWWWK...KKLLLK","KLTTLLKKKWWKKWWWWWWKKWWKKKLLTTLK","KLTWWTLLKWKWKKWWWWKKWKWKLLTWWTLK","KLTWBBWTKWKKKKWWWWKKKKWKTWBBWTLK","KLTWBBWTKWWKKWWWWWWKKWWKTWBBWTLK","KLLTWWTLKTWWWWBWWBWWWWTKLTWWTLLK",".KLLTTLLLKWWWWWBBWWWWWKLLLTTLLK.",".KBLLLKTKKKWWWWWWWWWWKKKTKLLLBK.","..KBBKKKKKKKKKKKKKKKKKKKKKKBBK..","...KKKWWWKLLLKKKKKKLLLKWWWKKK...","...KLKWWTKLLLKWTWTKLLLKTWWKLK...","..KLKBKKKBBBBKWTWTKBBBBKKKBKLK..","..KLTKKBBBBBBKKKKKKBBBBBBKKTLK..","..KLTTLKKKKKKKKKKKKKKKKKKLTTLK..","...KLLLBBKBBBBBBBBBBBBKBBLLLK...","....KKBBBKWWWWWWWWWWWWKBBBKK....","......KKKKTBBBBBBBBBBTKKKK......","..........KWWWWWWWWWWK..........","...........KKKKKKKKKK...........","............K......K............","............K......K............","...........KK......KK...........","..........KKK......KKK.........."]],"fps":4},"weaver_work":{"frames":[["................................","....KK....................KK....","...KLLK..................KLLK...","...KLBLK................KLBLK...","....KLBLK..............KLBLK....",".....KLBLK............KLBLK.....","......KLBK............KBLK......",".......KBK..KKKKKKKK..KBK.......",".KKK....KKKKWWWWWWWWKKKK....KKK.","KLLLKK...KWWWWWWWWWWWWK...KKLLLK","KLKKKLKKKWWKKWWWWWWKKWWKKKLLTTLK","KKWWWKLLKWKWKKWWWWKKWKWKLLTWWTLK","KKWWTKWTKWKKKKWWWWKKKKWKTWBBWTLK","KLKBBKWTKWWKKWWWWWWKKWWKTWBBWTLK","KLLKBBKLKTWWWWBWWBWWWWTKLTWWTLLK",".KLLKBBKLKWWWWWBBWWWWWKLLLTTLLK.",".KBLLKBBKKKWWWWWWWWWWKKKTKLLLBK.","..KBBKKBKWTKTWTWWTWTKTWTKKKBBK..","...KKKWWWWWWWWWWWWWWWWWWKBKKK...","...KLKTWWWWWWWWWWWWWWWWWWKBKK...","..KLTTKTWTWWTWWTTWWTWWTWTKBBKK..","..KLTWTKKTKKTKKTTKKTKKTKKWWTKK..","..KLTTLLBKTWWWWWWWWWWTKBLKKKLK..","...KLLLBBKBBBBBBBBBBBBKBBLLLK...","....KKBBBKWWWWWWWWWWWWKBBBKK....","......KKKKTBBBBBBBBBBTKKKK......","..........KWWWWWWWWWWK..........","...........KKKKKKKKKK...........","............K......K............","............K.....KK............","...........KK...KKK.............","..........KKK..................."],["................................","....KK....................KK....","...KLLK..................KLLK...","...KLBLK................KLBLK...","....KLBLK..............KLBLK....",".....KLBLK............KLBLK.....","......KLBK............KBLK......",".......KBK..KKKKKKKK..KBK.......",".KKK....KKKKWWWWWWWWKKKK....KKK.","KLLLKK...KWWWWWWWWWWWWK...KKLLLK","KLTTLLKKKWWKKWWWWWWKKWWKKKLKKKLK","KLTWWTLLKWKWKKWWWWKKWKWKLLKWWWKK","KLTWBBWTKWKKKKWWWWKKKKWKTWKTWWKK","KLTWBBWTKWWKKWWWWWWKKWWKTWKBBKLK","KLLTWWTLKTWWWWBWWBWWWWTKLKBBKLLK",".KLLTTLLLKWWWWWBBWWWWWKLKBBKLLK.",".KBLLLKTKKKWWWWWWWWWWKKKBBKLLBK.","..KBBKKKTWTKTWTWWTWTKTWKBKKBBK..","...KKKBKWWWWWWWWWWWWWWWWWWKKK...","...KKBKWWWWWWWWWWWWWWWWWWTKLK...","..KKBBKTWTWWTWWTTWWTWWTWTKTTLK..","..KKTWWKKTKKTKKTTKKTKKTKKTWTLK..","..KLKKKLBKTWWWWWWWWWWTKBLLTTLK..","...KLLLBBKBBBBBBBBBBBBKBBLLLK...","....KKBBBKWWWWWWWWWWWWKBBBKK....","......KKKKTBBBBBBBBBBTKKKK......","..........KWWWWWWWWWWK..........","...........KKKKKKKKKK...........","............K......K............","............KK.....K............",".............KKK...KK...........","...................KKK.........."]],"fps":8},"weaver_cheer":{"frames":[["...KK......................KK...","...KLK....................KLK...","...KLBK..................KBLK...","....KLBK................KBLK....","....KLBK................KBLK....",".....KLBK..............KBLK.....",".KKK..KBK..............KBK..KKK.","KLLLKK.KBK..KKKKKKKK..KBK.KKLLLK","KLTTLLKKKKKKWWWWWWWWKKKKKKLLTTLK","KLTWWTLLKKWWWWWWWWWWWWKKLLTWWTLK","KLKKKBWTKWWWWWWWWWWWWWWKTWBKKKLK","KKWWWKWTKWWKKWWWWWWKKWWKTWKWWWKK","KKWWTKTLKWKWWKWWWWKWWKWKLTKTWWKK",".KKBBKLLKWWWWWWWWWWWWWWKLLKBBKK.",".KBKBBKLKTWWWWBWWBWWWWTKLKBBKBK.","..KBKBBKBKWWWWBBBBWWWWKBKBBKBK..","...KKKBBKKKWWWWWWWWWWKKKBBKKK...","...KLKKBKWTKTWTWWTWTKTWKBKKLK...","..KLTKWWWWWWWWWWWWWWWWWWWWKTLK..","..KLTKTWWWWWWWWWWWWWWWWWWTKTLK..","..KLTTKTWTWWTWWTTWWTWWTWTKTTLK..","...KLLLKKTKKTKKTTKKTKKTKKLLLK...","....KKBBBKTWWWWWWWWWWTKBBBKK....","......KKKKBBBBBBBBBBBBKKKK......",".........KWWWWWWWWWWWWK.........",".........KTBBBBBBBBBBTK.........","..........KWWWWWWWWWWK..........","...........KKKKKKKKKK...........","............K......K............","............K......K............","...........KK......KK...........","..........KKK......KKK.........."],["...KLK....................KLK...","...KLBK..................KBLK...","....KLBK................KBLK....","....KLBK................KBLK....",".....KLBK..............KBLK.....",".KKK..KBK..............KBK..KKK.","KLLLKK.KBK............KBK.KKLLLK","KLTTLLKKKK..KKKKKKKK..KKKKLLTTLK","KLTWWTLLKKKKWWWWWWWWKKKKLLTWWTLK","KLTWBBWTLKWWWWWWWWWWWWKLTWBBWTLK","KLKKKBWTKWWWWWWWWWWWWWWKTWBKKKLK","KKWWWKTLKWWKKWWWWWWKKWWKLTKWWWKK",".KWWTKLLKWKWWKWWWWKWWKWKLLKTWWK.",".KKBBKLLKWWWWWWWWWWWWWWKLLKBBKK.","..KKBBKBKTWWWWBWWBWWWWTKBKBBKK..","...KKBBKBKWWWWBBBBWWWWKBKBBKK...","...KLKBBKKKWWWWWWWWWWKKKBBKLK...","..KLTKKBKWTKTWTWWTWTKTWKBKKTLK..","..KLTKWWWWWWWWWWWWWWWWWWWWKTLK..","..KLTKTWWWWWWWWWWWWWWWWWWTKTLK..","...KLLKTWTWWTWWTTWWTWWTWTKLLK...","....KKBKKTKKTKKTTKKTKKTKKBKK....","......KKKKTWWWWWWWWWWTKKKK......",".........KBBBBBBBBBBBBK.........",".........KWWWWWWWWWWWWK.........",".........KTBBBBBBBBBBTK.........","..........KWWWWWWWWWWK..........","...........KKKKKKKKKK...........","............K......K............","............K......K............","...........KK......KK...........","..........KKK......KKK.........."]],"fps":4},"weaver_sigh":{"frames":[["................................","................................","................................","................................","................................","........KK............KK........","......KKBK............KBKK......","....KKLBK...KKKKKKKK...KBLKK....","...KLLBK..KKWWWWWWWWKK..KBLLK...","..KLBLK..KWWWWWWWWWWWWK..KLBLK..",".KKLLK..KWWWWWWWWWWWWWWK..KLLKK.","KLLKKK..KWBBBBWWWWBBBBWK..KKKLLK","KLTTLLKKKWKKKKWWWWKKKKWKKKLLTTLK","KLTWWTLLKWWKKWWWWWWKKWWKLLTWWTLK","KLTWBBWTKTWWWWWBBWWWWWTKTWBBWTLK","KLTWBBWTLKWWWWBWWBWWWWKLTWBBWTLK","KLLTWWKTKKKWWWWWWWWWWKKKTKWWTLLK",".KLLTKTWTWTKTWTWWTWTKTWTWTKTLLK.",".KBLLKWWWWWWWWWWWWWWWWWWWWKLLBK.","..KBBKTWWWWWWWWWWWWWWWWWWTKBBK..","...KKBKTWTWWTWWTTWWTWWTWTKBKK...","...KLKKKKTKKTKKTTKKTKKTKKKKLK...","..KLTTLLBKTWWWWWWWWWWTKBLLTTLK..","..KLTWTLLKBBBBBBBBBBBBKLLTWTLK..","..KLTTLLBKWWWWWWWWWWWWKBLLTTLK..","...KLLLBBKTBBBBBBBBBBTKBBLLLK...","....KKBBBBKWWWWWWWWWWKBBBBKK....","......KKKK.KKKKKKKKKK.KKKK......","............K......K............","............K......K............","...........KK......KK...........","..........KKK......KKK.........."],["................................","................................","................................","................................","................................","........KK............KK........","......KKBK............KBKK......","....KKLBK...KKKKKKKK...KBLKK....","...KLLBK..KKWWWWWWWWKK..KBLLK...","..KLBLK..KWWWWWWWWWWWWK..KLBLK..",".KKLLK..KWWWWWWWWWWWWWWK..KLLKK.","KLLKKK..KWWWWWWWWWWWWWWK..KKKLLK","KLTTLLKKKWKKKKWWWWKKKKWKKKLLTTLK","KLTWWTLLKWWWWWWWWWWWWWWKLLTWWTLK","KLTWBBWTKTWWWWBWWBWWWWTKTWBBWTLK","KLTWBBWTLKWWWWWBBWWWWWKLTWBBWTLK","KLLTWWKTKKKWWWWWWWWWWKKKTKWWTLLK",".KLLTKTWTWTKTWTWWTWTKTWTWTKTLLK.",".KBLLKWWWWWWWWWWWWWWWWWWWWKLLBK.","..KBBKTWWWWWWWWWWWWWWWWWWTKBBK..","...KKBKTWTWWTWWTTWWTWWTWTKBKK...","...KLKKKKTKKTKKTTKKTKKTKKKKLK...","..KLTTLLBKTWWWWWWWWWWTKBLLTTLK..","..KLTWTLLKBBBBBBBBBBBBKLLTWTLK..","..KLTTLLBKWWWWWWWWWWWWKBLLTTLK..","...KLLLBBKTBBBBBBBBBBTKBBLLLK...","....KKBBBBKWWWWWWWWWWKBBBBKK....","......KKKK.KKKKKKKKKK.KKKK......","............K......K............","............K......K............","...........KK......KK...........","..........KKK......KKK.........."]],"fps":2},"shuttle":{"frames":[["....KKKKKKKKKK....","..KKLLLKKKKKKLLLKK","KKLLLLLKWTWTKLLLLK",".KBBBBBKWTWTKBBBBK","..KKBBBKKKKKKBBBKK","....KKKKKKKKKK...."]],"fps":1},"shuttle_red":{"frames":[["....KKKKKKKKKK....","..KKLLLKKKKKKLLLKK","KKLLLLLKRKRKKLLLLK",".KBBBBBKRKRKKBBBBK","..KKBBBKKKKKKBBBKK","....KKKKKKKKKK...."]],"fps":1,"palette":{"R":"#C62D2D"}},"inspector_idle":{"frames":[["..................","..................","......KKKKK.......",".....KBBBBBK......",".....KBWBBBK......","...KKKKKKKKKKK....","....KWWWWWWWK.....","....KWKWWWKWK.....","....KTWWWWWTK.....",".....KWWBWWK..KK..","....KKKKKKKKKKWTK.","...KWWTWWWTWWKTTK.","...KWWWWWWWWKTKK..","....KKKKKKKKTK....","...KWWWWWWWWWK....","...KWWTWWWTWWK....","....KKKKKKKKK.....","....KWWWWWWWK.....","....KWTWWWTWK.....",".....KKKKKKK......","....KWWWKWWWK.....","....KKK...KKK....."],["..................","..................","......KKKKK.......",".....KBBBBBK......",".....KBWBBBK......","...KKKKKKKKKKK....","....KWWWWWWWK.....","....KWKWWWKWK.....","....KTWWWWWTK.....",".....KWWBWWK..KK..","....KKKKKKKKKKWTK.","...KWWTWWWTWWKTTK.","...KWWWWWWWWKTKK..","....KKKKKKKKTK....","...KWWWWWWWWWK....","...KWWTWWWTWWK....","....KKKKKKKKK.....","....KWWWWWWWK.....","....KWTWWWTWK.....",".....KKKKKKK......","....KWWWKWWWK.....","....KKK...KKK....."],["..................","..................","......KKKKK.......",".....KBBBBBK......",".....KBWBBBK......","...KKKKKKKKKKK....","....KWWWWWWWK.....","....KWKWWWKWK.....","....KTWWWWWTK.....",".....KWWBWWK..KK..","....KKKKKKKKKKWTK.","...KWWTWWWTWWKTTK.","...KWWWWWWWWKTKK..","....KKKKKKKKTK....","...KWWWWWWWWWK....","...KWWTWWWTWWK....","....KKKKKKKKK.....","....KWWWWWWWK.....","....KWTWWWTWK.....",".....KKKKKKK......","....KWWWKWWWK.....","....KKK...KKK....."],["..................","..................","......KKKKK.......",".....KBBBBBK......",".....KBWBBBK......","...KKKKKKKKKKK....","....KWWWWWWWK.....","....KKKWWKKWK.....","....KTWWWWWTK.....",".....KWWBWWK..KK..","....KKKKKKKKKKWTK.","...KWWTWWWTWWKTTK.","...KWWWWWWWWKTKK..","....KKKKKKKKTK....","...KWWWWWWWWWK....","...KWWTWWWTWWK....","....KKKKKKKKK.....","....KWWWWWWWK.....","....KWTWWWTWK.....",".....KKKKKKK......","....KWWWKWWWK.....","....KKK...KKK....."],["..................","..................","......KKKKK.......",".....KBBBBBK......",".....KBWBBBK......","...KKKKKKKKKKK....","....KWWWWWWWK.....","....KWKWWWKWK.....","....KTWWWWWTK.....",".....KWWBWWK..KK..","....KKKKKKKKKKWTK.","...KWWTWWWTWWKTTK.","...KWWWWWWWWKTKK..","....KKKKKKKKTK....","...KWWWWWWWWWK....","...KWWTWWWTWWK....","....KKKKKKKKK.....","....KWWWWWWWK.....","....KWTWWWTWK.....",".....KKKKKKK......","....KWWWKWWWK.....","....KKK...KKK....."],["..................","..................","......KKKKK.......",".....KBBBBBK......",".....KBWBBBK......","...KKKKKKKKKKK....","....KWWWWWWWK.....","....KWKWWWKWK.....","....KTWWWWWTK.....",".....KWWBWWK..KK..","....KKKKKKKKKKWTK.","...KWWTWWWTWWKTTK.","...KWWWWWWWWKTKK..","....KKKKKKKKTK....","...KWWWWWWWWWK....","...KWWTWWWTWWK....","....KKKKKKKKK.....","....KWWWWWWWK.....","....KWTWWWTWK.....",".....KKKKKKK......","....KWWWKWWWK.....","....KKK...KKK....."]],"fps":3},"inspector_look":{"frames":[["..................","..................","......KKKKK.......",".....KBBBBBK......",".....KBWBBBK......","...KKKKKKKKKKK....","....KWKWWKWTTK....","....KWKWWKTTTKK...","....KTWWWWKKKTK...",".....KWWBWWKKTK...","....KKKKKKKKTK....","...KWWTWWWTWWK....","...KWWWWWWWWWK....","....KKKKKKKKK.....","...KWWWWWWWWWK....","...KWWTWWWTWWK....","....KKKKKKKKK.....","....KWWWWWWWK.....","....KWTWWWTWK.....",".....KKKKKKK......","....KWWWKWWWK.....","....KKK...KKK....."],["..................","..................","......KKKKK.......",".....KBBBBBK......",".....KBWBBBK......","...KKKKKKKKKKK....","....KWWWWKWTTK....","....KWKWWKTTTKK...","....KTWWWWKKKTK...",".....KWWBWWKKTK...","....KKKKKKKKTK....","...KWWTWWWTWWK....","...KWWWWWWWWWK....","....KKKKKKKKK.....","...KWWWWWWWWWK....","...KWWTWWWTWWK....","....KKKKKKKKK.....","....KWWWWWWWK.....","....KWTWWWTWK.....",".....KKKKKKK......","....KWWWKWWWK.....","....KKK...KKK....."]],"fps":3},"inspector_flag":{"frames":[["KRRR..............","KRRRRR............","KRRRRRRRKKK.......","KRRRRRBBBBBK......","KRRR.KBWBBBK......","K..KKKKKKKKKKK....","K...KWKWWWKWK.....","K...KWKWWWKWK.....","K...KTWWWWWTK.....","KK...KWWBWWK..KK..",".KTKKKKKKKKKKKWTK.","..KTKWTWWWTWWKTTK.","...KWWWWWWWWKTKK..","....KKKKKKKKTK....","...KWWWWWWWWWK....","...KWWTWWWTWWK....","....KKKKKKKKK.....","....KWWWWWWWK.....","....KWTWWWTWK.....",".....KKKKKKK......","....KWWWKWWWK.....","....KKK...KKK....."],["KRRRR.............","KRRRRRR...........","KRRRRRRKKKK.......","KRRRRKBBBBBK......","KR...KBWBBBK......","K..KKKKKKKKKKK....","K...KWKWWWKWK.....","K...KWKWWWKWK.....","K...KTWWWWWTK.....","KK...KWWBWWK..KK..",".KTKKKKKKKKKKKWTK.","..KTKWTWWWTWWKTTK.","...KWWWWWWWWKTKK..","....KKKKKKKKTK....","...KWWWWWWWWWK....","...KWWTWWWTWWK....","....KKKKKKKKK.....","....KWWWWWWWK.....","....KWTWWWTWK.....",".....KKKKKKK......","....KWWWKWWWK.....","....KKK...KKK....."]],"fps":8,"palette":{"R":"#C62D2D"}},"flag":{"frames":[["KRRR....","KRRRRR..","KRRRRRR.","KRRRR...","KRR.....","K.......","K.......","KK......"],["KRRRR...","KRRRRRR.","KRRRRR..","KRRR....","KR......","K.......","K.......","KK......"]],"fps":3,"palette":{"R":"#C62D2D"}},"heddle":{"frames":[[".B..",".B..",".B..",".B..","KLK.","K.K.","KLK.",".B..",".B..",".B.."]],"fps":1},"zap":{"frames":[["........","...K....","..KLK...",".KLWLK..","..KLK...","...K....","........","........"],["K..K..K.",".K.L.K..","..LWL...","KLWWWLK.","..LWL...",".K.L.K..","K..K..K.","........"],["L.....L.","...T....","..T.T...",".T...T..","..T.T...","...T....","L.....L.","........"]],"fps":10},"fizz":{"frames":[["......",".B..B.","B.BB.B","......"],["......","B..B..",".BB.BB","......"]],"fps":4},"gauge":{"frames":[["....KKKK....","..KKWWWWKK..",".KBWWWBWWBK.",".KWKWWWWWWK.","KWWWKWWWWWWK","KWWWWKKWWWWK","KKKKKKKKKKKK","............"],["....KKKK....","..KKWWWWKK..",".KBWWKKWWBK.",".KWWWKKWWWK.","KWWWWKKWWWWK","KWWWWKKWWWWK","KKKKKKKKKKKK","............"],["....KKKK....","..KKWWWWKK..",".KBWWWBWWBK.",".KWWWWWWKWK.","KWWWWWWKWWWK","KWWWWKKWWWWK","KKKKKKKKKKKK","............"]],"fps":1},"cylinder":{"frames":[[".KKKKKK.","KLLLLLLK","KLKLLKLK","KLLLLLLK","KLKLLKLK","KLLLLLLK",".KKKKKK.","........"],[".KKKKKK.","KLLLLLLK","KLLKLLKK","KLLLLLLK","KLLKLLKK","KLLLLLLK",".KKKKKK.","........"]],"fps":6},"platform":{"frames":[["KKKKKKKKKKKKKKKKKK","KLLLLLLLLLLLLLLLLK",".KBKKKKKKKKKKKKBK.","..K............K.."]],"fps":1},"pulley":{"frames":[["..KKK...",".KLLLK..","KLLKLLK.","KLKBKLK.","KLLKLLK.",".KLLLK..","..KKK...","........"]],"fps":1},"spool":{"frames":[["KKKKKKKK",".KRRRRK.",".KRRRRK.",".KRRRRK.",".KRRRRK.","KKKKKKKK"]],"fps":1,"palette":{"R":"#C62D2D"}},"spool_cream":{"frames":[["KKKKKKKK",".KWWWWK.",".KTTTTK.",".KWWWWK.",".KTTTTK.","KKKKKKKK"]],"fps":1}};
+
+// ---- state ----
+const PS=CAL.profiles.loom.levels.map(l=>l.p);
+const st={p:0.005,profile:'loom',seed:1,view:'received',cw:'plain',woven:null,sel:null,user:null,width:32,mode:'scene'};
+let cur=null, prevCells=null;
+const $=id=>document.getElementById(id);
+const cv=$('cv'), ctx=cv.getContext('2d');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)');
+const now=()=>performance.now();
+
+function demoBits(){return (DEMO.widths&&DEMO.widths[st.width])||DEMO.bits;} // the moth binarised by loom/image.py at 24, 32 or 48 blocks wide
+function source(){return st.user?{name:st.user.name,stem:st.user.stem,bits:st.user.bits}:{name:DEMO.name,stem:DEMO.stem,bits:demoBits()};}
+function demoSrc(){const b=demoBits();$('src').className='src';$('src').textContent='Demo moth ('+b[0].length+' \u00d7 '+b.length+' px), drawn by our own code. Flips are sampled from the engine\u2019s measured rates.';}
+function compute(){
+  const lv=levelOf(CAL,st.profile,st.p), src=source();
+  const blocks=sample(src.bits,ratesOf(lv),st.seed,st.cw);
+  const dd=drawdown(blocks,st.view);
+  const red=blocks.map(r=>r.reduce((a,b)=>a+(b.syn?1:0),0)); // red stitches per image row: what the inspector flags
+  cur={lv,src,blocks,cells:dd.cells,weft:dd.weft,c:counts(blocks),rows:src.bits.length,cols:src.bits[0].length,red};
+}
+const helps=()=>cur.lv.se.logical_error_rate<cur.lv.p; // the measured verdict: does the code beat the physical rate?
+
+// ---- the cloth: one shaded texture tile per (thread, colour, float ends), rendered offscreen ----
+const clothCv=document.createElement('canvas'), cctx=clothCv.getContext('2d');
+let C=6, tex={}, texC=0, clothImg=null;
+function shadeProfile(c){const across=[];for(let i=0;i<c;i++){const u=(i+.5)/c;across.push(.5+.5*Math.pow(Math.sin(Math.PI*u),.8)+.18*Math.exp(-Math.pow((u-.38)/.12,2)));}return across;}
+function makeTex(){
+  tex={};const prof=shadeProfile(C),k=Math.max(1,Math.floor(C/4)),taper=new Array(C).fill(1);
+  for(let i=0;i<k;i++)taper[i]=k===1?.55:.55+(.92-.55)*i/(k-1);
+  for(const col of [1,2,3])for(const orient of [0,1])for(const s of [0,1])for(const e of [0,1]){
+    if(orient===0&&col!==1)continue; if(orient===1&&col===1)continue;
+    const im=new ImageData(C,C), rgb=PALETTE[col];
+    for(let a=0;a<C;a++)for(let b=0;b<C;b++){ // a = along the thread, b = across
+      let along=1;if(s)along*=taper[a];if(e)along*=taper[C-1-a];
+      const f=along*prof[b];const x=orient===0?b:a, y=orient===0?a:b, o=(y*C+x)*4;
+      im.data[o]=Math.min(255,rgb[0]*f);im.data[o+1]=Math.min(255,rgb[1]*f);im.data[o+2]=Math.min(255,rgb[2]*f);im.data[o+3]=255;}
+    tex[col+'-'+orient+s+e]=im;
+  }
+}
+function clothFit(){
+  const W=cur.cells[0].length, R=cur.cells.length, target=Math.max(3,Math.min(8,Math.floor(1400/W)));
+  if(!clothImg||target!==C||clothCv.width!==W*target||clothCv.height!==R*target){C=target;clothCv.width=W*C;clothCv.height=R*C;clothImg=cctx.createImageData(clothCv.width,clothCv.height);}
+  if(texC!==C){makeTex();texC=C;}
+}
+function renderCloth(y0,y1){ // rows [y0, y1) of picks; whole cloth by default
+  clothFit();
+  const {cells,weft}=cur, R=cells.length, W=cells[0].length;
+  y0=Math.max(0,y0==null?0:y0);y1=Math.min(R,y1==null?R:y1);if(y1<=y0)return;
+  const woven=st.woven===null?R:st.woven, d=clothImg.data, rowLen=clothCv.width*4;
+  for(let y=y0;y<y1;y++){
+    const row=cells[y];
+    for(let x=0;x<W;x++){
+      let key;
+      if(y>=woven){key='1-000';}
+      else if(row[x]){const up=y>0&&cells[y-1][x]&&y-1<woven, dn=y<R-1&&cells[y+1][x]&&y+1<woven;key='1-0'+(up?0:1)+(dn?0:1);}
+      else{const l=x>0&&!row[x-1], r=x<W-1&&!row[x+1];key=weft[y]+'-1'+(l?0:1)+(r?0:1);}
+      const sp=tex[key].data, dim=y>=woven;
+      for(let a=0;a<C;a++){const o=(y*C+a)*rowLen+x*C*4, so=a*C*4;
+        for(let b=0;b<C*4;b+=4){if(dim){d[o+b]=sp[so+b]*.3+251*.7;d[o+b+1]=sp[so+b+1]*.3+250*.7;d[o+b+2]=sp[so+b+2]*.3+249*.7;}else{d[o+b]=sp[so+b];d[o+b+1]=sp[so+b+1];d[o+b+2]=sp[so+b+2];}d[o+b+3]=255;}}
+    }
+  }
+  cctx.putImageData(clothImg,0,0,0,y0*C,clothCv.width,(y1-y0)*C);
+}
+
+// ---- the loom scene: ink pixel art drawn at whole-number scales on a device-pixel canvas ----
+const SP={};for(const k in SPR)SP[k]=InkSprite.make(SPR[k]);
+const INK={K:'#19238E',B:'#545BA9',L:'#A1A4CE',T:'#D3D3E6',W:'#FBFAF9',R:'#C62D2D',weft:'#ECE6D8'};
+let LY=null;
+function layout(){
+  const host=cv.parentNode, cssW=Math.max(240,(host&&host.clientWidth)||720);
+  const dpr=Math.max(1,Math.min(3,globalThis.devicePixelRatio||1));
+  const u=Math.max(1,Math.round((cssW>=680?4:cssW>=480?3:2)*dpr)), devW=Math.round(cssW*dpr), A=Math.floor(devW/u);
+  const ends=cur.cells[0].length, picks=cur.cells.length, TOP=40, BOT=39, LZ=8, RZ=25;
+  let cwA=A-LZ-RZ, cw=cwA*u, ch=Math.round(cw*picks/ends);
+  const maxH=Math.round(Math.max(cw*.9,230*dpr));
+  if(ch>maxH){ch=maxH;cw=Math.round(ch*ends/picks);cwA=Math.ceil(cw/u);}
+  const chA=Math.ceil(ch/u), ox=Math.floor((devW-(LZ+cwA+RZ)*u)/2), Hh=(TOP+chA+BOT)*u;
+  if(cv.width!==devW)cv.width=devW;
+  if(cv.height!==Hh)cv.height=Hh;
+  const a=v=>v*u, clx=ox+a(LZ), hwA=Math.max(36,Math.min(80,Math.round(cwA*.42)));
+  LY={u,dpr,devW,H:Hh,fx:ox,cwA,chA,cl:{x:clx,y:a(TOP),w:cw,h:ch},
+    rpost:clx+a(cwA+1),shaft:clx+a(cwA+4),fxr:clx+a(cwA+RZ),
+    beamY:a(TOP+chA+1),floorY:a(TOP+chA+36),font:Math.round((cssW>=480?12:11)*dpr),
+    head:{x:clx+a(Math.round(cwA*.58-hwA/2)),y:a(7),w:a(hwA),h:a(13)}};
+}
+function box(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(x,y,w,h);}
+function blit(name,f,x,y,s,o){const sp=SP[name];if(sp)InkSprite.draw(ctx,sp,f,x+sp.w*s/2,y+sp.h*s/2,s,o);}
+function fr(name,t,ph){return InkSprite.frameAt(SP[name],t+(ph||0));}
+function timber(x,y,w,h){const u=LY.u;box(x,y,w,h,INK.K);if(w>2*u&&h>2*u){box(x+u,y+u,w-2*u,h-2*u,INK.B);if(h>w)box(x+u,y+u,u,h-2*u,INK.L);else box(x+u,y+u,w-2*u,u,INK.L);}}
+function lifted(k,bx){if(k<0||k>=cur.cells.length)return false;const row=cur.cells[k];let n=0;for(let i=0;i<NQ;i++)n+=row[bx*NQ+i];return n>=4;}
+function bubble(text,ax,ay,toLeft){
+  const u=LY.u;ctx.font='500 '+LY.font+'px "IBM Plex Mono", ui-monospace, monospace';
+  const tw=Math.ceil(ctx.measureText(text).width), bw=Math.ceil((tw+4*u)/u)*u, bh=Math.ceil((LY.font+2.4*u)/u)*u;
+  let bx=toLeft?ax-bw:ax;bx=Math.max(u,Math.min(LY.devW-bw-u,bx));const by=Math.max(u,ay-bh);
+  box(bx,by,bw,bh,INK.K);box(bx+u,by+u,bw-2*u,bh-2*u,INK.W);
+  const tx=Math.max(bx+u,Math.min(bx+bw-3*u,ax-u));box(tx,by+bh-u,2*u,u,INK.W);box(tx,by+bh,2*u,u,INK.K);box(tx+(toLeft?u:0),by+bh+u,u,u,INK.K);
+  ctx.fillStyle=INK.K;ctx.textBaseline='middle';ctx.fillText(text,bx+2*u,by+bh/2+.5);
+}
+const anim={weaving:false,lastPickT:0,pickMs:70,react:null,ins:{pose:'idle',until:0},insY:null,bubW:null,bubI:null,zaps:[],raf:0,lastDraw:-1e9,visible:true};
+let flash=null;
+function insTarget(){
+  const u=LY.u, cl=LY.cl, R=cur.cells.length, rowH=cl.h/cur.rows;
+  let row=null;
+  if(anim.weaving||st.woven!==null)row=Math.floor(Math.min(st.woven===null?R-1:st.woven,R-1)/BAND);
+  else if(st.sel)row=st.sel.y;
+  const y=row===null?LY.floorY-u:cl.y+(row+.5)*rowH+15*u;
+  return Math.round(Math.max(28*u,Math.min(LY.floorY-u,y)));
+}
+function fizzSpots(){ // decorative: where this profile puts noise. Seeded so it doesn't jump around.
+  const u=LY.u, cl=LY.cl, n=[2,4,7][Math.max(0,PS.indexOf(st.p))], rng=mulberry32(st.profile==='loom'?11:23), out=[];
+  for(let i=0;i<n;i++){const r=rng(), q=rng();
+    if(st.profile==='loom'){const j=i%3;
+      if(j===0)out.push([cl.x+Math.floor(r*cur.cols)*cl.w/cur.cols, 31*u]);          // heddle eyes (the gates)
+      else if(j===1)out.push([LY.head.x+4*u+r*(LY.head.w-24*u), LY.head.y+6*u]);    // the card reader
+      else out.push([LY.head.x+r*(LY.head.w-6*u), LY.head.y+LY.head.h+2*u]);}       // the comber plate the cords hang from
+    else out.push([cl.x+r*(cl.w-6*u), 36*u+q*2*u]);}                                 // only the warp threads
+  return out;
+}
+function drawScene(tms){
+  if(!LY||!cur)return;
+  const t=tms/1000, u=LY.u, a=v=>v*u, cl=LY.cl, R=cur.cells.length, woven=st.woven===null?R:st.woven;
+  const sx=cl.w/cur.cells[0].length, sy=cl.h/R, still=reduce.matches;
+  ctx.imageSmoothingEnabled=false;
+  box(0,0,cv.width,cv.height,INK.W);
+  // floor
+  box(0,LY.floorY,cv.width,u,INK.L);box(0,LY.floorY+u,cv.width,cv.height-LY.floorY-u,INK.T);
+  // frame: posts, top beam, breast beam
+  timber(LY.fx,a(1),a(6),LY.floorY-a(1));
+  timber(LY.rpost,a(1),a(3),LY.floorY-a(1));
+  timber(LY.fx,a(1),LY.fxr-LY.fx,a(5));
+  // the Jacquard head hangs from the top beam
+  const hd=LY.head, kNow=Math.min(woven,R-1), pidx=Math.max(0,PS.indexOf(st.p));
+  box(hd.x+a(4),a(6),u,a(1),INK.K);box(hd.x+hd.w-a(5),a(6),u,a(1),INK.K);
+  box(hd.x,hd.y,hd.w,hd.h,INK.K);box(hd.x+u,hd.y+u,hd.w-a(2),hd.h-a(2),INK.B);box(hd.x+u,hd.y+u,hd.w-a(2),a(2),INK.L);
+  const pnx=hd.x+a(3), pny=hd.y+a(4), pnw=hd.w-a(6), pnh=a(7);
+  box(pnx,pny,pnw,pnh,INK.K);box(pnx+u,pny+u,pnw-a(2),pnh-a(2),INK.T);
+  const gx=hd.x+hd.w-a(4)-a(12), nh=Math.max(1,Math.floor((gx-pnx-a(4))/a(3)));
+  for(let j=0;j<nh;j++){const up=(anim.weaving||st.woven!==null)&&lifted(kNow,Math.floor(j*cur.cols/nh));box(pnx+a(2)+j*a(3),pny+(up?a(1):a(2)),u,a(3),INK.K);}
+  blit('gauge',pidx,gx,pny-u,u);
+  box(hd.x-a(2),hd.y+hd.h,hd.w+a(4),a(2),INK.K);box(hd.x-u,hd.y+hd.h,hd.w+a(2),u,INK.L);
+  // the card cylinder and the hanging chain of punched cards: the next picks of the real lift plan
+  const cyx=hd.x-a(8), cyy=hd.y+a(1);
+  box(hd.x-u,hd.y+a(4),u,a(2),INK.K);
+  const cardMax=Math.floor((hd.x-a(3)-(LY.fx+a(8)))/u), cardW=Math.min(cur.cols+4,cardMax);
+  if(cardW>=14){const k0=st.woven===null?0:st.woven;
+    for(let i=0;i<3&&k0+i<R;i++){const k=k0+i, cx=hd.x-a(3)-a(cardW)-(i%2)*a(2), cy=hd.y+a(6)+i*a(5), redc=cur.weft[k]===RED;
+      if(i)box(cx+a(2)+(i%2)*a(2),cy-a(1),u,a(1),INK.K),box(cx+a(cardW-3)+(i%2)*a(2),cy-a(1),u,a(1),INK.K);
+      box(cx,cy,a(cardW),a(4),redc?INK.R:INK.K);box(cx+u,cy+u,a(cardW-2),a(2),INK.W);
+      box(cx+a(1),cy+a(2),u,u,INK.L);box(cx+a(cardW-2),cy+a(2),u,u,INK.L);
+      for(let j=0;j<cardW-4;j++)if(lifted(k,Math.floor(j*cur.cols/(cardW-4))))box(cx+a(2+j),cy+u,u,u,INK.K);}}
+  blit('cylinder',anim.weaving?(st.woven%2):0,cyx,cyy,u);
+  // harness cords, heddles and the warp running down into the cloth
+  const hy=a(28), ctop=hd.y+hd.h+a(2), lw=Math.max(1,Math.round(u/3));
+  ctx.strokeStyle=INK.L;ctx.lineWidth=lw;ctx.beginPath();
+  for(let i=0;i<cur.cols;i++){const xh=cl.x+(i+.5)*cl.w/cur.cols, xs=hd.x+(i+.5)*hd.w/cur.cols;ctx.moveTo(xs,ctop);ctx.lineTo(xh,hy);}
+  ctx.stroke();
+  for(let i=0;i<cur.cols;i++){
+    const xc=Math.round(cl.x+(i+.5)*cl.w/cur.cols), up=(anim.weaving||st.woven!==null)&&woven<R&&lifted(woven,i)?a(2):0;
+    box(xc-Math.floor(lw/2),hy+a(5)-up,lw,cl.y-hy-a(5)+up,INK.B);
+    blit('heddle',0,xc-Math.round(1.5*u),hy-up,u);
+  }
+  // the cloth itself (rendered from the drawdown), with a hairline frame
+  ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+  ctx.drawImage(clothCv,cl.x,cl.y,cl.w,cl.h);
+  ctx.imageSmoothingEnabled=false;
+  if(woven<R){const fy=Math.round(cl.y+woven*sy), ends=cur.cells[0].length, tw=Math.max(1,Math.floor(sx*.55));
+    box(cl.x,fy,cl.w,cl.y+cl.h-fy,INK.T);ctx.fillStyle=INK.L;
+    for(let e=0;e<ends;e++)ctx.fillRect(Math.round(cl.x+e*sx+(sx-tw)/2),fy,tw,cl.y+cl.h-fy);
+    ctx.fillStyle=INK.B;for(let e=3;e<ends;e+=NQ)ctx.fillRect(Math.round(cl.x+e*sx+(sx-tw)/2),fy,tw,cl.y+cl.h-fy);}
+  ctx.strokeStyle=INK.K;ctx.lineWidth=Math.max(1,Math.round(u/2));ctx.strokeRect(cl.x-.5*ctx.lineWidth,cl.y-.5*ctx.lineWidth,cl.w+ctx.lineWidth,cl.h+ctx.lineWidth);
+  if(flash){const age=tms-flash.t0, al=1-age/900;
+    if(al<=0)flash=null;
+    else{ctx.fillStyle='rgba(180,84,26,'+(.85*al).toFixed(3)+')'; // brand --warn marks threads that just changed
+      for(const v of flash.list){const y=Math.floor(v/65536),x=v%65536;if(y<woven)ctx.fillRect(cl.x+x*sx,cl.y+y*sy,Math.ceil(sx),Math.ceil(sy));}}}
+  if(st.sel){const bx=cl.x+st.sel.x*NQ*sx, by=cl.y+st.sel.y*BAND*sy, bw=NQ*sx, bh=BAND*sy, w=Math.max(2,Math.round(u*.8));
+    ctx.lineWidth=w*2;ctx.strokeStyle=INK.W;ctx.strokeRect(bx+w,by+w,bw-2*w,bh-2*w);ctx.lineWidth=w;ctx.strokeStyle=INK.R;ctx.strokeRect(bx+w,by+w,bw-2*w,bh-2*w);}
+  // red flags on the right post: rows whose syndrome pick caught at least one flip
+  const fs=Math.max(1,Math.min(u,Math.floor(cl.h/cur.rows/7)));
+  for(let r=0;r<cur.rows;r++)if(cur.red[r]&&r*BAND+BAND-1<woven){const fy=cl.y+(r*BAND+BAND-.5)*sy;
+    blit('flag',still?0:fr('flag',t,r*.37),LY.rpost+a(3),Math.round(fy-2.5*fs),fs);}
+  // the shuttle, its weft trail and the beater at the fell
+  if(woven<R){const k=woven, ys=cl.y+(k+.5)*sy, dir=k%2===0?1:-1, sh=SP.shuttle, red=cur.weft[k]===RED;
+    const xL=cl.x-a(5), xR=cl.x+cl.w+a(5);
+    let f=anim.weaving?Math.max(0,Math.min(1,(tms-anim.lastPickT)/anim.pickMs)):0;f=f*f*(3-2*f);
+    const xc=anim.weaving?(dir>0?xL+(xR-xL)*f:xR-(xR-xL)*f):(dir>0?cl.x+a(9):cl.x+cl.w-a(9)); // parked at the selvedge when paused
+    if(anim.weaving){const x0=dir>0?cl.x:cl.x+cl.w, x1=Math.max(cl.x,Math.min(cl.x+cl.w,xc)), th=Math.max(2,Math.round(sy));
+      box(Math.min(x0,x1),Math.round(ys-th/2)-1,Math.abs(x1-x0),th+2,INK.B);box(Math.min(x0,x1),Math.round(ys-th/2),Math.abs(x1-x0),th,red?INK.R:INK.weft);}
+    const beat=anim.weaving&&(tms-anim.lastPickT)<anim.pickMs*.3?-u:0, ry=Math.round(cl.y+(k+1)*sy+u+beat);
+    box(cl.x-a(2),ry,cl.w+a(4),a(3),INK.K);box(cl.x-u,ry+u,cl.w+a(2),u,INK.L);
+    for(let x=cl.x+u;x<cl.x+cl.w;x+=a(2))box(x,ry+u,Math.max(1,Math.round(u/3)),u,INK.B);
+    blit(red?'shuttle_red':'shuttle',0,Math.round(xc-sh.w*u/2),Math.round(ys-sh.h*u/2),u,{flipX:dir<0});
+  }
+  // sparks: where the sampled noise flipped a thread, as each band is woven
+  anim.zaps=anim.zaps.filter(z=>tms-z.t0<360);
+  for(const z of anim.zaps)blit('zap',Math.max(0,Math.min(2,Math.floor((tms-z.t0)/120))),Math.round(z.x-4*u),Math.round(z.y-4*u),u);
+  // fizz: decorative marks for where this profile puts noise
+  fizzSpots().forEach(([x,y],i)=>{const ph=(t*.6+i*.37)%1;if(still||ph<.55)blit('fizz',still?0:fr('fizz',t,i*.5),Math.round(x),Math.round(y),u);});
+  // the inspector's lift: pulley, rope, platform
+  blit('pulley',0,LY.shaft+a(6),a(6),u);
+  const py=Math.round(anim.insY==null?insTarget():anim.insY);
+  box(LY.shaft+a(9),a(12),u,Math.max(0,py-a(12)),INK.B);
+  blit('platform',0,LY.shaft,py,u);
+  const ip=anim.ins.until>tms?anim.ins.pose:'idle', iname='inspector_'+ip;
+  blit(iname,still?0:fr(iname,t),LY.shaft,py-a(22),u,{flipX:ip!=='flag'});
+  // breast beam, bench, spools, treadles and Ada the weaver moth
+  timber(LY.fx,LY.beamY,LY.rpost+a(3)-LY.fx,a(5));
+  const wx=Math.round(cl.x+cl.w/2-a(16)), wy=cl.y+a(LY.chA+2), seat=wy+a(23), press=anim.weaving?(Math.floor(st.woven/2)%2):-1;
+  box(wx-a(12),seat,a(56),a(2),INK.K);box(wx-a(11),seat,a(54),u,INK.L);
+  box(wx-a(10),seat+a(2),u,LY.floorY-seat-a(2),INK.K);box(wx+a(41),seat+a(2),u,LY.floorY-seat-a(2),INK.K);
+  blit('spool_cream',0,wx-a(11),seat-a(6),u);blit('spool',0,wx+a(35),seat-a(6),u);
+  const tr=(x,down)=>{box(x,wy+a(32)+(down?u:0),a(12),a(2),INK.K);box(x+u,wy+a(32)+(down?u:0),a(10),u,INK.L);};
+  tr(wx+a(3),press===0);tr(wx+a(17),press===1);
+  let wname='weaver_idle', wf=still?0:fr('weaver_idle',t);
+  if(anim.react&&tms<anim.react.until){wname='weaver_'+anim.react.pose;wf=still?0:fr(wname,t);}
+  else if(anim.weaving){wname='weaver_work';wf=Math.floor(st.woven/2)%2;}
+  else if(st.woven!==null){wname='weaver_work';wf=0;}
+  blit(wname,wf,wx,wy,u);
+  // speech bubbles
+  if(anim.bubW&&tms<anim.bubW.until)bubble(anim.bubW.text,wx+a(29),wy+a(5),false);
+  if(anim.bubI&&tms<anim.bubI.until)bubble(anim.bubI.text,LY.shaft+a(2),py-a(20),true);
+}
+function loop(tms){
+  anim.raf=0;
+  if(anim.weaving)stepWeave(tms);
+  const target=insTarget();
+  if(anim.insY==null||reduce.matches)anim.insY=target;else{const d=target-anim.insY;anim.insY+=Math.abs(d)<1?d:d*.16;}
+  const moving=Math.abs(target-anim.insY)>=1;
+  const busy=anim.weaving||moving||anim.zaps.length>0||!!flash||(anim.react&&tms<anim.react.until)||(anim.bubW&&tms<anim.bubW.until)||(anim.bubI&&tms<anim.bubI.until)||anim.ins.until>tms;
+  const idle=!reduce.matches&&anim.visible&&st.mode==='scene'&&!document.hidden;
+  if(busy||tms-anim.lastDraw>=120||anim.lastDraw<0){drawScene(tms);anim.lastDraw=tms;}
+  if(busy||idle)anim.raf=requestAnimationFrame(loop);
+  else anim.lastDraw=-1e9;
+}
+function kick(){if(!anim.raf){anim.lastDraw=-1e9;anim.raf=requestAnimationFrame(loop);}}
+
+// ---- weaving (user-started; pause, scrub, reduced motion) ----
+function stepWeave(tms){
+  const R=cur.cells.length;
+  if(tms-anim.lastPickT>anim.pickMs*8)anim.lastPickT=tms-anim.pickMs; // after a stall, carry on instead of racing
+  while(anim.weaving&&tms-anim.lastPickT>=anim.pickMs){
+    anim.lastPickT+=anim.pickMs;
+    const k=st.woven;st.woven=k+1;onPick(k,tms);renderCloth(k-1,k+2);
+    if(st.woven>=R){finishWeave(tms);return;}
+  }
+  $('picks').value=st.woven;$('picks-out').textContent=st.woven+' / '+R+' picks';
+}
+function onPick(k,tms){
+  const row=Math.floor(k/BAND), ph=k%BAND, cl=LY.cl, sx=cl.w/cur.cells[0].length, sy=cl.h/cur.cells.length;
+  if(ph===0)cur.blocks[row].forEach((b,x)=>{if(b.pos)anim.zaps.push({x:cl.x+(x*NQ+b.pos-.5)*sx,y:cl.y+(k+.5)*sy,t0:tms});});
+  if(ph===BAND-1){const n=cur.red[row];play('clack');
+    if(n){anim.ins={pose:'flag',until:tms+420};anim.bubI={text:'+'+n+' caught',until:tms+560};play('ding',n);}}
+  else play('tick');
+}
+function finishWeave(tms){
+  st.woven=null;anim.weaving=false;$('weave').textContent='Weave from the top';
+  renderCloth();readouts();
+  const ok=helps(), c=cur.c;
+  anim.react={pose:ok?'cheer':'sigh',until:tms+2800};
+  anim.bubW={text:c.failed+(c.failed===1?' pixel':' pixels')+' slipped through',until:tms+2800};
+  anim.bubI={text:c.flagged+' caught',until:tms+2800};
+  play(ok?'up':'down');
+  toast(c.flagged+' red stitches caught, '+c.failed+' pixels lost');
+}
+$('weave').addEventListener('click',()=>{
+  if(anim.weaving){anim.weaving=false;$('weave').textContent='Keep weaving';readouts();kick();return;}
+  if(st.mode!=='scene'){st.mode='scene';applyMode();}
+  const R=cur.cells.length;
+  if(st.woven===null||st.woven>=R){st.woven=0;renderCloth();}
+  if(reduce.matches){finishWeave(now());kick();return;} // reduced motion: no shuttle run, straight to the finished cloth and its verdict
+  anim.weaving=true;anim.react=null;anim.bubW=null;anim.pickMs=Math.max(35,Math.min(110,12000/R));anim.lastPickT=now();
+  $('weave').textContent='Pause';kick();
+});
+$('picks').addEventListener('input',()=>{anim.weaving=false;const v=+$('picks').value;st.woven=v>=cur.cells.length?null:v;renderCloth();
+  $('picks-out').textContent=v+' / '+cur.cells.length+' picks';$('weave').textContent=st.woven===null?'Weave from the top':'Keep weaving';kick();});
+
+// ---- loom sound (Web Audio, off until you switch it on; nothing plays by itself) ----
+const snd={on:false,ac:null,noise:null};
+function sndStart(){
+  const AC=globalThis.AudioContext||globalThis.webkitAudioContext;if(!AC)return false;
+  if(!snd.ac){snd.ac=new AC();const n=Math.floor(snd.ac.sampleRate*.2), b=snd.ac.createBuffer(1,n,snd.ac.sampleRate), d=b.getChannelData(0), rng=mulberry32(9);
+    for(let i=0;i<n;i++)d[i]=rng()*2-1;snd.noise=b;}
+  if(snd.ac.state==='suspended')snd.ac.resume();return true;
+}
+function play(kind,n){
+  if(!snd.on||!snd.ac)return;const ac=snd.ac, t=ac.currentTime+.005, out=ac.createGain();out.gain.value=.5;out.connect(ac.destination);
+  if(kind==='tick'||kind==='clack'){const s=ac.createBufferSource(), f=ac.createBiquadFilter(), g=ac.createGain(), tick=kind==='tick';
+    s.buffer=snd.noise;f.type='bandpass';f.frequency.value=tick?3400:950;f.Q.value=tick?7:2.2;
+    g.gain.setValueAtTime(tick?.07:.45,t);g.gain.exponentialRampToValueAtTime(.0008,t+(tick?.03:.1));
+    s.connect(f);f.connect(g);g.connect(out);s.start(t);s.stop(t+.14);return;}
+  const notes=kind==='ding'?[1047*Math.pow(2,Math.min(6,n||1)/12)]:kind==='up'?[523,659,784,1047]:[659,587,494,392];
+  notes.forEach((hz,i)=>{const o=ac.createOscillator(), g=ac.createGain(), t0=t+i*.11;o.type=kind==='down'?'triangle':'sine';o.frequency.value=hz;
+    g.gain.setValueAtTime(.0001,t0);g.gain.linearRampToValueAtTime(kind==='ding'?.12:.16,t0+.01);g.gain.exponentialRampToValueAtTime(.0008,t0+(kind==='ding'?.22:.3));
+    o.connect(g);g.connect(out);o.start(t0);o.stop(t0+.35);});
+}
+$('sound').addEventListener('click',()=>{
+  if(snd.on){snd.on=false;}else if(sndStart()){snd.on=true;play('clack');play('ding',1);}else{toast('This browser has no Web Audio');} // switching on: a clack and a soft chime say it's live
+  $('sound').setAttribute('aria-pressed',String(snd.on));$('sound').textContent='Loom sound: '+(snd.on?'on':'off');
+});
+
+// ---- readouts ----
+const fmtPct=x=>x<0.01?(100*x).toFixed(3)+'\u00a0%':(100*x).toFixed(2)+'\u00a0%';
+function readouts(){
+  const lv=cur.lv, c=cur.c;
+  $('m-red').textContent=c.flagged;$('m-thr').textContent=c.threads_flipped_as_read+' / '+c.threads;
+  $('m-fail').textContent=c.failed;$('m-blocks').textContent=c.blocks;
+  $('p-val').textContent=String(st.p);
+  $('dial').value=PS.indexOf(st.p);$('dial').setAttribute('aria-valuetext','p = '+st.p);
+  document.querySelectorAll('#ticks button').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.p===st.p)));
+  $('r-noise').textContent=CAL.profiles[st.profile].noise.replace(/= p\b/g,'= '+st.p).replace(/p_idle = p_meas = p/,'p_idle = p_meas = '+st.p);
+  $('r-job').textContent=lv.se.job_id+' (1 SE round'+(lv.se.wall_seconds!=null?', '+lv.se.wall_seconds+' s':'')+')';
+  $('r-bare').textContent=lv.bare.job_id;
+  $('r-size').textContent=lv.n_logical+' logical qubits = '+(7*lv.n_logical).toLocaleString('en-US')+' data qubits \u00b7 '+lv.shots+' shots \u00b7 '+(lv.n_logical*lv.shots).toLocaleString('en-US')+' block samples';
+  $('r-meas').textContent='logical flips '+fmtPct(lv.se.ler_bit0)+' (stored 0) / '+fmtPct(lv.se.ler_bit1)+' (stored 1) \u00b7 syndrome events '+lv.se.syndrome_rate.toFixed(4)+' per block (X+Z; red stitches use the bit-flip half)';
+  $('r-seed').textContent='seed '+st.seed+' \u00b7 '+cur.cols+' \u00d7 '+cur.rows+' blocks \u00b7 '+cur.cols*7+' ends \u00d7 '+cur.cells.length+' picks';
+  const R=cur.cells.length;$('picks').max=R;$('picks').value=st.woven===null?R:st.woven;
+  $('picks-out').textContent=(st.woven===null?R:st.woven)+' / '+R+' picks';
+  document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===st.view)));
+  document.querySelectorAll('[data-cw]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.cw===st.cw)));
+  document.querySelectorAll('[data-prof]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.prof===st.profile)));
+  inspect();chartMark();
+}
+function wordHtml(w,hit){return '<span class="word">'+w.map((b,i)=>'<i class="'+(b?'one':'')+(hit===i+1?' hit':'')+'">'+b+'</i>').join('')+'</span>';}
+function inspect(){
+  const el=$('inspect');
+  if(!st.sel){el.innerHTML='<span class="label">Block inspector</span><span>Click any pixel block in the cloth (or focus it and use the arrow keys).</span>';return;}
+  const {x,y}=st.sel, b=cur.blocks[y][x], sb=b.syn.toString(2).padStart(3,'0');
+  el.innerHTML='<span class="label">Block ('+x+', '+y+') \u00b7 stored bit '+b.bit+'</span>'+
+   '<span>Threads read '+wordHtml(b.received,b.syn)+'</span>'+
+   '<span>Syndrome <b style="color:'+(b.syn?'var(--syn)':'var(--ink)')+'">'+sb+'</b> '+(b.syn?'\u2192 thread '+b.syn+' flipped back':'\u2192 nothing to fix')+'</span>'+
+   '<span>Corrected '+wordHtml(b.corrected,0)+' \u2192 parity '+b.decoded+'</span>'+
+   '<span>'+(b.failed?'<b style="color:var(--ink)">Logical flip: this pixel comes out inverted.</b> Its syndrome can\'t show it.':'Pixel survives.')+'</span>';
+}
+function refresh(opts={}){
+  if(opts.flash&&cur)prevCells=cur.cells;
+  compute();
+  if(st.woven!==null&&st.woven>cur.cells.length)st.woven=null;
+  if(st.sel&&(st.sel.y>=cur.rows||st.sel.x>=cur.cols))st.sel=null;
+  layout();renderCloth();readouts();
+  if(opts.flash)startFlash();
+  const t=now();
+  if(opts.react){const ok=helps();anim.react={pose:ok?'cheer':'sigh',until:t+1700};
+    anim.bubW={text:opts.react===true?(ok?'the code helps here!':'the code hurts here...'):opts.react,until:t+1900};}
+  kick();
+}
+// a short user-triggered glow on cells that changed (dial, view, re-roll)
+function startFlash(){
+  if(!prevCells||reduce.matches||prevCells.length!==cur.cells.length||prevCells[0].length!==cur.cells[0].length){prevCells=null;return;}
+  const list=[];for(let y=0;y<cur.cells.length;y++)for(let x=0;x<cur.cells[0].length;x++)if(prevCells[y][x]!==cur.cells[y][x])list.push(y*65536+x);
+  prevCells=null;if(list.length)flash={list,t0:now()};
+}
+
+// ---- controls ----
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2200);}
+$('ticks').innerHTML=PS.map(p=>'<button type="button" data-p="'+p+'" aria-pressed="false">'+p+'</button>').join('');
+document.querySelectorAll('#ticks button').forEach(b=>b.addEventListener('click',()=>{st.p=+b.dataset.p;refresh({flash:true,react:true});}));
+$('dial').addEventListener('input',()=>{st.p=PS[+$('dial').value];refresh({flash:true,react:true});});
+document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{st.view=b.dataset.view;refresh({flash:true});
+  anim.ins={pose:'look',until:now()+1200};anim.bubI={text:st.view==='received'?'threads as read':'flipped back',until:now()+1400};kick();}));
+document.querySelectorAll('[data-cw]').forEach(b=>b.addEventListener('click',()=>{st.cw=b.dataset.cw;refresh({flash:true});}));
+document.querySelectorAll('[data-prof]').forEach(b=>b.addEventListener('click',()=>{st.profile=b.dataset.prof;refresh({flash:true,react:true});}));
+$('reroll').addEventListener('click',()=>{st.seed=st.seed%9999+1;refresh({flash:true,react:'new shot: seed '+st.seed});toast('New shot: seed '+st.seed);});
+function select(s){
+  st.sel=s;inspect();const b=cur.blocks[s.y][s.x], t=now();
+  anim.ins={pose:'look',until:t+1800};
+  anim.bubI={text:b.syn?'syndrome '+b.syn.toString(2).padStart(3,'0')+' \u2192 thread '+b.syn:'syndrome 000 \u00b7 all clear',until:t+2400};
+  // a logical flip is invisible to the syndrome: Ada (who knows the sampled truth) says so
+  if(b.failed){anim.react={pose:'sigh',until:t+2400};anim.bubW={text:'...but this pixel flipped',until:t+2600};}
+  kick();
+}
+function pickAt(e){
+  const r=cv.getBoundingClientRect();if(!r.width||!LY)return;
+  const X=(e.clientX-r.left)*cv.width/r.width, Y=(e.clientY-r.top)*cv.height/r.height, cl=LY.cl;
+  const x=Math.floor((X-cl.x)/cl.w*cur.cols), y=Math.floor((Y-cl.y)/cl.h*cur.rows);
+  if(x>=0&&y>=0&&x<cur.cols&&y<cur.rows)select({x,y});
+}
+cv.addEventListener('click',pickAt);
+cv.addEventListener('keydown',e=>{const m={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key];
+  if(!m)return;e.preventDefault();const s=st.sel||{x:0,y:0};
+  select({x:Math.max(0,Math.min(cur.cols-1,s.x+(st.sel?m[0]:0))),y:Math.max(0,Math.min(cur.rows-1,s.y+(st.sel?m[1]:0)))});});
+function applyMode(){
+  document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===st.mode)));
+  $('scene-wrap').hidden=st.mode!=='scene';$('scene-key').hidden=st.mode!=='scene';$('data-wrap').hidden=st.mode!=='data';
+  if(st.mode==='scene'){layout();kick();}
+  else if(anim.weaving){anim.weaving=false;$('weave').textContent='Keep weaving';readouts();}
+}
+document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{st.mode=b.dataset.mode;applyMode();}));
+
+// your own image: decoded, scaled and thresholded in the browser only
+function loadUser(file){
+  const url=URL.createObjectURL(file), im=new Image();
+  im.onload=()=>{
+    const w=st.width, h=Math.max(1,Math.min(64,Math.round(w*im.naturalHeight/im.naturalWidth)));
+    const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');
+    g.fillStyle='#000';g.fillRect(0,0,w,h); /* offscreen only, never shown: transparent pixels count as black, as in loom/image.py */
+    g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';g.drawImage(im,0,0,w,h);
+    const px=g.getImageData(0,0,w,h).data, grey=new Float64Array(w*h);
+    for(let i=0;i<w*h;i++)grey[i]=.299*px[i*4]+.587*px[i*4+1]+.114*px[i*4+2];
+    URL.revokeObjectURL(url);
+    const stem=file.name.replace(/\.[^.]*$/,'')||'image';
+    st.user={name:file.name,stem,bits:binarise(grey,w,h,false),file};st.sel=null;st.woven=null;anim.weaving=false;$('weave').textContent='Weave from the top';
+    $('src').className='src user';
+    $('src').textContent='Your image ('+w+' \u00d7 '+h+' px), processed only in your browser. Its flips are sampled from the engine\u2019s recorded statistics for this p. No new quantum job runs, and nothing is uploaded.';
+    $('demo').hidden=false;$('file-label').textContent='Load another image';refresh({react:'a new pattern!'});
+  };
+  im.onerror=()=>{URL.revokeObjectURL(url);toast('That file could not be read as an image');};
+  im.src=url;
+}
+$('file').addEventListener('change',()=>{const f=$('file').files[0];if(f)loadUser(f);});
+$('width').addEventListener('change',()=>{st.width=+$('width').value;st.sel=null;st.woven=null;anim.weaving=false;$('weave').textContent='Weave from the top';
+  if(st.user)loadUser(st.user.file);else{demoSrc();refresh({react:'the moth, '+st.width+' blocks wide'});}});
+$('demo').addEventListener('click',()=>{st.user=null;st.sel=null;st.woven=null;anim.weaving=false;$('weave').textContent='Weave from the top';$('demo').hidden=true;$('file').value='';$('file-label').textContent='Load your image';
+  demoSrc();refresh({react:'back to the moth'});});
+
+function wifText(){
+  const lv=cur.lv, title='Syndrome Loom: '+cur.src.stem+', p='+lv.p;
+  const notes=wifNotes({name:cur.src.name,p:lv.p,profile:st.profile,seed:st.seed,view:st.view,codewords:st.cw,engine:CAL.engine,job:lv.se.job_id,simulator:CAL.simulator,c:cur.c});
+  return toWif(cur.cells,cur.weft,title,notes);
+}
+// what: the thing being copied ("the WIF draft", "the link to this view"), named in the hand-copy fallback
+async function copyText(text,ok,what){
+  try{await navigator.clipboard.writeText(text);toast(ok);$('manual').hidden=true;}
+  catch(e){$('manual-label').textContent='Copying is blocked here. Select all and copy '+what+' by hand:';
+    $('manual').hidden=false;$('manual-text').value=text;$('manual-text').focus();$('manual-text').select();toast('Copy blocked: '+what+' is selected below');}
+}
+$('copy-wif').addEventListener('click',()=>{const t=wifText();copyText(t,'WIF draft copied ('+cur.cols*7+' ends \u00d7 '+cur.cells.length+' picks)','the WIF draft');});
+function token(){return st.profile+'_p'+st.p+'_s'+st.seed+'_'+(st.view==='received'?'read':'fixed')+'_'+st.cw+(st.width!==32?'_w'+st.width:'');}
+$('share').addEventListener('click',()=>{history.replaceState(null,'','#'+token());
+  copyText(location.href,st.user?'Link copied. It opens the moth with these settings; your image stays with you':'Link copied','the link to this view');});
+(function(){const m=location.hash.match(/^#(loom|thread)_p([0-9.e-]+)_s(\d+)_(read|fixed)_(plain|measured)(?:_w(24|32|48))?$/);
+  if(!m)return;const p=+m[2];if(PS.includes(p))st.p=p;st.profile=m[1];st.seed=Math.max(1,Math.min(9999,+m[3]));st.view=m[4]==='read'?'received':'corrected';st.cw=m[5];
+  if(m[6]){st.width=+m[6];$('width').value=m[6];}})();
+
+// ---- proof chips, ladder, chart (all from completed jobs) ----
+(function(){
+  const lad=CAL.ladder||[], maxN=lad.reduce((m,l)=>Math.max(m,l.n_logical),CAL.grid.n_logical);
+  const nJobs=(CAL.jobs_completed||0);
+  $('proof').innerHTML='<span class="hot"><b>'+(7*maxN).toLocaleString('en-US')+'</b> data qubits in one job</span>'+
+    '<span><b>'+CAL.grid.n_logical+'</b> Steane blocks per dial notch</span><span><b>'+nJobs+'</b> real Atlas jobs</span><span>stabilizer simulator \u00b7 <b>0</b> credits</span>';
+  $('ladder').innerHTML='<tr><th>n_logical</th><th>data qubits</th><th>shots</th><th>wall time</th><th>logical flips</th></tr>'+
+    lad.map(l=>'<tr class="top"><td><b>'+l.n_logical+'</b></td><td>'+(7*l.n_logical).toLocaleString('en-US')+'</td><td>'+l.shots+'</td><td class="nw">'+(l.wall_seconds!=null?l.wall_seconds+' s':'n/a')+'</td><td class="nw">'+fmtPct(l.logical_error_rate)+'</td></tr>'+
+      '<tr><td colspan="5" class="id">job '+l.job_id+'</td></tr>').join('')+
+    (CAL.ladder_note?'<tr><td colspan="5" class="note">'+CAL.ladder_note+'</td></tr>':'');
+})();
+const CH={x0:70,x1:500,y0:340,y1:20};
+function cx(p){return CH.x0+(Math.log10(p)+3.2)/(1.4)*(CH.x1-CH.x0);}            // p from 10^-3.2 .. 10^-1.8
+function cy(v){const lv=Math.log10(Math.max(v,1e-5));return CH.y0-(lv+5)/4*(CH.y0-CH.y1);} // 1e-5 .. 1e-1
+function chart(){
+  const s=[], leg=[];
+  for(const e of [-5,-4,-3,-2,-1]){const y=cy(Math.pow(10,e));s.push('<line x1="'+CH.x0+'" x2="'+CH.x1+'" y1="'+y+'" y2="'+y+'" stroke="#D3D3E6"/><text x="'+(CH.x0-8)+'" y="'+(y+4)+'" text-anchor="end" font-size="12">1e'+e+'</text>');}
+  for(const p of PS){const x=cx(p);s.push('<line x1="'+x+'" x2="'+x+'" y1="'+CH.y1+'" y2="'+CH.y0+'" stroke="#D3D3E6"/><text x="'+x+'" y="'+(CH.y0+18)+'" text-anchor="middle" font-size="12">'+p+'</text>');}
+  s.push('<text x="'+((CH.x0+CH.x1)/2)+'" y="374" text-anchor="middle" font-size="12">physical noise p</text>');
+  s.push('<text x="14" y="'+((CH.y0+CH.y1)/2)+'" text-anchor="middle" font-size="12" transform="rotate(-90 14 '+((CH.y0+CH.y1)/2)+')">logical flip rate</text>');
+  const d0=cx(Math.pow(10,-3.2)),d1=cx(Math.pow(10,-1.8));
+  s.push('<line x1="'+d0+'" y1="'+cy(Math.pow(10,-3.2))+'" x2="'+d1+'" y2="'+cy(Math.pow(10,-1.8))+'" stroke="#545BA9" stroke-dasharray="5 5"/><text x="'+(d0+6)+'" y="'+(cy(Math.pow(10,-3.2))+16)+'" font-size="12" stroke="#FFFFFF" stroke-width="4" paint-order="stroke">logical = physical</text>');
+  const series=[['loom','se','#19238E','whole loom, 1 SE round'],['thread','se','#1F7A4D','only the thread, 1 SE round'],['loom','bare','#19238E','whole loom, no SE round'],['thread','bare','#1F7A4D','only the thread, no SE round']];
+  series.forEach(([prof,key,col,label],i)=>{
+    const pts=CAL.profiles[prof].levels.map(l=>{const n=l.n_logical*l.shots, v=l[key].logical_error_rate;return {p:l.p,v,zero:v===0,ub:3/n};});
+    const dash=key==='bare'?' stroke-dasharray="3 4"':'';
+    s.push('<polyline fill="none" stroke="'+col+'" stroke-width="2"'+dash+' points="'+pts.map(q=>cx(q.p)+','+cy(q.zero?q.ub:q.v)).join(' ')+'"/>');
+    for(const q of pts){const x=cx(q.p),y=cy(q.zero?q.ub:q.v);
+      s.push(q.zero?'<path d="M'+(x-5)+' '+(y-4)+' L'+(x+5)+' '+(y-4)+' L'+x+' '+(y+5)+' Z" fill="none" stroke="'+col+'" stroke-width="1.5"><title>no logical flips seen; 95% upper bound</title></path>':
+        '<circle cx="'+x+'" cy="'+y+'" r="'+(key==='se'?4.5:3)+'" fill="'+(key==='se'?col:'#FFFFFF')+'" stroke="'+col+'" stroke-width="1.5"/>');}
+    leg.push('<span><svg width="26" height="12" viewBox="0 0 26 12" aria-hidden="true"><line x1="1" x2="25" y1="6" y2="6" stroke="'+col+'" stroke-width="2"'+dash+'/><circle cx="13" cy="6" r="'+(key==='se'?4:3)+'" fill="'+(key==='se'?col:'#FFFFFF')+'" stroke="'+col+'" stroke-width="1.5"/></svg>'+label+'</span>');
+  });
+  // one drawing, two places: The data section (always visible) and the live copy in the stage's Data view
+  const body=s.join('');
+  $('chart').innerHTML=body+'<g id="mark"></g>';
+  $('chart-live').innerHTML=body+'<g id="mark-live"></g>';
+  leg.push('<span><svg width="26" height="12" viewBox="0 0 26 12" aria-hidden="true"><path d="M8 2 L18 2 L13 11 Z" fill="none" stroke="#545BA9" stroke-width="1.5"/></svg>no flips seen: 95% upper bound, 3/n</span>'+
+    '<span><svg width="26" height="14" viewBox="0 0 26 14" aria-hidden="true"><circle cx="13" cy="7" r="5.5" fill="none" stroke="#B4541A" stroke-width="2"/></svg>now on the loom</span>');
+  $('legend').innerHTML=leg.join('');
+  $('legend-live').innerHTML=leg.join('');
+}
+function chartMark(){const lv=cur.lv, v=lv.se.logical_error_rate, n=lv.n_logical*lv.shots;
+  const x=cx(lv.p), y=cy(v===0?3/n:v), ring='<circle cx="'+x+'" cy="'+y+'" r="10" fill="none" stroke="#B4541A" stroke-width="2.5"/>';
+  for(const id of ['mark','mark-live']){const g=document.getElementById(id);if(g)g.innerHTML=ring;}
+  const verdict=v<lv.p?'the code helps':'the code hurts';
+  const note='<b style="color:var(--ink)">Now on the loom:</b> p = '+lv.p+', '+(st.profile==='loom'?'noise on the whole loom':'noise only in the thread')+'. Logical flip rate '+fmtPct(v)+' against p = '+fmtPct(lv.p)+': '+verdict+'.';
+  $('chart-note').innerHTML=note;$('chart-note-live').innerHTML=note;}
+// Jobs and credits: the 12 grid jobs from the inlined calibration (the same numbers the dial and chart use)
+(function(){
+  const where={loom:'the whole loom',thread:'only the thread'}, rows=[];
+  for(const prof of ['loom','thread'])for(const l of CAL.profiles[prof].levels)for(const key of ['se','bare'])
+    rows.push('<tr class="top"><td>'+where[prof]+'</td><td>'+l.p+'</td><td class="nw">'+(key==='se'?'1 round':'none')+'</td><td class="nw">'+fmtPct(l[key].logical_error_rate)+'</td></tr>'+
+      '<tr><td colspan="4" class="id">job '+l[key].job_id+'</td></tr>');
+  $('gridjobs').innerHTML='<tr><th>noise lives in</th><th>p</th><th>SE round</th><th>logical flips</th></tr>'+rows.join('');
+  const nGrid=rows.length, nLad=(CAL.ladder||[]).length, nAll=CAL.jobs_completed||0, nProbe=Math.max(0,nAll-nGrid-nLad);
+  $('jobs-count').textContent=nAll+' completed jobs \u00b7 0 credits';
+  $('jobs-more').textContent='All '+nAll+' completed jobs are counted: these '+nGrid+' grid jobs, the '+nLad+' size-ladder jobs listed in How it was made, and '+nProbe+' small probe jobs that checked how the engine counts syndromes and errors. Every job ID is listed in PARAMS.md.';
+})();
+chart();
+demoSrc();
+refresh();
+// keep the canvas sharp when the column or the zoom changes; idle only while the scene is on screen
+if(typeof ResizeObserver!=='undefined')new ResizeObserver(()=>{if(cur&&st.mode==='scene'){layout();kick();}}).observe(cv.parentNode);
+if(typeof IntersectionObserver!=='undefined')new IntersectionObserver(es=>{anim.visible=es.some(e=>e.isIntersecting);if(anim.visible)kick();}).observe(cv);
+if(document.addEventListener)document.addEventListener('visibilitychange',()=>{if(!document.hidden)kick();});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>kick());
+</script>

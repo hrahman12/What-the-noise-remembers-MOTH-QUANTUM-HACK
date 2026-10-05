@@ -1,0 +1,1277 @@
+<title>Busy Beaver Score</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+/*BRAND*/
+/* Layout: the score-over-tape canvas is the hero; transport sits right under it; copy + controls beside.
+   Paper and one ink only (brand.css tokens); the canvas uses the same palette. */
+.wrap{max-width:78rem;margin-inline:auto}
+.hero{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:clamp(1.25rem,3vw,2.5rem);align-items:start;padding-block:2rem 1rem}
+.inst{display:grid;gap:.75rem;min-width:0}
+.stage{position:relative;overflow:hidden;border:1px solid var(--ink);background:var(--panel)}
+canvas{display:block;width:100%;height:auto}
+#cv{aspect-ratio:1000/720;touch-action:pan-y;cursor:grab}
+#cv.drag{cursor:grabbing}
+.shareurl{flex:1 1 16rem;min-width:0;font:400 .72rem/1.3 var(--mono);color:var(--ink);background:var(--panel);border:1px solid var(--ink);border-radius:999px;padding:.6rem .8rem}
+.hud{position:absolute;left:.7rem;top:.6rem;right:.7rem;display:flex;justify-content:space-between;gap:.5rem;pointer-events:none;font:500 .68rem/1.2 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.hud b{color:var(--ink);font-weight:500}
+.hud .tag{background:rgba(251,250,249,.94);border:1px solid var(--ink);border-radius:999px;padding:.4rem .7rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.hud .tag.hot{background:var(--ink);color:var(--on-ink)}
+.warm{position:absolute;left:.7rem;top:3.2rem;max-width:calc(100% - 1.4rem);font:500 .68rem/1.3 var(--mono);color:var(--ink-2);background:rgba(251,250,249,.96);border:1px solid var(--ink);border-radius:999px;padding:.4rem .8rem;pointer-events:none}
+.warm.ok{color:var(--good);border-color:var(--good)}
+.warm.gone{opacity:0;transition:opacity .6s}
+.transport{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.6rem;align-items:center}
+.btn.play{min-width:6.8rem;justify-content:center;font-size:.95rem;padding:.85rem 1.1rem}
+.scrub{position:relative;border:1px solid var(--ink);overflow:hidden;background:var(--panel);height:64px}
+.scrub canvas{width:100%;height:100%}
+.scrub input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.scrub:focus-within{outline:2px solid var(--ink);outline-offset:3px}
+.pos{display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap;font:400 .74rem/1.3 var(--mono);color:var(--ink-2)}
+.pos b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+.copy{display:grid;gap:1.05rem;min-width:0}
+.kicker{font:500 .74rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+h1{font-size:clamp(2.2rem,4.6vw,3.9rem);line-height:1;letter-spacing:-.02em}
+.sub{font-size:1.05rem;color:var(--ink-2);max-width:46ch}
+.steps{display:grid;gap:.55rem;counter-reset:s;margin:0;padding:0;list-style:none}
+.steps li{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:.6rem;align-items:baseline;font-size:.95rem}
+.steps li::before{counter-increment:s;content:counter(s);font:500 .8rem/1.6 var(--mono);color:var(--on-ink);background:var(--ink);border-radius:999px;width:1.6rem;height:1.6rem;display:grid;place-items:center}
+.panel{display:grid;gap:.85rem;background:var(--panel);border:1px solid var(--rule);padding:1rem 1.1rem}
+.row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.row.split{justify-content:space-between}
+.ctl{display:grid;grid-template-columns:5.6rem minmax(0,1fr);gap:.6rem;align-items:center}
+.seg[data-idle="true"]{opacity:.55}
+.seg[data-idle="true"]:hover,.seg[data-idle="true"]:focus-within{opacity:1}
+.panel.live{padding:.8rem 1rem;gap:.6rem}
+.readout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.22rem .9rem;font:400 .76rem/1.5 var(--mono);color:var(--ink-2);margin:0}
+.readout dt{text-transform:uppercase;letter-spacing:.08em;font-size:.66rem;line-height:1.75}
+.readout dd{margin:0}
+.readout b{color:var(--ink);font-weight:500;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:var(--ink);color:var(--on-ink);font:500 .8rem/1.3 var(--mono);padding:.8rem 1.15rem;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100vw - 32px);text-align:center}
+.toast.on{opacity:1}
+.kbd{font:500 .7rem/1 var(--mono);border:1px solid var(--ink-3);border-bottom-width:2px;border-radius:3px;padding:.15rem .35rem;color:var(--ink);background:var(--panel)}
+.hint{font:400 .72rem/1.7 var(--mono);color:var(--ink-2)}
+/* the three WAV deliverables, playable here */
+.listen{margin-top:2.75rem;display:grid;gap:1rem}
+.listen .lede{color:var(--ink-2);max-width:72ch}
+.tracks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+.track{display:grid;gap:.65rem;align-content:start;background:var(--panel);border:1px solid var(--rule);padding:1.05rem 1.1rem}
+.track.on{border-color:var(--ink);outline:1px solid var(--ink);outline-offset:-2px}
+.track .label .fn{text-transform:none;letter-spacing:.02em}
+.track h3{font-size:1.35rem;line-height:1.15}
+.track .tdesc{font-size:.9rem;color:var(--ink-2)}
+.track .meta{font:400 .7rem/1.55 var(--mono);color:var(--ink-2);overflow-wrap:anywhere;border-top:1px solid var(--rule);padding-top:.6rem}
+.tctl{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap}
+.tctl .btn{min-width:6.6rem;justify-content:center}
+.ttime{font:500 .76rem/1 var(--mono);font-variant-numeric:tabular-nums;color:var(--ink)}
+.more{margin-top:2.75rem}
+.more .ink-bar{margin-bottom:.25rem}
+table.jobs{border-collapse:collapse;font:400 .72rem/1.5 var(--mono);width:100%}
+table.jobs th,table.jobs td{text-align:left;padding:.35rem .5rem .35rem 0;border-bottom:1px solid var(--rule);overflow-wrap:anywhere}
+table.jobs th{color:var(--ink);font-weight:500;text-transform:uppercase;letter-spacing:.06em;font-size:.64rem;white-space:nowrap;overflow-wrap:normal;border-bottom-color:var(--ink)}
+/* the scene: pixel art drawn at an integer scale, so it stays crisp */
+[hidden]{display:none!important}
+.viewbar{display:flex;justify-content:space-between;align-items:center;gap:.5rem .8rem;flex-wrap:wrap}
+.lapse{font:500 .7rem/1.35 var(--mono);letter-spacing:.03em;color:var(--ink-2);text-align:right;min-width:0}
+.lapse b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+#scene{image-rendering:crisp-edges;image-rendering:pixelated;touch-action:pan-y;cursor:pointer}
+.legend{display:flex;flex-wrap:wrap;gap:.45rem 1.1rem;margin:0;padding:0;list-style:none;font:400 .72rem/1.3 var(--mono);color:var(--ink-2)}
+.legend li{display:flex;align-items:center;gap:.45rem}
+.legend img{image-rendering:crisp-edges;image-rendering:pixelated;display:block;flex:none}
+.legend b{color:var(--ink);font-weight:500}
+.squeeze{font-size:.86rem;color:var(--ink-2);max-width:70ch;margin:0}
+.squeeze b{color:var(--ink);font-weight:500}
+/* the titled sections below the scene: every graph sits in one, always visible, on the page's one clock */
+.sec{margin-top:2.75rem;display:grid;gap:1.1rem}
+.sec h3{font-size:1.35rem;line-height:1.15}
+.sec .lede{color:var(--ink-2);max-width:72ch}
+.cols{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:clamp(1.25rem,3vw,2.5rem);align-items:start}
+.cols>div{display:grid;gap:.85rem;min-width:0;align-content:start}
+.keys{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.5rem .9rem;margin:0;font-size:.92rem;color:var(--ink-2);align-items:baseline}
+.keys dt{white-space:nowrap;color:var(--ink)}
+.keys dd{margin:0}
+figure.fig{margin:0;min-width:0}
+figure.fig:not(.cols){display:grid;gap:.75rem}
+.figframe{border:1px solid var(--ink);background:var(--panel);min-width:0}
+#cv2{aspect-ratio:1000/720;touch-action:pan-y;cursor:grab}
+#cv2.drag{cursor:grabbing}
+#roll{height:210px;touch-action:pan-y;cursor:pointer}
+.figcap{display:grid;gap:.65rem;font-size:.92rem;color:var(--ink-2);min-width:0}
+.figcap ul{margin:0;padding-left:1.1rem;display:grid;gap:.45rem}
+.figcap b{color:var(--ink);font-weight:500}
+.figlive{font:400 .74rem/1.5 var(--mono);color:var(--ink-2);background:var(--panel);border:1px solid var(--rule);padding:.5rem .7rem}
+.figlive b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+.src{font:400 .7rem/1.55 var(--mono);color:var(--ink-2);border-top:1px solid var(--rule);padding-top:.6rem;overflow-wrap:anywhere}
+.sec .drawer .note{font-size:.88rem}
+table.jobs .pick{font:500 .66rem/1 var(--mono);letter-spacing:.04em;padding:.42rem .65rem;border:1px solid var(--ink);border-radius:999px;background:transparent;color:var(--ink);cursor:pointer;white-space:nowrap;justify-self:start}
+table.jobs .pick:hover{background:var(--tint)}
+table.jobs .pick[aria-pressed="true"]{background:var(--ink);color:var(--on-ink)}
+table.jobs td{vertical-align:middle}
+.credits{margin:0;padding-left:1.1rem;display:grid;gap:.55rem;font-size:.9rem;color:var(--ink-2)}
+.credits b{color:var(--ink);font-weight:500}
+.honest{display:grid;gap:.85rem;max-width:80ch}
+@media (max-width:960px){.cols{grid-template-columns:minmax(0,1fr)}#roll{height:160px}}
+@media (max-width:960px){.hero{grid-template-columns:minmax(0,1fr);row-gap:1rem}.copy,.inst{display:contents}.copy>*{order:3}.copy>.kicker,.copy>h1{order:0}.inst>*{order:1}.copy>.panel{order:2}.inst>.panel.live{order:4}.tracks{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:480px){.lapse{text-align:left}.legend{gap:.4rem .9rem}}
+@media (max-width:600px){table.jobs thead{display:none}table.jobs,table.jobs tbody,table.jobs tr{display:block}table.jobs tr{border-bottom:1px solid var(--rule);padding:.45rem 0}
+  table.jobs td{display:grid;grid-template-columns:6.2rem minmax(0,1fr);gap:.5rem;border:0;padding:.08rem 0}
+  table.jobs td::before{content:attr(data-k);color:var(--ink);text-transform:uppercase;letter-spacing:.06em;font-size:.62rem;line-height:2}}
+@media (max-width:480px){.transport{grid-template-columns:minmax(0,1fr)}.btn.play{width:100%}.ctl{grid-template-columns:minmax(0,1fr)}.hud .tag:last-child{display:none}.proof span{line-height:1.3}.seg button{padding:.55rem .62rem}.warm{max-width:calc(100% - 1.4rem)}.ink-bar{flex-wrap:wrap;gap:.4rem}}
+</style>
+
+<div class="wrap">
+  <nav class="wtnr-bar"><a href="https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa">What the Noise Remembers</a><span class="count">Challenge 02</span></nav>
+
+  <div class="hero">
+    <div class="inst">
+      <div class="viewbar">
+        <div class="seg" role="group" aria-label="View" id="g-view">
+          <button type="button" data-view="scene" aria-pressed="true">Scene</button>
+          <button type="button" data-view="data" aria-pressed="false">Data: score + tape</button>
+        </div>
+        <span class="lapse" id="lapse" aria-live="off">this hop = <b>1</b> machine step</span>
+      </div>
+      <div class="stage" id="stage">
+        <canvas id="scene" width="690" height="450" tabindex="0" aria-label="The scene: a beaver in a hard hat is the machine's head and the river is its tape, a log for every 1 and open water for every 0. Its hat shows the machine's state. The far dam is the whole tape to scale, and the echo pool shows the notes sounding now. Click the beaver to make it slap its tail. Space plays or pauses, arrow keys step, square brackets jump between phrases."></canvas>
+        <canvas id="cv" width="1000" height="720" tabindex="0" hidden aria-label="The busy beaver score. Notes fall toward the machine's tape; the tape's history scrolls below it. Space plays or pauses, arrow keys step, square brackets jump between phrases. Drag the score down (or right) to move forward through the run, up (or left) to go back."></canvas>
+        <div class="hud"><span class="tag" id="h-phrase">Phrase 1 / 15</span><span class="tag hot" id="h-mode">Raw score</span></div>
+        <div class="warm" id="warm" role="status" aria-live="polite">Running the machine in your browser...</div>
+      </div>
+      <ul class="legend" id="legend">
+        <li><img data-icon="log" alt=""><span><b>log</b> = 1</span></li>
+        <li><img data-icon="water" alt=""><span><b>open water</b> = 0</span></li>
+        <li><img data-icon="hat" alt=""><span><b>hard hat</b> = state A to E</span></li>
+        <li><img data-icon="pin" alt=""><span><b>far dam</b> = whole tape, to scale</span></li>
+        <li><img data-icon="ring" alt=""><span><b>echo pool</b> = notes sounding now</span></li>
+      </ul>
+      <div class="transport">
+        <button type="button" class="btn play" id="play" aria-pressed="false">&#9654; Play</button>
+        <div class="scrub" id="scrub-wrap">
+          <canvas id="mini" width="800" height="64" aria-hidden="true"></canvas>
+          <input type="range" id="scrub" min="0" max="100" step="1" value="0" aria-label="Position in the run (one step per note)">
+        </div>
+      </div>
+      <div class="pos"><span>machine step <b id="p-step">0</b> of <b>47,176,870</b></span><span id="p-pct">0.0% of the run</span><span>note <b id="p-col">1</b> / <b id="p-total">-</b></span></div>
+      <p class="squeeze"><b>How 47 million steps fit in 5 minutes.</b> Each hop is one note. In phrase 1 a hop is a single machine step; by phrase 14 one hop is a time-lapse of about 23,000 steps, and the beaver dives to wherever the head really is at that step. 47,176,870 steps become 4,574 notes, 5 min 5 s at 15 notes a second.</p>
+      <div class="panel live">
+        <dl class="readout">
+          <dt>Phrase</dt><dd><b id="r-phrase">-</b></dd>
+          <dt>Head</dt><dd><b id="r-head">-</b></dd>
+          <dt>Tape</dt><dd><b id="r-tape">-</b></dd>
+          <dt>This note</dt><dd><b id="r-comp">-</b></dd>
+          <dt>Score</dt><dd><b id="r-mode">-</b></dd>
+          <dt>Job</dt><dd><b id="r-job">-</b></dd>
+        </dl>
+        <p class="hint"><span class="kbd">Space</span> play/pause &middot; <span class="kbd">&larr;</span><span class="kbd">&rarr;</span> step (Shift: 16) &middot; <span class="kbd">[</span><span class="kbd">]</span> phrase &middot; <span class="kbd">B</span> raw/blur &middot; drag the score graph to scrub</p>
+      </div>
+    </div>
+
+    <div class="copy">
+      <p class="kicker">Challenge 02 &middot; Make it audible</p>
+      <h1>Scrub through the longest run a five-state machine can make.</h1>
+      <p class="sub">This Turing machine halts after 47,176,870 steps, and in 2024 it was proved that no five-state machine that halts runs longer. Its tape plays as a score, and a quantum blur, run at the engine's 20-qubit maximum, turns that score into echoes. Its head is a beaver in a hard hat, its tape is a river it dams one log at a time, and every hop plays a note.</p>
+      <div class="proof">
+        <span class="hot">qubits=<b>20</b> (engine max) on every job</span>
+        <span id="proof-jobs"><b>/*NJOBS*/0</b> real Atlas jobs &middot; simulator, no hardware</span>
+        <span id="proof-run"><b>47,176,870</b> steps, re-run in your browser</span>
+      </div>
+      <ol class="steps">
+        <li><span><b>Play</b>, then <b>scrub</b> anywhere in the run. The beaver stands where the head really is: its hat shows the state, a log is a 1 and open water a 0.</span></li>
+        <li><span><b>Flip</b> between the raw score and the quantum-blurred scores, and watch the echo pool spread out.</span></li>
+        <li><span><b>Change the tempo</b> from 4 to 40 notes a second, or <b>jump to the halt</b>, where the dam is finished.</span></li>
+        <li><span><b>Hear</b> the three full WAV renders below, or switch to <b>Data</b> for the falling score and the tape's history.</span></li>
+      </ol>
+
+      <div class="panel">
+        <div class="ctl"><span class="label">Score</span>
+          <div class="seg" role="group" aria-label="Score" id="g-score">
+            <button type="button" data-score="raw" aria-pressed="true">Raw</button>
+            <button type="button" data-score="blur" aria-pressed="false">Quantum blur</button>
+          </div></div>
+        <div class="ctl"><span class="label">Reach</span>
+          <div class="seg" role="group" aria-label="Blur reach" id="g-reach">
+            <button type="button" data-reach="0" aria-pressed="false">0 &middot; local</button>
+            <button type="button" data-reach="1" aria-pressed="true">1 &middot; global</button>
+          </div></div>
+        <div class="ctl"><span class="label">Strength</span>
+          <div class="seg" role="group" aria-label="Blur strength" id="g-strength"></div></div>
+        <div class="ctl"><span class="label">Time grid</span>
+          <div class="seg" role="group" aria-label="Blur time grid" id="g-grid">
+            <button type="button" data-grid="0" aria-pressed="false">1/16 note</button>
+            <button type="button" data-grid="60" aria-pressed="true">1/32 note &middot; 20 qubits</button>
+          </div></div>
+        <div class="ctl"><span class="label" id="tempo-lab">15 notes/s</span>
+          <input type="range" id="tempo" min="4" max="40" step="1" value="15" aria-label="Tempo in notes per second"></div>
+        <div class="row">
+          <button type="button" class="btn ghost" id="prev" aria-label="Previous phrase">&#9664; Phrase</button>
+          <button type="button" class="btn ghost" id="next" aria-label="Next phrase (after the last phrase: the halt)">Phrase &#9654;</button>
+          <button type="button" class="btn ghost" id="halt">Jump to the halt</button>
+          <button type="button" class="btn ghost" id="share">Copy link to this moment</button>
+          <input type="text" class="shareurl" id="share-url" readonly hidden aria-label="Link to this moment (copy it by hand)">
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <section class="sec" id="how" aria-labelledby="how-h">
+    <div class="ink-bar"><span id="how-h">How to play</span><span>one run &middot; one clock</span></div>
+    <div class="cols">
+      <div>
+        <h3>The score + tape graph</h3>
+        <p class="lede">The scene above, the two graphs under &ldquo;The data&rdquo;, the readouts and the three renders all follow the same run on the same clock, so every control moves all of them. The score + tape graph is the Data view in the stage and the first graph below.</p>
+        <ol class="steps">
+          <li><span><b>Play</b>, then <b>scrub</b> anywhere in the run. The strip under the notes is the machine's tape at that exact step.</span></li>
+          <li><span><b>Flip</b> between the raw score and the quantum-blurred scores: local or global, gentle or strong.</span></li>
+          <li><span><b>Change the tempo</b> from 4 to 40 notes a second, or jump straight to the halt.</span></li>
+          <li><span><b>Hear</b> the three full WAV renders below, every note, with the score following along.</span></li>
+        </ol>
+      </div>
+      <div>
+        <h3>Keys and gestures</h3>
+        <dl class="keys">
+          <dt><span class="kbd">Space</span></dt><dd>play or pause the live score</dd>
+          <dt><span class="kbd">&larr;</span> <span class="kbd">&rarr;</span></dt><dd>step one note (with Shift: 16)</dd>
+          <dt><span class="kbd">[</span> <span class="kbd">]</span></dt><dd>previous or next phrase; after the last phrase comes the halt</dd>
+          <dt><span class="kbd">B</span></dt><dd>flip between the raw score and the quantum blur</dd>
+          <dt>drag</dt><dd>the score + tape graph: down (or right) moves forward, up (or left) goes back</dd>
+          <dt>click</dt><dd>the whole-run graph to jump there, or the beaver for a tail slap (decoration)</dd>
+          <dt>share</dt><dd>&ldquo;Copy link to this moment&rdquo; keeps the note, the score, the tempo and the view</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="data" aria-labelledby="data-h">
+    <div class="ink-bar"><span id="data-h">The data</span><span>2 graphs &middot; live, on the page's clock</span></div>
+    <figure class="fig cols" id="fig-score">
+      <div class="figframe"><canvas id="cv2" width="1000" height="720" tabindex="0" aria-label="The busy beaver score. Notes fall toward the machine's tape; the tape's history scrolls below it. Space plays or pauses, arrow keys step, square brackets jump between phrases. Drag the score down (or right) to move forward through the run, up (or left) to go back."></canvas></div>
+      <figcaption class="figcap">
+        <h3>The score over the tape</h3>
+        <p class="figlive" id="fig-live">-</p>
+        <p>Notes fall toward the machine's tape; the tape's history scrolls below it.</p>
+        <ul>
+          <li><b>Falling bars</b> are the notes of the score you picked, left is low. Dark ink is the melody (the head's cell), light ink the bass (the branch of the rule that is running). The darker the bar, the louder the note.</li>
+          <li><b>Outlined bars</b> are the raw score's notes, drawn over a quantum blur so its echoes can be told from the originals.</li>
+          <li><b>Lines across the score</b> mark where a phrase starts, labelled phrase k &middot; g(x): a single block of x ones, with the head in state A at its left end.</li>
+          <li><b>The strip under the notes</b> is the machine's tape at that exact step: pale for 0, light ink for 1, full ink for the head. The tag under the strip is the head's state, A to E, then HALT.</li>
+          <li><b>Below the strip</b> is the tape's history, one row per note, newest on top.</li>
+          <li><b>Drag</b> the score down (or right) to move forward through the run, up (or left) to go back.</li>
+        </ul>
+        <p class="src">Data: out/score.json (the machine step and head cell at every note, the 15 phrases), score_raw.mid and the six blur-midi-v1 MIDI files, and the tape from the machine re-run in this browser.</p>
+      </figcaption>
+    </figure>
+    <figure class="fig" id="fig-roll">
+      <h3>The whole run, note by note</h3>
+      <div class="figframe"><canvas id="roll" width="1200" height="210" role="img" aria-label="Every note of the chosen score across the whole run, as a piano roll: time left to right, pitch bottom to top, phrase starts numbered, the part already heard shaded. Click or drag to jump."></canvas></div>
+      <figcaption class="figcap">
+        <ul>
+          <li><b>Every note</b> of the score you picked, across all 4,574 sixteenth-note columns of the run, left to right. Height is pitch, low at the bottom, with every D marked. Dark ink is the melody, light ink the bass. Switch the score to see how far each blur spreads the notes.</li>
+          <li><b>Thin lines</b> mark where each of the 15 phrases starts, numbered where there is room. Phrase k gets round(15 &times; 1.41<sup>k</sup>) notes, so the late phrases fill most of the run.</li>
+          <li><b>The shaded part</b> is the run already heard and the bar is where you are. Click or drag anywhere on it to jump there. The scrub bar under the stage is the same graph, small.</li>
+        </ul>
+        <p class="src">Data: the same notes the live synth plays (score_raw.mid and the six blur-midi-v1 outputs), placed by note column.</p>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="listen" aria-labelledby="listen-h">
+    <div class="ink-bar"><span id="listen-h">Hear the full renders</span><span>3 WAV deliverables &middot; 5:09 each</span></div>
+    <p class="lede">These are the piece's WAV files, synthesised offline in Python with every note sounding (the live synth above plays at most 10 notes per step). They run on the same clock as the page, 15 notes a second, so the score above follows along while one plays. Starting one pauses the live score and any other render.</p>
+    <div class="tracks" id="tracks">
+      <article class="track" data-mode="raw" data-dur="/*DUR:score_raw*/0">
+        <p class="label">Classical &middot; <span class="fn">score_raw.wav</span></p>
+        <h3>The raw score</h3>
+        <p class="tdesc">The machine's tape as notes: the melody is the head's cell, the bass is the branch of the rule that is running.</p>
+        <div class="tctl"><button type="button" class="btn" aria-pressed="false" aria-label="Play the raw score render">&#9654; Play</button><span class="ttime">0:00 / 0:00</span></div>
+        <input type="range" min="0" max="1" step="0.1" value="0" aria-label="Position in the raw score render, seconds">
+        <p class="meta">-</p>
+        <audio preload="none" src="audio/score_raw.mp3"></audio>
+      </article>
+      <article class="track" data-mode="s0.2r0x60" data-dur="/*DUR:blur_s0.2_r0_res60*/0">
+        <p class="label">Atlas simulator &middot; <span class="fn">blur_s0.2_r0_res60.wav</span></p>
+        <h3>Quantum blur, reach 0</h3>
+        <p class="tdesc">Strength 0.2 on the 1/32-note grid, the run that uses all 20 qubits. Reach 0 mixes only neighbouring pitches and times.</p>
+        <div class="tctl"><button type="button" class="btn" aria-pressed="false" aria-label="Play the reach 0 blur render">&#9654; Play</button><span class="ttime">0:00 / 0:00</span></div>
+        <input type="range" min="0" max="1" step="0.1" value="0" aria-label="Position in the reach 0 blur render, seconds">
+        <p class="meta">-</p>
+        <audio preload="none" src="audio/blur_s0.2_r0_res60.mp3"></audio>
+      </article>
+      <article class="track" data-mode="s0.2r1x60" data-dur="/*DUR:blur_s0.2_r1_res60*/0">
+        <p class="label">Atlas simulator &middot; <span class="fn">blur_s0.2_r1_res60.wav</span></p>
+        <h3>Quantum blur, reach 1</h3>
+        <p class="tdesc">The same strength and grid, also 20 qubits. Reach 1 lets any cell of the piano roll mix with any other.</p>
+        <div class="tctl"><button type="button" class="btn" aria-pressed="false" aria-label="Play the reach 1 blur render">&#9654; Play</button><span class="ttime">0:00 / 0:00</span></div>
+        <input type="range" min="0" max="1" step="0.1" value="0" aria-label="Position in the reach 1 blur render, seconds">
+        <p class="meta">-</p>
+        <audio preload="none" src="audio/blur_s0.2_r1_res60.mp3"></audio>
+      </article>
+    </div>
+  </section>
+
+  <section class="sec" id="science" aria-labelledby="science-h">
+    <div class="ink-bar"><span id="science-h">The science</span><span>BB(5) = 47,176,870</span></div>
+    <div>
+    <details class="drawer"><summary>Why this machine?</summary><div class="body">
+      <p>A busy beaver is the five-state, two-symbol Turing machine that runs longest from a blank tape and still halts. This one, found by Heiner Marxen and J&uuml;rgen Buntrock in 1989 (Bulletin of the EATCS 40, 1990), halts after 47,176,870 steps with 4,098 ones on its tape.</p>
+      <p>For 34 years nobody could rule out a longer-running halter. In 2024 the bbchallenge collaboration settled it with a proof checked in Coq: BB(5) = 47,176,870 (&ldquo;Determination of the fifth Busy Beaver value&rdquo;, arXiv:2509.12337, 2025). That is the first new busy beaver value in over 40 years.</p>
+      <p>The machine is <code>1RB1LC_1RC1RB_1RD0LE_1LA1LD_1RZ0LA</code> in the bbchallenge format, which is a left-right mirror of Marxen and Buntrock's table, so here the tape grows to the left. Its run is a Collatz-like loop. A block of x ones is read as x = 3k or 3k + 1 and rebuilt as a block of 5k + 6 or 5k + 9 ones, until x = 12,284 = 3k + 2 and it halts. That gives 0 &rarr; 6 &rarr; 16 &rarr; 34 &rarr; &hellip; &rarr; 7,366 &rarr; 12,284 &rarr; halt: 15 phrases. Each phrase is a widening zigzag. The head turns the block into a 1 0 0 1 0 0 pattern, then zigzags outward, filling one 1 0 0 unit on each round trip.</p>
+    </div></details>
+    </div>
+  </section>
+
+  <section class="sec" id="made" aria-labelledby="made-h">
+    <div class="ink-bar"><span id="made-h">How it was made</span><span>score mapping &middot; quantum blur</span></div>
+    <div>
+    <details class="drawer"><summary>How 47 million steps become 4,574 sixteenth notes</summary><div class="body">
+      <p><b>Phrases.</b> The run splits exactly at the 15 moments when the tape is a single block of ones with the head in state A at its left end. We checked every split in the simulation. Phrase k gets round(15 &times; 1.41<sup>k</sup>) notes: the first phrase plays all 15 of its steps, and the 14th packs 30.2 million steps into 1,306 notes. The coda gets 96 notes, then a 24-note final chord.</p>
+      <p><b>Inside a phrase.</b> If it has 2 or more notes per head sweep, each sweep gets its turnaround and then cells evenly spaced along it. Otherwise the sweeps are sampled evenly in right/left pairs, and each sampled sweep gives its turnaround and its midpoint. That makes the low, centre, high, centre figure you hear, and stops 4,916 sweeps aliasing into noise. Every note is a real head position at a real step: the readout shows which step.</p>
+      <p><b>Pitch.</b> Left is low. The cells the head visits in a phrase are spread over D minor pentatonic, and the range widens as the tape grows: 6 notes in phrase 1, 21 (four octaves, A2 to A6) by the end. The bass plays which branch of the rule is running (x = 3k: D, x = 3k + 1: B&#9837;). The final chord sounds every note of the range, because the halted tape is a 1 0 0 pattern spread evenly across all of it.</p>
+    </div></details>
+    <details class="drawer"><summary>What the quantum engine did</summary><div class="body">
+      <p>Atlas <b>blur-midi-v1</b> (Quantum Blur for MIDI) read our MIDI file, built a piano roll (pitch &times; time) for each track, and encoded it as amplitudes on a Gray-coded qubit register. It applied a rotation to each qubit, read the blurred roll back and turned it into notes. <i>Strength</i> sets the rotation; <i>reach</i> 0 mixes only neighbouring pitches and times, and 1 lets any cell mix with any other.</p>
+      <p>Every job used <b>qubits = 20</b>, the engine's maximum budget per pass. The engine does not report how many qubits it actually used, so we computed it with QuantumBlur's grid rule, &lceil;log<sub>2</sub> time steps&rceil; + &lceil;log<sub>2</sub> pitch rows&rceil;. The melody spans MIDI 45&ndash;93. The outputs reach down to 38, exactly the engine's 15% margin, so its roll has 56 pitch rows, or 63 if the margin is padded above too. Either way that is 6 qubits. On the <b>1/16-note grid</b> (4,574 steps, 13 qubits) that comes to 19 qubits per pass. On the <b>1/32-note grid</b> (resolution 60 ticks, 9,148 steps, 14 qubits) it is 20, the whole budget. That is why we ran the gentle blur on both grids. The bass roll (MIDI 34&ndash;45 in the raw score, down to 32 in the outputs) needs fewer. All jobs ran on Atlas's classical statevector simulator, not on a quantum computer.</p>
+      <p class="note">The six jobs, with their settings, qubit counts, note counts and job IDs, are listed under <a href="#jobs-credits">&ldquo;Jobs and credits&rdquo;</a>.</p>
+    </div></details>
+    </div>
+  </section>
+
+  <section class="sec" id="claims" aria-labelledby="claims-h">
+    <div class="ink-bar"><span id="claims-h">What this does not claim</span><span>honesty</span></div>
+    <div class="honest">
+      <p class="honesty">The machine, the score and the sound are classical. Python ran the machine to make the score, and your browser re-runs all 47,176,870 steps to draw the tape. The quantum blur ran on a simulator, it computes nothing about the machine, and it shows no quantum advantage. It is a sound effect with a quantum circuit inside. The time compression and pitch mapping are our artistic choices, explained above. When more than 10 notes start on the same grid step, which happens almost everywhere in the strength-0.5, reach-1 blur (about 23 per sixteenth), the page plays only the 10 loudest so your browser keeps up (the final chord gets up to 32). It still draws them all, and the three WAV renders in &ldquo;Hear the full renders&rdquo; sound every note.</p>
+      <p class="honesty">The beaver scene is a drawing of the real run, not a simulation of anything else. Where the beaver stands, what its hat says, which cells hold logs, how big the far dam is and every ring in the echo pool come from the machine and the score on this page. The trees, clouds, waves, wood chips and sparkles are decoration, and the dive between far-apart cells stands for the thousands of steps a time-lapse hop skips.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="jobs-credits" aria-labelledby="jc-h">
+    <div class="ink-bar"><span id="jc-h">Jobs and credits</span><span>/*NJOBS*/0 Atlas jobs &middot; simulator, no hardware</span></div>
+    <div class="cols">
+      <div>
+        <h3>The Atlas jobs</h3>
+        <table class="jobs" id="jobs"><thead><tr><th>score</th><th>strength</th><th>reach</th><th>grid</th><th>qubits</th><th>notes out</th><th>job id</th></tr></thead><tbody></tbody></table>
+        <p class="src">From out/jobs.csv: every completed blur-midi-v1 job, each one a score you can pick above, or here with &ldquo;Show&rdquo;. &ldquo;param&rdquo; is the qubits value sent with the job; the per-pass count is computed with QuantumBlur's grid rule, not reported by the engine.</p>
+      </div>
+      <div>
+        <h3>Credits</h3>
+        <ul class="credits">
+          <li><b>The machine:</b> Heiner Marxen and J&uuml;rgen Buntrock, &ldquo;Attacking the Busy Beaver 5&rdquo;, <i>Bulletin of the EATCS</i> 40 (1990), Table 1, entry 1. <a href="https://turbotm.de/~heiner/BB/mabu90.html" target="_blank" rel="noopener">Their paper</a></li>
+          <li><b>The proof:</b> the bbchallenge Collaboration, &ldquo;Determination of the fifth Busy Beaver value&rdquo;, arXiv:2509.12337 (2025), checked in Coq. <a href="https://arxiv.org/abs/2509.12337" target="_blank" rel="noopener">arXiv</a></li>
+          <li><b>Background:</b> Pascal Michel, &ldquo;Busy beaver competition and Collatz-like problems&rdquo;, <i>Archive for Mathematical Logic</i> 32 (1993).</li>
+          <li><b>Phrase rules:</b> the bbchallenge wiki, &ldquo;5-state busy beaver winner&rdquo; (CC BY 4.0), used only to predict the 15 phrase boundaries, each then checked against the simulated tape. <a href="https://wiki.bbchallenge.org/wiki/5-state_busy_beaver_winner" target="_blank" rel="noopener">Wiki page</a></li>
+          <li><b>Quantum engine:</b> Moth Quantum Atlas <b>blur-midi-v1</b>, run on Atlas's classical statevector simulator. The qubit rule comes from QuantumBlur (qiskit-community, Apache License 2.0). <a href="https://github.com/qiskit-community/QuantumBlur" target="_blank" rel="noopener">QuantumBlur</a></li>
+          <li><b>Software and art:</b> numpy, scipy, mido and Pillow made the score and the WAVs; the page plays with the browser's Web Audio. Fonts: Geist and IBM Plex Mono (SIL Open Font License). The pixel-art beaver, its hat, the logs and the lodge are original art made for this piece.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  <!--NAV-->
+  <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/*INKSPRITE*/
+const SCORE = /*SCORE*/{};
+const MODES_RAW = /*MODES*/[];
+const TOTAL = SCORE.total_cols, P = SCORE.phrases, COLSTEP = SCORE.col_step, HALT = SCORE.steps;
+const HALT_COL = COLSTEP.indexOf(HALT) >= 0 ? COLSTEP.indexOf(HALT) : TOTAL - 1;   // the first note at which the machine has halted
+const SCALE = SCORE.scale, LOW_D = SCORE.low_d;
+const fmt = n => n.toLocaleString('en-US');
+
+// ---------------------------------------------------------------- the machine (classical, in the browser)
+const TM = SCORE.machine, WT = new Uint8Array(12), MV = new Int8Array(12), ST = new Uint8Array(12);
+TM.split('_').forEach((part, i) => { for (let r = 0; r < 2; r++) { const s = part.substr(3 * r, 3), k = i * 2 + r;
+  WT[k] = +s[0]; MV[k] = s[1] === 'R' ? 1 : -1; ST[k] = 'ABCDEZ'.indexOf(s[2]); } });
+const OFF = 12256, SIZE = 12320, CP = 1 << 19;
+function newState() { return { tape: new Uint8Array(SIZE), pos: OFF, q: 0, step: 0, ones: 0 }; }
+const cps = [];                       // checkpoints every CP steps, built by the warm-up run
+function runTo(s, target, record) {
+  let tape = s.tape, pos = s.pos, q = s.q, step = s.step, ones = s.ones;
+  while (step < target && q !== 5) {
+    const next = (Math.floor(step / CP) + 1) * CP, lim = Math.min(target, next);
+    while (step < lim && q !== 5) { const k = q * 2 + tape[pos], w = WT[k]; ones += w - tape[pos]; tape[pos] = w; pos += MV[k]; q = ST[k]; step++; }
+    if (record && step === next && cps.length === step / CP) cps.push({ tape: tape.slice(), pos, q, ones });
+  }
+  s.pos = pos; s.q = q; s.step = step; s.ones = ones;
+}
+const sim = newState();
+function seekStep(target) {
+  if (target < sim.step || target - sim.step > CP) {
+    const i = Math.min(Math.floor(target / CP), cps.length - 1);
+    if (i >= 0 && (i * CP > sim.step || target < sim.step)) { const c = cps[i]; sim.tape.set(c.tape); sim.pos = c.pos; sim.q = c.q; sim.ones = c.ones; sim.step = i * CP; }
+    else if (target < sim.step) { sim.tape.fill(0); sim.pos = OFF; sim.q = 0; sim.ones = 0; sim.step = 0; }
+  }
+  runTo(sim, target, false);
+}
+let verified = false;
+(function warm() {                    // compute only: runs the whole machine once, in slices, to build checkpoints
+  const w = newState(); cps.push({ tape: w.tape.slice(), pos: w.pos, q: 0, ones: 0 });
+  const el = document.getElementById('warm');
+  function slice() {
+    runTo(w, w.step + 3 * CP, true);
+    if (w.q !== 5) { el.textContent = 'Running the machine in your browser... ' + Math.round(100 * w.step / HALT) + '%'; setTimeout(slice, 0); return; }
+    verified = w.step === HALT && w.ones === SCORE.ones;
+    el.textContent = verified ? 'Verified here: halted at step ' + fmt(w.step) + ' with ' + fmt(w.ones) + ' ones' : 'Check failed: ' + fmt(w.step) + ' steps, ' + fmt(w.ones) + ' ones';
+    el.classList.toggle('ok', verified);
+    if (verified) { document.getElementById('proof-run').innerHTML = '<b>47,176,870</b> steps, re-checked in your browser'; setTimeout(() => el.classList.add('gone'), 6000); }
+    trailCol = -2; draw();             // the score + tape graph rebuilds its history wherever it is drawn
+  }
+  setTimeout(slice, 30);
+})();
+
+// ---------------------------------------------------------------- score data
+function deg2midi(d) { return LOW_D + 12 * Math.floor(d / 5) + SCALE[((d % 5) + 5) % 5]; }
+function decode(m) {
+  if (m.start) return m;
+  const f = m.notes, n = f.length / 5, start = new Float32Array(n), dur = new Float32Array(n), pitch = new Uint8Array(n), vel = new Uint8Array(n), trk = new Uint8Array(n), aud = new Uint8Array(n);
+  let s4 = 0;
+  for (let i = 0; i < n; i++) { s4 += f[5 * i]; start[i] = s4 / 4; dur[i] = f[5 * i + 1] / 4; pitch[i] = f[5 * i + 2]; vel[i] = f[5 * i + 3]; trk[i] = f[5 * i + 4]; }
+  // voice budget: at most MAXV notes start per column (the loudest); everything else is still drawn
+  for (let i = 0; i < n;) { let j = i; while (j < n && start[j] === start[i]) j++;
+    const idx = []; for (let t = i; t < j; t++) idx.push(t); idx.sort((a, b) => vel[b] - vel[a]);
+    idx.slice(0, start[i] >= CHORD_COL ? MAXV_CHORD : MAXV).forEach(t => aud[t] = 1); i = j; }
+  Object.assign(m, { start, dur, pitch, vel, trk, aud, count: n }); delete m.notes; return m;
+}
+const MAXV = 10, MAXV_CHORD = 32, CHORD_COL = TOTAL - 24;   // the final chord (last 24 notes) sounds in full
+const MODES = {}; MODES_RAW.forEach(m => MODES[m.id] = m);
+const STRENGTHS = [...new Set(MODES_RAW.filter(m => m.strength !== null).map(m => m.strength))].sort();
+function lowerBound(a, x) { let lo = 0, hi = a.length; while (lo < hi) { const m = (lo + hi) >> 1; if (a[m] < x) lo = m + 1; else hi = m; } return lo; }
+function phraseOf(col) { let k = 0; for (let i = 0; i < P.length; i++) if (P[i].col0 <= col) k = i; return k; }
+
+// ---------------------------------------------------------------- state
+const st = { col: 0, score: 'raw', reach: 1, strength: STRENGTHS.includes(0.2) ? 0.2 : STRENGTHS[0], grid: 0, rate: 15, playing: false };
+let following = null, fraf = 0;   // the WAV render the canvas is following, if any (see 'the WAV renders')
+function idFor(s, r, g) { return 's' + s + 'r' + r + (g ? 'x' + g : ''); }
+if (MODES[idFor(st.strength, st.reach, 60)]) st.grid = 60;
+function modeId() { return st.score === 'raw' ? 'raw' : idFor(st.strength, st.reach, st.grid); }
+function mode() { return decode(MODES[modeId()] || MODES.raw); }
+
+// ---------------------------------------------------------------- drawing
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+// "The data" section shows the same score + tape graph, always visible below the scene: it is drawn into #cv
+// (the stage's Data view) and copied, pixel for pixel, while it is on screen
+const cv2 = document.getElementById('cv2'), fctx = cv2.getContext('2d');
+let figOn = true, rollOn = true;   // set by an IntersectionObserver (see 'the data section'); true where there is none
+const W = 1000, H = 720, X0 = 16, X1 = 984, PMIN = 30, PMAX = 97, NOWY = 318, VIS = 56, PXC = NOWY / VIS;
+const STRIP_Y = NOWY + 8, STRIP_H = 26, TRAIL_Y = STRIP_Y + STRIP_H + 8, ROWS = Math.floor((H - TRAIL_Y) / PXC);
+const px = p => X0 + (p - PMIN) / (PMAX - PMIN + 1) * (X1 - X0), SEMI = (X1 - X0) / (PMAX - PMIN + 1);
+function cellX(k, c) {
+  const ph = P[k], f = (c - ph.lo) / Math.max(1, ph.hi - ph.lo), fd = ph.deg_lo + f * (ph.degrees - 1), d0 = Math.floor(fd);
+  const m0 = deg2midi(d0), m1 = deg2midi(d0 + 1); return px(m0 + (fd - d0) * (m1 - m0) + 0.5);
+}
+const edges = [];
+function edgesOf(k) { if (!edges[k]) { const ph = P[k], e = new Float32Array(ph.hi - ph.lo + 2); for (let i = 0; i < e.length; i++) e[i] = cellX(k, ph.lo + i - 0.5); edges[k] = e; } return edges[k]; }
+const sum = new Float32Array(W), cnt = new Float32Array(W);
+// one row of the space-time diagram: the current tape, binned to pixels, in phrase k's frame
+function tapeRow(k, rgba, o) {
+  const ph = P[k], e = edgesOf(k), tape = sim.tape; sum.fill(0); cnt.fill(0);
+  for (let c = ph.lo, i = 0; c <= ph.hi; c++, i++) {
+    const v = tape[c + OFF], x0 = e[i], x1 = e[i + 1];
+    if (x1 - x0 >= 1.5) { for (let x = Math.ceil(x0); x < Math.floor(x1); x++) { sum[x] += v; cnt[x]++; } }
+    else { const x = Math.floor((x0 + x1) / 2); sum[x] += v; cnt[x]++; }
+  }
+  const hx = Math.round(cellX(k, sim.pos - OFF));
+  for (let x = 0; x < W; x++) {
+    let r = 255, g = 255, b = 255;                     // no cell here: panel white
+    if (cnt[x] > 0) { const d = sum[x] / cnt[x]; r = 238 - d * 76; g = 238 - d * 72; b = 245 - d * 37; }   // 0: pale wash, 1: light ink (#A2A6D0)
+    if (sim.q !== 5 && Math.abs(x - hx) <= 1) { r = 25; g = 35; b = 142; }   // the head: full ink
+    const j = o + 4 * x; rgba[j] = r; rgba[j + 1] = g; rgba[j + 2] = b; rgba[j + 3] = 255;
+  }
+}
+const trailC = document.createElement('canvas'); trailC.width = W; trailC.height = ROWS;
+const tctx = trailC.getContext('2d'), trail = tctx.createImageData(W, ROWS);
+const stripC = document.createElement('canvas'); stripC.width = W; stripC.height = 1;
+const sctx = stripC.getContext('2d'), strip = sctx.createImageData(W, 1);
+let trailCol = -1;
+function pushRow(col) { trail.data.copyWithin(4 * W, 0, 4 * W * (ROWS - 1)); seekStep(COLSTEP[col]); tapeRow(phraseOf(col), trail.data, 0); trailCol = col; }
+function rebuildTrail() {
+  const c = curCol(); trail.data.fill(0);
+  for (let r = ROWS - 1; r >= 0; r--) { const col = c - r; if (col < 0) continue; seekStep(COLSTEP[col]); tapeRow(phraseOf(col), trail.data, 4 * W * r); }
+  trailCol = c; tctx.putImageData(trail, 0, 0);
+}
+function syncTape() {
+  const c = curCol();
+  if (c === trailCol) return;
+  if (c === trailCol + 1) { pushRow(c); tctx.putImageData(trail, 0, 0); } else rebuildTrail();
+}
+function curCol() { return Math.max(0, Math.min(TOTAL - 1, Math.floor(st.col))); }
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// palette: brand.css tokens (paper, panel, rule, one ink); the canvas is chrome, not engine artwork
+const INK = '#19238E', INK2 = '#545BA9', INK3 = '#A1A4CE', PANEL = '#FFFFFF', GUIDE = '#E6E6F0', GOOD = '#1F7A4D', ONINK = '#FBFAF9';
+const inkA = a => 'rgba(25,35,142,' + a + ')', ink3A = a => 'rgba(161,164,206,' + a + ')', PAPERA = 'rgba(251,250,249,.94)';
+let FS = 12;   // canvas label size in canvas px, scaled so labels stay about 9 CSS px at any width
+const font = px => '500 ' + px + 'px "IBM Plex Mono", ui-monospace, monospace';
+function tagBox(lab, x, y, fg, bg) {   // a small label on a paper (or ink) block, top-left at (x, y)
+  const w = ctx.measureText(lab).width + 10; ctx.fillStyle = bg; ctx.fillRect(x, y, w, FS + 6); ctx.fillStyle = fg; ctx.fillText(lab, x + 5, y + (FS + 6) / 2 + 1); return w;
+}
+
+function draw() {
+  const c = curCol(), m = mode(), k = phraseOf(c);
+  // while the run plays, the graphs in "The data" redraw only when they are on screen; paused, they always do
+  const still = !st.playing && !following;
+  if (view === 'scene') drawScene(st.col);
+  if (view === 'data' || figOn || still) { drawData(); if (figOn || still) fctx.drawImage(cv, 0, 0); }
+  seekStep(COLSTEP[c]);
+  readouts(m, c, k, P[k]); drawMiniHead(c); if (rollOn || still) drawRollHead(c);
+}
+
+function drawData() {
+  syncTape();
+  const m = mode(), raw = decode(MODES.raw), now = reduce ? curCol() : st.col, c = curCol(), k = phraseOf(c);
+  FS = Math.max(12, Math.min(26, Math.round(9.5 * W / ((view === 'data' && cv.clientWidth) || cv2.clientWidth || W))));
+  ctx.fillStyle = PANEL; ctx.fillRect(0, 0, W, H);
+  ctx.font = font(FS); ctx.textBaseline = 'middle';
+  const ahead = 'score ahead ↑', aw = ctx.measureText(ahead).width + 10, ax = W - aw - 6;
+  // pitch guides at every D; labels sit just above the now line, like keys
+  for (let p = 38; p <= PMAX; p += 12) { const x = px(p); ctx.fillStyle = GUIDE; ctx.fillRect(x, 0, 1, NOWY);
+    const lab = 'D' + (Math.floor(p / 12) - 1); if (x + 3 + ctx.measureText(lab).width < ax - 4) { ctx.fillStyle = INK3; ctx.fillText(lab, x + 4, NOWY - FS / 2 - 5); } }
+  // phrase boundaries ahead (lines here, labels after the notes)
+  const bounds = P.filter(q => { const y = NOWY - (q.col0 - now) * PXC; return y > FS + 8 && y <= NOWY; });
+  for (const q of bounds) { ctx.fillStyle = inkA(.35); ctx.fillRect(X0, NOWY - (q.col0 - now) * PXC, X1 - X0, 1); }
+  // notes: the selected score, then the raw notes outlined on top when a blur is showing
+  const lo = lowerBound(m.start, now - 30), hi = lowerBound(m.start, now + VIS + 1);
+  for (let i = lo; i < hi; i++) {
+    const y1 = Math.min(NOWY, NOWY - (m.start[i] - now) * PXC), y0 = Math.max(0, NOWY - (m.start[i] + m.dur[i] - now) * PXC); if (y1 - y0 < 1.5) continue;
+    const a = Math.pow(m.vel[i] / 127, 0.7), on = m.start[i] <= now && m.start[i] + m.dur[i] > now;
+    ctx.fillStyle = m.trk[i] ? ink3A(a) : inkA(a);
+    ctx.fillRect(px(m.pitch[i]) + 1, y0 + 1, SEMI - 2, y1 - y0 - 1);
+    if (on) { ctx.fillStyle = m.trk[i] ? INK2 : INK; ctx.fillRect(px(m.pitch[i]), NOWY - 4, SEMI, 4); }
+  }
+  if (m !== raw) { const a = lowerBound(raw.start, now - 30), b = lowerBound(raw.start, now + VIS + 1); ctx.strokeStyle = inkA(.6); ctx.lineWidth = 1;
+    for (let i = a; i < b; i++) { const y1 = Math.min(NOWY, NOWY - (raw.start[i] - now) * PXC), y0 = Math.max(0, NOWY - (raw.start[i] + raw.dur[i] - now) * PXC); if (y1 - y0 < 2) continue; ctx.strokeRect(px(raw.pitch[i]) + 1.5, y0 + .5, SEMI - 3, y1 - y0 - 1); } }
+  for (const q of bounds) { const lab = 'phrase ' + (q.k + 1) + (q.k === P.length - 1 ? ' · halting rule' : ' · g(' + fmt(q.x) + ')');
+    tagBox(lab, X0, NOWY - (q.col0 - now) * PXC - FS - 7, INK, PAPERA); }
+  // now line
+  ctx.fillStyle = INK; ctx.fillRect(0, NOWY, W, 2);
+  // the tape now
+  seekStep(COLSTEP[c]); tapeRow(k, strip.data, 0); sctx.putImageData(strip, 0, 0);
+  ctx.imageSmoothingEnabled = false; ctx.drawImage(stripC, 0, STRIP_Y, W, STRIP_H);
+  ctx.strokeStyle = inkA(.25); ctx.lineWidth = 1; ctx.strokeRect(.5, STRIP_Y - .5, W - 1, STRIP_H + 1);
+  // the tape's history: one row per note, newest on top
+  ctx.drawImage(trailC, 0, TRAIL_Y + 8, W, ROWS * PXC);
+  // head marker + state tag
+  const hx = cellX(k, sim.pos - OFF);
+  ctx.fillStyle = INK; ctx.beginPath(); ctx.moveTo(hx, STRIP_Y - 1); ctx.lineTo(hx - 7, STRIP_Y - 9); ctx.lineTo(hx + 7, STRIP_Y - 9); ctx.closePath(); ctx.fill();
+  const tf = Math.min(FS, 18); ctx.font = font(tf); ctx.textBaseline = 'middle';
+  const tag = sim.q === 5 ? 'HALT' : 'ABCDE'[sim.q], tw = ctx.measureText(tag).width + 10, tx = Math.min(W - tw - 2, Math.max(2, hx - tw / 2));
+  ctx.fillStyle = sim.q === 5 ? GOOD : INK; ctx.fillRect(tx, STRIP_Y + STRIP_H + 1, tw, tf + 4); ctx.fillStyle = ONINK; ctx.fillText(tag, tx + 5, STRIP_Y + STRIP_H + 3 + tf / 2);
+  ctx.font = font(FS);
+  const hist = 'tape history ↓ one row per note', hw = ctx.measureText(hist).width + 10;
+  tagBox(hist, W - hw - 6, H - FS - 12, INK2, PAPERA);
+  tagBox(ahead, ax, NOWY - FS - 12, INK2, PAPERA);
+  if (!cps.length || cps.length * CP < COLSTEP[c] - CP) { ctx.fillStyle = INK2; ctx.fillText('warming up...', X0, STRIP_Y + STRIP_H / 2); }
+  if (c < 24) { const msg = 'the tape’s history scrolls down from here as the run plays'; ctx.fillStyle = INK3; ctx.textAlign = 'center';
+    ctx.fillText(msg, W / 2, Math.min(H - FS * 3, TRAIL_Y + 8 + (c + 3) * PXC + FS)); ctx.textAlign = 'left'; }
+}
+
+// ---------------------------------------------------------------- the scene (the default view)
+// A beaver in a hard hat is the machine's head and the river is its tape: a log is a 1, open water a 0.
+// Real data only: where the beaver stands is SCORE.col_cell (the head's cell at each note, checked against the
+// simulation), what it reads and writes comes from the rule table and the tape re-computed in this browser, the far
+// dam is that whole tape drawn to scale, and each ring in the echo pool is a note of the score you picked.
+// Clouds, trees, waves, wood chips, splashes and sparkles are decoration.
+const SPR = /*SPRITES*/{};
+const SPX = {}; for (const key in SPR) SPX[key] = InkSprite.make(SPR[key]);
+const PAL = InkSprite.PALETTE, GLYPH_HALT = InkSprite.make({ frames: SPR.glyph_H.frames, palette: { K: PAL.G } });
+const HAT_DX = SPR.hat.anchor[0], HAT_DY = SPR.hat.anchor[1], GL_X = SPR.hat.glyph_at[0], GL_Y = SPR.hat.glyph_at[1];
+const BWD = SPX.beaver_idle.w, BHT = SPX.beaver_idle.h, HATW = SPX.hat.w, FOOT_X = 18, LETTER = 'ABCDE';
+const CELLS = SCORE.col_cell, EXT0 = SCORE.extent[0], EXT1 = SCORE.extent[1];
+const scv = document.getElementById('scene'), sx = scv.getContext('2d');
+const art = document.createElement('canvas'), pc = art.getContext('2d');
+// art-pixel layout: sky + far river (the whole dam) on top, the close-up river in the middle, the echo pool below
+const AH = 150, CW = 11, FAR0 = 47, DAMY = 56, FAR1 = 61, WL = 102, NEAR1 = 117, POOL0 = 127, POOL1 = 147;
+let S = 3, AW = 0, OX = 0, DPR = 1, bgC = null, view = 'scene', FSS = 10;
+const MONO = '"IBM Plex Mono", ui-monospace, monospace', DISPLAY = 'Geist, "Helvetica Neue", Arial, sans-serif';
+function F(c, x, y, w, h) { pc.fillStyle = PAL[c]; pc.fillRect(x, y, w, h); }
+function spr(g, sp, f, left, top, o) {   // place a sprite by its top-left on whole art pixels (InkSprite.draw centres it)
+  g.save(); g.translate(sp.w % 2 ? -0.5 : 0, sp.h % 2 ? -0.5 : 0);
+  InkSprite.draw(g, sp, f, Math.round(left) + sp.w / 2, Math.round(top) + sp.h / 2, 1, o); g.restore();
+}
+function hash(n) { n = Math.imul((n | 0) ^ 0x5bd1e995, 0x27d4eb2d); n ^= n >>> 15; n = Math.imul(n, 0x85ebca6b); return (n ^ (n >>> 13)) >>> 0; }
+const ease = t => t < 0.5 ? 2 * t * t : 1 - 2 * (1 - t) * (1 - t);
+const tapeAt = n => (n + OFF >= 0 && n + OFF < SIZE) ? sim.tape[n + OFF] : 0;
+const cellLeft = (n, cam) => Math.round((AW - CW) / 2 + (n - cam) * CW);
+
+function sizeScene() {   // integer art-pixel scale: 3 CSS px per art pixel on wide screens, 2 on phones
+  DPR = Math.min(3, window.devicePixelRatio || 1);
+  const cw = scv.clientWidth || (scv.parentNode && scv.parentNode.clientWidth) || 600, wide = cw >= 560;
+  S = Math.max(2, Math.round((wide ? 3 : 2) * DPR));
+  const W2 = Math.max(160, Math.round(cw * DPR));
+  AW = Math.floor(W2 / S); OX = Math.floor((W2 - AW * S) / 2);
+  scv.width = W2; scv.height = AH * S; scv.style.height = (AH * S / DPR) + 'px';
+  art.width = AW; art.height = AH; bgC = null; damFor = '';
+  FSS = Math.round((wide ? 10.5 : 9.5) * DPR);
+}
+
+function buildBg() {     // the parts that never move: sky, hills, pines, the far river, the water bands, the pool
+  bgC = document.createElement('canvas'); bgC.width = AW; bgC.height = AH;
+  const g = bgC.getContext('2d'), B = (c, x, y, w, h) => { g.fillStyle = PAL[c]; g.fillRect(x, y, w, h); };
+  B('W', 0, 0, AW, AH);
+  for (let i = 0; i * 95 < AW; i++) spr(g, SPX.cloud, 0, 10 + i * 95 + hash(i + 3) % 34, 9 + hash(i + 9) % 12);
+  const ridge = [];
+  for (let x = 0; x < AW; x++) {
+    const h1 = Math.round(17 + 5 * Math.sin(x / 21 + 0.6) + 3 * Math.sin(x / 8.5));
+    B('T', x, FAR0 - h1, 1, h1);
+    const h2 = Math.round(8 + 4 * Math.sin(x / 13 + 2.2) + 1.5 * Math.sin(x / 5));
+    ridge[x] = FAR0 - h2; B('W', x, FAR0 - h2, 1, h2); B('L', x, FAR0 - h2, 1, 1);
+  }
+  for (let x = 44; x < AW - 8; x += 10 + hash(x) % 14) {
+    const sp = hash(x * 7) % 3 === 0 ? SPX.pine_big : SPX.pine_small;
+    spr(g, sp, 0, x, ridge[Math.min(AW - 1, x + (sp.w >> 1))] - sp.h + 3);
+  }
+  B('T', 0, FAR0, AW, FAR1 - FAR0); B('L', 0, FAR0, AW, 1); B('L', 0, FAR1 - 1, AW, 1);
+  for (let i = 0; i < AW / 8; i++) B('W', hash(i * 13 + 1) % AW, FAR0 + 2 + hash(i * 5 + 2) % (FAR1 - FAR0 - 4), 3, 1);
+  B('T', 0, WL - 2, AW, NEAR1 - WL + 2); B('L', 0, NEAR1 - 3, AW, 3); B('B', 0, NEAR1, AW, 1);
+  B('T', 2, POOL0, AW - 4, POOL1 - POOL0); B('L', 2, POOL0, AW - 4, 1); B('L', 2, POOL1 - 1, AW - 4, 1);
+  B('L', 2, POOL0, 1, POOL1 - POOL0); B('L', AW - 3, POOL0, 1, POOL1 - POOL0);
+}
+
+// the whole tape, to scale (cells EXT0..EXT1, every cell the run ever visits), binned into art columns
+let damFor = '', damH = new Uint8Array(0), damLo = 0, damHi = -1;
+function damScan(c) {
+  const key = c + ':' + AW; if (key === damFor) return; damFor = key;
+  const fw = AW - 16, n = EXT1 - EXT0 + 1, t = sim.tape; if (damH.length !== fw) damH = new Uint8Array(fw);
+  for (let x = 0; x < fw; x++) {
+    const c0 = EXT0 + Math.floor(x * n / fw), c1 = Math.max(c0 + 1, EXT0 + Math.floor((x + 1) * n / fw)); let s = 0;
+    for (let q = c0; q < c1; q++) s += t[q + OFF];
+    damH[x] = s ? 1 + Math.min(3, Math.round(4 * s / (c1 - c0))) : 0;   // 1 = no logs; 2..4 = sparse .. solid
+  }
+  damLo = 0; damHi = -1;
+  for (let q = EXT0; q <= EXT1; q++) if (t[q + OFF]) { damLo = q; break; }
+  for (let q = EXT1; q >= EXT0; q--) if (t[q + OFF]) { damHi = q; break; }
+}
+const damX = cell => 8 + (cell - EXT0 + 0.5) / (EXT1 - EXT0 + 1) * (AW - 16);
+function drawFar(halted, pinCell, camCell) {
+  spr(pc, SPX.lodge, halted ? 1 : 0, 4, FAR0 - SPX.lodge.h + 1);   // home is at the far left, where the dam ends; the flag goes up at the halt
+  for (let x = 0; x < damH.length; x++) {   // logs stacked six high wherever this stretch of tape holds any
+    const dd = damH[x]; if (!dd) continue; const X = 8 + x;
+    F('K', X, DAMY - 6, 1, 1); F('K', X, DAMY + 1, 1, 1);
+    for (let y = DAMY - 5; y <= DAMY; y++) {
+      const solid = dd >= 4 || (dd === 3 && (x + y) % 3 !== 0) || (dd === 2 && (x + y) % 2 === 0);
+      F(solid ? ((x % 3 === 1 && (y - DAMY) % 3 === -1) ? 'L' : 'B') : 'L', X, y, 1, 1);
+    }
+  }
+  const half = AW / 2 / CW, xa = Math.floor(damX(camCell - half)), xb = Math.ceil(damX(camCell + half));
+  F('K', xa - 1, DAMY + 2, 1, 2); F('K', xb + 1, DAMY + 2, 1, 2); F('K', xa - 1, DAMY + 3, xb - xa + 3, 1);
+  spr(pc, SPX.pin, 0, Math.round(damX(pinCell)) - 4, FAR1 + 1);
+}
+function drawBank(cam) {   // grass and reeds scroll with the close-up river
+  const off = Math.round(cam * CW) - (AW >> 1);
+  for (let x = 1; x < AW - 1; x++) {
+    const h = hash(x + off);
+    if (h % 19 === 0) { const y = FAR1 + 6 + (h >>> 8) % (WL - FAR1 - 14); F('L', x, y, 1, 1); F('L', x - 1, y - 1, 1, 1); F('L', x + 1, y - 1, 1, 1); }
+    else if (h % 47 === 7) { const y = WL - 3; F('B', x, y - 6, 1, 6); F('L', x - 1, y - 4, 1, 4); F('L', x + 1, y - 5, 1, 5); F('L', x - 2, y - 2, 1, 2); F('B', x + 2, y - 3, 1, 3); }
+  }
+}
+
+// the echo pool: one ring per note of the chosen score, at its pitch (left = low), growing as the note rings out
+const RING = {};
+function ringImg(col, r) {
+  const key = col + r; if (RING[key]) return RING[key];
+  const ry = Math.max(1, Math.round(r * 0.42)), c2 = document.createElement('canvas'); c2.width = 2 * r + 1; c2.height = 2 * ry + 1;
+  const g = c2.getContext('2d'); g.fillStyle = PAL[col];
+  const n = Math.max(12, r * 8); for (let i = 0; i < n; i++) { const t = i / n * 2 * Math.PI; g.fillRect(r + Math.round(r * Math.cos(t)), ry + Math.round(ry * Math.sin(t)), 1, 1); }
+  return (RING[key] = { c: c2, r, ry });
+}
+const poolX = p => 6 + (p - PMIN) / (PMAX - PMIN) * (AW - 12);
+function drawPool(m, raw, vcol, moving) {
+  const cy = (POOL0 + POOL1) >> 1, LIFE = 0.75, span = moving ? LIFE * st.rate : 32;
+  const lo = lowerBound(m.start, vcol - span), hi = lowerBound(m.start, vcol + 1e-6);
+  for (let i = lo; i < hi; i++) {
+    const bass = m.trk[i] === 1; let col, r;
+    if (moving) {
+      const age = Math.max(0, (vcol - m.start[i]) / st.rate); if (age >= LIFE) continue;
+      const I = Math.pow(m.vel[i] / 127, 0.8) * (1 - age / LIFE) * (bass ? 0.8 : 1);
+      col = I > 0.55 ? 'K' : I > 0.3 ? 'B' : I > 0.12 ? 'L' : null; r = Math.min(12, 1 + Math.floor(age * (bass ? 12 : 16)) + (bass ? 1 : 0));
+    } else {   // paused: the notes sounding at this note, sized by loudness
+      if (m.start[i] + m.dur[i] <= vcol) continue;
+      const I = Math.pow(m.vel[i] / 127, 0.8) * (bass ? 0.8 : 1);
+      col = I > 0.55 ? 'K' : I > 0.3 ? 'B' : I > 0.1 ? 'L' : null; r = 2 + Math.round(5 * I) + (bass ? 1 : 0);
+    }
+    if (!col) continue;
+    const R2 = ringImg(col, r); pc.drawImage(R2.c, Math.round(poolX(m.pitch[i])) - r, cy - R2.ry);
+  }
+  // ticks on the pool's edge: the raw score's notes sounding now, so a blur's echoes can be told from the originals
+  const a0 = lowerBound(raw.start, vcol - 32), a1 = lowerBound(raw.start, vcol + 1e-6);
+  for (let i = a0; i < a1; i++) if (raw.start[i] + raw.dur[i] > vcol) F(raw.trk[i] ? 'B' : 'K', Math.round(poolX(raw.pitch[i])), POOL0 - 3, 1, 4);
+}
+
+// decoration: wood chips, splashes, sparkles (never data)
+const parts = [], sparks = [];
+function burst(kind, x, y, nowS) {
+  if (reduce) return;
+  for (let i = 0; i < (kind === 'chips' ? 8 : 10); i++) {
+    const ang = Math.PI * (0.2 + 0.6 * Math.random()), v = 20 + 28 * Math.random(), dir = Math.random() < 0.5 ? -1 : 1;
+    parts.push({ x, y, vx: Math.cos(ang) * v * dir, vy: -Math.sin(ang) * v, t0: nowS, life: 0.4 + 0.3 * Math.random(),
+      c: kind === 'chips' ? (i % 3 ? 'L' : 'B') : (i % 3 ? 'L' : 'W'), w: kind === 'chips' && i % 2 ? 2 : 1 });
+  }
+}
+function stepParts(nowS, dt) {
+  for (let i = parts.length - 1; i >= 0; i--) {
+    const p = parts[i]; if (nowS - p.t0 > p.life) { parts.splice(i, 1); continue; }
+    p.vy += 110 * dt; p.x += p.vx * dt; p.y += p.vy * dt; F(p.c, Math.round(p.x), Math.round(p.y), p.w, 1);
+  }
+}
+function spawnSparks(nowS) {
+  sparks.length = 0; if (reduce) return;
+  for (let i = 0; i < 18; i++) sparks.push({ x: i % 3 === 0 ? 20 + Math.random() * 26 - 13 : AW / 2 + Math.random() * 90 - 45, y: 44 + Math.random() * 40, t0: nowS + 0.25 + i * 0.13 });
+}
+function drawSparks(nowS) { for (const s of sparks) { const a = nowS - s.t0; if (a >= 0 && a < 0.6) spr(pc, SPX.sparkle, a < 0.3 ? 1 : 0, Math.round(s.x) - 3, Math.round(s.y) - 3); } }
+
+function drawBeaver(cx, top, flip, sp, f, hox, hoy, glyph, hatLift, clipY) {
+  const left = Math.round(cx) - (flip ? BWD - FOOT_X : FOOT_X);
+  pc.save(); pc.beginPath(); pc.rect(0, 0, AW, clipY); pc.clip();   // the river (or the log it dives behind) hides what is below
+  spr(pc, sp, f, left, top, { flipX: flip });
+  const hl = flip ? left + BWD - HAT_DX - HATW - hox : left + HAT_DX + hox, ht = top + HAT_DY + hoy - hatLift;
+  spr(pc, SPX.hat, 0, hl, ht, { flipX: flip });
+  spr(pc, glyph, 0, flip ? hl + HATW - GL_X - 3 : hl + GL_X, ht + GL_Y);
+  pc.restore();
+  return { hatX: hl + (HATW >> 1), hatTop: ht };
+}
+
+// text on the full-resolution canvas (art coordinates in, device pixels out)
+function dtext(str, ax, ay, o) {
+  o = o || {}; const fs = o.size || FSS;
+  sx.font = (o.bold ? '500 ' : '400 ') + fs + 'px ' + (o.font || MONO); sx.textBaseline = 'middle';
+  const w = sx.measureText(str).width, pad = Math.round(fs * 0.45);
+  let x = OX + ax * S; if (o.align === 'center') x -= w / 2; else if (o.align === 'right') x -= w;
+  x = Math.max(OX + pad, Math.min(OX + AW * S - w - pad, x)); const y = Math.round(ay * S);
+  if (o.bg) { sx.fillStyle = o.bg; sx.fillRect(Math.round(x - pad), Math.round(y - fs / 2 - pad * 0.6), Math.round(w + 2 * pad), Math.round(fs + 1.2 * pad)); }
+  sx.fillStyle = o.col || PAL.K; sx.fillText(str, x, y + 1); return w;
+}
+function fit(cands, maxW, fs, bold) { sx.font = (bold ? '500 ' : '400 ') + fs + 'px ' + MONO; for (const s of cands) if (sx.measureText(s).width <= maxW) return s; return cands[cands.length - 1]; }
+function bubble(lines, hatX, hatTop) {   // a square speech bubble with a pixel tail, snapped to the art grid
+  const fs = FSS, lh = Math.round(fs * 1.4), pad = 2 * S; sx.textBaseline = 'middle';
+  sx.font = '500 ' + fs + 'px ' + MONO; const w = Math.max(...lines.map(l => sx.measureText(l).width));
+  const bw = Math.ceil((w + 2 * pad) / S) * S, bh = Math.ceil((lines.length * lh + 2 * pad - (lh - fs)) / S) * S;
+  const Wd = AW * S, hx = OX + hatX * S, ht = hatTop * S; let x, y, side;
+  if (hx + 12 * S + bw <= OX + Wd - S) { x = hx + 12 * S; y = ht - S * 4; side = 'l'; }
+  else if (hx - 12 * S - bw >= OX + S) { x = hx - 12 * S - bw; y = ht - S * 4; side = 'r'; }
+  else { x = Math.max(OX + S, Math.min(OX + Wd - bw - S, hx - bw / 2)); y = ht - bh - 4 * S; side = 'b'; }
+  x = OX + Math.round((x - OX) / S) * S; y = Math.max(S, Math.round(y / S) * S);
+  sx.fillStyle = PAL.K; sx.fillRect(x, y, bw, bh); sx.fillStyle = PAL.W; sx.fillRect(x + S, y + S, bw - 2 * S, bh - 2 * S);
+  for (let i = 0; i < 3; i++) {   // the tail
+    const sz = (3 - i) * S;
+    if (side === 'l') { sx.fillStyle = PAL.K; sx.fillRect(x - (i + 1) * S, y + bh - 2 * S - sz, S, sz + S); if (i < 2) { sx.fillStyle = PAL.W; sx.fillRect(x - i * S, y + bh - 2 * S - sz + S, S, sz - S); } }
+    else if (side === 'r') { sx.fillStyle = PAL.K; sx.fillRect(x + bw + i * S, y + bh - 2 * S - sz, S, sz + S); if (i < 2) { sx.fillStyle = PAL.W; sx.fillRect(x + bw + (i - 1) * S, y + bh - 2 * S - sz + S, S, sz - S); } }
+    else { const cxp = Math.round((hx - x) / S) * S + x; sx.fillStyle = PAL.K; sx.fillRect(cxp - sz / 2 - S / 2, y + bh + i * S, sz + S, S); if (i < 2) { sx.fillStyle = PAL.W; sx.fillRect(cxp - sz / 2 + S / 2, y + bh + (i - 1) * S, sz - S, S); } }
+  }
+  lines.forEach((l, i) => { sx.font = (i ? '400 ' : '500 ') + fs + 'px ' + MONO; sx.fillStyle = i ? PAL.B : PAL.K; sx.fillText(l, x + pad, y + pad + fs / 2 + i * lh + 1); });
+}
+
+let lastBx = null, lastFlip = false, hopFx = null, slapT = -9, shiverT = -9, celebT = -9, wasHalted = false;
+let sceneSeen = false, fxCol = -1, signK = -1, signT = -9, lastSignK = -1, lastNow = 0, beaverArtX = 0;
+function drawScene(vcol) {
+  if (!AW) sizeScene();
+  if (!bgC) buildBg();
+  const nowS = performance.now() / 1000, dt = Math.min(0.1, Math.max(0, nowS - lastNow)); lastNow = nowS;
+  const moving = (st.playing || !!following) && !reduce;
+  const c = Math.max(0, Math.min(TOTAL - 1, Math.floor(vcol))), f = moving ? Math.max(0, vcol - c) : 0;
+  seekStep(COLSTEP[c]); damScan(c);
+  const halted = sim.q === 5, p0 = CELLS[c], p1 = c + 1 < TOTAL ? CELLS[c + 1] : p0, d = p1 - p0;
+  const nsteps = c + 1 < TOTAL ? COLSTEP[c + 1] - COLSTEP[c] : 0, q = sim.q;
+  const read = sim.tape[sim.pos], kk = q * 2 + read, wr = halted ? read : WT[kk], mv = halted ? 1 : MV[kk], nq = halted ? 5 : ST[kk];
+  const act = halted ? '' : read === 0 ? 'place' : wr === 0 ? 'gnaw' : 'tap';
+  const k = phraseOf(c), m = mode(), raw = decode(MODES.raw);
+  if (halted && !wasHalted && sceneSeen) { celebT = nowS; spawnSparks(nowS); document.getElementById('warm').classList.add('gone'); }   // the dam is complete at the real halting step
+  wasHalted = halted; sceneSeen = true;
+  if (moving && k !== lastSignK && lastSignK >= 0) { signK = k; signT = nowS; }
+  lastSignK = k;
+
+  // what the beaver is doing: the first step of this note (read, write, move), then the hop to the next note's cell
+  let bx = p0, cam = p0, lift = 0, sink = 0, flip = halted ? lastFlip : mv < 0, sp = SPX.beaver_idle, pf = InkSprite.frameAt(SPX.beaver_idle, nowS);
+  let hox = 0, hoy = 0, hatLift = 0, letterQ = q, shown0 = read, dropY = null, dive = 0;
+  if (f > 0 && !halted) {
+    if (f < 0.4) {
+      shown0 = f >= 0.25 ? wr : read;
+      if (act === 'gnaw') { sp = SPX.beaver_gnaw; pf = Math.floor(nowS * 12) % 2; hox = 1; hoy = 3; }
+      else if (act === 'tap') { sp = SPX.beaver_slap; pf = f < 0.14 ? 0 : 1; }
+      else if (f < 0.25) dropY = Math.round((1 - f / 0.25) * 24);
+      if (f >= 0.25 && fxCol !== c) {
+        fxCol = c; const L = cellLeft(p0, cam) + 5;
+        if (act === 'gnaw') burst('chips', L + (flip ? -7 : 7), WL - 9, nowS);
+        else burst('splash', act === 'tap' ? L + (flip ? 13 : -13) : L, WL - 4, nowS);
+      }
+    } else {
+      shown0 = wr; const e = (f - 0.4) / 0.6;
+      if (d !== 0) {
+        flip = d < 0; sp = SPX.beaver_hop; pf = 0;
+        if (Math.abs(d) <= 8) { const ee = ease(e); bx = p0 + d * ee; cam = bx; lift = Math.round(Math.sin(Math.PI * e) * (5 + 2 * Math.min(3, Math.abs(d)))); }
+        else { dive = d; if (e < 0.45) sink = Math.round(e / 0.45 * 22); else { bx = p1; cam = p1; sink = Math.round((1 - (e - 0.45) / 0.55) * 22); } }
+      }
+      if (nsteps === 1) letterQ = nq;
+    }
+  } else if (!moving && hopFx) {       // a step, jump or scrub while paused: hop (or dive) to the new cell
+    const e = (nowS - hopFx.t0) / 0.24;
+    if (e >= 1 || reduce) hopFx = null;
+    else {
+      const dd = hopFx.x1 - hopFx.x0; flip = dd < 0; sp = SPX.beaver_hop; pf = 0;
+      if (Math.abs(dd) <= 8) { bx = hopFx.x0 + dd * ease(e); cam = bx; lift = Math.round(Math.sin(Math.PI * e) * 6); }
+      else if (e < 0.45) { bx = hopFx.x0; cam = bx; sink = Math.round(e / 0.45 * 22); }
+      else sink = Math.round((1 - (e - 0.45) / 0.55) * 22);
+    }
+  }
+  if (!halted && f === 0 && !hopFx && nowS - slapT < 0.5) { sp = SPX.beaver_slap; pf = nowS - slapT < 0.16 ? 0 : 1; }
+  const cel = halted && nowS - celebT < 3.4 && !reduce;
+  if (halted) {
+    letterQ = 5;
+    if (cel) { const t = nowS - celebT; sp = SPX.beaver_cheer; pf = Math.floor(t * 5) % 2; lift = pf ? 0 : 3; hatLift = t < 1.3 ? Math.round(Math.sin(t / 1.3 * Math.PI) * 18) : 0; }
+  }
+  lastFlip = flip; lastBx = bx;
+  const under = Math.round(bx) === p0 ? shown0 : tapeAt(Math.round(bx)), swim = under || lift ? 0 : 7;
+
+  // paint the art layer
+  pc.drawImage(bgC, 0, 0);
+  const pinCell = (f > 0.4 && d) ? p0 + d * ease((f - 0.4) / 0.6) : bx;   // the far-dam pin glides along the real sweep
+  drawFar(halted, pinCell, cam);
+  drawBank(cam);
+  const half = AW / 2 / CW, n0 = Math.floor(cam - half) - 1, n1 = Math.ceil(cam + half) + 1, wf = reduce ? 0 : Math.floor(nowS * 2) % 2;
+  for (let n = n0; n <= n1; n++) {
+    const L = cellLeft(n, cam); let v = n === p0 ? shown0 : tapeAt(n); if (n === p0 && dropY !== null) v = 0;
+    if (v) spr(pc, SPX.log, hash(n) & 1, L, WL - 5); else spr(pc, SPX.wave, (wf + n) & 1, L, WL - 2);
+    F(n % 5 ? 'L' : 'B', L + 5, NEAR1 - 3, 1, n % 5 ? 1 : 3);
+  }
+  if (dropY !== null) spr(pc, SPX.log, hash(p0) & 1, cellLeft(p0, cam), WL - 5 - dropY);
+  const cxb = cellLeft(bx, cam) + 5, shiver = !reduce && nowS - shiverT < 0.35 ? (Math.floor(nowS * 30) % 2 ? 1 : -1) : 0;
+  beaverArtX = cxb;
+  const hat = drawBeaver(cxb + shiver, WL - 4 - BHT + swim + sink - lift, flip, sp, pf, hox, hoy, halted ? GLYPH_HALT : SPX['glyph_' + LETTER[letterQ]], hatLift, under ? WL - 4 : WL - 1);
+  if (swim || sink) spr(pc, SPX.ripple, reduce ? 0 : Math.floor(nowS * 5) % 3, cxb - 9, WL - 2);
+  if (dive && !reduce) { const dir = Math.sign(dive); for (let i = 0; i < 3; i++) F('L', (AW >> 1) - dir * (12 + i * 9) - 7, WL + 6 + i * 3, 14, 1); }
+  stepParts(nowS, dt);
+  drawPool(m, raw, moving ? vcol : c, moving);
+  if (halted) drawSparks(nowS);
+
+  // up-scale by a whole number, then the labels at full resolution
+  sx.imageSmoothingEnabled = false; sx.fillStyle = PAL.W; sx.fillRect(0, 0, scv.width, scv.height);
+  sx.drawImage(art, OX, 0, AW * S, AH * S);
+  const span = damHi >= damLo ? damHi - damLo + 1 : 0, logs = fmt(sim.ones), maxW = AW * S - 4 * S;
+  const labW = Math.min(maxW, (AW - 48) * S);
+  if (halted) dtext(fit(['dam complete: ' + logs + ' logs across ' + fmt(span) + ' cells', 'dam complete: ' + logs + ' logs', 'dam complete'], labW, FSS, true), 42, FAR0 - 4, { col: PAL.G, bold: true, bg: PAL.W });
+  else dtext(fit([span ? 'far dam, the whole tape to scale: ' + logs + ' logs, ' + fmt(span) + ' cells wide' : 'far dam, the whole tape to scale: no logs yet',
+    span ? 'whole tape: ' + logs + ' logs, ' + fmt(span) + ' cells' : 'whole tape: no logs yet', span ? logs + ' logs, ' + fmt(span) + ' cells' : 'no logs yet'], labW, FSS), 42, FAR0 - 4, { col: PAL.K, bg: PAL.W });
+  const headN = Math.round(bx) || 0, fsl = Math.round(FSS * 0.92);
+  for (let n = Math.ceil((cam - half) / 5) * 5; n <= cam + half; n += 5) {
+    if (Math.abs(n - headN) < 3) continue;
+    dtext(String(n), cellLeft(n, cam) + 5.5, WL + 10, { align: 'center', col: PAL.B, size: fsl });
+  }
+  dtext('cell ' + fmt(headN), cxb + 0.5, WL + 10, { align: 'center', col: PAL.W, bg: PAL.K, bold: true, size: fsl });
+  const narrow = AW * S / DPR < 480;
+  dtext('echo pool: ' + (m.id === 'raw' ? (narrow ? 'raw' : 'raw score') : (narrow ? 'blur' : 'quantum blur')), 4, POOL0 - 4.5, { col: PAL.K, bold: true, size: fsl });
+  dtext(narrow ? 'low → high' : 'low ← pitch → high', AW - 4, POOL0 - 4.5, { align: 'right', col: PAL.B, size: fsl });
+  if (moving && nowS - signT < 2.2 && signK >= 0) {
+    const ph = P[signK], last = signK === P.length - 1;
+    const s = fit(['Phrase ' + (signK + 1) + ': ' + (last ? fmt(ph.x) + ' logs, the halting branch' : ph.x ? 'a solid block of ' + fmt(ph.x) + ' logs' : 'an empty river'),
+      'Phrase ' + (signK + 1) + ': ' + (ph.x ? fmt(ph.x) + ' logs' : 'empty river')], maxW, FSS, true);
+    dtext(s, AW / 2, 60 * DPR / S, { align: 'center', col: PAL.W, bg: PAL.K, bold: true });   // just under the HUD tags
+  }
+  if (!st.playing && !following && !halted && !hopFx && view === 'scene') {
+    const nx = nq === 5 ? 'then halt' : 'hat ' + LETTER[nq], dir = mv > 0 ? 'right' : 'left';
+    const long = ['State ' + LETTER[q] + ', reads ' + (read ? 'a log' : 'water'), (act === 'place' ? 'place a log' : act === 'gnaw' ? 'gnaw it away' : 'leave the log') + ', step ' + dir + ', ' + nx];
+    const short = [LETTER[q] + ' reads ' + (read ? 'a log' : 'water'), (act === 'place' ? 'log' : act === 'gnaw' ? 'gnaw' : 'keep') + ', ' + dir + ', ' + nx];
+    sx.font = '500 ' + FSS + 'px ' + MONO;
+    const room = Math.max(AW - hat.hatX, hat.hatX) * S - 14 * S, need = Math.max(...long.map(l => sx.measureText(l).width)) + 4 * S;
+    bubble(need <= room ? long : short, hat.hatX, hat.hatTop);
+  }
+  if (cel) {   // the celebration banner, brief and skippable (click the scene)
+    const t1 = 'Dam complete!', l2 = 'halted at step 47,176,870', l3 = logs + ' logs across ' + fmt(span) + ' cells';
+    const l4 = verified ? 're-checked in your browser' : '';
+    const big = Math.round(FSS * 2), y0 = Math.max(14 * S, Math.round(46 * DPR)), bh = Math.round(big * 1.3 + FSS * (l4 ? 4.6 : 3.3) + FSS);
+    sx.fillStyle = PAL.K; sx.fillRect(OX, y0, AW * S, bh);
+    sx.textBaseline = 'middle'; sx.textAlign = 'center'; sx.fillStyle = PAL.W;
+    sx.font = '400 ' + big + 'px ' + DISPLAY; sx.fillText(t1, OX + AW * S / 2, y0 + FSS * 0.6 + big * 0.6);
+    sx.font = '500 ' + FSS + 'px ' + MONO; let yy = y0 + FSS * 0.6 + big * 1.3 + FSS * 0.7;
+    for (const l of [l2, l3, l4]) { if (!l) continue; sx.fillText(l, OX + AW * S / 2, yy); yy += FSS * 1.35; }
+    sx.textAlign = 'left';
+  }
+}
+
+function setView(v) {
+  view = v === 'data' ? 'data' : 'scene';
+  document.querySelectorAll('[data-view]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === view)));
+  scv.hidden = view !== 'scene'; cv.hidden = view !== 'data'; document.getElementById('legend').hidden = view !== 'scene';
+  if (view === 'scene') sizeScene(); else trailCol = -2;
+  draw();
+}
+document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+scv.addEventListener('click', e => {
+  scv.focus({ preventScroll: true });
+  const nowS = performance.now() / 1000;
+  if (wasHalted && nowS - celebT < 3.4) { celebT = -9; draw(); return; }   // skip the celebration
+  const r = scv.getBoundingClientRect(), axp = ((e.clientX - r.left) * DPR - OX) / S, ayp = (e.clientY - r.top) * DPR / S;
+  if (Math.abs(axp - beaverArtX) < 22 && ayp > 50 && ayp < WL + 8 && !wasHalted) {   // poke the beaver: a tail slap (decoration)
+    slapT = nowS; burst('splash', beaverArtX + (lastFlip ? 13 : -13), WL - 4, nowS); if (!st.playing && !following) draw();
+  }
+});
+
+// legend icons, drawn from the same sprites
+function iconURL(w, h, paint) {
+  const a1 = document.createElement('canvas'); a1.width = w; a1.height = h; paint(a1.getContext('2d'));
+  const a2 = document.createElement('canvas'); a2.width = w * 2; a2.height = h * 2; const g2 = a2.getContext('2d');
+  g2.imageSmoothingEnabled = false; g2.drawImage(a1, 0, 0, w * 2, h * 2); return a2.toDataURL('image/png');
+}
+const ICONS = {
+  log: [11, 11, g => spr(g, SPX.log, 0, 0, 0)],
+  water: [12, 7, g => { g.fillStyle = PAL.T; g.fillRect(0, 1, 12, 6); spr(g, SPX.wave, 0, 1, 1); }],
+  hat: [18, 10, g => { spr(g, SPX.hat, 0, 0, 0); spr(g, SPX.glyph_A, 0, GL_X, GL_Y); }],
+  pin: [9, 7, g => spr(g, SPX.pin, 0, 0, 0)],
+  ring: [17, 9, g => { g.fillStyle = PAL.T; g.fillRect(0, 0, 17, 9); const r1 = ringImg('K', 6), r2 = ringImg('L', 3); g.drawImage(r1.c, 2, 4 - r1.ry); g.drawImage(r2.c, 5, 4 - r2.ry); }],
+};
+document.querySelectorAll('[data-icon]').forEach(img => { const d = ICONS[img.dataset.icon]; if (!d) return; img.src = iconURL(d[0], d[1], d[2]); img.width = d[0] * 2; img.height = d[1] * 2; });
+
+// a gentle idle loop while the scene is on screen and paused (blinks, waves, hops); nothing plays
+let lastIdle = 0, stageOn = true;
+try { new IntersectionObserver(es => { stageOn = es[0].isIntersecting; }).observe(document.getElementById('stage')); } catch (e) {}
+function idleLoop(t) {
+  requestAnimationFrame(idleLoop);
+  if (view !== 'scene' || st.playing || following || !stageOn || document.hidden) return;
+  const nowS = t / 1000, busy = !!hopFx || parts.length > 0 || (wasHalted && nowS - celebT < 3.6) || nowS - slapT < 0.6 || nowS - shiverT < 0.4;
+  if (reduce && !busy) return;
+  if (!busy && t - lastIdle < 120) return;
+  lastIdle = t; drawScene(st.col);
+}
+requestAnimationFrame(idleLoop);
+
+
+const lapseEl = document.getElementById('lapse'), figLive = document.getElementById('fig-live');
+function readouts(m, c, k, ph) {
+  const s = COLSTEP[c];
+  document.getElementById('p-step').textContent = fmt(s);
+  document.getElementById('p-pct').textContent = (100 * s / HALT).toFixed(s < 1e5 ? 4 : 1) + '% of the run';
+  document.getElementById('p-col').textContent = fmt(c + 1);
+  document.getElementById('h-phrase').innerHTML = 'Phrase <b>' + (k + 1) + '</b> / ' + P.length;
+  const last = k === P.length - 1;
+  document.getElementById('r-phrase').textContent = (k + 1) + ' / ' + P.length + ' · ' + (last ? 'g(12,284) → halt' : 'g(' + fmt(ph.x) + ') → g(' + fmt(P[k + 1].x) + ')') + ' · x mod 3 = ' + ph.branch;
+  document.getElementById('r-head').textContent = sim.q === 5 ? 'halted on cell ' + fmt(sim.pos - OFF) : 'cell ' + fmt(sim.pos - OFF) + ' · state ' + 'ABCDE'[sim.q] + ' · reading ' + sim.tape[sim.pos];
+  document.getElementById('r-tape').textContent = fmt(sim.ones) + ' ones · phrase spans cells ' + fmt(ph.lo) + '..' + fmt(ph.hi);
+  document.getElementById('r-comp').textContent = 'step ' + fmt(s) + ' · ~' + fmt(Math.round(ph.steps / ph.cols)) + (Math.round(ph.steps / ph.cols) === 1 ? ' step' : ' steps') + ' per note here';
+  document.getElementById('r-mode').textContent = m.id === 'raw' ? 'raw MIDI (classical) · ' + fmt(m.count) + ' notes' : 'blur-midi-v1 · strength ' + m.strength + ' · reach ' + m.reach + ' · ' + (m.res ? '1/32' : '1/16') + ' grid · qubits ' + m.qubits + ' (' + m.qnote + ') · Atlas simulator · ' + fmt(m.count) + ' notes';
+  document.getElementById('r-job').textContent = m.job || 'none (classical score)';
+  const ns = c + 1 < TOTAL ? COLSTEP[c + 1] - COLSTEP[c] : 0, lp = sim.q === 5 ? 'halted: <b>no more steps</b>, the dam is done' : ns <= 1 ? 'this hop = <b>1</b> machine step' : 'time-lapse: this hop = <b>' + fmt(ns) + '</b> machine steps';
+  if (lapseEl.innerHTML !== lp) lapseEl.innerHTML = lp;
+  const hm = (following ? 'WAV render · ' : '') + (m.id === 'raw' ? 'Raw score' : 'Quantum blur · s ' + m.strength + ' · reach ' + m.reach + (m.res ? ' · 1/32' : ''));
+  document.getElementById('h-mode').textContent = hm;
+  // the live line above the score + tape graph in "The data": the same moment and score as the stage
+  const fl = 'phrase <b>' + (k + 1) + '</b> / ' + P.length + ' · note <b>' + fmt(c + 1) + '</b> / ' + fmt(TOTAL) + ' · step <b>' + fmt(s) + '</b> · ' + hm.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  if (figLive.innerHTML !== fl) figLive.innerHTML = fl;
+  const sc = document.getElementById('scrub'); if (+sc.value !== c) sc.value = c;
+  // the phrase buttons only offer moves that exist: nothing before note 1, nothing after the halt
+  const bp = document.getElementById('prev'), bn = document.getElementById('next');
+  if (bp.disabled !== (c === 0)) bp.disabled = c === 0;
+  if (bn.disabled !== (c >= HALT_COL)) bn.disabled = c >= HALT_COL;
+}
+
+// ---------------------------------------------------------------- minimap
+const mini = document.getElementById('mini'), mctx = mini.getContext('2d'), miniBase = document.createElement('canvas');
+let miniFor = '';
+function drawMini() {
+  const r = mini.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = Math.max(200, Math.round(r.width * dpr)), h = Math.max(40, Math.round(r.height * dpr));
+  const key = modeId() + w + 'x' + h; if (key === miniFor) return; miniFor = key;
+  mini.width = miniBase.width = w; mini.height = miniBase.height = h;
+  const b = miniBase.getContext('2d'), m = mode();
+  b.fillStyle = PANEL; b.fillRect(0, 0, w, h);
+  for (const q of P) { const x = q.col0 / TOTAL * w; b.fillStyle = '#D3D3E6'; b.fillRect(x, 0, 1, h);
+    if (q.cols / TOTAL * w > 14 * dpr) { b.fillStyle = INK2; b.font = (9 * dpr) + 'px "IBM Plex Mono", monospace'; b.textBaseline = 'top'; b.fillText(String(q.k + 1), x + 2 * dpr, 2 * dpr); } }
+  const yOf = p => h - 3 - (p - PMIN) / (PMAX - PMIN) * (h - 14 * dpr);
+  for (let i = 0; i < m.count; i++) { const a = Math.pow(m.vel[i] / 127, m.id === 'raw' ? 0.5 : 1.2);
+    b.fillStyle = m.trk[i] ? ink3A(a * .8) : inkA(a); b.fillRect(m.start[i] / TOTAL * w, yOf(m.pitch[i]), Math.max(1, m.dur[i] / TOTAL * w), dpr); }
+}
+function drawMiniHead(c) {
+  drawMini(); mctx.drawImage(miniBase, 0, 0); const x = (c + .5) / TOTAL * mini.width, h = mini.height;
+  mctx.fillStyle = inkA(.07); mctx.fillRect(0, 0, x, h);                 // the part of the run already heard
+  mctx.fillStyle = PANEL; mctx.fillRect(x - 2.5, 0, 5, h); mctx.fillStyle = INK; mctx.fillRect(x - 1, 0, 2, h);
+}
+
+// ---------------------------------------------------------------- the whole run, large (in "The data")
+// The minimap's piano roll at full width: the same notes (the score you picked), pitch rows labelled at every D,
+// phrase starts numbered, the part already heard shaded, and a bar at the current note. Click or drag to jump.
+const roll = document.getElementById('roll'), rctx = roll.getContext('2d'), rollBase = document.createElement('canvas');
+let rollFor = '', rollGeo = null;
+function drawRoll() {
+  const r = roll.getBoundingClientRect(); if (!(r.width > 0)) return false;
+  const dpr = Math.min(2, window.devicePixelRatio || 1), w = Math.max(200, Math.round(r.width * dpr)), h = Math.max(60, Math.round(r.height * dpr));
+  const key = modeId() + w + 'x' + h; if (key === rollFor) return true; rollFor = key;
+  roll.width = rollBase.width = w; roll.height = rollBase.height = h;
+  const b = rollBase.getContext('2d'), m = mode(), x0 = Math.round(30 * dpr), x1 = w - Math.round(6 * dpr), top = Math.round(17 * dpr), bot = h - Math.round(5 * dpr);
+  const rowH = (bot - top) / (PMAX - PMIN + 1), yOf = p => bot - (p - PMIN + 1) * rowH, xOf = col => x0 + col / TOTAL * (x1 - x0);
+  rollGeo = { x0: x0 / dpr, x1: x1 / dpr, xOf, dpr };   // x0/x1 in CSS px (for the pointer), xOf in canvas px
+  b.fillStyle = PANEL; b.fillRect(0, 0, w, h);
+  b.font = '500 ' + Math.round(9.5 * dpr) + 'px "IBM Plex Mono", ui-monospace, monospace'; b.textBaseline = 'middle';
+  for (let p = 38; p <= PMAX; p += 12) {   // a guide and a label at every D, like the score + tape graph
+    const y = Math.round(yOf(p) + rowH / 2); b.fillStyle = GUIDE; b.fillRect(x0, y, x1 - x0, 1);
+    b.fillStyle = INK3; b.fillText('D' + (Math.floor(p / 12) - 1), 4 * dpr, y);
+  }
+  b.textBaseline = 'top';
+  for (const q of P) { const x = Math.round(xOf(q.col0)); b.fillStyle = '#D3D3E6'; b.fillRect(x, top - 3 * dpr, 1, bot - top + 3 * dpr);
+    if (q.cols / TOTAL * (x1 - x0) > 16 * dpr) { b.fillStyle = INK2; b.fillText(String(q.k + 1), x + 3 * dpr, 2 * dpr); } }
+  const nh = Math.max(dpr, rowH);
+  for (let i = 0; i < m.count; i++) { const a = Math.pow(m.vel[i] / 127, m.id === 'raw' ? 0.5 : 1.2);
+    b.fillStyle = m.trk[i] ? ink3A(a * .8) : inkA(a); b.fillRect(xOf(m.start[i]), yOf(m.pitch[i]), Math.max(1, m.dur[i] / TOTAL * (x1 - x0)), nh); }
+  b.strokeStyle = inkA(.25); b.lineWidth = 1; b.strokeRect(x0 + .5, top - .5, x1 - x0 - 1, bot - top + 1);
+  return true;
+}
+function drawRollHead(c) {
+  if (!drawRoll()) return;
+  const dpr = rollGeo.dpr, h = roll.height;
+  rctx.drawImage(rollBase, 0, 0);
+  const xa = rollGeo.xOf(0), x = rollGeo.xOf(c + .5);
+  rctx.fillStyle = inkA(.07); rctx.fillRect(xa, 0, x - xa, h);              // the part of the run already heard
+  rctx.fillStyle = PANEL; rctx.fillRect(x - 2.5 * dpr, 0, 5 * dpr, h); rctx.fillStyle = INK; rctx.fillRect(x - 1 * dpr, 0, 2 * dpr, h);
+}
+function rollCol(e) {   // the note under a pointer on the large roll
+  const r = roll.getBoundingClientRect(), g = rollGeo || { x0: 30, x1: r.width - 6 };
+  return Math.floor((e.clientX - r.left - g.x0) / Math.max(1, g.x1 - g.x0) * TOTAL);
+}
+let dragRoll = null;
+roll.addEventListener('pointerdown', e => {
+  if (e.button !== 0) return; dragRoll = e.pointerId;
+  try { roll.setPointerCapture(e.pointerId); } catch (err) {}
+  seekCol(rollCol(e));
+});
+roll.addEventListener('pointermove', e => { if (dragRoll === e.pointerId) { const c = Math.max(0, Math.min(TOTAL - 1, rollCol(e))); if (c !== curCol()) seekCol(c); } });
+const endRoll = e => { if (dragRoll === e.pointerId) dragRoll = null; };
+roll.addEventListener('pointerup', endRoll); roll.addEventListener('pointercancel', endRoll);
+
+// ---------------------------------------------------------------- audio (Web Audio, started by a click)
+let AC = null, bus = null, voices = [];
+function makeIR(ac) {
+  const len = Math.floor(ac.sampleRate * 1.8), buf = ac.createBuffer(2, len, ac.sampleRate); let seed = 16;
+  const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296 * 2 - 1; };
+  for (let ch = 0; ch < 2; ch++) { const d = buf.getChannelData(ch); for (let i = 1; i < len; i++) d[i] = rnd() * Math.exp(-i / ac.sampleRate / 0.45); }
+  return buf;
+}
+function audio() {
+  if (AC) return AC;
+  AC = new (window.AudioContext || window.webkitAudioContext)();
+  const comp = AC.createDynamicsCompressor(); comp.threshold.value = -16; comp.ratio.value = 4; comp.connect(AC.destination);
+  bus = AC.createGain(); bus.gain.value = 0.9; bus.connect(comp);
+  const conv = AC.createConvolver(); conv.buffer = makeIR(AC); const wet = AC.createGain(); wet.gain.value = 0.16; bus.connect(conv); conv.connect(wet); wet.connect(comp);
+  return AC;
+}
+function voice(t, p, v, durS, bass) {
+  const f = 440 * Math.pow(2, (p - 69) / 12), g = AC.createGain(), amp = Math.pow(v / 127, 1.5) * (bass ? 0.16 : 0.2);
+  const o1 = AC.createOscillator(), o2 = AC.createOscillator(), g2 = AC.createGain();
+  o1.frequency.value = f; o2.frequency.value = 2 * f; g2.gain.value = bass ? 0.3 : 0.22;
+  o1.type = bass ? 'sine' : 'triangle'; o2.type = 'sine';
+  o1.connect(g); o2.connect(g2); g2.connect(g); g.connect(bus);
+  let end;
+  if (bass) { g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(amp, t + 0.03); g.gain.setTargetAtTime(0, t + durS, 0.08); end = t + durS + 0.5; }
+  else { const tau = 0.9 * Math.pow(220 / Math.max(f, 60), 0.35); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(amp, t + 0.004);
+    g.gain.setTargetAtTime(0, t + 0.004, tau * 0.6); g.gain.setTargetAtTime(0, t + durS + 0.15, 0.1); end = t + Math.min(durS + 0.7, 0.004 + tau * 3); }
+  o1.start(t); o2.start(t); o1.stop(end); o2.stop(end);
+  const rec = { t, o1, o2, g }; voices.push(rec); o1.onended = () => { g.disconnect(); const j = voices.indexOf(rec); if (j >= 0) voices.splice(j, 1); };
+}
+function cancelPending() { const now = AC ? AC.currentTime : 0; for (const v of voices.slice()) if (v.t > now + 0.005) { try { v.o1.stop(); v.o2.stop(); } catch (e) {} } }
+const clock = { t0: 0, c0: 0, idx: 0, timer: null };
+function anchor() { clock.t0 = AC.currentTime + 0.05; clock.c0 = st.col; clock.idx = lowerBound(mode().start, st.col - 1e-6); cancelPending(); }
+function schedule() {
+  const m = mode(), horizon = AC.currentTime + 0.18, hCol = clock.c0 + (horizon - clock.t0) * st.rate;
+  while (clock.idx < m.count && m.start[clock.idx] < hCol) { const i = clock.idx++; if (!m.aud[i]) continue;
+    const t = clock.t0 + (m.start[i] - clock.c0) / st.rate; if (t < AC.currentTime - 0.02) continue;
+    voice(Math.max(t, AC.currentTime), m.pitch[i], m.vel[i], m.dur[i] / st.rate, m.trk[i] === 1); }
+}
+let raf = 0;
+function frame() {
+  if (!st.playing) return;
+  st.col = clock.c0 + Math.max(0, AC.currentTime - clock.t0) * st.rate;
+  if (st.col >= TOTAL) { st.col = TOTAL - 1; pause(); toast('Halted at step 47,176,870 with 4,098 ones'); draw(); return; }
+  draw(); raf = requestAnimationFrame(frame);
+}
+function playBtn() { const b = document.getElementById('play'); b.setAttribute('aria-pressed', String(st.playing)); b.innerHTML = st.playing ? '&#10074;&#10074; Pause' : '&#9654; Play'; }
+function play() {
+  audio(); if (AC.state === 'suspended') AC.resume();
+  stopTracks(null);                     // one sound source at a time: the live synth pauses any WAV render
+  if (st.col >= TOTAL - 1) st.col = 0;
+  st.playing = true; anchor(); schedule(); clock.timer = setInterval(schedule, 25); playBtn(); raf = requestAnimationFrame(frame);
+}
+function pause() { st.playing = false; clearInterval(clock.timer); cancelAnimationFrame(raf); if (AC) cancelPending(); st.col = Math.floor(st.col); playBtn(); }
+function seekCol(c) {
+  const before = curCol(); st.col = Math.max(0, Math.min(TOTAL - 1, c));
+  if (!st.playing && !following && view === 'scene' && !reduce && curCol() !== before) hopFx = { x0: lastBx === null ? CELLS[before] : lastBx, x1: CELLS[curCol()], t0: performance.now() / 1000 };
+  if (st.playing) { anchor(); } if (following) seekTrack(following, st.col / NPS); draw();
+}
+
+// ---------------------------------------------------------------- controls
+const toast = msg => { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 2200); };
+document.getElementById('play').addEventListener('click', () => st.playing ? pause() : play());
+const scrub = document.getElementById('scrub'); scrub.max = TOTAL - 1;
+document.getElementById('p-total').textContent = fmt(TOTAL);
+scrub.addEventListener('input', () => seekCol(+scrub.value));
+function syncControls() {
+  document.querySelectorAll('[data-score]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.score === st.score)));
+  document.querySelectorAll('[data-reach]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.reach === st.reach)));
+  document.querySelectorAll('[data-strength]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.strength === st.strength)));
+  document.querySelectorAll('[data-grid]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.grid === st.grid)));
+  // With the raw score on, the blur's settings are idle (dimmed) but live: picking one switches to the quantum blur at that setting.
+  const idle = st.score === 'raw';
+  [['g-reach', 'Blur reach'], ['g-strength', 'Blur strength'], ['g-grid', 'Blur time grid']].forEach(([id, name]) => {
+    const g = document.getElementById(id); g.dataset.idle = String(idle);
+    g.setAttribute('aria-label', idle ? name + ' (not in use for the raw score; picking one switches to the quantum blur)' : name);
+    g.querySelectorAll('button').forEach(b => { if (idle) b.title = 'Switch to the quantum blur at this setting'; else b.removeAttribute('title'); });
+  });
+  document.getElementById('tempo-lab').textContent = st.rate + ' notes/s';
+  document.querySelectorAll('[data-job]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.job === modeId())));
+}
+function setMode(fn) { const was = modeId(); shiverT = performance.now() / 1000; fn(); if (following && modeId() !== following.mode) following.a.pause(); if (st.score !== 'raw' && !MODES[modeId()]) st.grid = MODES[idFor(st.strength, st.reach, 0)] ? 0 : 60; if (!MODES[modeId()]) st.score = 'raw'; syncControls(); miniFor = ''; if (st.playing) anchor(); draw();
+  if (modeId() === was) { const m = mode(); toast('Already showing ' + (m.id === 'raw' ? 'the raw score' : 'the quantum blur at strength ' + m.strength + ', reach ' + m.reach + ', ' + (m.res ? '1/32' : '1/16') + ' grid')); } }   // a re-click still answers
+document.querySelectorAll('[data-score]').forEach(b => b.addEventListener('click', () => setMode(() => st.score = b.dataset.score)));
+// The 1/32 grid was only run at strength 0.2, so the clicked setting wins and the other one moves to a job that exists (and says so).
+const gridName = g => g ? '1/32' : '1/16';
+document.querySelectorAll('[data-grid]').forEach(b => b.addEventListener('click', () => setMode(() => {
+  st.grid = +b.dataset.grid; st.score = 'blur';
+  if (!MODES[modeId()]) { const s = STRENGTHS.find(x => MODES[idFor(x, st.reach, st.grid)]);
+    if (s !== undefined) { st.strength = s; toast('The ' + gridName(st.grid) + ' grid was run at strength ' + s + ' only, so the strength is now ' + s); } }
+})));
+document.querySelectorAll('[data-reach]').forEach(b => b.addEventListener('click', () => setMode(() => { st.reach = +b.dataset.reach; st.score = 'blur'; })));
+const gs = document.getElementById('g-strength');
+STRENGTHS.forEach(s => { const b = document.createElement('button'); b.type = 'button'; b.dataset.strength = s; b.setAttribute('aria-pressed', 'false');
+  b.textContent = s + (s < 0.3 ? ' · gentle' : ' · strong');
+  b.addEventListener('click', () => setMode(() => { st.strength = s; st.score = 'blur';
+    if (!MODES[modeId()]) { const g = [0, 60].find(x => MODES[idFor(s, st.reach, x)]);
+      if (g !== undefined) { st.grid = g; toast('Strength ' + s + ' was run on the ' + gridName(g) + ' grid only, so the grid is now ' + gridName(g)); } } }));
+  gs.appendChild(b); });
+const tempo = document.getElementById('tempo');
+tempo.addEventListener('input', () => { if (st.playing) st.col = clock.c0 + Math.max(0, AC.currentTime - clock.t0) * st.rate; st.rate = +tempo.value; if (st.playing) anchor(); syncControls(); });
+function jumpPhrase(d) {
+  const c = curCol(), k = phraseOf(c);
+  if (d > 0 && k === P.length - 1) { if (c < HALT_COL) seekCol(HALT_COL); return; }   // after the last phrase comes the halt
+  const t = Math.max(0, Math.min(P.length - 1, (d < 0 && c > P[k].col0 + 2) ? k : k + d)); seekCol(P[t].col0);
+  if (t === P.length - 1) toast('The halting phrase: two sweeps across 12,289 cells, then stop');
+}
+document.getElementById('prev').addEventListener('click', () => jumpPhrase(-1));
+document.getElementById('next').addEventListener('click', () => jumpPhrase(1));
+document.getElementById('halt').addEventListener('click', () => {   // the note where the machine has just halted: the dam is complete
+  const again = curCol() === HALT_COL; seekCol(HALT_COL);
+  if (again && view === 'scene' && !reduce) { celebT = performance.now() / 1000; spawnSparks(celebT); draw(); }   // already here: replay the moment
+  toast('Halted at step 47,176,870 with 4,098 ones. Play for the final chord, or ◀ Phrase for the last two sweeps');
+});
+function shareHash() { return '#c' + curCol() + '.m' + modeId() + '.t' + st.rate + (view === 'data' ? '.vd' : ''); }
+document.getElementById('share').addEventListener('click', async () => {
+  history.replaceState(null, '', shareHash());
+  const url = location.href, box = document.getElementById('share-url'); let copied = false;
+  try { await navigator.clipboard.writeText(url); copied = true; } catch (e) {
+    try { const ta = document.createElement('textarea'); ta.value = url; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;left:0;top:0;opacity:0';
+      document.body.appendChild(ta); ta.select(); copied = document.execCommand('copy'); ta.remove(); } catch (e2) { copied = false; }
+  }
+  if (copied) { box.hidden = true; toast('Link copied: this note, this score, this tempo' + (view === 'data' ? ', the Data view' : '')); }
+  else { box.value = url; box.hidden = false; box.focus(); box.select(); toast('Copy failed: the link is in your address bar, and selected beside the button: copy it by hand'); }
+});
+document.addEventListener('keydown', e => {
+  const tgt = e.target, inField = tgt.matches && tgt.matches('input,textarea,select');
+  if (e.key === ' ' && !(tgt.matches && tgt.matches('button,a[href],textarea,select,summary,input:not([type=range])'))) { e.preventDefault(); st.playing ? pause() : play(); }
+  else if (!inField && (e.key === 'ArrowRight' || e.key === 'ArrowLeft') && (tgt === cv || tgt === cv2 || tgt === scv || tgt === document.body)) { e.preventDefault(); seekCol(curCol() + (e.key === 'ArrowRight' ? 1 : -1) * (e.shiftKey ? 16 : 1)); }
+  else if (!inField && (e.key === ']' || e.key === '[')) { e.preventDefault(); jumpPhrase(e.key === ']' ? 1 : -1); }
+  else if (!inField && (e.key === 'b' || e.key === 'B')) { setMode(() => st.score = st.score === 'raw' ? 'blur' : 'raw'); }
+});
+// drag the falling score to scrub: pull it down (or right) to move forward, up (or left) to go back, one note per note-height;
+// on a touchscreen vertical swipes still scroll the page (touch-action: pan-y), so swipe sideways there.
+// The same gestures work on the stage's Data view (#cv) and on the copy in "The data" (#cv2).
+let dragCv = null;
+[cv, cv2].forEach(el => {
+  el.addEventListener('click', () => el.focus({ preventScroll: true }));
+  el.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return;
+    dragCv = { el, id: e.pointerId, x: e.clientX, y: e.clientY, acc: 0 }; el.classList.add('drag');
+    try { el.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+  el.addEventListener('pointermove', e => {
+    if (!dragCv || dragCv.el !== el || e.pointerId !== dragCv.id) return;
+    const k = W / (el.clientWidth || W), dx = (e.clientX - dragCv.x) * k, dy = (e.clientY - dragCv.y) * k;
+    dragCv.x = e.clientX; dragCv.y = e.clientY; dragCv.acc += (Math.abs(dy) >= Math.abs(dx) ? dy : dx) / PXC;
+    const n = Math.trunc(dragCv.acc); if (n) { dragCv.acc -= n; seekCol(curCol() + n); }
+  });
+  const endDrag = e => { if (dragCv && dragCv.el === el && e.pointerId === dragCv.id) { dragCv = null; el.classList.remove('drag'); } };
+  el.addEventListener('pointerup', endDrag); el.addEventListener('pointercancel', endDrag);
+});
+// "The data" draws only while its graphs are on screen; scrolling one into view draws it at once
+try {
+  const io = new IntersectionObserver(es => {
+    let wake = false;
+    for (const e of es) {
+      if (e.target === cv2) { if (e.isIntersecting && !figOn) wake = true; figOn = e.isIntersecting; }
+      else if (e.target === roll) { if (e.isIntersecting && !rollOn) wake = true; rollOn = e.isIntersecting; }
+    }
+    if (wake && !st.playing && !following) draw();
+  });
+  io.observe(cv2); io.observe(roll);
+} catch (e) {}
+window.addEventListener('resize', () => { miniFor = ''; if (view === 'scene') sizeScene(); draw(); });
+
+// jobs table (in "Jobs and credits"): one row per completed job; "Show" puts that job's score on the stage and the graphs
+const tb = document.querySelector('#jobs tbody');
+MODES_RAW.filter(m => m.job).forEach(m => { const tr = document.createElement('tr');
+  const keys = ['score', 'strength', 'reach', 'grid', 'qubits', 'notes out', 'job id'];
+  const pick = document.createElement('td'); pick.dataset.k = keys[0];
+  const pb = document.createElement('button'); pb.type = 'button'; pb.className = 'pick'; pb.dataset.job = m.id; pb.textContent = 'Show'; pb.setAttribute('aria-pressed', 'false');
+  pb.setAttribute('aria-label', 'Show the strength ' + m.strength + ', reach ' + m.reach + ', ' + (m.res ? '1/32' : '1/16') + ' grid blur on the stage and the graphs');
+  pb.addEventListener('click', () => { setMode(() => applyModeId(m.id)); toast('Showing job ' + m.job.slice(0, 8) + ': strength ' + m.strength + ', reach ' + m.reach + ', ' + (m.res ? '1/32' : '1/16') + ' grid'); });
+  pick.appendChild(pb); tr.appendChild(pick);
+  [m.strength, m.reach, m.res ? '1/32 (res 60)' : '1/16 (auto)', 'param ' + m.qubits + ' · ' + m.qnote, fmt(m.n), m.job].forEach((v, i) => { const td = document.createElement('td'); td.textContent = v; td.dataset.k = keys[i + 1]; tr.appendChild(td); }); tb.appendChild(tr); });
+
+// ---------------------------------------------------------------- the WAV renders (<audio>, each started by its own click)
+// The files were rendered at SCORE.notes_per_sec (15) columns a second from t = 0, so audio time t is column 15 t:
+// while one plays, the canvas above follows it in the matching score.
+const NPS = SCORE.notes_per_sec || 15;
+function applyModeId(id) {
+  if (id === 'raw') { st.score = 'raw'; return; }
+  const mm = String(id).match(/^s([\d.]+)r(\d)(?:x(\d+))?$/); if (mm && MODES[id]) { st.score = 'blur'; st.strength = +mm[1]; st.reach = +mm[2]; st.grid = +(mm[3] || 0); }
+}
+const mmss = (t, up) => { t = Math.max(0, (up ? Math.round : Math.floor)(t || 0)); return Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0'); };
+const tracks = [...document.querySelectorAll('.track')].map(card => ({ card, mode: card.dataset.mode, dur: +card.dataset.dur || 0,
+  a: card.querySelector('audio'), src: card.querySelector('audio').getAttribute('src'), want: null, whole: false, loading: false, swapping: false, b: card.querySelector('button'), r: card.querySelector('input[type=range]'), tm: card.querySelector('.ttime'), meta: card.querySelector('.meta'), drag: false }));
+function stopTracks(except) { for (const t of tracks) if (t !== except && !t.a.paused) t.a.pause(); if (following && following !== except) following = null; }
+function trackUI(t) { const on = !t.a.paused; t.b.setAttribute('aria-pressed', String(on)); t.b.innerHTML = on ? '&#10074;&#10074; Pause' : '&#9654; Play'; t.card.classList.toggle('on', on); }
+function trackTime(t) { const d = isFinite(t.a.duration) && t.a.duration > 0 ? t.a.duration : t.dur; t.r.max = d.toFixed(1); if (!t.drag) t.r.value = t.a.currentTime.toFixed(1); t.tm.textContent = mmss(t.a.currentTime) + ' / ' + mmss(d, true); }
+function inSeekable(a, sec) { const s = a.seekable; for (let i = 0; i < s.length; i++) if (sec >= s.start(i) - 0.05 && sec <= s.end(i) + 0.05) return true; return false; }
+function seekTrack(t, sec) {
+  const d = isFinite(t.a.duration) && t.a.duration > 0 ? t.a.duration : t.dur; sec = Math.max(0, Math.min(sec, d - 0.05)); t.want = sec;
+  if (t.loading) return;
+  if (t.whole || t.a.readyState === 0 || inSeekable(t.a, sec)) { t.a.currentTime = sec; return; }
+  // the host served the file without byte ranges, so it cannot seek: load it whole once (a blob URL), then seek
+  t.loading = true; const was = !t.a.paused; t.tm.textContent = 'loading...';
+  fetch(t.src).then(r => { if (!r.ok) throw new Error(r.status); return r.blob(); }).then(bl => new Promise((res, rej) => {
+    const u = URL.createObjectURL(bl), a = t.a;
+    const ok = () => { a.removeEventListener('error', bad); res(); }, bad = () => { a.removeEventListener('loadedmetadata', ok); URL.revokeObjectURL(u); rej(new Error('blob')); };
+    t.swapping = true; a.addEventListener('loadedmetadata', ok, { once: true }); a.addEventListener('error', bad, { once: true }); a.src = u;
+  })).then(() => { t.whole = true; t.swapping = false; t.a.currentTime = t.want; if (was) return t.a.play(); })
+    .catch(() => { t.swapping = false; if (!t.whole) t.a.src = t.src; toast('This host cannot seek inside the recording; it plays from the start'); })
+    .finally(() => { t.loading = false; trackUI(t); trackTime(t); });
+}
+function followFrame() {
+  if (!following || following.a.paused) return;
+  st.col = Math.min(TOTAL - 1, following.a.currentTime * NPS); draw(); fraf = requestAnimationFrame(followFrame);
+}
+tracks.forEach(t => {
+  const m = MODES[t.mode];
+  t.meta.textContent = !m ? 'score not found' : m.id === 'raw' ? 'classical score + classical synthesis · ' + fmt(m.n) + ' notes · no quantum step'
+    : 'blur-midi-v1 job ' + m.job + ' · qubits=' + m.qubits + ' (' + m.qnote + ') · Atlas classical statevector simulator · ' + fmt(m.n) + ' notes · synthesised classically';
+  trackTime(t);
+  t.b.addEventListener('click', () => {
+    if (t.loading) return;
+    if (!t.a.paused) { t.a.pause(); return; }
+    if (st.playing) pause();
+    stopTracks(t);
+    if (modeId() !== t.mode) setMode(() => applyModeId(t.mode));
+    following = t;
+    const p = t.a.play(); if (p && p.catch) p.catch(e => { if (e && e.name === 'AbortError') return; toast('This browser could not play ' + t.src); trackUI(t); });
+  });
+  t.a.addEventListener('play', () => { trackUI(t); following = t; cancelAnimationFrame(fraf); fraf = requestAnimationFrame(followFrame); });
+  t.a.addEventListener('pause', () => { trackUI(t); if (following === t) { following = null; cancelAnimationFrame(fraf); st.col = Math.floor(st.col); draw(); } });
+  t.a.addEventListener('ended', () => { trackUI(t); t.want = null; t.a.currentTime = 0; trackTime(t); });
+  t.a.addEventListener('timeupdate', () => trackTime(t));
+  t.a.addEventListener('loadedmetadata', () => trackTime(t));
+  t.a.addEventListener('playing', () => { if (t.want !== null && Math.abs(t.a.currentTime - t.want) > 1) seekTrack(t, t.want); });   // a seek made before the file loaded
+  t.a.addEventListener('seeked', () => { if (t.want !== null && Math.abs(t.a.currentTime - t.want) < 0.5) t.want = null; });
+  t.a.addEventListener('error', () => { if (t.swapping) return; t.meta.textContent = 'This file failed to load (' + t.a.getAttribute('src') + ').'; t.b.disabled = true; });
+  t.r.addEventListener('pointerdown', () => t.drag = true);
+  t.r.addEventListener('change', () => t.drag = false);
+  t.r.addEventListener('input', () => { seekTrack(t, +t.r.value); t.tm.textContent = mmss(+t.r.value) + ' / ' + mmss(+t.r.max, true); });
+});
+
+// restore a shared moment: #c1234.ms0.2r1.t15 (plus .vd when it was shared from the Data view)
+(function () { const h = location.hash.match(/^#c(\d+)\.m(raw|s[\d.]+r\d(?:x\d+)?)\.t(\d+)(\.vd)?$/); if (!h) return;
+  st.col = Math.min(TOTAL - 1, +h[1]); st.rate = Math.max(4, Math.min(40, +h[3])); tempo.value = st.rate;
+  applyModeId(h[2]); if (h[4]) setView('data'); })();
+syncControls(); draw();
+</script>

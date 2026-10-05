@@ -1,0 +1,325 @@
+{
+ "piece": "19-frog-chorus",
+ "ok": true,
+ "passed": 79,
+ "total": 79,
+ "results": [
+  {
+   "ok": true,
+   "msg": "nothing sounds before the user acts (no autoplay)"
+  },
+  {
+   "ok": true,
+   "msg": "opens on the illustrated pond scene, with the pond map, phase circle, call raster and lock chart in a visible section"
+  },
+  {
+   "ok": true,
+   "msg": "brand bar and kicker read \"Challenge 07\"; no \"Bonus\" anywhere (all entries are equal)"
+  },
+  {
+   "ok": true,
+   "msg": "verb-led headline is present"
+  },
+  {
+   "ok": true,
+   "msg": "proof chips match piece.json (22 qubits, 6 jobs, Aer, IBM ibm_fez at 20 qubits): \"22 qubits per pond6 real Atlas jobs29 locks measured per 22-qubit pond2 entangled locks past |XX+YY| = 1IBM ibm_fez · 20 qubits · real hardwarechorus locks: Aer simulator\""
+  },
+  {
+   "ok": true,
+   "msg": "the readout names the hardware run: \"IBM ibm_fez, 20 qubits, job 6f175600-338d-4814-946d-b1da067312af (graph-v1; IBM job db1q0d\""
+  },
+  {
+   "ok": true,
+   "msg": "readout names the default pond's job (8ece2a2c-4035-4d0c-950c-5174a228b2d4)"
+  },
+  {
+   "ok": true,
+   "msg": "sub names the 22-qubit circuit"
+  },
+  {
+   "ok": true,
+   "msg": "scene, pond map (G1), phase circle (G2) and call raster (G3) all draw (214173, 26817, 3090, 6580 inked px)"
+  },
+  {
+   "ok": true,
+   "msg": "lock chart (G4) draws a bar and a tick on all 29 edges"
+  },
+  {
+   "ok": true,
+   "msg": "all 4 render log charts (G5-G8) draw their three lines (337/329/352, 337/329/355, 337/329/334, 337/350/334 path chars)"
+  },
+  {
+   "ok": true,
+   "msg": "all 4 chorus lines draw their frogs (37376, 37376, 37376, 37376 inked px)"
+  },
+  {
+   "ok": true,
+   "msg": "the ibm_fez nights chart draws (167691 inked px) and the per-edge chart has a bar and an emulator tick on all 27 edges"
+  },
+  {
+   "ok": true,
+   "msg": "the hardware chart is labelled \"IBM ibm_fez, 20 qubits, job <id>\" with its real result"
+  },
+  {
+   "ok": true,
+   "msg": "Lift all empties every pad"
+  },
+  {
+   "ok": true,
+   "msg": "tapping pad 0 seats a frog there"
+  },
+  {
+   "ok": true,
+   "msg": "the pad readout describes the tapped pad"
+  },
+  {
+   "ok": true,
+   "msg": "dragging a frog from the log onto pad 5 seats it"
+  },
+  {
+   "ok": true,
+   "msg": "dragging the frog from pad 5 to pad 8 moves it"
+  },
+  {
+   "ok": true,
+   "msg": "keyboard: arrow to pad 9, Enter seats it"
+  },
+  {
+   "ok": true,
+   "msg": "tapping open water shows a hint and changes no pad"
+  },
+  {
+   "ok": true,
+   "msg": "Roll a measured night seats exactly measured shot #720 (0011010011101000101101)"
+  },
+  {
+   "ok": true,
+   "msg": "Roll an ibm_fez night switches to the 20-frog pond and seats exactly hardware shot #10 (10010011010010000110)"
+  },
+  {
+   "ok": true,
+   "msg": "tapping row 7 of the ibm_fez chart seats that night (Night #7 of 20 on IBM ibm_fez: 9 of 20 frogs calling, 19 of 27 pairs t)"
+  },
+  {
+   "ok": true,
+   "msg": "keyboard on the ibm_fez chart: ArrowDown + Enter seats the next night"
+  },
+  {
+   "ok": true,
+   "msg": "back to 22 frogs, the seated night is an Aer-simulator shot again and says so"
+  },
+  {
+   "ok": true,
+   "msg": "Seat all seats every pad"
+  },
+  {
+   "ok": true,
+   "msg": "coupling slider set to 8.0 rad/s by keyboard"
+  },
+  {
+   "ok": true,
+   "msg": "Start the chorus flips to Stop the chorus"
+  },
+  {
+   "ok": true,
+   "msg": "sound started: 54 croaks scheduled on the Web Audio clock"
+  },
+  {
+   "ok": true,
+   "msg": "every frog calls (295 calls in 6.7 s)"
+  },
+  {
+   "ok": true,
+   "msg": "alternating pond, engine locks, K 8: the pond takes turns (taking turns 0.73, in step 0.03; the WAV ends at 0.73 / 0.05)"
+  },
+  {
+   "ok": true,
+   "msg": "the rhythm locks (rate spread 0.004 calls/s)"
+  },
+  {
+   "ok": true,
+   "msg": "while the chorus runs the call raster draws 317 calls (15107 px of call marks) and the phase circle redraws the moving phases (4886 px)"
+  },
+  {
+   "ok": true,
+   "msg": "Sync pond + We asked for: readout switches job and locks"
+  },
+  {
+   "ok": true,
+   "msg": "sync pond, asked-for locks: the frogs fall into step (in step 1)"
+  },
+  {
+   "ok": true,
+   "msg": "Stop the chorus stops the sound"
+  },
+  {
+   "ok": true,
+   "msg": "the S key starts and stops the chorus"
+  },
+  {
+   "ok": true,
+   "msg": "Reset phases restores the engine starting phases and says so"
+  },
+  {
+   "ok": true,
+   "msg": "Volume slider at 0 mutes the master gain"
+  },
+  {
+   "ok": true,
+   "msg": "20 frogs switches to the 20-qubit pond"
+  },
+  {
+   "ok": true,
+   "msg": "Engine delivered (after We asked for) switches the threads back to the engine's locks (edge 0: -1.4 asked -> -0.066 delivered)"
+  },
+  {
+   "ok": true,
+   "msg": "Live charts scrolls to The data"
+  },
+  {
+   "ok": true,
+   "msg": "tapping pad 2 on the pond map seats or lifts that frog and shows its readout"
+  },
+  {
+   "ok": true,
+   "msg": "tapping it again undoes it"
+  },
+  {
+   "ok": true,
+   "msg": "tapping raster row 7 picks pad 7 and shows its readout"
+  },
+  {
+   "ok": true,
+   "msg": "tapping the top of the phase circle picks the frog nearest phase 0 (pad 8; candidates 8)"
+  },
+  {
+   "ok": true,
+   "msg": "arrow keys move the pick in the data view"
+  },
+  {
+   "ok": true,
+   "msg": "every titled section is on the page: How to play, The data, Hear the rendered choruses, How it was made, The science, What this does not claim, Jobs and credits"
+  },
+  {
+   "ok": true,
+   "msg": "Jobs and credits lists all 13 ledgered jobs (the ibm_fez one included) and the spend (21 of 22)"
+  },
+  {
+   "ok": true,
+   "msg": "all 4 drawers (How it was made, The science) open and show their text"
+  },
+  {
+   "ok": true,
+   "msg": "the ibm_fez drawer and honesty note are filled from the real run"
+  },
+  {
+   "ok": true,
+   "msg": "all 7 \"On this page\" buttons scroll to their section (play, data, renders, made, science, claims, jobs), hash untouched"
+  },
+  {
+   "ok": true,
+   "msg": "The data names the job and charts all 29 locks"
+  },
+  {
+   "ok": true,
+   "msg": "Play plays the alt22 engine render on the page (at 1.6 s)"
+  },
+  {
+   "ok": true,
+   "msg": "scrubbing jumps the playing clip (now at 11.8 s)"
+  },
+  {
+   "ok": true,
+   "msg": "Stop pauses and rewinds the clip"
+  },
+  {
+   "ok": true,
+   "msg": "scrubbing an unplayed clip moves its chorus line (8 throats puffing at 15.0 s) and readout (at 0:15 (logged each second): K 7.3 · in step 0.39 · taking )"
+  },
+  {
+   "ok": true,
+   "msg": "all 4 clip scrubbers move their time, chorus-line readout and log-chart playhead to 0:10 (clips 0, 1, 2, 3)"
+  },
+  {
+   "ok": true,
+   "msg": "tapping a chorus line plays its clip, and tapping again pauses it"
+  },
+  {
+   "ok": true,
+   "msg": "every clip shows both its chorus line and its log chart"
+  },
+  {
+   "ok": true,
+   "msg": "starting the chorus pauses a playing clip"
+  },
+  {
+   "ok": true,
+   "msg": "tapping the frog by the headline croaks once"
+  },
+  {
+   "ok": true,
+   "msg": "share writes the chorus into the URL fragment (#v1.sync22.asked.k65.t26.s9.n719.ode18c2)"
+  },
+  {
+   "ok": true,
+   "msg": "the copied link is the page URL with that fragment"
+  },
+  {
+   "ok": true,
+   "msg": "reloading the link restores pond sync22, asked locks, K 6.5, tempo 2.6, individuality 9, night 719"
+  },
+  {
+   "ok": true,
+   "msg": "the restored page shows the same seated frogs and pressed toggles"
+  },
+  {
+   "ok": true,
+   "msg": "sharing an ibm_fez night writes its index into the link (#v1.sync20.asked.k65.t26.s9.n719.o417d6.h0)"
+  },
+  {
+   "ok": true,
+   "msg": "reloading it restores ibm_fez night #1 in the 20-frog pond"
+  },
+  {
+   "ok": true,
+   "msg": "brand bar links to the hub"
+  },
+  {
+   "ok": true,
+   "msg": "prev links 18-oldest-light, next links 20-antimatter-drop"
+  },
+  {
+   "ok": true,
+   "msg": "hub link and a jump list of all 22 pieces"
+  },
+  {
+   "ok": true,
+   "msg": "this piece is marked current, and the nav sits just before the footer"
+  },
+  {
+   "ok": true,
+   "msg": "the \"Jump to any piece\" list opens and shows every piece"
+  },
+  {
+   "ok": true,
+   "msg": "no horizontal scroll at 375 px"
+  },
+  {
+   "ok": true,
+   "msg": "the pond turns portrait on a phone"
+  },
+  {
+   "ok": true,
+   "msg": "tapping a pad on a phone seats a frog"
+  },
+  {
+   "ok": true,
+   "msg": "on a phone each ibm_fez night is 13.9 px tall and tapping night #5 seats it"
+  },
+  {
+   "ok": true,
+   "msg": "no page errors"
+  }
+ ],
+ "errors": []
+}

@@ -1,0 +1,6 @@
+  graph-v1: submitted 64974654-b115-428e-a3df-7fc9b6e5800e
+  ring J=0.4 qpu attempt 1 failed: graph-v1 64974654-b115-428e-a3df-7fc9b6e5800e failed: {"$schema": "https://api.mothquantum.com/schemas/JobStatusOutputBody.json", "job_id": "64974654-b115-428e-a3df-7fc9b6e5800e", "engine_id": "graph-v1", "status": "failed", "progress": {"detail": "Polling mothbackend for QPU status", "step": "collect"}, "steps": [{"extra": {"backend_name": "ibm_fez", "coupling_map": [[0, 1], [0, 19], [1, 2], [18,
+  graph-v1: submitted 6b7a5915-34a7-473f-b94e-604018ac5591
+  graph-v1: done 6b7a5915 in 340.6s
+  ring   J=0.4 qpu: 6b7a5915-34a7-473f-b94e-604018ac5591 backend=ibm_fez shots=20/20
+7 jobs in out/jobs.json; ledgered spend for this piece: 60 credits

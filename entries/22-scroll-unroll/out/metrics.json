@@ -1,0 +1,86 @@
+{
+ "clean_off_ink": 0.0,
+ "jobs": [
+  {
+   "file": "ink_s0.50_r0.0.png",
+   "job_id": "e3de765a-0d60-459e-8d60-88b87589bff2",
+   "strength": 0.5,
+   "reach": 0.0,
+   "r_line": 0.85933,
+   "r_roll": 0.82535,
+   "off_ink": 0.05075
+  },
+  {
+   "file": "ink_s0.25_r0.0.png",
+   "job_id": "4a8c15c6-cea0-4133-b8eb-2c2845e657ff",
+   "strength": 0.25,
+   "reach": 0.0,
+   "r_line": 0.98293,
+   "r_roll": 0.97475,
+   "off_ink": 0.01096
+  },
+  {
+   "file": "ink_s0.75_r0.0.png",
+   "job_id": "f019131c-62b4-4638-ae64-2b177c9430b9",
+   "strength": 0.75,
+   "reach": 0.0,
+   "r_line": 0.71533,
+   "r_roll": 0.6989,
+   "off_ink": 0.10525
+  },
+  {
+   "file": "ink_s1.00_r0.0.png",
+   "job_id": "90ccfce7-74ea-44d9-898d-1cd2661bccc0",
+   "strength": 1.0,
+   "reach": 0.0,
+   "r_line": 0.59422,
+   "r_roll": 0.60891,
+   "off_ink": 0.16394
+  },
+  {
+   "file": "ink_s0.25_r1.0.png",
+   "job_id": "dffc66de-5587-4110-99b8-c07fd38a282b",
+   "strength": 0.25,
+   "reach": 1.0,
+   "r_line": 0.03139,
+   "r_roll": 0.23745,
+   "off_ink": 0.79489
+  },
+  {
+   "file": "ink_s0.50_r1.0.png",
+   "job_id": "b5894864-e463-44df-9292-95aafd25080f",
+   "strength": 0.5,
+   "reach": 1.0,
+   "r_line": 0.00985,
+   "r_roll": -0.00881,
+   "off_ink": 0.9209
+  },
+  {
+   "file": "ink_s1.00_r1.0.png",
+   "job_id": "a257d715-991d-41e7-853f-6594e70c811d",
+   "strength": 1.0,
+   "reach": 1.0,
+   "r_line": -0.00495,
+   "r_roll": -0.01255,
+   "off_ink": 0.95216
+  },
+  {
+   "file": "ink_s0.10_r1.0.png",
+   "job_id": "81c74d15-0fd3-4a8a-93bf-b3b06c34b72e",
+   "strength": 0.1,
+   "reach": 1.0,
+   "r_line": 0.85935,
+   "r_roll": 0.87741,
+   "off_ink": 0.30982
+  },
+  {
+   "file": "ink_s0.50_r0.5.png",
+   "job_id": "fae87570-6918-4b57-898d-bae1ea107953",
+   "strength": 0.5,
+   "reach": 0.5,
+   "r_line": 0.00278,
+   "r_roll": 0.19465,
+   "off_ink": 0.80494
+  }
+ ]
+}

@@ -1,0 +1,46 @@
+{
+ "slug": "18-oldest-light",
+ "challenge": "11",
+ "bonus": true,
+ "title": "Oldest Light",
+ "hook": "Blur the oldest light in the universe.",
+ "sub": "A 48-degree patch of NASA WMAP's cosmic microwave background under an 18-qubit quantum blur, a stand-in for a telescope's blurry eye: watch which ripples survive.",
+ "you_control": [
+  "Drag Mapper the satellite across the sky to wipe between the original and its blurry view",
+  "Slide the blur through 6 real engine strengths and watch its eye go fuzzy",
+  "Plant galaxy seeds on the hottest spots: count which ones the blur keeps, loses or invents",
+  "Switch quantum / Gaussian beam / COBE 7-degree view, flip Scene / Data, then take the quiz"
+ ],
+ "engines": [
+  "blur-core-v1"
+ ],
+ "qubits": 18,
+ "qubits_note": "257 x 257 grid -> each axis padded to 512 -> 9 + 9 = 18 qubits (documented rule; every job's status also reports 'Recovered 18-qubit grid from measurement'). Sky fills 25% of the 2^18 amplitudes. 24/22/21 qubits refused by the 1 MiB request limit (free probes); 20 qubits failed for sibling pieces; our 19-qubit job 89f0fcee ran then failed on the platform's result-size limit (TMPRL1103).",
+ "hardware": null,
+ "jobs": 6,
+ "credits_spent": 7.0,
+ "deliverables": [
+  "web/index.html",
+  "web/template.html",
+  "build_web.py",
+  "web/files.json",
+  "web/img/mascot.png",
+  "web/sprites.json",
+  "web/img/sky.webp",
+  "hero.png",
+  "sweep.png",
+  "README.md",
+  "PARAMS.md",
+  "CREDITS.md",
+  "out/jobs.json",
+  "out/analysis.json",
+  "tests/test_logic.js",
+  "tests/smoke_dom.js",
+  "qa/e2e.cjs"
+ ],
+ "web_entry": "web/index.html",
+ "status": "built",
+ "honesty": "Real NASA WMAP 9-year ILC data; the quantum blur is an analogy for telescope resolution (not a model of inflation), run on Atlas's classical statevector simulator, with all classical steps labelled.",
+ "blockers": [],
+ "mascot": "web/img/mascot.png"
+}

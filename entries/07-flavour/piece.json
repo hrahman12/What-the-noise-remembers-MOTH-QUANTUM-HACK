@@ -1,0 +1,46 @@
+{
+ "slug": "07-flavour",
+ "challenge": "07",
+ "bonus": false,
+ "title": "FLAVOUR",
+ "hook": "Send a neutrino through the Earth. Hear which flavour arrives.",
+ "sub": "A neutrino synth drawn as a scientific plate of the real objects: a reactor, a Fermilab-style beamline, a cosmic-ray shower or the Sun, a real baseline, and Super-Kamiokande lighting a sharp muon ring or a fuzzy electron ring. The muon-neutrino flavour curves went onto qubits and came back from a real IBM chip, 12 IBM noise models and a noiseless simulator; the bands, rings and notes use what came back.",
+ "you_control": [
+  "Pick a real source (reactor, accelerator beam, cosmic-ray air shower, the Sun) and its energy",
+  "Drag the neutrino along its real baseline (Daya Bay to KamLAND, T2K to DUNE, overhead to through the Earth, 1 AU)",
+  "Detect: play a photomultiplier key or click Super-K; one neutrino lights a ring and the synth plays the mix",
+  "Swap chips and slide Mix from the exact curves to the measured ones to hear each machine's noise"
+ ],
+ "engines": [
+  "qpixl-v1"
+ ],
+ "qubits": 13,
+ "qubits_note": "4096-value curves on aer = 2^12 addresses: 12 address + 1 data qubit by the documented QPIXL rule (the engine splits them into data-qubit groups; shot-noise scatter suggests 256 groups of 16, our inference). Chips hold fewer values: the engine reported data-qubit capacities of 448 (fez, marrakesh), 378 (torino) and 360 (127-qubit Eagles); ibm_fez real hardware took 448 values. Physical qubits per circuit are not reported by the engine.",
+ "hardware": "ibm_fez",
+ "jobs": 14,
+ "credits_spent": 30.0,
+ "deliverables": [
+  "plugin/CMakeLists.txt",
+  "plugin/Source/",
+  "plugin/Resources/flavour_curves.json",
+  ".github/workflows/flavour-plugin.yml",
+  "audio/flavour_sweep.wav",
+  "audio/flavour_chip_compare.wav",
+  "audio/flavour_pad.wav",
+  "web/index.html",
+  "web/sprites.json",
+  "web/img/mascot.png",
+  "curves.png",
+  "README.md",
+  "PARAMS.md",
+  "CREDITS.md"
+ ],
+ "web_entry": "web/index.html",
+ "mascot": "web/img/mascot.png",
+ "status": "built",
+ "honesty": "Oscillation physics is computed classically (NuFIT 6.0, vacuum); qpixl-v1 only encodes and measures the curves; fake_* are IBM noise models on a simulator; only ibm_fez is real hardware; plugin binaries come from CI and were not built here.",
+ "blockers": [
+  "Plugin binaries (VST3/AU) are not built yet. They come from .github/workflows/flavour-plugin.yml once this folder is pushed as a repo (lead step). CI has never run, so the full JUCE build, link, pluginval and auval are unverified. Here the sources only type-check against JUCE 8.0.8 headers, and the engine, compiled into a test program, matches the Python/browser engines.",
+  "The plugin editor was re-themed for the earlier gelateria page (colour constants, label strings, one fillRect); that edit was not re-type-checked because the JUCE headers are no longer on this machine."
+ ]
+}

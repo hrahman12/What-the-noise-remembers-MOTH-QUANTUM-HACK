@@ -1,0 +1,1692 @@
+{
+ "job_id": "8650be46-e961-4ebe-bea1-56502b041342",
+ "params": {
+  "shots": 10000,
+  "output_bytes": 1000000,
+  "include_raw_counts": true,
+  "mode": "emu",
+  "num_qubits": 20,
+  "bell_witness": false
+ },
+ "output": {
+  "bell_witness": {
+   "enabled": false
+  },
+  "commitment": {
+   "binds": [
+    "circuit_hash",
+    "backend",
+    "provider_job_id",
+    "salt"
+   ],
+   "commit": "aed6f37183fa01649543c72ca63705559a74d513d3984355fac4a9d78b1fe8cc",
+   "committed_at": "2026-10-05T05:01:01+00:00",
+   "note": "Formed at submit, after the provider accepted the job and before any outcome existed. Publish `commit` before collect completes for it to mean anything to a third party.",
+   "salt": "fbe1fbd489f5dc5bbda8fff067fd256b2ce7ba32a0a096a5bc0864026adbbe94"
+  },
+  "device_fingerprint": {
+   "bias_pvalues": [
+    0.27571239191361707,
+    0.3320467307865057,
+    0.4413014427784484,
+    0.849310326637318,
+    0.2186951365480037,
+    0.31249520951068055,
+    0.12601249717087126,
+    0.6100536652701108,
+    0.2112974072707066,
+    0.7718179312040224,
+    0.19704817969846247,
+    0.5156942427203137,
+    0.4295292141078036,
+    0.6527125973732935,
+    0.3320467307865057,
+    0.9760672524021445,
+    0.31249520951068055,
+    0.7718179312040224,
+    0.40654000080069935,
+    0.2846187276368314
+   ],
+   "n_qubits": 20,
+   "n_significant_pairs": 0,
+   "note": "\u27e8Z\u27e9 on randomness qubits should be \u22480 (readout/prep bias shows as a nonzero value); witness qubits are expected to be biased by their rotated bases. ZZ pairs between randomness qubits should be \u22480 \u2014 nonzero values are crosstalk / correlated readout and lower the entropy budget.",
+   "p1": [
+    0.5055,
+    0.5049,
+    0.5039,
+    0.499,
+    0.4938,
+    0.5051,
+    0.5077,
+    0.5026,
+    0.4937,
+    0.4985,
+    0.4935,
+    0.5033,
+    0.496,
+    0.4977,
+    0.5049,
+    0.4998,
+    0.4949,
+    0.5015,
+    0.5042,
+    0.5054
+   ],
+   "roles": {
+    "randomness": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19
+    ],
+    "witness_pairs": []
+   },
+   "stuck_qubits": [],
+   "top_correlated_pairs": [
+    {
+     "h_pair": 1.8723705182284196,
+     "p_max_joint": 0.2618,
+     "phi": -0.02589071322398288,
+     "qubits": [
+      0,
+      16
+     ],
+     "z": -2.589071322398288
+    },
+    {
+     "h_pair": 1.896679890695876,
+     "p_max_joint": 0.2573,
+     "phi": -0.02416120195458241,
+     "qubits": [
+      5,
+      6
+     ],
+     "z": -2.416120195458241
+    },
+    {
+     "h_pair": 1.883662912473955,
+     "p_max_joint": 0.2597,
+     "phi": -0.023348490277358202,
+     "qubits": [
+      7,
+      16
+     ],
+     "z": -2.33484902773582
+    },
+    {
+     "h_pair": 1.8983154696549258,
+     "p_max_joint": 0.257,
+     "phi": -0.02225884762446705,
+     "qubits": [
+      0,
+      7
+     ],
+     "z": -2.225884762446705
+    },
+    {
+     "h_pair": 1.8782743349930784,
+     "p_max_joint": 0.2607,
+     "phi": -0.021696647758732382,
+     "qubits": [
+      8,
+      18
+     ],
+     "z": -2.169664775873238
+    },
+    {
+     "h_pair": 1.8777366047832114,
+     "p_max_joint": 0.2608,
+     "phi": -0.020679154534457525,
+     "qubits": [
+      1,
+      8
+     ],
+     "z": -2.0679154534457527
+    },
+    {
+     "h_pair": 1.8945020570327495,
+     "p_max_joint": 0.2577,
+     "phi": 0.020196972289501063,
+     "qubits": [
+      15,
+      16
+     ],
+     "z": 2.0196972289501063
+    },
+    {
+     "h_pair": 1.882583553171702,
+     "p_max_joint": 0.2599,
+     "phi": 0.019102879940808726,
+     "qubits": [
+      4,
+      12
+     ],
+     "z": 1.9102879940808726
+    },
+    {
+     "h_pair": 1.8782743349930784,
+     "p_max_joint": 0.2607,
+     "phi": -0.01906406668504612,
+     "qubits": [
+      0,
+      8
+     ],
+     "z": -1.9064066685046122
+    },
+    {
+     "h_pair": 1.8863649202918498,
+     "p_max_joint": 0.2592,
+     "phi": -0.01893623921769557,
+     "qubits": [
+      7,
+      8
+     ],
+     "z": -1.893623921769557
+    },
+    {
+     "h_pair": 1.9054249183295702,
+     "p_max_joint": 0.2557,
+     "phi": -0.018474120064448436,
+     "qubits": [
+      0,
+      11
+     ],
+     "z": -1.8474120064448436
+    },
+    {
+     "h_pair": 1.883662912473955,
+     "p_max_joint": 0.2597,
+     "phi": 0.017894141873669705,
+     "qubits": [
+      0,
+      1
+     ],
+     "z": 1.7894141873669704
+    },
+    {
+     "h_pair": 1.8847430961888954,
+     "p_max_joint": 0.2595,
+     "phi": -0.017503641920864097,
+     "qubits": [
+      2,
+      8
+     ],
+     "z": -1.7503641920864097
+    },
+    {
+     "h_pair": 1.908718295466859,
+     "p_max_joint": 0.2551,
+     "phi": -0.01748579169596119,
+     "qubits": [
+      2,
+      19
+     ],
+     "z": -1.7485791695961188
+    },
+    {
+     "h_pair": 1.8983154696549258,
+     "p_max_joint": 0.257,
+     "phi": 0.017177199833588817,
+     "qubits": [
+      2,
+      17
+     ],
+     "z": 1.7177199833588817
+    },
+    {
+     "h_pair": 1.883662912473955,
+     "p_max_joint": 0.2597,
+     "phi": -0.016278593900868707,
+     "qubits": [
+      8,
+      14
+     ],
+     "z": -1.6278593900868708
+    }
+   ],
+   "z_expectations": [
+    -0.010999999999999899,
+    -0.009800000000000031,
+    -0.007800000000000029,
+    0.0020000000000000018,
+    0.012399999999999967,
+    -0.010199999999999987,
+    -0.01540000000000008,
+    -0.0052000000000000934,
+    0.012599999999999945,
+    0.0030000000000000027,
+    0.013000000000000012,
+    -0.006599999999999939,
+    0.008000000000000007,
+    0.0046000000000000485,
+    -0.009800000000000031,
+    0.00039999999999995595,
+    0.010199999999999987,
+    -0.0029999999999998916,
+    -0.008399999999999963,
+    -0.01079999999999992
+   ],
+   "zz_pairs": [
+    [
+     0,
+     1,
+     0.018000000000000016
+    ],
+    [
+     0,
+     2,
+     0.01200000000000001
+    ],
+    [
+     0,
+     3,
+     0.012199999999999989
+    ],
+    [
+     0,
+     4,
+     0.0026000000000000467
+    ],
+    [
+     0,
+     5,
+     0.005600000000000049
+    ],
+    [
+     0,
+     6,
+     0.007199999999999984
+    ],
+    [
+     0,
+     7,
+     -0.022199999999999998
+    ],
+    [
+     0,
+     8,
+     -0.019200000000000106
+    ],
+    [
+     0,
+     9,
+     0.006800000000000028
+    ],
+    [
+     0,
+     10,
+     -0.0036000000000000476
+    ],
+    [
+     0,
+     11,
+     -0.018399999999999972
+    ],
+    [
+     0,
+     12,
+     0.0046000000000000485
+    ],
+    [
+     0,
+     13,
+     0.0020000000000000018
+    ],
+    [
+     0,
+     14,
+     0.007600000000000051
+    ],
+    [
+     0,
+     15,
+     -0.012199999999999989
+    ],
+    [
+     0,
+     16,
+     -0.026000000000000023
+    ],
+    [
+     0,
+     17,
+     -0.0007999999999999119
+    ],
+    [
+     0,
+     18,
+     -0.004999999999999893
+    ],
+    [
+     0,
+     19,
+     -0.011400000000000077
+    ],
+    [
+     1,
+     2,
+     -0.0047999999999999154
+    ],
+    [
+     1,
+     3,
+     0.0046000000000000485
+    ],
+    [
+     1,
+     4,
+     -0.005800000000000027
+    ],
+    [
+     1,
+     5,
+     0.007600000000000051
+    ],
+    [
+     1,
+     6,
+     0.0023999999999999577
+    ],
+    [
+     1,
+     7,
+     -0.009800000000000031
+    ],
+    [
+     1,
+     8,
+     -0.02079999999999993
+    ],
+    [
+     1,
+     9,
+     -0.0052000000000000934
+    ],
+    [
+     1,
+     10,
+     0.00039999999999995595
+    ],
+    [
+     1,
+     11,
+     -0.0027999999999999137
+    ],
+    [
+     1,
+     12,
+     -0.0029999999999998916
+    ],
+    [
+     1,
+     13,
+     0.010800000000000032
+    ],
+    [
+     1,
+     14,
+     -0.00039999999999995595
+    ],
+    [
+     1,
+     15,
+     -0.01540000000000008
+    ],
+    [
+     1,
+     16,
+     -0.0052000000000000934
+    ],
+    [
+     1,
+     17,
+     0.011600000000000055
+    ],
+    [
+     1,
+     18,
+     0.011800000000000033
+    ],
+    [
+     1,
+     19,
+     0.011399999999999966
+    ],
+    [
+     2,
+     3,
+     -0.007800000000000029
+    ],
+    [
+     2,
+     4,
+     0.0013999999999999568
+    ],
+    [
+     2,
+     5,
+     0.0008000000000000229
+    ],
+    [
+     2,
+     6,
+     0.014000000000000012
+    ],
+    [
+     2,
+     7,
+     0.015000000000000013
+    ],
+    [
+     2,
+     8,
+     -0.01760000000000006
+    ],
+    [
+     2,
+     9,
+     0.009199999999999986
+    ],
+    [
+     2,
+     10,
+     -0.008799999999999919
+    ],
+    [
+     2,
+     11,
+     -0.0040000000000000036
+    ],
+    [
+     2,
+     12,
+     0.0033999999999999586
+    ],
+    [
+     2,
+     13,
+     -0.012399999999999967
+    ],
+    [
+     2,
+     14,
+     -0.0012000000000000899
+    ],
+    [
+     2,
+     15,
+     -0.005800000000000027
+    ],
+    [
+     2,
+     16,
+     -0.007200000000000095
+    ],
+    [
+     2,
+     17,
+     0.017199999999999993
+    ],
+    [
+     2,
+     18,
+     -0.014599999999999946
+    ],
+    [
+     2,
+     19,
+     -0.017400000000000082
+    ],
+    [
+     3,
+     4,
+     0.00880000000000003
+    ],
+    [
+     3,
+     5,
+     -0.0005999999999999339
+    ],
+    [
+     3,
+     6,
+     -0.0014000000000000679
+    ],
+    [
+     3,
+     7,
+     -0.0016000000000000458
+    ],
+    [
+     3,
+     8,
+     0.009000000000000008
+    ],
+    [
+     3,
+     9,
+     -0.01540000000000008
+    ],
+    [
+     3,
+     10,
+     0.010600000000000054
+    ],
+    [
+     3,
+     11,
+     0.008600000000000052
+    ],
+    [
+     3,
+     12,
+     -0.0036000000000000476
+    ],
+    [
+     3,
+     13,
+     0.00019999999999997797
+    ],
+    [
+     3,
+     14,
+     0.010199999999999987
+    ],
+    [
+     3,
+     15,
+     -0.011200000000000099
+    ],
+    [
+     3,
+     16,
+     0.0018000000000000238
+    ],
+    [
+     3,
+     17,
+     -0.004999999999999893
+    ],
+    [
+     3,
+     18,
+     -0.008000000000000007
+    ],
+    [
+     3,
+     19,
+     -0.0023999999999999577
+    ],
+    [
+     4,
+     5,
+     0.0046000000000000485
+    ],
+    [
+     4,
+     6,
+     -0.007800000000000029
+    ],
+    [
+     4,
+     7,
+     0.008000000000000007
+    ],
+    [
+     4,
+     8,
+     0.0006000000000000449
+    ],
+    [
+     4,
+     9,
+     0.01419999999999999
+    ],
+    [
+     4,
+     10,
+     0.01100000000000001
+    ],
+    [
+     4,
+     11,
+     0.0050000000000000044
+    ],
+    [
+     4,
+     12,
+     0.019199999999999995
+    ],
+    [
+     4,
+     13,
+     0.009000000000000008
+    ],
+    [
+     4,
+     14,
+     -0.0041999999999999815
+    ],
+    [
+     4,
+     15,
+     0.005199999999999982
+    ],
+    [
+     4,
+     16,
+     0.010199999999999987
+    ],
+    [
+     4,
+     17,
+     -0.009400000000000075
+    ],
+    [
+     4,
+     18,
+     -0.015200000000000102
+    ],
+    [
+     4,
+     19,
+     -0.012799999999999923
+    ],
+    [
+     5,
+     6,
+     -0.02400000000000002
+    ],
+    [
+     5,
+     7,
+     -0.0029999999999998916
+    ],
+    [
+     5,
+     8,
+     -0.010399999999999965
+    ],
+    [
+     5,
+     9,
+     -0.009600000000000053
+    ],
+    [
+     5,
+     10,
+     -0.009200000000000097
+    ],
+    [
+     5,
+     11,
+     -0.0020000000000000018
+    ],
+    [
+     5,
+     12,
+     -0.005400000000000071
+    ],
+    [
+     5,
+     13,
+     0.014800000000000035
+    ],
+    [
+     5,
+     14,
+     0.007199999999999984
+    ],
+    [
+     5,
+     15,
+     0.0010000000000000009
+    ],
+    [
+     5,
+     16,
+     -0.0032000000000000917
+    ],
+    [
+     5,
+     17,
+     0.0040000000000000036
+    ],
+    [
+     5,
+     18,
+     0.0010000000000000009
+    ],
+    [
+     5,
+     19,
+     -0.008199999999999985
+    ],
+    [
+     6,
+     7,
+     0.0030000000000000027
+    ],
+    [
+     6,
+     8,
+     0.008399999999999963
+    ],
+    [
+     6,
+     9,
+     0.013599999999999945
+    ],
+    [
+     6,
+     10,
+     0.005199999999999982
+    ],
+    [
+     6,
+     11,
+     -0.008799999999999919
+    ],
+    [
+     6,
+     12,
+     -0.0029999999999998916
+    ],
+    [
+     6,
+     13,
+     -0.0032000000000000917
+    ],
+    [
+     6,
+     14,
+     -0.0016000000000000458
+    ],
+    [
+     6,
+     15,
+     0.007399999999999962
+    ],
+    [
+     6,
+     16,
+     -0.0027999999999999137
+    ],
+    [
+     6,
+     17,
+     0.008000000000000007
+    ],
+    [
+     6,
+     18,
+     0.009800000000000031
+    ],
+    [
+     6,
+     19,
+     0.015800000000000036
+    ],
+    [
+     7,
+     8,
+     -0.018999999999999906
+    ],
+    [
+     7,
+     9,
+     -0.005400000000000071
+    ],
+    [
+     7,
+     10,
+     -0.008199999999999985
+    ],
+    [
+     7,
+     11,
+     0.00660000000000005
+    ],
+    [
+     7,
+     12,
+     -0.0027999999999999137
+    ],
+    [
+     7,
+     13,
+     -0.01540000000000008
+    ],
+    [
+     7,
+     14,
+     -0.011800000000000033
+    ],
+    [
+     7,
+     15,
+     -0.0047999999999999154
+    ],
+    [
+     7,
+     16,
+     -0.023400000000000087
+    ],
+    [
+     7,
+     17,
+     -0.012599999999999945
+    ],
+    [
+     7,
+     18,
+     0.0011999999999999789
+    ],
+    [
+     7,
+     19,
+     -0.013600000000000056
+    ],
+    [
+     8,
+     9,
+     0.0008000000000000229
+    ],
+    [
+     8,
+     10,
+     0.00039999999999995595
+    ],
+    [
+     8,
+     11,
+     0.0011999999999999789
+    ],
+    [
+     8,
+     12,
+     -0.007400000000000073
+    ],
+    [
+     8,
+     13,
+     0.0031999999999999806
+    ],
+    [
+     8,
+     14,
+     -0.01639999999999997
+    ],
+    [
+     8,
+     15,
+     -0.007400000000000073
+    ],
+    [
+     8,
+     16,
+     -0.0036000000000000476
+    ],
+    [
+     8,
+     17,
+     -0.0132000000000001
+    ],
+    [
+     8,
+     18,
+     -0.02180000000000004
+    ],
+    [
+     8,
+     19,
+     -0.010199999999999987
+    ],
+    [
+     9,
+     10,
+     0.012399999999999967
+    ],
+    [
+     9,
+     11,
+     0.0028000000000000247
+    ],
+    [
+     9,
+     12,
+     -0.0129999999999999
+    ],
+    [
+     9,
+     13,
+     0.005199999999999982
+    ],
+    [
+     9,
+     14,
+     0.0028000000000000247
+    ],
+    [
+     9,
+     15,
+     0.0026000000000000467
+    ],
+    [
+     9,
+     16,
+     0.00039999999999995595
+    ],
+    [
+     9,
+     17,
+     0.007600000000000051
+    ],
+    [
+     9,
+     18,
+     0.012599999999999945
+    ],
+    [
+     9,
+     19,
+     0.015000000000000013
+    ],
+    [
+     10,
+     11,
+     -0.0012000000000000899
+    ],
+    [
+     10,
+     12,
+     0.0010000000000000009
+    ],
+    [
+     10,
+     13,
+     -0.007600000000000051
+    ],
+    [
+     10,
+     14,
+     -0.007600000000000051
+    ],
+    [
+     10,
+     15,
+     -0.010199999999999987
+    ],
+    [
+     10,
+     16,
+     -0.011600000000000055
+    ],
+    [
+     10,
+     17,
+     0.0016000000000000458
+    ],
+    [
+     10,
+     18,
+     0.00660000000000005
+    ],
+    [
+     10,
+     19,
+     0.0026000000000000467
+    ],
+    [
+     11,
+     12,
+     -0.0009999999999998899
+    ],
+    [
+     11,
+     13,
+     0.0020000000000000018
+    ],
+    [
+     11,
+     14,
+     -0.0007999999999999119
+    ],
+    [
+     11,
+     15,
+     -0.008599999999999941
+    ],
+    [
+     11,
+     16,
+     0.00039999999999995595
+    ],
+    [
+     11,
+     17,
+     0.0023999999999999577
+    ],
+    [
+     11,
+     18,
+     0.0021999999999999797
+    ],
+    [
+     11,
+     19,
+     -0.013800000000000034
+    ],
+    [
+     12,
+     13,
+     0.0021999999999999797
+    ],
+    [
+     12,
+     14,
+     0.0018000000000000238
+    ],
+    [
+     12,
+     15,
+     0.0020000000000000018
+    ],
+    [
+     12,
+     16,
+     -0.008199999999999985
+    ],
+    [
+     12,
+     17,
+     0.0026000000000000467
+    ],
+    [
+     12,
+     18,
+     0.012800000000000034
+    ],
+    [
+     12,
+     19,
+     0.0020000000000000018
+    ],
+    [
+     13,
+     14,
+     -0.006399999999999961
+    ],
+    [
+     13,
+     15,
+     0.0033999999999999586
+    ],
+    [
+     13,
+     16,
+     -0.0043999999999999595
+    ],
+    [
+     13,
+     17,
+     0.010399999999999965
+    ],
+    [
+     13,
+     18,
+     -0.010999999999999899
+    ],
+    [
+     13,
+     19,
+     -0.010599999999999943
+    ],
+    [
+     14,
+     15,
+     -0.007400000000000073
+    ],
+    [
+     14,
+     16,
+     0.0048000000000000265
+    ],
+    [
+     14,
+     17,
+     -0.016000000000000014
+    ],
+    [
+     14,
+     18,
+     0.00539999999999996
+    ],
+    [
+     14,
+     19,
+     0.0038000000000000256
+    ],
+    [
+     15,
+     16,
+     0.020199999999999996
+    ],
+    [
+     15,
+     17,
+     0.0013999999999999568
+    ],
+    [
+     15,
+     18,
+     -0.0012000000000000899
+    ],
+    [
+     15,
+     19,
+     0.009199999999999986
+    ],
+    [
+     16,
+     17,
+     0.014399999999999968
+    ],
+    [
+     16,
+     18,
+     0.0026000000000000467
+    ],
+    [
+     16,
+     19,
+     -0.007800000000000029
+    ],
+    [
+     17,
+     18,
+     0.0006000000000000449
+    ],
+    [
+     17,
+     19,
+     -0.0041999999999999815
+    ],
+    [
+     18,
+     19,
+     0.01319999999999999
+    ]
+   ]
+  },
+  "entropy": {
+   "assumptions": [
+    "shots are independent repetitions (untestable without per-shot memory)",
+    "per-bit min-entropy = min(per-qubit MCV, pairwise joint MCV/2) at 99% confidence",
+    "qubits within a shot carry no dependence beyond pairwise correlations: this is ASSUMED, not proven \u2014 it is falsified (health failure) only when collision counts on the full register or on 512 random 8/16-qubit sub-registers exceed the pairwise tree model's prediction, which catches any structure collapsing a tested alphabet below ~2\u00b7log2(shots) bits and nothing subtler",
+    "ordering entropy log2(shots!) subtracted because the backend returned counts only",
+    "the assumption-free tier (whole-shot MCV) is capped near log2(shots) bits per shot by sample size and is \u22480 in counts mode"
+   ],
+   "budget_bits": 68778.90881996014,
+   "budget_bits_assumption_free": 0,
+   "budget_bits_modelled": 68778.90881996014,
+   "h_bit": 0.9361852591142098,
+   "h_bit_components": {
+    "pair_joint_mcv_min_per_bit": 0.9361852591142098,
+    "per_qubit_mcv_min": 0.9418130219167081,
+    "whole_shot_mcv_per_bit": 0.5395677354009464,
+    "whole_shot_mcv_per_shot": 10.791354708018927
+   },
+   "h_shot_assumption_free": 10.791354708018927,
+   "health": {
+    "distinct_ratio": 1.0078501801004265,
+    "expected_distinct_bitstrings": 9885.39784654029,
+    "independence_collision": {
+     "full_register": {
+      "expected": 48.079518599571244,
+      "observed": 37,
+      "qubits": "all 20",
+      "sigma": 6.934501975577323,
+      "z": -1.5977381848894538
+     },
+     "model": "pairwise-tree",
+     "n_failed": 0,
+     "n_subsets": 512,
+     "note": "falsifies the pairwise model when a sub-register's alphabet is collapsed; cannot see structure that keeps every tested alphabet above ~2\u00b7log2(shots) bits",
+     "passed": true,
+     "worst_subset": {
+      "expected": 767.1034091920402,
+      "observed": 817,
+      "qubits": [
+       0,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       9,
+       10,
+       11,
+       12,
+       13,
+       14,
+       15,
+       17,
+       19
+      ],
+      "sigma": 27.719918418561857,
+      "z": 1.800026610992764
+     },
+     "z_threshold": 6
+    },
+    "min_bias_pvalue": 0.12601249717087126,
+    "mode": "order-free",
+    "n_biased_qubits_p<1e-6": 0,
+    "n_significant_pairs": 0,
+    "n_unique_bitstrings": 9963,
+    "passed": true,
+    "phi_max_abs": 0.02589071322398288,
+    "stuck_qubits": []
+   },
+   "marginals": {
+    "bias_pvalues": [
+     0.27571239191361707,
+     0.3320467307865057,
+     0.4413014427784484,
+     0.849310326637318,
+     0.2186951365480037,
+     0.31249520951068055,
+     0.12601249717087126,
+     0.6100536652701108,
+     0.2112974072707066,
+     0.7718179312040224,
+     0.19704817969846247,
+     0.5156942427203137,
+     0.4295292141078036,
+     0.6527125973732935,
+     0.3320467307865057,
+     0.9760672524021445,
+     0.31249520951068055,
+     0.7718179312040224,
+     0.40654000080069935,
+     0.2846187276368314
+    ],
+    "h_pair_min_per_bit": 0.9361852591142098,
+    "h_qubit_mcv": [
+     0.9479207889837372,
+     0.9495911617590219,
+     0.9523795363982731,
+     0.9604972511695482,
+     0.9459745271062758,
+     0.9490341501788363,
+     0.9418130219167081,
+     0.9560127146619615,
+     0.9456967096334764,
+     0.9590942957385786,
+     0.9451412394272092,
+     0.954055220813656,
+     0.9521004498217791,
+     0.9568524759802185,
+     0.9495911617590219,
+     0.9627448968234396,
+     0.9490341501788363,
+     0.9590942957385786,
+     0.9515424428955777,
+     0.9481990465907324
+    ],
+    "n": 20,
+    "n_significant_pairs": 0,
+    "ones": [
+     5055,
+     5049,
+     5039,
+     4990,
+     4938,
+     5051,
+     5077,
+     5026,
+     4937,
+     4985,
+     4935,
+     5033,
+     4960,
+     4977,
+     5049,
+     4998,
+     4949,
+     5015,
+     5042,
+     5054
+    ],
+    "p1": [
+     0.5055,
+     0.5049,
+     0.5039,
+     0.499,
+     0.4938,
+     0.5051,
+     0.5077,
+     0.5026,
+     0.4937,
+     0.4985,
+     0.4935,
+     0.5033,
+     0.496,
+     0.4977,
+     0.5049,
+     0.4998,
+     0.4949,
+     0.5015,
+     0.5042,
+     0.5054
+    ],
+    "phi_max_abs": 0.02589071322398288,
+    "shots": 10000,
+    "stuck_qubits": [],
+    "top_correlated_pairs": [
+     {
+      "h_pair": 1.8723705182284196,
+      "p_max_joint": 0.2618,
+      "phi": -0.02589071322398288,
+      "qubits": [
+       0,
+       16
+      ],
+      "z": -2.589071322398288
+     },
+     {
+      "h_pair": 1.896679890695876,
+      "p_max_joint": 0.2573,
+      "phi": -0.02416120195458241,
+      "qubits": [
+       5,
+       6
+      ],
+      "z": -2.416120195458241
+     },
+     {
+      "h_pair": 1.883662912473955,
+      "p_max_joint": 0.2597,
+      "phi": -0.023348490277358202,
+      "qubits": [
+       7,
+       16
+      ],
+      "z": -2.33484902773582
+     },
+     {
+      "h_pair": 1.8983154696549258,
+      "p_max_joint": 0.257,
+      "phi": -0.02225884762446705,
+      "qubits": [
+       0,
+       7
+      ],
+      "z": -2.225884762446705
+     },
+     {
+      "h_pair": 1.8782743349930784,
+      "p_max_joint": 0.2607,
+      "phi": -0.021696647758732382,
+      "qubits": [
+       8,
+       18
+      ],
+      "z": -2.169664775873238
+     },
+     {
+      "h_pair": 1.8777366047832114,
+      "p_max_joint": 0.2608,
+      "phi": -0.020679154534457525,
+      "qubits": [
+       1,
+       8
+      ],
+      "z": -2.0679154534457527
+     },
+     {
+      "h_pair": 1.8945020570327495,
+      "p_max_joint": 0.2577,
+      "phi": 0.020196972289501063,
+      "qubits": [
+       15,
+       16
+      ],
+      "z": 2.0196972289501063
+     },
+     {
+      "h_pair": 1.882583553171702,
+      "p_max_joint": 0.2599,
+      "phi": 0.019102879940808726,
+      "qubits": [
+       4,
+       12
+      ],
+      "z": 1.9102879940808726
+     },
+     {
+      "h_pair": 1.8782743349930784,
+      "p_max_joint": 0.2607,
+      "phi": -0.01906406668504612,
+      "qubits": [
+       0,
+       8
+      ],
+      "z": -1.9064066685046122
+     },
+     {
+      "h_pair": 1.8863649202918498,
+      "p_max_joint": 0.2592,
+      "phi": -0.01893623921769557,
+      "qubits": [
+       7,
+       8
+      ],
+      "z": -1.893623921769557
+     },
+     {
+      "h_pair": 1.9054249183295702,
+      "p_max_joint": 0.2557,
+      "phi": -0.018474120064448436,
+      "qubits": [
+       0,
+       11
+      ],
+      "z": -1.8474120064448436
+     },
+     {
+      "h_pair": 1.883662912473955,
+      "p_max_joint": 0.2597,
+      "phi": 0.017894141873669705,
+      "qubits": [
+       0,
+       1
+      ],
+      "z": 1.7894141873669704
+     }
+    ],
+    "z_expectations": [
+     -0.010999999999999899,
+     -0.009800000000000031,
+     -0.007800000000000029,
+     0.0020000000000000018,
+     0.012399999999999967,
+     -0.010199999999999987,
+     -0.01540000000000008,
+     -0.0052000000000000934,
+     0.012599999999999945,
+     0.0030000000000000027,
+     0.013000000000000012,
+     -0.006599999999999939,
+     0.008000000000000007,
+     0.0046000000000000485,
+     -0.009800000000000031,
+     0.00039999999999995595,
+     0.010199999999999987,
+     -0.0029999999999998916,
+     -0.008399999999999963,
+     -0.01079999999999992
+    ]
+   },
+   "n_rand": 20,
+   "ordering_penalty_bits": 118458.14300288181,
+   "raw_bits": 200000,
+   "readout": "counts",
+   "shots": 10000
+  },
+  "entropy_report": {
+   "accounting_basis": "modelled-independence",
+   "assumptions": [
+    "shots are independent repetitions (untestable without per-shot memory)",
+    "per-bit min-entropy = min(per-qubit MCV, pairwise joint MCV/2) at 99% confidence",
+    "qubits within a shot carry no dependence beyond pairwise correlations: this is ASSUMED, not proven \u2014 it is falsified (health failure) only when collision counts on the full register or on 512 random 8/16-qubit sub-registers exceed the pairwise tree model's prediction, which catches any structure collapsing a tested alphabet below ~2\u00b7log2(shots) bits and nothing subtler",
+    "ordering entropy log2(shots!) subtracted because the backend returned counts only",
+    "the assumption-free tier (whole-shot MCV) is capped near log2(shots) bits per shot by sample size and is \u22480 in counts mode",
+    "extractor seed: uniform, from the shipped seed ceremony (see seeds/README.md); strong-extractor seeds may be public and reused",
+    "no statistical test on S shots can establish more than ~log2(S) bits per shot without a structural assumption; the modelled tier makes one and names it"
+   ],
+   "budget_bits": 68778.90881996014,
+   "budget_bits_assumption_free": 0,
+   "budget_bits_modelled": 68778.90881996014,
+   "entropy_accounted": false,
+   "epsilon_log2": 64,
+   "grade": "simulator-baseline",
+   "h_bit": 0.9361852591142098,
+   "h_shot_assumption_free": 10.791354708018927,
+   "health_passed": true,
+   "independence_model_falsified": false,
+   "output_bits": 68648,
+   "public_output": true,
+   "raw_bits": 200000,
+   "seed_mode": "shipped",
+   "statements": [
+    "200000 raw Born-rule bits from 20 qubits \u00d7 10000 shots (counts readout)",
+    "conservative per-bit min-entropy h = 0.9362 (SP 800-90B estimators at 99% confidence)",
+    "modelled budget = 68778.9 bits (no dependence beyond pairwise correlations \u2014 ASSUMED, tested only by collision consistency against the pairwise tree model: full-register z = -1.60, 0/512 sub-registers failed)",
+    "assumption-free budget = 0.0 bits (whole-shot most-common-value bound, 10.79 bits/shot; capped near log2(shots) by sample size)",
+    "extractable min-entropy budget = 68778.9 bits after subtracting log2(shots!) = 118458.1 bits for counts-only readout",
+    "bytes were extracted on the modelled-independence tier",
+    "Toeplitz extractor output 68648 bits, 2^-64-close to uniform given that budget (leftover hash lemma: m \u2264 budget \u2212 2\u00b764); seed 'toeplitz-v1' is a shipped uniform seed from a documented ceremony (information-theoretic)",
+    "OUTPUT BYTES ARE PUBLIC: recomputable by anyone from the raw counts and the seed. Not key material.",
+    "requested 1000000 bytes, delivered 8581: budget-limited",
+    "mode='emu': bits come from a classical simulator's PRNG; not accounted as hardware entropy by construction"
+   ],
+   "witness_violates_classical": null
+  },
+  "extractor": {
+   "epsilon_log2": 64,
+   "input_bits": 200000,
+   "input_serialisation": "sorted bitstrings repeated by count (canonical multiset)",
+   "kind": "toeplitz",
+   "output_bits": 68648,
+   "public_seed": "toeplitz-v1",
+   "seed_id": "toeplitz-v1",
+   "seed_mode": "shipped"
+  },
+  "provenance": {
+   "backend": "aer",
+   "built_at": "2026-10-05T05:01:01+00:00",
+   "circuit": {
+    "bell_witness": false,
+    "n_rand": 20,
+    "n_total": 20,
+    "witness_pairs": []
+   },
+   "circuit_hash": "9f39efb4edd181b079f332d79b0384c67cf2ceba32e2a5d7a3161bc2dddb477f",
+   "collected_at": null,
+   "committed_at": "2026-10-05T05:01:01+00:00",
+   "engine": "comet-qrng-v1",
+   "engine_version": "1.0.0",
+   "formatted_at": "2026-10-05T05:01:39+00:00",
+   "initial_layout": null,
+   "mode": "emu",
+   "provider_job_id": "bf40c60464594143b5b199c91be4569f",
+   "qpu_seconds": null,
+   "readout": "counts",
+   "shots": 10000
+  },
+  "pulse": {
+   "commitment": {
+    "commit": "aed6f37183fa01649543c72ca63705559a74d513d3984355fac4a9d78b1fe8cc",
+    "salt": "fbe1fbd489f5dc5bbda8fff067fd256b2ce7ba32a0a096a5bc0864026adbbe94"
+   },
+   "entropy": {
+    "basis": "modelled-independence",
+    "budget_bits": 68778.90881996014,
+    "budget_bits_assumption_free": 0,
+    "h_bit": 0.9361852591142098,
+    "health_passed": true,
+    "readout": "counts"
+   },
+   "extractor": {
+    "epsilon_log2": 64,
+    "input_bits": 200000,
+    "input_serialisation": "sorted bitstrings repeated by count (canonical multiset)",
+    "kind": "toeplitz",
+    "output_bits": 68648,
+    "public_seed": "toeplitz-v1",
+    "seed_id": "toeplitz-v1",
+    "seed_mode": "shipped"
+   },
+   "index": null,
+   "output_hash": "1ec9e46968c07a9d9ad57011cf0f0e6c6caba03699df0de9ca1ffddebb2e992f",
+   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+   "provenance": {
+    "backend": "aer",
+    "built_at": "2026-10-05T05:01:01+00:00",
+    "circuit": {
+     "bell_witness": false,
+     "n_rand": 20,
+     "n_total": 20,
+     "witness_pairs": []
+    },
+    "circuit_hash": "9f39efb4edd181b079f332d79b0384c67cf2ceba32e2a5d7a3161bc2dddb477f",
+    "collected_at": null,
+    "committed_at": "2026-10-05T05:01:01+00:00",
+    "engine": "comet-qrng-v1",
+    "engine_version": "1.0.0",
+    "formatted_at": "2026-10-05T05:01:39+00:00",
+    "initial_layout": null,
+    "mode": "emu",
+    "provider_job_id": "bf40c60464594143b5b199c91be4569f",
+    "qpu_seconds": null,
+    "readout": "counts",
+    "shots": 10000
+   },
+   "pulse_hash": "57128d06a94c1cfa5c9a7d225d44e2c4b905077062d4e8473dcfe0f7ce881c34",
+   "raw_counts_hash": "2ddbcbc1257ccc06e9594481ecbe7c16075a6359b469668d6b265c0807a1267b",
+   "timestamp": "2026-10-05T05:01:39+00:00",
+   "version": 2
+  },
+  "random": {
+   "bits": 68648,
+   "bytes": 8581,
+   "derived": {},
+   "hex": "6aacbbc49dd408ad9f87174b79ec440ab6f3060359ec883133baddfb1c31ac0325548b4bc4f60c3de2a2a496e12dc860e70943547da93c59017c8db194e8476f4a00d40dca1b1d5147c9b9083102054520d53a40748452301046283c3a33034e0ac0f693979bdd0186b8f0a4b2cc954125d8b7d4294debeea62fb53bd583950dfc5952814929e2d5069d94cb6a1fe646be2c6b80a41f49d6f634cab072bca4a6f6b9f3e20c524ede210a72682f92a5e856d73922ecb82c7f8e896aee150b4cda79656a8069ecc441e85b7f48ee11ec703048b99c4f28a93fe4fae5b55f01124196b936aa7c176e9ac3f3c508f1855c7d44175841769d855b84891829825cd07bf0844425b00a6f4fd35c22b590e5025c42bdea24ece2de54e72169fb39c0b38d154c457e75decf886266775f4ed41136353a1d421bb64972a71a9cfbfb1eb7bb0df18a8d01e1e50cb2bc909324258412a4bc9ace326df621e671bb5467cabad3fa3be84d9a533f4e79b6f3e41a9307d721f2c5482125fe31d81a204e6e9268352e767e4534687d07a304d93ffafc2c5cfa937ff2e26ad375e78e7414ae22c589169ffc676510c4db4c8301b090817ad71556b3b195a542cdd6e48be97d9d1c862710fe48f6ab1897da836804ec31d86784840465f183c084a19a04d7da98f0baf2c817fc41f89497da5e818c2722b9371215bfe6f5cd4c3992ab221373f24069a862369f5c71726e5ebc7d2edd353cc8b4411b3e4558bcd0bfd3a392dcb7622d8294cab90d2dc28848b6054ffd8614ae31a8639b33c426b54ae38998d0203a6a73fb397a8946fceef51c4b2d2774666f5a819236bc78083f126cb1b06e26841261cd7cd02b557cdaf553af9257025a33c378a92e8fdaefe02fb7d9aa92ac7c6ed414d558460836e8dbf35a718b65b59b62da6e36df71828ca7146872ea871dbe6e9fdcc56ec220483da91e5d7a045a9cc5acd0012c4b82d8abe74b4c1c1f5a8c2a7760ac0fd613bf750885e7750d86f49badc43a787cf24b605b9a7db5a009a289fc22bc7cf1c050cbfda019426d5a55032f781e4828a181f8ebe1aaaae403d021a0b93a85c61f78bdbaf9e7b52c3ce6939f9b29f1fde54db67bdf84a3a32d3b08d8996db3e5aab1b5b80aea2e7fcc727a61c9749f1f39055482167988ac17b735ddec5e95d944eadcd18b9ca84d1044b87b58b96da1952ab96e3db788025f6d9cc42412d742a0f58141450753b0a87cf4bc1eed53e3de3986802484d62b8f80c6ea187660c9723c7c7fda335654ede25a9c5772a9eafabfee67bc3b63d7e28460bc833bd349870ea7b98c771ae8901df350c20f7b16b5016f795bc4db265860002873db5e6825a129bcc6eef5234d84391fc2451901a5cdf3a59c8abe15f41f4aadcc9cc5ffdb27ccc82fb3e2ce6759d0aa031720f656c12e3ed6fa8b8b9b9f82317de75514b5294c6e34786bc64d98ffe770aa02a519b028718ac920742b48e47b611291f50c8526eebbe3c8bd5edfc7bee7e0d14500fcc101dc6bc9b3c878da6f2cd3780cc6fbdf477c64fc3d8fd285221f237b0b0b496991600b5ebfbbcf394ffd4e53a9989dc146dc877f0daf8befef383e215d30e0aa82080fcf7ab38967125d557ffbcdeb798ef3eda5bf4fa5e739f51f64f070ea875a1cab8f6226b5eb5746382e11412e3ee83232830a219a54b29b3c1e7358d572e32abf80e2b41ade03944c61c39ea439d11ff88b22e1c974e4648af8f205493e55d8078fc7ebd00784a99446883ee66336edc0953627256fb7e1ffab46c0132c1b8ed02111e4ec30c49535f8291e68324d34a5da27402619b1025f5219e0521608d3ef8c18cf6c7fc159004be8ec8a77f176da132edb650f8d40d0c951793ad252d09f8b323afced447847665612a7c3c7f41eb65b7527b1e718a83bdbdf4fe6e356509dd06366e01a52ade8f1c4e05401ede1ea3d2582aa882ed7b1004b3ae2c21020a4563225f996dda5fc0b28b7a0991fce242abdca4812e82deb00309afa366e9db9d2bc2c40a765faf9c2b40ff51e39bf043892f9fbc9a45979515378a400e856d01c813e9b0ca039f2d04bcc17d5d653347ab011a9a6c9bff45a705b527db7c4b42f9c8a5cb0e6accb0f9d5c7478dcd6142283241d307dc3dcc2939030b3d6d9e65807e457db9b73138fdc40fe1bc47234ec68b6a17943e9de31da904b6bcd74f88de1d8a29a06fb7a0506c282577a90a87d47ef4bfc32b76a4de58419986ad8805b0bffd752608684dcfa0391999f8e72e84e33b915c347b5f7773c36851f149a6c6e0e6859dab47f4cdbc98dca830243239c6764c105e9e42974b49b1d6656a20dcfc8fef987b7f829d51ac85eb85e6cb142a513416004231cb9678390c46cded6b6b8b05d4333a49cc01953c684719a90db700274636cb84fd84de23e3cbfe2197b50f5c1c279badf0954edfd9cf3b82c2f06e52c8c006038734651f6c941958e6bef9fe5fc09b40de8109360013d0144cac1191f43cbf30b8b33dbf52e1b9190c6bc6165ee5591cd867dcc4c8686ecc977fae32e70181acfc89a0afdc353559f33653f7b40efe2e8028d73a48f6915eb02cd3a3e5b2ef3700700f94ceb94207e484e4fa321b58cffd4b16eccaba41d25979e4dff747d5dae2d80c7bf0c2f8b1cec2660dbf3ec3c11a43525c017bce953d1681724bcd51f0b489e85879eb242cb38ac15896c556b6f311b247f7758f877a2386d6653e981f38ef126751b4cac6ed3936eeb1511869d41234623a395bd6b0fb1d7df57cf6b201971bb36b1abde52a51b7ac8e6f8e59d6693f1895f696c9847c002920d95df17cd0c64d2b91eb8043f500cc97b59e64c09047ed9fdd8e26a5ba0656c143a03ccacceb43d2e516de661685a258b5d432c2abca6389cc6225b3f8d567687fc57202165b5008cb43bcb7e2f19ec2bfddc5f8a30ae7f1d8539320f2952dc026ffb96d74a763c17ee96168e691c12954340741aab6a038e3bc66a754413783d2a95d19ab7ababecd9578e78572e8cd08e55de20d4d44f80fbd51024938d89413c3756d023539f5ab4a1cffa126928e6dc9c78d5eef12112d341ccae85c49d596155564b7006ef2fd43584d90c653258c81f10670fa50dc9040e19a550002b6a51492a22151178fe31a4569027cc889f27bc1cd3d50e2eb33d093150c619a4f106a9c13a3e7ef2a4311d59ce152b5e10e3062f0c244a14e296bcfed9eabec4a7f4b3f5d11a5ff77eaab1270fe64dfb9ba98cf4ae5aa84f89ce73d89f991b73970d966ad1f1c05c813214d7b5e177ece48d752556ad21027b05b2e627d83c09c394941360fb7608bbac16f392fc37788d201849d62a21622e1af9fddf2795a27833fb2db2d09480fd751c276d86db9ea4a40f25b5be083509fe651080dae08368f7ba637671154aae9cac52412d02b7f4c2d3ffc78771fc964cbbe70380e54946cc0af90b0648a83c7932f1a89a06713cd54fb42048d91ddd50f2a7d363aae2007fee50830555ca6ea67e0bd44dc66fab61d30d1b72744626fd5a9e798df2322b7a322c772b97f687a46e745086df59b48ab87c527a4651aa250f7fc50f498b18495460bde3912bdb3bc0abefdc8d8c126b1ef0df56b8fe05e82192e157361ab070231ee1f84c3da374999c3d6925418ead4e6a319f56b9115e91deb7fe7e948297cab3e1cea5d739db28e78bcca884afb0f846ecbe85e763cfddc85c36a713b6e63f9a28a9aa568f511d9a63cf500791c61b203b01f8615d2f1553a14d66beab4b227c4a9f3fc657bee57d6782191c04aa13dc92813661e44825a8df6e166e1cb5bc4efe3568d7ef7c034aef5412aa0e9d9e842acdb03fcfaca0e2e346f7252bb7c341121ab65ce5b5d69c235bee87b4fe8f6b4bfcb5c079f0fbe4f1d9d61256858a8e01d42fc60110c48c7f356d507210b1e43e5bd939d20911a68c9c19b050b36a88406967efa9674320a13975997383187bab74593e4d6ad63cf9d391558bc9d40b7f74f9ac060ade898d9da2d075cdce3dafaf2fd1633cc1f61f27052a65a3dfe67f36061e33fa5af2eebde7df7dee90d21b028aff21201edff95cc5a396e3f5c5bd209b5ea3d1abc646e4a2eefe49e62486ab7b478ad297441b0dc5878ddd4656c702bcad7bc0d3d66593683e377705b5811d527d0645e1a37d7216e2fd8f0c6ffa1b59583d69b3d466967037153e4271bec70d6599c224474c5dc88c39bf61db47859ced071cdd10bcc41d49d5d7b0bc8dc638100a7d849fb4edd1ebf8db354293e71ec0b88a0d9ee237d83af73d10b4eda7c00bf5e923f8bd5b0a1cd9613da8338db32ad5e32abd0716d284d99943521abf0ccb4ed49de4e40ef484d1046147387d8d57631b5ef112fc3f01c5810841bab981fbc56e0d6f85e92ecb35d17ba675b9da6a421f98afe4e8b67b0c603bc4b488113e7020b1706b225594cb643160c12c09ef961e978dba6a23f8af9ff535262bf0d405123d41e53077fa3b31c64c4fea9cbe138393b13d85659ade64b09fb1d722d799573a7be682a40fa88d0d9513c4dff949dbc36d47cc6a877305f009b247eaa3f7f48598337853060314e93434c8f2729a4e65f00c2fa192b594eca90407b7f960d36c0c1d956f3ea72dc9e4c42349d1786b2657e0efe94ea17136f1135f3ae1906ca8cd9a88e2c3b87873d788dc9e8dc4a589f0303dce1384d019529ced4e70eddbccbdb6225f7db75fe88b4a1893da234ceac9a699d207e685cf6f9bd7bf64dab3912199882af1c29bd908c4fe04af55db38abf99e7be548b9d2dd14b2cee7edcd838cbd69e2586c094f521161d135e9ec3f0f70a68f1e4317364a9e7d3a0198311b5c8b5ca7864896ab7f3571c768512f315d8830915ededeade93c035192e5924110c5e2e1ee7609dffd627da11e1669a98b73ac701714cca1a97c2d7ba1fc89369440def5bb49c72f05689a6ccfa6fb499edf227dd148a5ed29948fdd75b12ebdddeabc170a110b841db3bda1a5e871a117584d0119ba8bc01a35015ab457e4b0176ad37e0eb3d4c4f03a2ecdbc16945f79ff9a1c45cddd6e3f623f1be1025f8398dde0e27204f70503764b2c9e65b0ee776962e845601e90b1435fd48034c7a8cdb25f6b481863b8c00680bf11fefec79f43bd408d204556a1b32bb69282a5e7ed92098330faf7f0c88e6ac23987a6db1aeefb775e1c39b211c0af4474c25009926371eb9a8cc7d24b8a15da6e966eb4e0886ed654b3a1d8f01afc430872c658c87e0ef096927ebb9adff07630d20751298788f1bbbc92bc6f7b62a66b4580e7063c4e4029a0268c38ea050fa3fa0327027b8584baeaccfc23199cc9be3541f3976b8894b2837741eb661a8e35de75e6a8930dcd8e580aafd1acb9722eda59bb36906432c1d665b4a035e4d56cefbaac6dfe22b61610acdedc771e137a408d408e9973d35cace3deb6441d2d8d7f4fa9f3a201887dca5e9c37f5d16fb44ccecbc8c67fd395132cbbcb78433227f89a68a522927cd8789629c67144c29080f09c97f3750e7123b393ad65261ed7738530daa046549eddeb3b204c8437f4e08685f6d2f7e340834a67c6eb2430f931b9b52a486b111f5be669cbc952a4ac783819bce1a4c412e79968441fe77e07500d6368c49eefd06b513f69e52ccdfb338859cfe4883ca4caa6168d2f6ea7e0cb8486ae9b193b14b64f45ff0ad2b4eb482881e7a0edb4a43c8e16ae988ba5ac9fec557d10629dc1a2ce02124e01329b9d99ee182465487fe5badb7e8655b685ab1b05e7a4f39474579ddda436dacc1088cb1f8b7fda8d4065832ef2e7ccae3533d7612a5d804a6319c8b7ad6b1aa92399b272ab5e9cbdb57e5b9a61ae241defcbc4e6b4879c267067f24318815dda451131af17c7f2b6ae9a6ccc7abbb4eff022e36b2e0981ce19941f3d47ac53389775d2c3c7ab78b6a660d6ee58cb99ba40add8aeb5468b69586bf6451037cdcba932ce2ee24e096824458227179982082095e6178b6fd951a666ed2345c386649541ed438bb01ab499e7626b0a1b39f98cadd1c8ccf306f5f78cd1b46ae4f2040148e9799887644fc316a5ddda210ac767e52ac312da53d3d07cd4e224ab42bff150cc907ecdf3794922629b8089c3511883c7feef939f985b8da4048d9497365429810c08b5989a07e3b72c924f6d327da862856c5f1f75e9e77ed42e98768e586acb1d82704d7708b2913c1e5b3af76b6e89193d34322522d974a7b225f6e50fcc1f5f3d0212e77b292069403f9b2dd3313c946986b02aa3e6122ed7e02ef5a77a44c55c45ad5cd7a98364cffb5089c6a009a7be3b51b1dcfe161bad7fd51bcd7a151f4b9682a684b209f30105d737f9e6e84abc15a1f656c609b6816e72795b47c8f17b7f9408db967bd74658d294df7fd78bcda269d66c7e96608d0163b73b1d8140d572bfcce4ea9aaf9a45727350408b4ac0e77ba73bee902a119c757f005aa8719a005370ca55d7b6b8ffa2d2c4b0b814085c985e49c8fc3925a8d51dc8d10b8e640013a37cd44baf8beec692035ded16f78cc931b5e4b116574c15c11f55ed9b5aaa6819c94fb805b6a47963953dd893dc28481f6f8c7fb4b472bba41170c6039c8664f79d2f66ea86ac11cddd32571b0c97a9b1d587b4fc03fcf45701e1c2beec16a632f33a18fc263753ab4eb5a3505634ed3f25134afeb8f3d3c9c464e85dd0b02ea417ebc20e8e19bb24e9f143487ae8fc471bcb5de195a0c401179c18c3f00ff0ff6e3d0acc8f4cbcf3396cceca56d467809b14b96594641276654fd2eb80c868cc6e66a088ec5699d8f0f0f7e565e36f44cc880712bdeccf567b1f9ac97439730960131ce46b7c909133426a6b06eba2363be344703e22b3ae738b8ba5cd9ec9c6999a802d9b5f8aa769b96fe64810bdf3bce86527023b4273e98606edd9b016a9830445e31ffd7395d85f2c95044b49e703dd2e2a46663a1c75ee241d4a1cc2c258a3ff3035a6b2445d1ee03bc8aafdd0be7476d78d5fae30e42cf812ef7e1bab9e51db96116bfd13f8d2a5a5402f961e5bcde000d74471d8b0dec87ea2a0cad83ecdf888f66d4c99086693b4cc5a12445163eae86281ec32b35791458edc0a25c3ed33e7ed535bdb334411db26b8fc58b8d4dd394e7ab4f93e2ad4dd9dfbe01f7b5fc0327a182f7261f1f96ca087c100418e330381746348378bcb9cbf28404eac02f0e4eba71c98254b25f7a40a34b7a5f244bda09eecfa7e64071ae13a09b9a5a0bd4f296370ee2679dab92fe3e212553149e2f49cfb897fe7ee1d28d66f2e613b4872a7540297c54b26882c3bd0e72f205beafa63498ac9eedaf1c261a6bb2df0241b2820137f6779103c4c0f0eba24a42d911a2af4cf2b85a113b8c5ea3a8597baeef599d88b948b260167ed1d33efb503435f9f16f93bb59927aeb356d726e133ca54e11a90a9178ee8fa46a350d5666790a0d2da58481ed6d2a7d3253182db859582e70cfb0f3923447f712c3c715c2d5e4fb503412f2debec33785529ae6ab65969fee485df1e79c324fef0ab5670f43c14a58b0f6046b7a7df048527ffa5ca4dfa01c078ce432eca4f6000fc3c5a0ce6374232bd8e8f8a88e5d6ad602ac992714462b5cf24ede60f526ca5d8966aaf8fb840315c58ded0cd0f038f6ae76c4f2e9de66dc9a9025e362802dc555a4faebd42ce60cedc60d9fd7bcfc49b1fac140b21856a3971d1e60d384b87b6bc77d940e7cb85461c98d177ad49bb3008c2afc5a56a3a0a29ea71ec8f8d7e83b3fbcf90ccc8eec5d719d17efe6047554989140685eeea9c1485bc290f83fdf9097b49a6fdb1a0cd85a072536fd04fa0e6be0ba68c5e960416f7eb271e6112c503a49b12e85cc5ec2c46271da9d653f77013cf10e5e04f1b607436fb130fd35fc4bf24ab7422b60d181825be0a9bae2803eddb0dfa259294df45e4321cdc045fc9cba07aa2fae6b8bd9166a63d4baea046131f71031a086898a181da891e320c7422f3571cfb0d01aa4d0f988852ed63051c1de24ac867eb368ef557f98e8e79c01038f7a4a46aaee23e8f9f443f19d81c31689a4724489fa8ddbfe184a6e4eac797b9fa158219d1a57d6fbc9723ef3c9fdaf0c8a9970264a5c74fb767d2d2a80c73602974edc72161348df991cdfc25b097255e80f6a71fc035a1c742a4e486272c14137341a544651b12b17fd4f67274243a54d6cb8c8c50ab40eb7af4406eff89b74ecca93ca4f733beb2f903f5076ab3eac1b38a34451f35801dc98b1eaf1a2e6e9cdc720ecfda4a37e1a6dcb3d700060e8f1f01f36cfcf40d1ec825caddc9008c9e36abb9afb4470bc930f73f5206f833b12745a0b2a2b64cf6a5105666e2549d1485762a1815b42fe17bfc00d0e46d06026ee5c885b3e262a6627139cd57d95d84a42c1723c06a697939f7026537d8148255cb0f60db162cd666a484e8dfeb9d145a62219988f74c58800d14004383856493e6f88acb9c43aba02205a5a33cb65ff66a2c511c68bff9c36b50b263afa3bd8ae58fc83ea6e3b0d5ae6ac87692aeb146174c8b30f0c6d30372a7bba3416f135307d116ef585131f69947e4000f4f7ed16607af661df965defdb39da69d55b3b110ada86f403fbec21e1c90ff1e2681c39fa7ca2ee83667fab3a7c044077e229ad7da2ec2314f4d96287536a1a7305a1e0f25fea5b5dd4574109297a2b2afc8d5fa9dc4ddeb9cf33938191eb9f0f440b0ba0fba61643fd27fadbe5e1ac2c8b3e35e1bfd059d31d603f2309373dd312c39a68d7fc2b2acfb504327116951a97615d21333fc97fe68988a8e8930a5dbe6a3eb89d83d832a4e62b182c28c72613105a23d63ceb918595bec74fecdaaed204eeb55fd5e661cc74d3f2b21babf39f622dd739604cb8d3edb261adbab05ac2b96cae17b098163c75022d47df41acce6a7b5c460058d23339a897eec92823df8f751b46776edbefb6549546bbcedd81cd05a1afddb41b2abdf46411bd7bf82b7ace458f82974c1cae424e16b836c5a2e995d27c468bafa669028206f0a0410da1f58681725d5d0ae82057007b77b9db400c1c1bd17978b3dab31d0eff4819c713062f4105b07be1ebb615bbaa0c534158f2836d949581779b9f7868da2eb1a6b4f0195fe45adf3e162272feefc4d0cf4c0db0dce5346fe39448dc8ce838ed607d94e7818622b9bd9d7c72251036367a887b3f934410846061187bc96123b86ff80b11c4f5aa99b9f8472919b01b18b1c824ccdf75734b016695cf4d82aff961b4681b3a0d3bdd0e2703bd04877cc70d6536426c71943cfdbd279f1bf9bff5f33031fc2cfaa6924586f051b8d4bcd4ca823078bb3d5c0e548a8d1c776854baf90e4e88d0b7f68d53910c5ef2b96e98e82ae896138e111a19014dc34ae41b4b0dbe45de7f03f91ab7c4168c5415ef637d0fe51ea8037a6a0898307533a19b1f90efe668caa10d6081879c022589b5d95efdbe8c5a780a3015b64f7d8e387b9c99707068d636efccea96ca425a4d75130b24b60faffb79d319be48483ebe0688bd7b3a5183bcfe5aba7fd8b1eba0ebcdda74e146d63cc05fe346a7d1834b4ea6986c70e3c1540f9c54a01e0140c48ca05628053ce44d944d309de00e00d117134982e560ca4d2b87bc49f071b5b774c961c40b8f03996d3c1147ce449ea50aae8a8b0fdfba3df6aac32e02a2cb87dd20082fa1a32c9d6c65d3185e456901121e652bd915fc134dbc3f2368dcd6ee5c106da9c43b6ff64653392a5a3d6d6af8b2c8fad800a4d7bf71c7eeba133a89f8bd75f023c07deb97a6055468bbedbd51fa7b688a2dc4a355f7c51658a60642480a9faa190a6bb49896268aba76ce4671e088ae389e6b05db027c16949cfd432ac2f6e480ad36d21848c1aefeb065975c3bded35d227e5316c89e3ff3a2d0fc6e81cec65b01a382831ffc82e3c266feb747a7eb6abfdabf5415faa8ca9d9c38e9c1b84e9ce865bcab93d71fc60ad26b673b21129621c7e72ecfef8975915ab9b4df731b5307b64bbed893cd00b817e779a756f61d2a0f583e4612f3cfdb99a14f350c0cd558f2183fe59842b4f293d90e8810047f7c512940f3cfdda2d5a69c579bdefcbe4975a19ea663bdb1d03b4299f92c58d38e2905e9da6580b312c47cbd15bb426527afb31edd6df293793b569cf4d360690f38c7294482543e5e9cee182304f63adf5599304185fca1be254fa14ac85260b05657e53c2b0c42bd4a9df77eb3b132952838d93dbe9f49b1a57c8d6fb40f1f0d8a70d1d6f190d1cdc32f9ceaa84b15302b133e963e9e3bbde9787eb91e2a567b44cc271ef8fcf7036e9e5855e305e5f273013942f9f53d26c99443082ba162e7a5b6c829c9429c8bbe05d6b323dc1ac0a54bdaaf3e540d9697a9991a60a7e157974380faf5b865d280caa77fc2e07d25612783c56cc8b6a67bcd7b9201ee7c81ee442c4a44dd56d33273b523922bf23393928282ee2075de1c75b92ac8fbf6d627229e80c92841ae840ef5d48599c61aae22519d733bda40cb7b3c5c658d10ed5d2dfee3a9def8e0f8d34680c144c85b45fda709a7cf499b56e921a5ea81233e3b18ebd6f024910a60c1f11c0c9a5b6ad16fc50375b224575bf16873fbdb5dbdd15ed2e30ecaac1fdd45bf3535809b90a5e1530f4d43f7070e15b74620c5eea497ed3b67caa57e8342e4009b7958f503f7ceea562d5560e8ed8f849823283fa50bc52ed90ef392b216278a3a4479fec02847562792475c5911cd08cfedb3f89a8c40fcd71312ce8b69a551b104af815b44395024b686769a4575f4ee2958f3eacbeb1dda3a7155d83f3791d9ac13bdff88f6f9593b30bfddd4d08265b0d4366e12912c3b795fe58567fd2ffaf76a51db0fbb3c75c5520fbaa17473129d207060f494e97688c12e27e496bf4d0092d03954ee5c5951459fa7a5b2cda5f002305a0502766e617e879e8fcfcb6e066433542a6e30c8c859131e281a1ec8d5c14d708e16e4d10692aac1685da9e17cfc9455a2893676a3d0684c4432b7c64a2e09cf13ee5c94fadd67f0cb2bb743f09d87cbebd9c8b5027c88ee8b046d58634827629a26bf440d341d8bac3bf2cc8a06e8c32f3dc0416e3acb5e4c16789b4d01e7cb6aa1f7e06933aaa374d0ffa497692c5ea269f7a68b6c6700194a3e6b97628717bb0176026a7b40e16a61491c21672fd366d3bd0d1666e3f21c5a94eb3288a25abeba9619c97cdab7b58884d5e36acb910a63b02ee829ce1f3acf2a0af434f9c6c1d29a922dea26eeb48621cbddad6cda329d634b71be3280232a5d45ac346b585ecef8a85510a662cc004d6b0d8dec05e3c54ccb322177a4b4685e14764e57c09cfcedf4d988c1bd050a416b0ce242301e334a1a6f762956a00cba8970ee790794c8f1e26ae50ade5dcb50cfa07bb4caedb933cebc14616b0677690efaea536658b63131b130d33a7c843f95ed9960f6fab99fac2c48e1d2b5b1653a90a54ce0044495a7615df41d0984cb57be897d4c8eb26351f0e79f8ebbb235d22839e2cf2a8d8ad0c490f6c9ab12465a520208c5dbe3e919502390a6c7195838846c62fec69252c0e961c3274fa420cccc595414c66056db0d16eecc13eaf0cb5f25befc704af0a6d3bd481951e7f34e8a54d9a65aaa8c9be103eede5cb362096cd2a86b1145c0962addb170859b323706c764277a82890d4468398e21e908061a592ba5b8840e65cab019c531c7447065af8146da74d9b922994c49441655f103037c5b14b35560d2ecf0f10404135b7ad61304ace0c1ce6ad8919f7b29a3d7ed59a33af7195fb07a5331d5c78427560a32874ccf5d11f9ebeba36027699e9c34633535b8a0290e0e9bec224f439b3aa699d4523194bc83c95511a99b6aba5cbefa04d622f483542fb83f777314f852859cd8ad83e84c549d99e8162c3cf649909263be4cb2ac480e31316cdf5b4f9e33fabd916df697ef5a16675b337a2268cd0b0c1b8e2e02ab756ea2fc4404dee2b71c6f893c3f6c3c7eb9c9bead546c56eb12ae4608e4d48c3f6b73bfe6eb780c0d5418eb2baee4478f1d8244beeb960aa14f2cd36330bd1706f43dd75fb1adf7bec52b330e4642b2c525893209833243978",
+   "requested_bytes": 1000000
+  },
+  "raw": {
+   "counts_sha256": "2ddbcbc1257ccc06e9594481ecbe7c16075a6359b469668d6b265c0807a1267b",
+   "memory_available": false,
+   "n_unique_bitstrings": 9963,
+   "n_distinct_counts": 9963
+  }
+ }
+}

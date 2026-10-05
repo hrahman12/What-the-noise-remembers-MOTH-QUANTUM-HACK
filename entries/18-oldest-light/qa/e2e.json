@@ -1,0 +1,122 @@
+{
+ "piece": "18-oldest-light",
+ "ok": true,
+ "passed": 19,
+ "total": 19,
+ "steps": [
+  {
+   "step": "page loads: title, hook, proof chips and the default view (quantum blur 0.5)",
+   "ok": true,
+   "note": "job a59bf7d4",
+   "ms": 1403
+  },
+  {
+   "step": "every restored graph renders with real content: sky, legend, ruler + marker, meters, line-up, sky map, 3 tables",
+   "ok": true,
+   "note": "sky 2584 colours, legend 6 stops, ruler 14 parts, meters 90/97/90/97%, line-up 4, map 1024px, tables 6/8/6 rows",
+   "ms": 45
+  },
+  {
+   "step": "drag Mapper across the sky: the wipe follows and the sky redraws",
+   "ok": true,
+   "note": "wipe 0.26",
+   "ms": 3062
+  },
+  {
+   "step": "hover the sky: the probe reads the temperature and galactic coordinates; Mapper catches photons",
+   "ok": true,
+   "note": "original −22 µKblurred −52 µKl 197.8° · b −50.6°",
+   "ms": 247
+  },
+  {
+   "step": "slide through all 7 blur stops: each shows its own real engine job and measured numbers",
+   "ok": true,
+   "note": "0.1:22c0d516 0.25:ff75e0b7 0.375:6e16e69e 0.5:a59bf7d4 0.75:06bc5198 1:af742a15",
+   "ms": 5276
+  },
+  {
+   "step": "plant galaxy seeds: the census on the real outputs matches the README (strength 0.5)",
+   "ok": true,
+   "note": "quantum 44 kept 12 blurred away 27 phantoms of 56 hot spots, whole patch | gaussian 29 kept 27 blurred away 0 phantoms of 56 hot spots, whole patch",
+   "ms": 5802
+  },
+  {
+   "step": "switch blur kind and view: COBE 7 deg disables the slider; Original / Blurred / Wipe change the sky",
+   "ok": true,
+   "note": "",
+   "ms": 3185
+  },
+  {
+   "step": "toggle Scene / Data: the cast leaves, the plain handle stays, the cast returns",
+   "ok": true,
+   "note": "",
+   "ms": 1158
+  },
+  {
+   "step": "mark the Cold Spot, zoom with the buttons and the keyboard, peek at the original with space",
+   "ok": true,
+   "note": "",
+   "ms": 3017
+  },
+  {
+   "step": "story: every \"Show me\" button sets the instrument to match its card",
+   "ok": true,
+   "note": "",
+   "ms": 9596
+  },
+  {
+   "step": "quiz: a wrong answer is explained, all six right is perfect, and it resets",
+   "ok": true,
+   "note": "23 options each answered after a reset",
+   "ms": 7004
+  },
+  {
+   "step": "science drawers all open with content; the job table lists every engine job; the census column fills",
+   "ok": true,
+   "note": "5 drawers; seeds q/g per strength 54 · 1 / 52 · 0 | 48 · 2 / 46 · 0 | 42 · 8 / 36 · 0 | 44 · 27 / 29 · 0 | 30 · 60 / 19 · 1 | 30 · 72 / 11 · 0",
+   "ms": 2497
+  },
+  {
+   "step": "restored sections: titled bars, first-version words verbatim, no \"Bonus\", graphs visible and wired to the sky",
+   "ok": true,
+   "note": "bars 6; marker 54.7% -> 67.7%",
+   "ms": 5037
+  },
+  {
+   "step": "share link: copy this view, reload with the hash, and the whole state comes back",
+   "ok": true,
+   "note": "#v1~s2~kg~mb~z1.40~x128.5~y128.5~w50~c1~p1~e1",
+   "ms": 5117
+  },
+  {
+   "step": "nav: brand bar, prev (17), hub, next (19) and the jump list of all pieces",
+   "ok": true,
+   "note": "prev BxHprzSAzDe4AQmgE1rF2k next LAmR6s1D5jSebSurcma2T9",
+   "ms": 359
+  },
+  {
+   "step": "sound: the piece ships no audio; no control creates an AudioContext or plays media (nothing autoplays)",
+   "ok": true,
+   "note": "no audio deliverable (README); sources started 0, media events 0",
+   "ms": 19
+  },
+  {
+   "step": "phone width (375 px): no horizontal scroll, nav buttons wrap",
+   "ok": true,
+   "note": "",
+   "ms": 1900
+  },
+  {
+   "step": "data consistency: page numbers = piece.json = README = PARAMS.md = cache; deliverables exist; files.json complete",
+   "ok": true,
+   "note": "6 jobs in cache, failed 89f0fcee in ledger, 17 deliverables, 34 README paths, files.json img/sky.webp, img/mascot.png",
+   "ms": 29
+  },
+  {
+   "step": "no page errors and no requests beyond Google Fonts",
+   "ok": true,
+   "note": "",
+   "ms": 1
+  }
+ ]
+}

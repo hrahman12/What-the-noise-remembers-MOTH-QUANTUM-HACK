@@ -1,0 +1,14 @@
+{
+ "img/measured_A.webp": "entries/15-tissue-blur/web/img/measured_A.webp",
+ "img/measured_B.webp": "entries/15-tissue-blur/web/img/measured_B.webp",
+ "img/tissue.webp": "entries/15-tissue-blur/web/img/tissue.webp",
+ "img/blur_A_lens_512_plaid.webp": "entries/15-tissue-blur/web/img/blur_A_lens_512_plaid.webp",
+ "img/blur_A_lens_512_echo.webp": "entries/15-tissue-blur/web/img/blur_A_lens_512_echo.webp",
+ "img/blur_A_lens_282_echo.webp": "entries/15-tissue-blur/web/img/blur_A_lens_282_echo.webp",
+ "img/blur_A_lens_742_echo.webp": "entries/15-tissue-blur/web/img/blur_A_lens_742_echo.webp",
+ "img/blur_B_lens_512_echo.webp": "entries/15-tissue-blur/web/img/blur_B_lens_512_echo.webp",
+ "img/blur_B_lens_282_echo.webp": "entries/15-tissue-blur/web/img/blur_B_lens_282_echo.webp",
+ "img/blur_B_lens_742_echo.webp": "entries/15-tissue-blur/web/img/blur_B_lens_742_echo.webp",
+ "img/blur_A_section_echo.webp": "entries/15-tissue-blur/web/img/blur_A_section_echo.webp",
+ "img/mascot.png": "entries/15-tissue-blur/web/img/mascot.png"
+}

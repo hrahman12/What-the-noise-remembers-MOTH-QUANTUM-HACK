@@ -1,0 +1,162 @@
+[
+ {
+  "engine": "qpixl-v1",
+  "machine": "aer",
+  "shots": 16,
+  "job_id": "a9c90236-9247-4536-be77-d74204bd3f92",
+  "backend": "aer",
+  "ibm_job_id": [],
+  "qpu_seconds": 0,
+  "seconds": 243.3,
+  "params": {
+   "mode": "emu",
+   "machine": "aer",
+   "shots": 16
+  },
+  "n_values": 4096
+ },
+ {
+  "engine": "qpixl-v1",
+  "machine": "aer",
+  "shots": 128,
+  "job_id": "31506f31-f67a-4925-aafc-0dd131857126",
+  "backend": "aer",
+  "ibm_job_id": [],
+  "qpu_seconds": 0,
+  "seconds": 148.8,
+  "params": {
+   "mode": "emu",
+   "machine": "aer",
+   "shots": 128
+  },
+  "n_values": 4096
+ },
+ {
+  "engine": "qpixl-v1",
+  "machine": "aer",
+  "shots": 1024,
+  "job_id": "4f418b13-3d51-48ef-8f91-699cf271d566",
+  "backend": "aer",
+  "ibm_job_id": [],
+  "qpu_seconds": 0,
+  "seconds": 477.7,
+  "params": {
+   "mode": "emu",
+   "machine": "aer",
+   "shots": 1024
+  },
+  "n_values": 4096
+ },
+ {
+  "engine": "qpixl-v1",
+  "machine": "fake_fez",
+  "shots": 16,
+  "job_id": "de133a15-9408-4316-8a83-7f171baa5970",
+  "backend": "fake_fez",
+  "ibm_job_id": [],
+  "qpu_seconds": 0,
+  "seconds": 267.7,
+  "params": {
+   "mode": "emu",
+   "machine": "fake_fez",
+   "shots": 16
+  },
+  "n_values": 448
+ },
+ {
+  "engine": "qpixl-v1",
+  "machine": "fake_fez",
+  "shots": 128,
+  "job_id": "b236408f-8cb6-46ca-b415-b69d5668a485",
+  "backend": "fake_fez",
+  "ibm_job_id": [],
+  "qpu_seconds": 0,
+  "seconds": 290.6,
+  "params": {
+   "mode": "emu",
+   "machine": "fake_fez",
+   "shots": 128
+  },
+  "n_values": 448
+ },
+ {
+  "engine": "qpixl-v1",
+  "machine": "fake_fez",
+  "shots": 1024,
+  "job_id": "2c82757a-3253-44a7-8108-24cc4656ff38",
+  "backend": "fake_fez",
+  "ibm_job_id": [],
+  "qpu_seconds": 0,
+  "seconds": 333.8,
+  "params": {
+   "mode": "emu",
+   "machine": "fake_fez",
+   "shots": 1024
+  },
+  "n_values": 448
+ },
+ {
+  "engine": "qpixl-v1",
+  "machine": "fake_brisbane",
+  "shots": 16,
+  "job_id": "8b434c38-8df9-4b13-8cbe-34d40edd2aa5",
+  "backend": "fake_brisbane",
+  "ibm_job_id": [],
+  "qpu_seconds": 0,
+  "seconds": 80.6,
+  "params": {
+   "mode": "emu",
+   "machine": "fake_brisbane",
+   "shots": 16
+  },
+  "n_values": 360
+ },
+ {
+  "engine": "qpixl-v1",
+  "machine": "fake_brisbane",
+  "shots": 128,
+  "job_id": "8d89f3d0-4c97-4b2a-bb8d-d955e8ba507c",
+  "backend": "fake_brisbane",
+  "ibm_job_id": [],
+  "qpu_seconds": 0,
+  "seconds": 81.9,
+  "params": {
+   "mode": "emu",
+   "machine": "fake_brisbane",
+   "shots": 128
+  },
+  "n_values": 360
+ },
+ {
+  "engine": "qpixl-v1",
+  "machine": "fake_brisbane",
+  "shots": 1024,
+  "job_id": "7a5f4e68-ce5f-4f67-ad4f-a9f26a69dbb0",
+  "backend": "fake_brisbane",
+  "ibm_job_id": [],
+  "qpu_seconds": 0,
+  "seconds": 101.3,
+  "params": {
+   "mode": "emu",
+   "machine": "fake_brisbane",
+   "shots": 1024
+  },
+  "n_values": 360
+ },
+ {
+  "engine": "qpixl-v1",
+  "machine": "ibm_fez",
+  "shots": 1024,
+  "job_id": "b8047462-44cf-4581-8c89-8369a17fd7ef",
+  "backend": "ibm_fez",
+  "ibm_job_id": "db1jcnuegvvc73bhn5ng",
+  "qpu_seconds": 2,
+  "seconds": 153.4,
+  "params": {
+   "mode": "qpu",
+   "backend_name": "ibm_fez",
+   "shots": 1024
+  },
+  "n_values": 448
+ }
+]

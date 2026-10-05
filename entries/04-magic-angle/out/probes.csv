@@ -1,0 +1,6 @@
+strength,theta0,theta,job_id,file,seconds
+0.5,0.0,1.10,4857f978-0fcf-4fb9-88f9-2086e4913dac,probe_s0.5_r0_1.10.png,9.8
+0.1,0.0,1.10,c36f717d-0df6-4b5e-81ed-87776a6ca0bb,probe_s0.1_r0_1.10.png,20.8
+0.25,0.0,1.10,96779332-e7a5-4dcf-a803-632a43b5e7eb,probe_s0.25_r0_1.10.png,21.8
+0.1,15.0,1.10,e221d40c-ee68-4e2f-91ed-f6aee92c1083,probe_s0.1_r15_1.10.png,13.4
+0.25,15.0,1.10,47a90588-995e-4df7-80cf-905dfd9261ee,probe_s0.25_r15_1.10.png,11.4

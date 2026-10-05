@@ -1,0 +1,23 @@
+  entanglement-shader-v1: submitted 2ff303ed-dcc4-481d-b981-db2aa94de39e
+  entanglement-shader-v1: done 2ff303ed in 25.0s
+  L1_R6  2ff303ed-dcc4-481d-b981-db2aa94de39e
+  entanglement-shader-v1: submitted 761ee901-278b-4b78-982d-0c0ac87431e5
+  entanglement-shader-v1: done 761ee901 in 28.2s
+  L2_R6  761ee901-278b-4b78-982d-0c0ac87431e5
+  entanglement-shader-v1: submitted 3ba1f189-a5b0-485e-a6af-f83427e1fdfe
+  entanglement-shader-v1: done 3ba1f189 in 80.6s
+  L3_R6  3ba1f189-a5b0-485e-a6af-f83427e1fdfe
+  entanglement-shader-v1: submitted 6b0fcb3c-a6c5-429a-8f6e-80cc43d4e88e
+  entanglement-shader-v1: done 6b0fcb3c in 68.2s
+  L4_R6  6b0fcb3c-a6c5-429a-8f6e-80cc43d4e88e
+  entanglement-shader-v1: submitted 20510fd1-5d75-4ca8-966f-83ab860029ca
+  entanglement-shader-v1: done 20510fd1 in 80.6s
+  L5_R6  20510fd1-5d75-4ca8-966f-83ab860029ca
+  L6_R6  0dfd9339-f7f8-4fde-9b06-f3b5624bf888
+  entanglement-shader-v1: submitted dd9c780f-5fe3-48c2-a436-a87cad9d5fce
+  entanglement-shader-v1: done dd9c780f in 50.2s
+  L1_R6_int0  dd9c780f-5fe3-48c2-a436-a87cad9d5fce
+  entanglement-shader-v1: submitted 49da4043-6974-46c2-8556-a74c3b1ea18f
+  entanglement-shader-v1: done 49da4043 in 212.6s
+  L6_R6_int0  49da4043-6974-46c2-8556-a74c3b1ea18f
+8/8 jobs completed -> out/jobs.csv   (ledgered spend 12 of 12 credits)

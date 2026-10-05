@@ -1,0 +1,3 @@
+  qpixl-v1: submitted 357ae462-d30e-4196-8433-31d009874b70
+FAILED: qpixl-v1 357ae462-d30e-4196-8433-31d009874b70 failed: {"$schema": "https://api.mothquantum.com/schemas/JobStatusOutputBody.json", "job_id": "357ae462-d30e-4196-8433-31d009874b70", "engine_id": "qpixl-v1", "status": "failed", "progress": {}, "error": {"message": "The engine did not respond in time \u2014 retry the job", "retryable": true, "type": "engine_timeout"}, "warnings": [], "submitted_at": "2026-10-05T05:05:02Z", "updated_at": "2026-10-05T05:05:02Z"}
+spent 17 / 45

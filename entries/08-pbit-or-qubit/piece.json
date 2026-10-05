@@ -1,0 +1,48 @@
+{
+ "slug": "08-pbit-or-qubit",
+ "challenge": "08",
+ "bonus": false,
+ "title": "p-bit or qubit?",
+ "hook": "Sauna vs Fridge: call who sent the noise.",
+ "sub": "An arcade showdown on one 20-spin Ising problem: p-bits, drawn as a real stochastic magnetic tunnel junction flipping on room-temperature heat (simulated here with Extropic's THRML on a CPU), against superconducting qubits on the bottom plate of a dilution refrigerator (Atlas's emulator, and IBM's ibm_fez as the boss). Call each envelope of 16 real samples before the clock runs out and descend the fridge plate by plate.",
+ "you_control": [
+  "Press start, then call each envelope: Sauna (p-bits) or Fridge (qubits), against a 15 s clock",
+  "Watch the 20-magnet board flip through the 16 real samples; step or tap through them",
+  "Descend the fridge plate by plate to a boss round of real ibm_fez shots",
+  "Turn the coupling-J dial and pick a graph; check the honest chance meter; scroll to The data for the fingerprints",
+  "Run graph-v1 live from the web app (node server.js)"
+ ],
+ "mascot": "web/img/mascot.png",
+ "engines": [
+  "graph-v1"
+ ],
+ "qubits": 20,
+ "qubits_note": "graph-v1 num_qubits = 20 (engine maximum, one qubit per Ising node), reported by every job; shots = 20 so the top-20 output holds every shot",
+ "hardware": "ibm_fez",
+ "jobs": 8,
+ "credits_spent": 60.0,
+ "deliverables": [
+  "app/server.js",
+  "app/api/graph.js",
+  "app/api/health.js",
+  "app/vercel.json",
+  "app/public/index.html",
+  "app/lib/atlas.js",
+  "app/lib/ising.js",
+  "web/index.html",
+  "web/sprites.json",
+  "web/img/mascot.png",
+  "make_sprites.py",
+  "README.md",
+  "PARAMS.md",
+  "CREDITS.md"
+ ],
+ "web_entry": "web/index.html",
+ "status": "built",
+ "honesty": "Emulated qubits are a classical simulation; ibm_fez batches are real hardware but only 20 shots each; THRML ran on a CPU; the qubits were handed the Boltzmann pair correlations, so no advantage is claimed.",
+ "blockers": [
+  "4 of 6 ibm_fez submissions came back 'QPU job ended as cancelled' (ibm_collection_failed) about 15 min after submission; the retries that completed give hardware batches for 2 problems. No hardware batch for: ring J=1.0, random J=1.0, and ladder J=0.4 / spin glass J=0.4 were never sent to hardware. The 60-credit cap is fully spent, so no further retries.",
+  "Web app not deployed (by instruction); vercel.json and api/ are included but untested on Vercel",
+  "POST /api/graph was not run end to end against Atlas (credit cap reached); its request path was checked with a free schema-invalid probe (422, no job), and GET /api/graph was tested live against a completed job"
+ ]
+}

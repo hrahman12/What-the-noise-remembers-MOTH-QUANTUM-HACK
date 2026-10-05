@@ -173,6 +173,36 @@ table.jobs th{color:var(--ink);font-weight:500;text-transform:uppercase;letter-s
 .legend b{color:var(--ink);font-weight:500}
 .squeeze{font-size:.86rem;color:var(--ink-2);max-width:70ch;margin:0}
 .squeeze b{color:var(--ink);font-weight:500}
+/* the titled sections below the scene: every graph sits in one, always visible, on the page's one clock */
+.sec{margin-top:2.75rem;display:grid;gap:1.1rem}
+.sec h3{font-size:1.35rem;line-height:1.15}
+.sec .lede{color:var(--ink-2);max-width:72ch}
+.cols{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:clamp(1.25rem,3vw,2.5rem);align-items:start}
+.cols>div{display:grid;gap:.85rem;min-width:0;align-content:start}
+.keys{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.5rem .9rem;margin:0;font-size:.92rem;color:var(--ink-2);align-items:baseline}
+.keys dt{white-space:nowrap;color:var(--ink)}
+.keys dd{margin:0}
+figure.fig{margin:0;min-width:0}
+figure.fig:not(.cols){display:grid;gap:.75rem}
+.figframe{border:1px solid var(--ink);background:var(--panel);min-width:0}
+#cv2{aspect-ratio:1000/720;touch-action:pan-y;cursor:grab}
+#cv2.drag{cursor:grabbing}
+#roll{height:210px;touch-action:pan-y;cursor:pointer}
+.figcap{display:grid;gap:.65rem;font-size:.92rem;color:var(--ink-2);min-width:0}
+.figcap ul{margin:0;padding-left:1.1rem;display:grid;gap:.45rem}
+.figcap b{color:var(--ink);font-weight:500}
+.figlive{font:400 .74rem/1.5 var(--mono);color:var(--ink-2);background:var(--panel);border:1px solid var(--rule);padding:.5rem .7rem}
+.figlive b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+.src{font:400 .7rem/1.55 var(--mono);color:var(--ink-2);border-top:1px solid var(--rule);padding-top:.6rem;overflow-wrap:anywhere}
+.sec .drawer .note{font-size:.88rem}
+table.jobs .pick{font:500 .66rem/1 var(--mono);letter-spacing:.04em;padding:.42rem .65rem;border:1px solid var(--ink);border-radius:999px;background:transparent;color:var(--ink);cursor:pointer;white-space:nowrap;justify-self:start}
+table.jobs .pick:hover{background:var(--tint)}
+table.jobs .pick[aria-pressed="true"]{background:var(--ink);color:var(--on-ink)}
+table.jobs td{vertical-align:middle}
+.credits{margin:0;padding-left:1.1rem;display:grid;gap:.55rem;font-size:.9rem;color:var(--ink-2)}
+.credits b{color:var(--ink);font-weight:500}
+.honest{display:grid;gap:.85rem;max-width:80ch}
+@media (max-width:960px){.cols{grid-template-columns:minmax(0,1fr)}#roll{height:160px}}
 @media (max-width:960px){.hero{grid-template-columns:minmax(0,1fr);row-gap:1rem}.copy,.inst{display:contents}.copy>*{order:3}.copy>.kicker,.copy>h1{order:0}.inst>*{order:1}.copy>.panel{order:2}.inst>.panel.live{order:4}.tracks{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:480px){.lapse{text-align:left}.legend{gap:.4rem .9rem}}
 @media (max-width:600px){table.jobs thead{display:none}table.jobs,table.jobs tbody,table.jobs tr{display:block}table.jobs tr{border-bottom:1px solid var(--rule);padding:.45rem 0}
@@ -182,7 +212,7 @@ table.jobs th{color:var(--ink);font-weight:500;text-transform:uppercase;letter-s
 </style>
 
 <div class="wrap">
-  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count"><b>Bonus</b> &middot; Challenge 02</span></nav>
+  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count">Challenge 02</span></nav>
 
   <div class="hero">
     <div class="inst">
@@ -195,7 +225,7 @@ table.jobs th{color:var(--ink);font-weight:500;text-transform:uppercase;letter-s
       </div>
       <div class="stage" id="stage">
         <canvas id="scene" width="690" height="450" tabindex="0" aria-label="The scene: a beaver in a hard hat is the machine's head and the river is its tape, a log for every 1 and open water for every 0. Its hat shows the machine's state. The far dam is the whole tape to scale, and the echo pool shows the notes sounding now. Click the beaver to make it slap its tail. Space plays or pauses, arrow keys step, square brackets jump between phrases."></canvas>
-        <canvas id="cv" width="1000" height="720" tabindex="0" hidden aria-label="The busy beaver score. Notes fall toward the machine's tape; the tape's history scrolls below it. Drag the score down (or right) to move forward through the run, up (or left) to go back. Space plays or pauses, arrow keys step, square brackets jump between phrases."></canvas>
+        <canvas id="cv" width="1000" height="720" tabindex="0" hidden aria-label="The busy beaver score. Notes fall toward the machine's tape; the tape's history scrolls below it. Space plays or pauses, arrow keys step, square brackets jump between phrases. Drag the score down (or right) to move forward through the run, up (or left) to go back."></canvas>
         <div class="hud"><span class="tag" id="h-phrase">Phrase 1 / 15</span><span class="tag hot" id="h-mode">Raw score</span></div>
         <div class="warm" id="warm" role="status" aria-live="polite">Running the machine in your browser...</div>
       </div>
@@ -224,14 +254,14 @@ table.jobs th{color:var(--ink);font-weight:500;text-transform:uppercase;letter-s
           <dt>Score</dt><dd><b id="r-mode">-</b></dd>
           <dt>Job</dt><dd><b id="r-job">-</b></dd>
         </dl>
-        <p class="hint"><span class="kbd">Space</span> play/pause &middot; <span class="kbd">&larr;</span><span class="kbd">&rarr;</span> step (Shift: 16) &middot; <span class="kbd">[</span><span class="kbd">]</span> phrase &middot; <span class="kbd">B</span> raw/blur &middot; drag the Data view to scrub</p>
+        <p class="hint"><span class="kbd">Space</span> play/pause &middot; <span class="kbd">&larr;</span><span class="kbd">&rarr;</span> step (Shift: 16) &middot; <span class="kbd">[</span><span class="kbd">]</span> phrase &middot; <span class="kbd">B</span> raw/blur &middot; drag the score graph to scrub</p>
       </div>
     </div>
 
     <div class="copy">
-      <p class="kicker">Bonus &middot; Challenge 02 &middot; Make it audible</p>
+      <p class="kicker">Challenge 02 &middot; Make it audible</p>
       <h1>Scrub through the longest run a five-state machine can make.</h1>
-      <p class="sub">This Turing machine halts after 47,176,870 steps, and in 2024 it was proved that no five-state machine that halts runs longer. Its head is a beaver in a hard hat, its tape is a river it dams one log at a time, and every hop plays a note. A quantum blur, run at the engine's 20-qubit maximum, turns that score into echoes.</p>
+      <p class="sub">This Turing machine halts after 47,176,870 steps, and in 2024 it was proved that no five-state machine that halts runs longer. Its tape plays as a score, and a quantum blur, run at the engine's 20-qubit maximum, turns that score into echoes. Its head is a beaver in a hard hat, its tape is a river it dams one log at a time, and every hop plays a note.</p>
       <div class="proof">
         <span class="hot">qubits=<b>20</b> (engine max) on every job</span>
         <span id="proof-jobs"><b>6</b> real Atlas jobs &middot; simulator, no hardware</span>
@@ -276,6 +306,67 @@ table.jobs th{color:var(--ink);font-weight:500;text-transform:uppercase;letter-s
     </div>
   </div>
 
+  <section class="sec" id="how" aria-labelledby="how-h">
+    <div class="ink-bar"><span id="how-h">How to play</span><span>one run &middot; one clock</span></div>
+    <div class="cols">
+      <div>
+        <h3>The score + tape graph</h3>
+        <p class="lede">The scene above, the two graphs under &ldquo;The data&rdquo;, the readouts and the three renders all follow the same run on the same clock, so every control moves all of them. The score + tape graph is the Data view in the stage and the first graph below.</p>
+        <ol class="steps">
+          <li><span><b>Play</b>, then <b>scrub</b> anywhere in the run. The strip under the notes is the machine's tape at that exact step.</span></li>
+          <li><span><b>Flip</b> between the raw score and the quantum-blurred scores: local or global, gentle or strong.</span></li>
+          <li><span><b>Change the tempo</b> from 4 to 40 notes a second, or jump straight to the halt.</span></li>
+          <li><span><b>Hear</b> the three full WAV renders below, every note, with the score following along.</span></li>
+        </ol>
+      </div>
+      <div>
+        <h3>Keys and gestures</h3>
+        <dl class="keys">
+          <dt><span class="kbd">Space</span></dt><dd>play or pause the live score</dd>
+          <dt><span class="kbd">&larr;</span> <span class="kbd">&rarr;</span></dt><dd>step one note (with Shift: 16)</dd>
+          <dt><span class="kbd">[</span> <span class="kbd">]</span></dt><dd>previous or next phrase; after the last phrase comes the halt</dd>
+          <dt><span class="kbd">B</span></dt><dd>flip between the raw score and the quantum blur</dd>
+          <dt>drag</dt><dd>the score + tape graph: down (or right) moves forward, up (or left) goes back</dd>
+          <dt>click</dt><dd>the whole-run graph to jump there, or the beaver for a tail slap (decoration)</dd>
+          <dt>share</dt><dd>&ldquo;Copy link to this moment&rdquo; keeps the note, the score, the tempo and the view</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="data" aria-labelledby="data-h">
+    <div class="ink-bar"><span id="data-h">The data</span><span>2 graphs &middot; live, on the page's clock</span></div>
+    <figure class="fig cols" id="fig-score">
+      <div class="figframe"><canvas id="cv2" width="1000" height="720" tabindex="0" aria-label="The busy beaver score. Notes fall toward the machine's tape; the tape's history scrolls below it. Space plays or pauses, arrow keys step, square brackets jump between phrases. Drag the score down (or right) to move forward through the run, up (or left) to go back."></canvas></div>
+      <figcaption class="figcap">
+        <h3>The score over the tape</h3>
+        <p class="figlive" id="fig-live">-</p>
+        <p>Notes fall toward the machine's tape; the tape's history scrolls below it.</p>
+        <ul>
+          <li><b>Falling bars</b> are the notes of the score you picked, left is low. Dark ink is the melody (the head's cell), light ink the bass (the branch of the rule that is running). The darker the bar, the louder the note.</li>
+          <li><b>Outlined bars</b> are the raw score's notes, drawn over a quantum blur so its echoes can be told from the originals.</li>
+          <li><b>Lines across the score</b> mark where a phrase starts, labelled phrase k &middot; g(x): a single block of x ones, with the head in state A at its left end.</li>
+          <li><b>The strip under the notes</b> is the machine's tape at that exact step: pale for 0, light ink for 1, full ink for the head. The tag under the strip is the head's state, A to E, then HALT.</li>
+          <li><b>Below the strip</b> is the tape's history, one row per note, newest on top.</li>
+          <li><b>Drag</b> the score down (or right) to move forward through the run, up (or left) to go back.</li>
+        </ul>
+        <p class="src">Data: out/score.json (the machine step and head cell at every note, the 15 phrases), score_raw.mid and the six blur-midi-v1 MIDI files, and the tape from the machine re-run in this browser.</p>
+      </figcaption>
+    </figure>
+    <figure class="fig" id="fig-roll">
+      <h3>The whole run, note by note</h3>
+      <div class="figframe"><canvas id="roll" width="1200" height="210" role="img" aria-label="Every note of the chosen score across the whole run, as a piano roll: time left to right, pitch bottom to top, phrase starts numbered, the part already heard shaded. Click or drag to jump."></canvas></div>
+      <figcaption class="figcap">
+        <ul>
+          <li><b>Every note</b> of the score you picked, across all 4,574 sixteenth-note columns of the run, left to right. Height is pitch, low at the bottom, with every D marked. Dark ink is the melody, light ink the bass. Switch the score to see how far each blur spreads the notes.</li>
+          <li><b>Thin lines</b> mark where each of the 15 phrases starts, numbered where there is room. Phrase k gets round(15 &times; 1.41<sup>k</sup>) notes, so the late phrases fill most of the run.</li>
+          <li><b>The shaded part</b> is the run already heard and the bar is where you are. Click or drag anywhere on it to jump there. The scrub bar under the stage is the same graph, small.</li>
+        </ul>
+        <p class="src">Data: the same notes the live synth plays (score_raw.mid and the six blur-midi-v1 outputs), placed by note column.</p>
+      </figcaption>
+    </figure>
+  </section>
+
   <section class="listen" aria-labelledby="listen-h">
     <div class="ink-bar"><span id="listen-h">Hear the full renders</span><span>3 WAV deliverables &middot; 5:09 each</span></div>
     <p class="lede">These are the piece's WAV files, synthesised offline in Python with every note sounding (the live synth above plays at most 10 notes per step). They run on the same clock as the page, 15 notes a second, so the score above follows along while one plays. Starting one pauses the live score and any other render.</p>
@@ -310,13 +401,20 @@ table.jobs th{color:var(--ink);font-weight:500;text-transform:uppercase;letter-s
     </div>
   </section>
 
-  <section class="more">
-    <div class="ink-bar"><span>The science</span><span>4 drawers</span></div>
+  <section class="sec" id="science" aria-labelledby="science-h">
+    <div class="ink-bar"><span id="science-h">The science</span><span>BB(5) = 47,176,870</span></div>
+    <div>
     <details class="drawer"><summary>Why this machine?</summary><div class="body">
       <p>A busy beaver is the five-state, two-symbol Turing machine that runs longest from a blank tape and still halts. This one, found by Heiner Marxen and J&uuml;rgen Buntrock in 1989 (Bulletin of the EATCS 40, 1990), halts after 47,176,870 steps with 4,098 ones on its tape.</p>
       <p>For 34 years nobody could rule out a longer-running halter. In 2024 the bbchallenge collaboration settled it with a proof checked in Coq: BB(5) = 47,176,870 (&ldquo;Determination of the fifth Busy Beaver value&rdquo;, arXiv:2509.12337, 2025). That is the first new busy beaver value in over 40 years.</p>
       <p>The machine is <code>1RB1LC_1RC1RB_1RD0LE_1LA1LD_1RZ0LA</code> in the bbchallenge format, which is a left-right mirror of Marxen and Buntrock's table, so here the tape grows to the left. Its run is a Collatz-like loop. A block of x ones is read as x = 3k or 3k + 1 and rebuilt as a block of 5k + 6 or 5k + 9 ones, until x = 12,284 = 3k + 2 and it halts. That gives 0 &rarr; 6 &rarr; 16 &rarr; 34 &rarr; &hellip; &rarr; 7,366 &rarr; 12,284 &rarr; halt: 15 phrases. Each phrase is a widening zigzag. The head turns the block into a 1 0 0 1 0 0 pattern, then zigzags outward, filling one 1 0 0 unit on each round trip.</p>
     </div></details>
+    </div>
+  </section>
+
+  <section class="sec" id="made" aria-labelledby="made-h">
+    <div class="ink-bar"><span id="made-h">How it was made</span><span>score mapping &middot; quantum blur</span></div>
+    <div>
     <details class="drawer"><summary>How 47 million steps become 4,574 sixteenth notes</summary><div class="body">
       <p><b>Phrases.</b> The run splits exactly at the 15 moments when the tape is a single block of ones with the head in state A at its left end. We checked every split in the simulation. Phrase k gets round(15 &times; 1.41<sup>k</sup>) notes: the first phrase plays all 15 of its steps, and the 14th packs 30.2 million steps into 1,306 notes. The coda gets 96 notes, then a 24-note final chord.</p>
       <p><b>Inside a phrase.</b> If it has 2 or more notes per head sweep, each sweep gets its turnaround and then cells evenly spaced along it. Otherwise the sweeps are sampled evenly in right/left pairs, and each sampled sweep gives its turnaround and its midpoint. That makes the low, centre, high, centre figure you hear, and stops 4,916 sweeps aliasing into noise. Every note is a real head position at a real step: the readout shows which step.</p>
@@ -325,12 +423,39 @@ table.jobs th{color:var(--ink);font-weight:500;text-transform:uppercase;letter-s
     <details class="drawer"><summary>What the quantum engine did</summary><div class="body">
       <p>Atlas <b>blur-midi-v1</b> (Quantum Blur for MIDI) read our MIDI file, built a piano roll (pitch &times; time) for each track, and encoded it as amplitudes on a Gray-coded qubit register. It applied a rotation to each qubit, read the blurred roll back and turned it into notes. <i>Strength</i> sets the rotation; <i>reach</i> 0 mixes only neighbouring pitches and times, and 1 lets any cell mix with any other.</p>
       <p>Every job used <b>qubits = 20</b>, the engine's maximum budget per pass. The engine does not report how many qubits it actually used, so we computed it with QuantumBlur's grid rule, &lceil;log<sub>2</sub> time steps&rceil; + &lceil;log<sub>2</sub> pitch rows&rceil;. The melody spans MIDI 45&ndash;93. The outputs reach down to 38, exactly the engine's 15% margin, so its roll has 56 pitch rows, or 63 if the margin is padded above too. Either way that is 6 qubits. On the <b>1/16-note grid</b> (4,574 steps, 13 qubits) that comes to 19 qubits per pass. On the <b>1/32-note grid</b> (resolution 60 ticks, 9,148 steps, 14 qubits) it is 20, the whole budget. That is why we ran the gentle blur on both grids. The bass roll (MIDI 34&ndash;45 in the raw score, down to 32 in the outputs) needs fewer. All jobs ran on Atlas's classical statevector simulator, not on a quantum computer.</p>
-      <table class="jobs" id="jobs"><thead><tr><th>strength</th><th>reach</th><th>grid</th><th>qubits</th><th>notes out</th><th>job id</th></tr></thead><tbody></tbody></table>
+      <p class="note">The six jobs, with their settings, qubit counts, note counts and job IDs, are listed under <a href="#jobs-credits">&ldquo;Jobs and credits&rdquo;</a>.</p>
     </div></details>
-    <details class="drawer"><summary>What this does not claim</summary><div class="body">
+    </div>
+  </section>
+
+  <section class="sec" id="claims" aria-labelledby="claims-h">
+    <div class="ink-bar"><span id="claims-h">What this does not claim</span><span>honesty</span></div>
+    <div class="honest">
       <p class="honesty">The machine, the score and the sound are classical. Python ran the machine to make the score, and your browser re-runs all 47,176,870 steps to draw the tape. The quantum blur ran on a simulator, it computes nothing about the machine, and it shows no quantum advantage. It is a sound effect with a quantum circuit inside. The time compression and pitch mapping are our artistic choices, explained above. When more than 10 notes start on the same grid step, which happens almost everywhere in the strength-0.5, reach-1 blur (about 23 per sixteenth), the page plays only the 10 loudest so your browser keeps up (the final chord gets up to 32). It still draws them all, and the three WAV renders in &ldquo;Hear the full renders&rdquo; sound every note.</p>
       <p class="honesty">The beaver scene is a drawing of the real run, not a simulation of anything else. Where the beaver stands, what its hat says, which cells hold logs, how big the far dam is and every ring in the echo pool come from the machine and the score on this page. The trees, clouds, waves, wood chips and sparkles are decoration, and the dive between far-apart cells stands for the thousands of steps a time-lapse hop skips.</p>
-    </div></details>
+    </div>
+  </section>
+
+  <section class="sec" id="jobs-credits" aria-labelledby="jc-h">
+    <div class="ink-bar"><span id="jc-h">Jobs and credits</span><span>6 Atlas jobs &middot; simulator, no hardware</span></div>
+    <div class="cols">
+      <div>
+        <h3>The Atlas jobs</h3>
+        <table class="jobs" id="jobs"><thead><tr><th>score</th><th>strength</th><th>reach</th><th>grid</th><th>qubits</th><th>notes out</th><th>job id</th></tr></thead><tbody></tbody></table>
+        <p class="src">From out/jobs.csv: every completed blur-midi-v1 job, each one a score you can pick above, or here with &ldquo;Show&rdquo;. &ldquo;param&rdquo; is the qubits value sent with the job; the per-pass count is computed with QuantumBlur's grid rule, not reported by the engine.</p>
+      </div>
+      <div>
+        <h3>Credits</h3>
+        <ul class="credits">
+          <li><b>The machine:</b> Heiner Marxen and J&uuml;rgen Buntrock, &ldquo;Attacking the Busy Beaver 5&rdquo;, <i>Bulletin of the EATCS</i> 40 (1990), Table 1, entry 1. <a href="https://turbotm.de/~heiner/BB/mabu90.html" target="_blank" rel="noopener">Their paper</a></li>
+          <li><b>The proof:</b> the bbchallenge Collaboration, &ldquo;Determination of the fifth Busy Beaver value&rdquo;, arXiv:2509.12337 (2025), checked in Coq. <a href="https://arxiv.org/abs/2509.12337" target="_blank" rel="noopener">arXiv</a></li>
+          <li><b>Background:</b> Pascal Michel, &ldquo;Busy beaver competition and Collatz-like problems&rdquo;, <i>Archive for Mathematical Logic</i> 32 (1993).</li>
+          <li><b>Phrase rules:</b> the bbchallenge wiki, &ldquo;5-state busy beaver winner&rdquo; (CC BY 4.0), used only to predict the 15 phrase boundaries, each then checked against the simulated tape. <a href="https://wiki.bbchallenge.org/wiki/5-state_busy_beaver_winner" target="_blank" rel="noopener">Wiki page</a></li>
+          <li><b>Quantum engine:</b> Moth Quantum Atlas <b>blur-midi-v1</b>, run on Atlas's classical statevector simulator. The qubit rule comes from QuantumBlur (qiskit-community, Apache License 2.0). <a href="https://github.com/qiskit-community/QuantumBlur" target="_blank" rel="noopener">QuantumBlur</a></li>
+          <li><b>Software and art:</b> numpy, scipy, mido and Pillow made the score and the WAVs; the page plays with the browser's Web Audio. Fonts: Geist and IBM Plex Mono (SIL Open Font License). The pixel-art beaver, its hat, the logs and the lodge are original art made for this piece.</li>
+        </ul>
+      </div>
+    </div>
   </section>
   <style>
 .wtnr-nav{margin-top:2.5rem;border-top:1px solid var(--ink,#19238E);padding-top:1.1rem;display:grid;gap:1rem}
@@ -463,7 +588,7 @@ let verified = false;
     el.textContent = verified ? 'Verified here: halted at step ' + fmt(w.step) + ' with ' + fmt(w.ones) + ' ones' : 'Check failed: ' + fmt(w.step) + ' steps, ' + fmt(w.ones) + ' ones';
     el.classList.toggle('ok', verified);
     if (verified) { document.getElementById('proof-run').innerHTML = '<b>47,176,870</b> steps, re-checked in your browser'; setTimeout(() => el.classList.add('gone'), 6000); }
-    if (view === 'data') rebuildTrail(); draw();
+    trailCol = -2; draw();             // the score + tape graph rebuilds its history wherever it is drawn
   }
   setTimeout(slice, 30);
 })();
@@ -497,6 +622,10 @@ function mode() { return decode(MODES[modeId()] || MODES.raw); }
 
 // ---------------------------------------------------------------- drawing
 const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+// "The data" section shows the same score + tape graph, always visible below the scene: it is drawn into #cv
+// (the stage's Data view) and copied, pixel for pixel, while it is on screen
+const cv2 = document.getElementById('cv2'), fctx = cv2.getContext('2d');
+let figOn = true, rollOn = true;   // set by an IntersectionObserver (see 'the data section'); true where there is none
 const W = 1000, H = 720, X0 = 16, X1 = 984, PMIN = 30, PMAX = 97, NOWY = 318, VIS = 56, PXC = NOWY / VIS;
 const STRIP_Y = NOWY + 8, STRIP_H = 26, TRAIL_Y = STRIP_Y + STRIP_H + 8, ROWS = Math.floor((H - TRAIL_Y) / PXC);
 const px = p => X0 + (p - PMIN) / (PMAX - PMIN + 1) * (X1 - X0), SEMI = (X1 - X0) / (PMAX - PMIN + 1);
@@ -553,15 +682,18 @@ function tagBox(lab, x, y, fg, bg) {   // a small label on a paper (or ink) bloc
 
 function draw() {
   const c = curCol(), m = mode(), k = phraseOf(c);
-  if (view === 'scene') drawScene(st.col); else drawData();
+  // while the run plays, the graphs in "The data" redraw only when they are on screen; paused, they always do
+  const still = !st.playing && !following;
+  if (view === 'scene') drawScene(st.col);
+  if (view === 'data' || figOn || still) { drawData(); if (figOn || still) fctx.drawImage(cv, 0, 0); }
   seekStep(COLSTEP[c]);
-  readouts(m, c, k, P[k]); drawMiniHead(c);
+  readouts(m, c, k, P[k]); drawMiniHead(c); if (rollOn || still) drawRollHead(c);
 }
 
 function drawData() {
   syncTape();
   const m = mode(), raw = decode(MODES.raw), now = reduce ? curCol() : st.col, c = curCol(), k = phraseOf(c);
-  FS = Math.max(12, Math.min(26, Math.round(9.5 * W / (cv.clientWidth || W))));
+  FS = Math.max(12, Math.min(26, Math.round(9.5 * W / ((view === 'data' && cv.clientWidth) || cv2.clientWidth || W))));
   ctx.fillStyle = PANEL; ctx.fillRect(0, 0, W, H);
   ctx.font = font(FS); ctx.textBaseline = 'middle';
   const ahead = 'score ahead \u2191', aw = ctx.measureText(ahead).width + 10, ax = W - aw - 6;
@@ -975,7 +1107,7 @@ function idleLoop(t) {
 requestAnimationFrame(idleLoop);
 
 
-const lapseEl = document.getElementById('lapse');
+const lapseEl = document.getElementById('lapse'), figLive = document.getElementById('fig-live');
 function readouts(m, c, k, ph) {
   const s = COLSTEP[c];
   document.getElementById('p-step').textContent = fmt(s);
@@ -991,7 +1123,11 @@ function readouts(m, c, k, ph) {
   document.getElementById('r-job').textContent = m.job || 'none (classical score)';
   const ns = c + 1 < TOTAL ? COLSTEP[c + 1] - COLSTEP[c] : 0, lp = sim.q === 5 ? 'halted: <b>no more steps</b>, the dam is done' : ns <= 1 ? 'this hop = <b>1</b> machine step' : 'time-lapse: this hop = <b>' + fmt(ns) + '</b> machine steps';
   if (lapseEl.innerHTML !== lp) lapseEl.innerHTML = lp;
-  document.getElementById('h-mode').textContent = (following ? 'WAV render \u00b7 ' : '') + (m.id === 'raw' ? 'Raw score' : 'Quantum blur \u00b7 s ' + m.strength + ' \u00b7 reach ' + m.reach + (m.res ? ' \u00b7 1/32' : ''));
+  const hm = (following ? 'WAV render \u00b7 ' : '') + (m.id === 'raw' ? 'Raw score' : 'Quantum blur \u00b7 s ' + m.strength + ' \u00b7 reach ' + m.reach + (m.res ? ' \u00b7 1/32' : ''));
+  document.getElementById('h-mode').textContent = hm;
+  // the live line above the score + tape graph in "The data": the same moment and score as the stage
+  const fl = 'phrase <b>' + (k + 1) + '</b> / ' + P.length + ' \u00b7 note <b>' + fmt(c + 1) + '</b> / ' + fmt(TOTAL) + ' \u00b7 step <b>' + fmt(s) + '</b> \u00b7 ' + hm.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  if (figLive.innerHTML !== fl) figLive.innerHTML = fl;
   const sc = document.getElementById('scrub'); if (+sc.value !== c) sc.value = c;
   // the phrase buttons only offer moves that exist: nothing before note 1, nothing after the halt
   const bp = document.getElementById('prev'), bn = document.getElementById('next');
@@ -1020,6 +1156,56 @@ function drawMiniHead(c) {
   mctx.fillStyle = inkA(.07); mctx.fillRect(0, 0, x, h);                 // the part of the run already heard
   mctx.fillStyle = PANEL; mctx.fillRect(x - 2.5, 0, 5, h); mctx.fillStyle = INK; mctx.fillRect(x - 1, 0, 2, h);
 }
+
+// ---------------------------------------------------------------- the whole run, large (in "The data")
+// The minimap's piano roll at full width: the same notes (the score you picked), pitch rows labelled at every D,
+// phrase starts numbered, the part already heard shaded, and a bar at the current note. Click or drag to jump.
+const roll = document.getElementById('roll'), rctx = roll.getContext('2d'), rollBase = document.createElement('canvas');
+let rollFor = '', rollGeo = null;
+function drawRoll() {
+  const r = roll.getBoundingClientRect(); if (!(r.width > 0)) return false;
+  const dpr = Math.min(2, window.devicePixelRatio || 1), w = Math.max(200, Math.round(r.width * dpr)), h = Math.max(60, Math.round(r.height * dpr));
+  const key = modeId() + w + 'x' + h; if (key === rollFor) return true; rollFor = key;
+  roll.width = rollBase.width = w; roll.height = rollBase.height = h;
+  const b = rollBase.getContext('2d'), m = mode(), x0 = Math.round(30 * dpr), x1 = w - Math.round(6 * dpr), top = Math.round(17 * dpr), bot = h - Math.round(5 * dpr);
+  const rowH = (bot - top) / (PMAX - PMIN + 1), yOf = p => bot - (p - PMIN + 1) * rowH, xOf = col => x0 + col / TOTAL * (x1 - x0);
+  rollGeo = { x0: x0 / dpr, x1: x1 / dpr, xOf, dpr };   // x0/x1 in CSS px (for the pointer), xOf in canvas px
+  b.fillStyle = PANEL; b.fillRect(0, 0, w, h);
+  b.font = '500 ' + Math.round(9.5 * dpr) + 'px "IBM Plex Mono", ui-monospace, monospace'; b.textBaseline = 'middle';
+  for (let p = 38; p <= PMAX; p += 12) {   // a guide and a label at every D, like the score + tape graph
+    const y = Math.round(yOf(p) + rowH / 2); b.fillStyle = GUIDE; b.fillRect(x0, y, x1 - x0, 1);
+    b.fillStyle = INK3; b.fillText('D' + (Math.floor(p / 12) - 1), 4 * dpr, y);
+  }
+  b.textBaseline = 'top';
+  for (const q of P) { const x = Math.round(xOf(q.col0)); b.fillStyle = '#D3D3E6'; b.fillRect(x, top - 3 * dpr, 1, bot - top + 3 * dpr);
+    if (q.cols / TOTAL * (x1 - x0) > 16 * dpr) { b.fillStyle = INK2; b.fillText(String(q.k + 1), x + 3 * dpr, 2 * dpr); } }
+  const nh = Math.max(dpr, rowH);
+  for (let i = 0; i < m.count; i++) { const a = Math.pow(m.vel[i] / 127, m.id === 'raw' ? 0.5 : 1.2);
+    b.fillStyle = m.trk[i] ? ink3A(a * .8) : inkA(a); b.fillRect(xOf(m.start[i]), yOf(m.pitch[i]), Math.max(1, m.dur[i] / TOTAL * (x1 - x0)), nh); }
+  b.strokeStyle = inkA(.25); b.lineWidth = 1; b.strokeRect(x0 + .5, top - .5, x1 - x0 - 1, bot - top + 1);
+  return true;
+}
+function drawRollHead(c) {
+  if (!drawRoll()) return;
+  const dpr = rollGeo.dpr, h = roll.height;
+  rctx.drawImage(rollBase, 0, 0);
+  const xa = rollGeo.xOf(0), x = rollGeo.xOf(c + .5);
+  rctx.fillStyle = inkA(.07); rctx.fillRect(xa, 0, x - xa, h);              // the part of the run already heard
+  rctx.fillStyle = PANEL; rctx.fillRect(x - 2.5 * dpr, 0, 5 * dpr, h); rctx.fillStyle = INK; rctx.fillRect(x - 1 * dpr, 0, 2 * dpr, h);
+}
+function rollCol(e) {   // the note under a pointer on the large roll
+  const r = roll.getBoundingClientRect(), g = rollGeo || { x0: 30, x1: r.width - 6 };
+  return Math.floor((e.clientX - r.left - g.x0) / Math.max(1, g.x1 - g.x0) * TOTAL);
+}
+let dragRoll = null;
+roll.addEventListener('pointerdown', e => {
+  if (e.button !== 0) return; dragRoll = e.pointerId;
+  try { roll.setPointerCapture(e.pointerId); } catch (err) {}
+  seekCol(rollCol(e));
+});
+roll.addEventListener('pointermove', e => { if (dragRoll === e.pointerId) { const c = Math.max(0, Math.min(TOTAL - 1, rollCol(e))); if (c !== curCol()) seekCol(c); } });
+const endRoll = e => { if (dragRoll === e.pointerId) dragRoll = null; };
+roll.addEventListener('pointerup', endRoll); roll.addEventListener('pointercancel', endRoll);
 
 // ---------------------------------------------------------------- audio (Web Audio, started by a click)
 let AC = null, bus = null, voices = [];
@@ -1099,8 +1285,10 @@ function syncControls() {
     g.querySelectorAll('button').forEach(b => { if (idle) b.title = 'Switch to the quantum blur at this setting'; else b.removeAttribute('title'); });
   });
   document.getElementById('tempo-lab').textContent = st.rate + ' notes/s';
+  document.querySelectorAll('[data-job]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.job === modeId())));
 }
-function setMode(fn) { shiverT = performance.now() / 1000; fn(); if (following && modeId() !== following.mode) following.a.pause(); if (st.score !== 'raw' && !MODES[modeId()]) st.grid = MODES[idFor(st.strength, st.reach, 0)] ? 0 : 60; if (!MODES[modeId()]) st.score = 'raw'; syncControls(); miniFor = ''; if (st.playing) anchor(); draw(); }
+function setMode(fn) { const was = modeId(); shiverT = performance.now() / 1000; fn(); if (following && modeId() !== following.mode) following.a.pause(); if (st.score !== 'raw' && !MODES[modeId()]) st.grid = MODES[idFor(st.strength, st.reach, 0)] ? 0 : 60; if (!MODES[modeId()]) st.score = 'raw'; syncControls(); miniFor = ''; if (st.playing) anchor(); draw();
+  if (modeId() === was) { const m = mode(); toast('Already showing ' + (m.id === 'raw' ? 'the raw score' : 'the quantum blur at strength ' + m.strength + ', reach ' + m.reach + ', ' + (m.res ? '1/32' : '1/16') + ' grid')); } }   // a re-click still answers
 document.querySelectorAll('[data-score]').forEach(b => b.addEventListener('click', () => setMode(() => st.score = b.dataset.score)));
 // The 1/32 grid was only run at strength 0.2, so the clicked setting wins and the other one moves to a job that exists (and says so).
 const gridName = g => g ? '1/32' : '1/16';
@@ -1123,6 +1311,7 @@ function jumpPhrase(d) {
   const c = curCol(), k = phraseOf(c);
   if (d > 0 && k === P.length - 1) { if (c < HALT_COL) seekCol(HALT_COL); return; }   // after the last phrase comes the halt
   const t = Math.max(0, Math.min(P.length - 1, (d < 0 && c > P[k].col0 + 2) ? k : k + d)); seekCol(P[t].col0);
+  if (t === P.length - 1) toast('The halting phrase: two sweeps across 12,289 cells, then stop');
 }
 document.getElementById('prev').addEventListener('click', () => jumpPhrase(-1));
 document.getElementById('next').addEventListener('click', () => jumpPhrase(1));
@@ -1140,39 +1329,59 @@ document.getElementById('share').addEventListener('click', async () => {
       document.body.appendChild(ta); ta.select(); copied = document.execCommand('copy'); ta.remove(); } catch (e2) { copied = false; }
   }
   if (copied) { box.hidden = true; toast('Link copied: this note, this score, this tempo' + (view === 'data' ? ', the Data view' : '')); }
-  else { box.value = url; box.hidden = false; box.focus(); box.select(); toast('Copying is blocked here: the link is selected beside the button, copy it by hand'); }
+  else { box.value = url; box.hidden = false; box.focus(); box.select(); toast('Copy failed: the link is in your address bar, and selected beside the button: copy it by hand'); }
 });
 document.addEventListener('keydown', e => {
   const tgt = e.target, inField = tgt.matches && tgt.matches('input,textarea,select');
   if (e.key === ' ' && !(tgt.matches && tgt.matches('button,a[href],textarea,select,summary,input:not([type=range])'))) { e.preventDefault(); st.playing ? pause() : play(); }
-  else if (!inField && (e.key === 'ArrowRight' || e.key === 'ArrowLeft') && (tgt === cv || tgt === scv || tgt === document.body)) { e.preventDefault(); seekCol(curCol() + (e.key === 'ArrowRight' ? 1 : -1) * (e.shiftKey ? 16 : 1)); }
+  else if (!inField && (e.key === 'ArrowRight' || e.key === 'ArrowLeft') && (tgt === cv || tgt === cv2 || tgt === scv || tgt === document.body)) { e.preventDefault(); seekCol(curCol() + (e.key === 'ArrowRight' ? 1 : -1) * (e.shiftKey ? 16 : 1)); }
   else if (!inField && (e.key === ']' || e.key === '[')) { e.preventDefault(); jumpPhrase(e.key === ']' ? 1 : -1); }
   else if (!inField && (e.key === 'b' || e.key === 'B')) { setMode(() => st.score = st.score === 'raw' ? 'blur' : 'raw'); }
 });
-cv.addEventListener('click', () => cv.focus());
 // drag the falling score to scrub: pull it down (or right) to move forward, up (or left) to go back, one note per note-height;
-// on a touchscreen vertical swipes still scroll the page (touch-action: pan-y), so swipe sideways there
+// on a touchscreen vertical swipes still scroll the page (touch-action: pan-y), so swipe sideways there.
+// The same gestures work on the stage's Data view (#cv) and on the copy in "The data" (#cv2).
 let dragCv = null;
-cv.addEventListener('pointerdown', e => {
-  if (e.button !== 0) return;
-  dragCv = { id: e.pointerId, x: e.clientX, y: e.clientY, acc: 0 }; cv.classList.add('drag');
-  try { cv.setPointerCapture(e.pointerId); } catch (err) {}
+[cv, cv2].forEach(el => {
+  el.addEventListener('click', () => el.focus({ preventScroll: true }));
+  el.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return;
+    dragCv = { el, id: e.pointerId, x: e.clientX, y: e.clientY, acc: 0 }; el.classList.add('drag');
+    try { el.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+  el.addEventListener('pointermove', e => {
+    if (!dragCv || dragCv.el !== el || e.pointerId !== dragCv.id) return;
+    const k = W / (el.clientWidth || W), dx = (e.clientX - dragCv.x) * k, dy = (e.clientY - dragCv.y) * k;
+    dragCv.x = e.clientX; dragCv.y = e.clientY; dragCv.acc += (Math.abs(dy) >= Math.abs(dx) ? dy : dx) / PXC;
+    const n = Math.trunc(dragCv.acc); if (n) { dragCv.acc -= n; seekCol(curCol() + n); }
+  });
+  const endDrag = e => { if (dragCv && dragCv.el === el && e.pointerId === dragCv.id) { dragCv = null; el.classList.remove('drag'); } };
+  el.addEventListener('pointerup', endDrag); el.addEventListener('pointercancel', endDrag);
 });
-cv.addEventListener('pointermove', e => {
-  if (!dragCv || e.pointerId !== dragCv.id) return;
-  const k = W / (cv.clientWidth || W), dx = (e.clientX - dragCv.x) * k, dy = (e.clientY - dragCv.y) * k;
-  dragCv.x = e.clientX; dragCv.y = e.clientY; dragCv.acc += (Math.abs(dy) >= Math.abs(dx) ? dy : dx) / PXC;
-  const n = Math.trunc(dragCv.acc); if (n) { dragCv.acc -= n; seekCol(curCol() + n); }
-});
-const endDrag = e => { if (dragCv && e.pointerId === dragCv.id) { dragCv = null; cv.classList.remove('drag'); } };
-cv.addEventListener('pointerup', endDrag); cv.addEventListener('pointercancel', endDrag);
+// "The data" draws only while its graphs are on screen; scrolling one into view draws it at once
+try {
+  const io = new IntersectionObserver(es => {
+    let wake = false;
+    for (const e of es) {
+      if (e.target === cv2) { if (e.isIntersecting && !figOn) wake = true; figOn = e.isIntersecting; }
+      else if (e.target === roll) { if (e.isIntersecting && !rollOn) wake = true; rollOn = e.isIntersecting; }
+    }
+    if (wake && !st.playing && !following) draw();
+  });
+  io.observe(cv2); io.observe(roll);
+} catch (e) {}
 window.addEventListener('resize', () => { miniFor = ''; if (view === 'scene') sizeScene(); draw(); });
 
-// jobs table
+// jobs table (in "Jobs and credits"): one row per completed job; "Show" puts that job's score on the stage and the graphs
 const tb = document.querySelector('#jobs tbody');
 MODES_RAW.filter(m => m.job).forEach(m => { const tr = document.createElement('tr');
-  const keys = ['strength', 'reach', 'grid', 'qubits', 'notes out', 'job id'];
-  [m.strength, m.reach, m.res ? '1/32 (res 60)' : '1/16 (auto)', 'param ' + m.qubits + ' \u00b7 ' + m.qnote, fmt(m.n), m.job].forEach((v, i) => { const td = document.createElement('td'); td.textContent = v; td.dataset.k = keys[i]; tr.appendChild(td); }); tb.appendChild(tr); });
+  const keys = ['score', 'strength', 'reach', 'grid', 'qubits', 'notes out', 'job id'];
+  const pick = document.createElement('td'); pick.dataset.k = keys[0];
+  const pb = document.createElement('button'); pb.type = 'button'; pb.className = 'pick'; pb.dataset.job = m.id; pb.textContent = 'Show'; pb.setAttribute('aria-pressed', 'false');
+  pb.setAttribute('aria-label', 'Show the strength ' + m.strength + ', reach ' + m.reach + ', ' + (m.res ? '1/32' : '1/16') + ' grid blur on the stage and the graphs');
+  pb.addEventListener('click', () => { setMode(() => applyModeId(m.id)); toast('Showing job ' + m.job.slice(0, 8) + ': strength ' + m.strength + ', reach ' + m.reach + ', ' + (m.res ? '1/32' : '1/16') + ' grid'); });
+  pick.appendChild(pb); tr.appendChild(pick);
+  [m.strength, m.reach, m.res ? '1/32 (res 60)' : '1/16 (auto)', 'param ' + m.qubits + ' \u00b7 ' + m.qnote, fmt(m.n), m.job].forEach((v, i) => { const td = document.createElement('td'); td.textContent = v; td.dataset.k = keys[i + 1]; tr.appendChild(td); }); tb.appendChild(tr); });
 
 // ---------------------------------------------------------------- the WAV renders (<audio>, each started by its own click)
 // The files were rendered at SCORE.notes_per_sec (15) columns a second from t = 0, so audio time t is column 15 t:

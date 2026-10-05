@@ -1,0 +1,26 @@
+{
+ "size": 430263,
+ "width": 1100,
+ "height": 900,
+ "url": "https://upload.wikimedia.org/wikipedia/commons/7/7f/Tartan_Ribbon.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+ "descriptionurl": "https://commons.wikimedia.org/wiki/File:Tartan_Ribbon.jpg",
+ "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=1007375",
+ "sha1": "a6e7b49bf2f467a9dfb337a1d121832e0f86e430",
+ "mime": "image/jpeg"
+}
+DateTime => 2023-06-06 15:13:24
+ObjectName => Tartan Ribbon
+CommonsMetadataExtension => 1.2
+Categories => James Clerk Maxwell|Thomas Sutton (photographer)|1861 photographs|PD-old-100-expired|Featured pictures on Wikipedia, English|Commons featured desktop backgrounds|Featured pictures on Wikipedia, Persian|Featured pictures on Wikipedia, Spanish|Featured pictures on Wikipedia, Turkish|CC-PD-Mark|Files w
+Assessments => 
+ImageDescription => Tartan Ribbon, photograph taken by <a href="//commons.wikimedia.org/wiki/James_Clerk_Maxwell" title="James Clerk Maxwell">James Clerk Maxwell</a> in 1861. Considered the first durable colour photographic image, and the very first made by the three-colour method Maxwell first suggested in 1855. Maxwe
+DateTimeOriginal => 1861
+Credit => Scanned from <i>The Illustrated History of Colour Photography</i>, Jack H. Coote, 1993. <span lang="en" dir="ltr"><a href="https://en.wikipedia.org/wiki/ISBN" class="extiw" title="en:ISBN"><span lang="en" dir="ltr">ISBN</span></a></span> <a href="//commons.wikimedia.org/wiki/Special:BookSources/0-86
+Artist => <bdi><a href="https://en.wikipedia.org/wiki/en:James_Clerk_Maxwell" class="extiw" title="w:en:James Clerk Maxwell"><span title="Scottish physicist (1831–1879)">James Clerk Maxwell</span></a></bdi>
+Permission => Public domain
+LicenseShortName => Public domain
+UsageTerms => Public domain
+AttributionRequired => false
+Copyrighted => False
+Restrictions => 
+License => pd

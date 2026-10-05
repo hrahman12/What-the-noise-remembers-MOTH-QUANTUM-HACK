@@ -1,0 +1,79 @@
+{
+ "slug": "19-frog-chorus",
+ "challenge": "07",
+ "bonus": true,
+ "title": "Frog Chorus",
+ "hook": "Seat the frogs, then hear them learn to take turns.",
+ "sub": "We asked a 22-qubit circuit to make every pair of neighbours on this pond alternate. The locks it actually delivered now decide who answers whom.",
+ "you_control": [
+  "Seat, lift or drag pixel frogs between lily pads and the log, or roll a night measured from the engine's state",
+  "Seat a night measured on IBM's real ibm_fez chip (graph-v1, 20 qubits), from a button or by tapping its row in the hardware chart",
+  "Start and stop the chorus; set coupling, tempo, individuality and volume",
+  "Switch between the alternating and sync ponds, and between engine-delivered and asked-for couplings",
+  "Watch each frog's throat puff on its real calls, in the live pond and in the four rendered chorus lines",
+  "Copy a link that reopens the exact chorus"
+ ],
+ "engines": [
+  "qdrive-api-v1",
+  "graph-v1"
+ ],
+ "qubits": 22,
+ "qubits_note": "22 qubits per pond build on Atlas's Aer simulator (n_qubits; confirmed by the returned QASM `qubit[22]` and 22-character Pauli keys). 24-qubit builds timed out twice (engine_timeout, after about 5 min 45 s each), so 24 is above what qdrive completes for this recipe; 22 completed. qdrive documents no qubit ceiling. On IBM hardware: 20 qubits on ibm_fez through graph-v1 (its documented ceiling, num_qubits 2-20; 20-character bitstrings returned).",
+ "hardware": "ibm_fez",
+ "hardware_qubits": 20,
+ "hardware_jobs": [
+  {
+   "engine": "graph-v1",
+   "job_id": "6f175600-338d-4814-946d-b1da067312af",
+   "ibm_job_id": "db1q0d9b694s73dslgv0",
+   "backend": "ibm_fez",
+   "qubits": 20,
+   "shots": 20
+  }
+ ],
+ "jobs": 6,
+ "credits_spent": 21.0,
+ "deliverables": [
+  "web/index.html",
+  "web/template.html",
+  "build_web.py",
+  "web/files.json",
+  "web/sprites.json",
+  "web/img/mascot.png",
+  "out/wav/alt22_engine.wav",
+  "out/wav/alt22_asked.wav",
+  "out/wav/sync22_engine.wav",
+  "out/wav/sync22_asked.wav",
+  "web/audio/alt22_engine.mp3",
+  "web/audio/alt22_asked.mp3",
+  "web/audio/sync22_engine.mp3",
+  "web/audio/sync22_asked.mp3",
+  "README.md",
+  "PARAMS.md",
+  "CREDITS.md",
+  "run_qdrive.py",
+  "run_graph_fez.py",
+  "out/hardware.json",
+  "pond.py",
+  "extract.py",
+  "chorus.py",
+  "render_wav.py",
+  "record_jobs.py",
+  "make_docs.py",
+  "tests/test_core.js",
+  "tests/browser_check.js",
+  "tests/check_witness.py",
+  "tests/check_pauli_order.py",
+  "tests/design_graph_order.py",
+  "qa/e2e.cjs"
+ ],
+ "web_entry": "web/index.html",
+ "mascot": "web/img/mascot.png",
+ "status": "built",
+ "honesty": "Frogs are classical oscillators; a classical Kuramoto model runs the chorus in the browser. qdrive-api-v1 results from Atlas's Aer simulator (qdrive cannot reach hardware) set the couplings, starting phases and the default nights. The one hardware run, graph-v1 on IBM ibm_fez (20 qubits, job 6f175600-338d-4814-946d-b1da067312af), is a labelled counterpart: its 20 Z-basis nights only seat frogs, set against the same recipe on the Aer emulator.",
+ "blockers": [
+  "qdrive-api-v1 cannot run on IBM hardware: it accepts only machine 'aer' ('ibm_fez' failed as 'not wired up yet' three times, the last a 22-qubit build on 5 Oct 2026; 'fake_fez' unknown), so the chorus couplings stay on the Aer simulator. The hardware counterpart is graph-v1 on ibm_fez at 20 qubits, its ceiling, and it measures only in Z.",
+  "24-qubit builds timed out twice (engine_timeout); the largest completed pond is 22 qubits.",
+  "No VST/AU plugin built (optional in the brief); the instrument is the browser page plus WAV renders."
+ ]
+}

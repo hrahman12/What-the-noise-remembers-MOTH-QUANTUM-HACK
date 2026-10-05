@@ -1,0 +1,176 @@
+[
+ {
+  "graph": "ring",
+  "J": 0.4,
+  "edges": 20,
+  "exact": 0.38,
+  "thrml": 0.373,
+  "thrml_max_edge_err": 0.0347,
+  "emu": {
+   "job_id": "baa86148-133b-4374-8c32-00020b24d4c4",
+   "backend": "aer",
+   "ibm_job_id": null,
+   "num_qubits": 20,
+   "shots": 20,
+   "mean_edge": 0.39,
+   "se": 0.042,
+   "mean_z": -0.09,
+   "se_z": 0.085,
+   "tomo_mean_edge": 0.225,
+   "replica": {
+    "max_abs_Z_replica_vs_engine": 0.0025,
+    "shot_loglik_per_shot": -12.27,
+    "replica_expected_loglik": -12.39
+   }
+  },
+  "qpu": {
+   "job_id": "6b7a5915-34a7-473f-b94e-604018ac5591",
+   "backend": "ibm_fez",
+   "ibm_job_id": "db1jb1pb694s73dsc0tg",
+   "num_qubits": 20,
+   "shots": 20,
+   "mean_edge": 0.29,
+   "se": 0.04,
+   "mean_z": -0.12,
+   "se_z": 0.053,
+   "tomo_mean_edge": 0.225
+  }
+ },
+ {
+  "graph": "ring",
+  "J": 1.0,
+  "edges": 20,
+  "exact": 0.764,
+  "thrml": 0.763,
+  "thrml_max_edge_err": 0.0144,
+  "emu": {
+   "job_id": "cb5a9419-5e7f-4208-acae-9c8a7ce25e9b",
+   "backend": "aer",
+   "ibm_job_id": null,
+   "num_qubits": 20,
+   "shots": 20,
+   "mean_edge": 0.76,
+   "se": 0.029,
+   "mean_z": -0.205,
+   "se_z": 0.117,
+   "tomo_mean_edge": 0.433,
+   "replica": {
+    "max_abs_Z_replica_vs_engine": 0.0028,
+    "shot_loglik_per_shot": -7.13,
+    "replica_expected_loglik": -7.51
+   }
+  }
+ },
+ {
+  "graph": "ladder",
+  "J": 0.4,
+  "edges": 28,
+  "exact": 0.449,
+  "thrml": 0.448,
+  "thrml_max_edge_err": 0.026,
+  "emu": {
+   "job_id": "68fe8996-9143-4dc7-93e2-52cab8943db0",
+   "backend": "aer",
+   "ibm_job_id": null,
+   "num_qubits": 20,
+   "shots": 20,
+   "mean_edge": 0.464,
+   "se": 0.05,
+   "mean_z": -0.04,
+   "se_z": 0.088,
+   "tomo_mean_edge": 0.387,
+   "replica": {
+    "max_abs_Z_replica_vs_engine": 0.0037,
+    "shot_loglik_per_shot": -10.93,
+    "replica_expected_loglik": -10.86
+   }
+  }
+ },
+ {
+  "graph": "ladder",
+  "J": 1.0,
+  "edges": 28,
+  "exact": 0.947,
+  "thrml": 0.947,
+  "thrml_max_edge_err": 0.0102,
+  "emu": {
+   "job_id": "91ce7ecd-cba3-4286-a92a-1f025149a04d",
+   "backend": "aer",
+   "ibm_job_id": null,
+   "num_qubits": 20,
+   "shots": 20,
+   "mean_edge": 0.639,
+   "se": 0.035,
+   "mean_z": -0.01,
+   "se_z": 0.147,
+   "tomo_mean_edge": 0.476,
+   "replica": {
+    "max_abs_Z_replica_vs_engine": 0.0456,
+    "shot_loglik_per_shot": -19.74,
+    "replica_expected_loglik": -2.04
+   }
+  },
+  "qpu": {
+   "job_id": "65da039d-0f27-4250-aa7f-b8003cbc983a",
+   "backend": "ibm_fez",
+   "ibm_job_id": "db1jb0avog1s73fi74h0",
+   "num_qubits": 20,
+   "shots": 20,
+   "mean_edge": 0.461,
+   "se": 0.044,
+   "mean_z": 0.085,
+   "se_z": 0.108,
+   "tomo_mean_edge": 0.476
+  }
+ },
+ {
+  "graph": "random",
+  "J": 0.4,
+  "edges": 30,
+  "exact": 0.371,
+  "thrml": 0.372,
+  "thrml_max_edge_err": 0.0399,
+  "emu": {
+   "job_id": "ca775471-64ec-46db-955d-113683dcdb50",
+   "backend": "aer",
+   "ibm_job_id": null,
+   "num_qubits": 20,
+   "shots": 20,
+   "mean_edge": 0.373,
+   "se": 0.034,
+   "mean_z": 0.03,
+   "se_z": 0.046,
+   "tomo_mean_edge": 0.102,
+   "replica": {
+    "max_abs_Z_replica_vs_engine": 0.0149,
+    "shot_loglik_per_shot": -11.61,
+    "replica_expected_loglik": -11.86
+   }
+  }
+ },
+ {
+  "graph": "random",
+  "J": 1.0,
+  "edges": 30,
+  "exact": 0.642,
+  "thrml": 0.642,
+  "thrml_max_edge_err": 0.0374,
+  "emu": {
+   "job_id": "8e431f87-f853-4c49-8789-9e4c5b0d45b4",
+   "backend": "aer",
+   "ibm_job_id": null,
+   "num_qubits": 20,
+   "shots": 20,
+   "mean_edge": 0.587,
+   "se": 0.028,
+   "mean_z": 0.03,
+   "se_z": 0.044,
+   "tomo_mean_edge": 0.115,
+   "replica": {
+    "max_abs_Z_replica_vs_engine": 0.0088,
+    "shot_loglik_per_shot": -7.07,
+    "replica_expected_loglik": -7.76
+   }
+  }
+ }
+]

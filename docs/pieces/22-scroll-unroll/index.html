@@ -97,7 +97,9 @@ details.drawer .body{padding-bottom:1.25rem;color:var(--ink-2);max-width:68ch;di
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 /* Layout: scene first. Headline, then the stage: the pixel-art desk (the archaeologist moth, the roll, the ash)
-   over the CT slice of the same scroll; the reading strip, the cast and the data panels follow.
+   over the CT slice of the same scroll. Below it, titled sections under solid-ink bars: How to play (the steps,
+   the reading strip, the damage and readout panels, the reveal), The cast, The data (the nine jobs' chart),
+   Behind the scroll (the four drawers) and Jobs and credits.
    Look: the brief-page kit. Paper ground, one ultramarine ink, square panels, pill buttons, hairlines. */
 .wrap{max-width:76rem;margin-inline:auto}
 .hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:1.1rem clamp(1rem,3vw,2.5rem);align-items:end;padding-top:1.6rem}
@@ -113,12 +115,32 @@ h1{font-size:clamp(2.1rem,4.3vw,3.6rem);line-height:.98;letter-spacing:-.02em}
 .stage{position:relative;border:1px solid var(--ink);background:var(--paper)}
 .desk-wrap{position:relative;display:flex;justify-content:center;background:var(--paper);touch-action:pan-y;user-select:none;cursor:pointer;overflow:hidden}
 #desk{display:block;image-rendering:pixelated;image-rendering:crisp-edges}
-.stage .tag{position:absolute;left:.6rem;top:.55rem;pointer-events:none}
-/* Scene / Data: the desk illustration, or the measured numbers of the nine jobs; the CT slice stays in both */
-.stage[data-view="scene"] .only-data,.stage[data-view="data"] .only-scene{display:none !important}
-.viewseg{position:absolute;right:.6rem;top:.5rem;z-index:2}
-.viewseg button{padding:.45rem .8rem;font-size:.7rem}
-.datav{position:relative;background:var(--paper)}
+.stage .tag,.datav .tag{position:absolute;left:.6rem;top:.55rem;pointer-events:none}
+/* titled sections below the scene, each under a solid-ink bar */
+.sec{margin-top:2.5rem}
+.sec>.ink-bar{margin-bottom:1rem}
+h2.ink-bar{font-weight:500}
+.desk-steps{margin-top:.9rem;padding:.7rem .9rem;display:grid;gap:.4rem;border:1px solid var(--rule);background:var(--panel);font-size:.88rem;line-height:1.4;color:var(--ink-2)}
+.desk-steps ul{margin:0;padding:0 0 0 1.1rem;display:grid;gap:.3rem}
+.desk-steps .label{color:var(--ink)}
+.desk-steps b{color:var(--ink);font-weight:500}
+/* The data: the nine jobs' measured numbers, always visible */
+.datav{position:relative;background:var(--paper);border:1px solid var(--ink);margin:0}
+.datav .legend{border-bottom:0}
+.datav figcaption{padding:.75rem .9rem;border-top:1px solid var(--rule);font-size:.86rem;line-height:1.5;color:var(--ink-2);display:grid;gap:.4rem;background:var(--panel)}
+.datav figcaption b{color:var(--ink);font-weight:500}
+/* Jobs and credits */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--rule);background:var(--panel)}
+table.jobs{width:100%;border-collapse:collapse;font:400 .78rem/1.4 var(--mono);color:var(--ink-2)}
+table.jobs th{font:500 .66rem/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);text-align:left;padding:.6rem .7rem;border-bottom:1px solid var(--ink);white-space:nowrap}
+table.jobs td{padding:.45rem .7rem;border-bottom:1px solid var(--rule);vertical-align:middle}
+table.jobs td.id{color:var(--ink);word-break:break-all;min-width:12ch}
+table.jobs td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+table.jobs tr[aria-current="true"] td{background:var(--tint);color:var(--ink)}
+table.jobs .jb{min-width:2.2rem;padding:.3rem .55rem;border:1px solid var(--ink);border-radius:999px;background:var(--paper);color:var(--ink);font:500 .72rem/1 var(--mono);cursor:pointer}
+table.jobs tr[aria-current="true"] .jb{background:var(--ink);color:var(--on-ink)}
+.jobs-note{display:grid;gap:.6rem;margin-top:1rem;max-width:76ch}
+.credits{margin:.4rem 0 0;padding-left:1.1rem;display:grid;gap:.35rem;font-size:.88rem;color:var(--ink-2)}
 #chart{display:block;width:100%}
 #chart .g{stroke:var(--rule);stroke-width:1}
 #chart .ax{stroke:var(--ink);stroke-width:1}
@@ -173,7 +195,9 @@ h1{font-size:clamp(2.1rem,4.3vw,3.6rem);line-height:.98;letter-spacing:-.02em}
 .ladder-cap{display:flex;justify-content:space-between;font:500 .62rem/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
 .cast{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-top:1.25rem}
 .card{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.9rem;align-items:center;background:var(--panel);border:1px solid var(--rule);padding:.8rem 1rem}
-.card .pic{width:100px;height:88px;display:grid;place-items:center;border:1px solid var(--rule);background:var(--paper)}
+.card .pic{width:100px;min-height:88px;display:grid;place-items:center;align-content:center;gap:.3rem;border:1px solid var(--rule);background:var(--paper);padding:.35rem .2rem;color:var(--ink);font:inherit;cursor:pointer}
+button.pic:hover{border-color:var(--ink)}button.pic:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.card .pic .see{font:500 .56rem/1.1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}button.pic:hover .see{color:var(--ink)}
 .card .pic img,.card .pic canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
 .card h3{font:500 .7rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin-bottom:.3rem}
 .card p{font-size:.84rem;line-height:1.45;color:var(--ink-2)}
@@ -193,19 +217,20 @@ h1{font-size:clamp(2.1rem,4.3vw,3.6rem);line-height:.98;letter-spacing:-.02em}
 @media (max-width:900px){.grid2{grid-template-columns:minmax(0,1fr)}.hero{display:flex;flex-direction:column;align-items:stretch}.head{order:1}.hero .stage{order:2}.intro{order:3}
   .steps{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.cast{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:520px){.wtnr-bar{font-size:.64rem;letter-spacing:.08em}.unroll{grid-template-columns:minmax(0,1fr) auto}.unroll .label{grid-column:1/-1}.hud{position:static;padding:.5rem;background:var(--panel);border-bottom:1px solid var(--rule)}.hud .chip{font-size:.62rem;padding:.4rem .5rem}
-  .steps{grid-template-columns:minmax(0,1fr)}.legend{font-size:.6rem}.stage .tag{font-size:.58rem;padding:.3rem .45rem;top:.35rem;left:.35rem}.tag .wide{display:none}.viewseg{right:.35rem;top:.3rem}.viewseg button{padding:.38rem .6rem;font-size:.62rem}.reveal .in{grid-template-columns:minmax(0,1fr)}.card .pic{width:84px;height:76px}}
+  .steps{grid-template-columns:minmax(0,1fr)}.legend{font-size:.6rem}.stage .tag,.datav .tag{font-size:.58rem;padding:.3rem .45rem;top:.35rem;left:.35rem}.tag .wide{display:none}.reveal .in{grid-template-columns:minmax(0,1fr)}.card .pic{width:84px;min-height:76px}
+  table.jobs{font-size:.7rem}table.jobs th,table.jobs td{padding:.4rem .45rem}h2.ink-bar{font-size:.68rem;padding:.75rem .85rem}}
 </style>
 
 <div class="wrap">
-  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count"><b>Bonus</b> &middot; Challenge 01</span></nav>
+  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count"><b>Challenge 01</b></span></nav>
 
   <div class="hero">
     <div class="head">
-      <p class="kicker">Bonus &middot; Challenge 01 &middot; One image, one engine</p>
+      <p class="kicker">Challenge 01 &middot; One image, one engine</p>
       <h1>Unroll the scroll. Find the line hidden at its core.</h1>
     </div>
     <div class="intro">
-      <p class="sub">A synthetic papyrus, rolled almost eight turns tight. A 20-qubit quantum blur plays the damage and scrambles its ink. Unroll it, send the archaeologist moth and its lantern along the sheet, and see how much damage a line of Greek survives.</p>
+      <p class="sub">A synthetic papyrus, rolled almost eight turns tight. A 20-qubit quantum blur plays the damage and scrambles its ink. Flatten it, slide the reading window, and see how much damage a line of Greek survives.</p>
       <div class="proof">
         <span class="hot"><b>20</b> qubits per blur</span>
         <span><b>9</b> real Atlas jobs</span>
@@ -214,32 +239,22 @@ h1{font-size:clamp(2.1rem,4.3vw,3.6rem);line-height:.98;letter-spacing:-.02em}
       </div>
     </div>
 
-    <div class="stage" id="stage" data-view="scene">
-      <div class="desk-wrap only-scene" id="desk-wrap">
+    <div class="stage" id="stage">
+      <div class="desk-wrap" id="desk-wrap">
         <canvas id="desk" width="600" height="168" tabindex="0" aria-label="The desk: a pixel-art side view of the scroll. Drag the roll sideways to unroll it; tap or drag along the sheet to send the archaeologist moth, which is the reading window, there. Arrow keys move the moth."></canvas>
         <span class="chip tag">The desk<span class="wide"> &middot; drag the roll, tap the sheet</span></span>
       </div>
-      <div class="seg viewseg" role="group" aria-label="View: the desk illustration, or the measured numbers of the nine jobs" id="g-view">
-        <button type="button" data-v="scene" aria-pressed="true">Scene</button>
-        <button type="button" data-v="data" aria-pressed="false">Data</button>
-      </div>
-      <div class="datav only-data" id="datav">
-        <svg id="chart" role="group" aria-label="The nine blur-v1 jobs: line kept r against ink moved, as measured from each job's output. Each job is a button that loads it."></svg>
-        <span class="chip tag">Data<span class="wide"> &middot; the nine jobs, measured from their outputs</span></span>
-      </div>
       <div class="legend" id="legend">
-        <span class="only-scene">Illustration &middot; places along the sheet to scale, roll drawn larger</span>
-        <span id="ash-cap" class="only-scene">Ash = ink this job moved: <b id="ash-n">&ndash;</b></span>
-        <span class="only-data">&#9679; reach 0 &middot; &#9670; reach 0.5 &middot; &#9632; reach 1 &middot; filled = line readable in this view</span>
-        <span class="only-data">Tap a job to load it</span>
+        <span>Illustration &middot; places along the sheet to scale, roll drawn larger</span>
+        <span id="ash-cap">Ash = ink this job moved: <b id="ash-n">&ndash;</b></span>
       </div>
       <div class="ct">
         <div class="ctv">
           <canvas id="gl" width="1200" height="480"></canvas>
-          <canvas id="ov" width="1200" height="480" tabindex="0" aria-label="CT slice of the rolled scroll. Drag sideways to unroll or roll it back; tap the sheet to move the reading window there. Arrow keys unroll."></canvas>
+          <canvas id="ov" width="1200" height="480" tabindex="0" aria-label="Cross-section of the rolled scroll. Drag sideways to unroll or roll it back; tap the sheet to move the reading window there. Arrow keys unroll."></canvas>
         </div>
         <div class="hud">
-          <span class="chip" id="c-view"><b>CT slice</b> &middot; blurred ink</span>
+          <span class="chip" id="c-view"><b>Scan</b> &middot; blurred ink</span>
           <span class="chip" id="c-found">Hidden line: <b>not found yet</b></span>
         </div>
         <p class="notice" id="notice" hidden></p>
@@ -254,28 +269,33 @@ h1{font-size:clamp(2.1rem,4.3vw,3.6rem);line-height:.98;letter-spacing:-.02em}
   <div class="row" style="margin-top:.6rem">
     <button type="button" class="btn" id="play">Unroll it</button>
     <button type="button" class="btn ghost" id="share">Copy link to this view</button>
+    <button type="button" class="btn ghost" id="rollup">Roll it back up</button>
     <button type="button" class="btn ghost" id="reset" title="Back to the view the page opened with, and forget what you have read">Start over</button>
   </div>
+
+  <section class="sec" id="how" aria-labelledby="how-h">
+  <h2 class="ink-bar" id="how-h"><span>How to play</span><span>4 steps</span></h2>
   <ol class="steps" aria-label="You control">
-    <li><span><b>Unroll</b>: push the roll on the desk or in the CT slice, or drag the slider.</span></li>
-    <li><span><b>Read</b>: tap the sheet to send the moth and its lantern (the reading window) there.</span></li>
+    <li><span><b>Unroll</b>: drag the slider, or grab the roll and push it.</span></li>
+    <li><span><b>Read</b>: tap the sheet or drag the strip to move the reading window.</span></li>
     <li><span><b>Damage</b>: step through nine blur jobs, or flip to the clean ink.</span></li>
-    <li><span><b>Find</b> the hidden line. It counts once it lies flat under light enough damage.</span></li>
+    <li><span><b>Find</b> the hidden line. It counts once it lies flat and the damage is light enough to read.</span></li>
   </ol>
+  <div class="desk-steps">
+    <span class="label" id="desk-steps-h">On the desk and in the CT slice</span>
+    <ul aria-labelledby="desk-steps-h">
+      <li><span><b>Unroll</b>: push the roll on the desk or in the CT slice, or drag the slider.</span></li>
+      <li><span><b>Read</b>: tap the sheet to send the moth and its lantern (the reading window) there.</span></li>
+    </ul>
+  </div>
 
   <div class="reader">
     <div class="row split">
-      <span class="label">Reading window &middot; what the lantern lights, magnified</span>
+      <span class="label">Reading window &middot; the flattened sheet, magnified</span>
       <span class="label" id="w-pos">turn 7.7</span>
     </div>
     <div class="frame"><canvas id="rd" width="1200" height="250" tabindex="0" aria-label="Reading window: the flattened sheet. Drag sideways or use the arrow keys to move along the sheet."></canvas></div>
     <input type="range" id="w" min="0" max="12000" value="0" step="1" aria-label="Reading window position along the sheet">
-  </div>
-
-  <div class="cast" aria-label="The cast">
-    <div class="card"><div class="pic" id="pic-moth"></div><div><h3>The archaeologist</h3><p>Your reading window. Its lantern lights the stretch of sheet the window shows. It reads only what lies flat, and only through damage light enough to read; it asks <b>?</b> over the roll and scowls at scrambled ink.</p></div></div>
-    <div class="card"><div class="pic" id="pic-roll"></div><div><h3>The roll</h3><p>The same synthetic papyrus as the CT slice below it, seen from the side. It turns with the real spiral as the sheet comes off: <b id="roll-turns">7.75 turns</b> still rolled.</p></div></div>
-    <div class="card"><div class="pic" id="pic-ash"></div><div><h3>The ash</h3><p>Stands in for the blur. One fleck per 2 % of ink brightness the current job threw off the true ink, measured from its output: <b id="ash-card">&ndash;</b>. Clean ink makes none.</p></div></div>
   </div>
 
   <div class="grid2">
@@ -323,7 +343,7 @@ h1{font-size:clamp(2.1rem,4.3vw,3.6rem);line-height:.98;letter-spacing:-.02em}
   <section class="reveal" id="reveal" hidden aria-live="polite">
     <div class="ink-bar"><span>You read it</span><span id="rv-turns">the hidden line</span></div>
     <div class="in">
-      <canvas class="pic" id="rv-pic" width="96" height="84" aria-hidden="true"></canvas>
+      <img class="pic" id="rv-pic" width="96" height="84" alt="" aria-hidden="true">
       <div>
         <p class="greek" id="greek"></p>
         <p id="trans"></p>
@@ -331,9 +351,35 @@ h1{font-size:clamp(2.1rem,4.3vw,3.6rem);line-height:.98;letter-spacing:-.02em}
       </div>
     </div>
   </section>
+  </section>
 
-  <section class="more">
-    <div class="ink-bar"><span>Behind the scroll</span><span>4 drawers</span></div>
+  <section class="sec" id="cast-sec" aria-labelledby="cast-h">
+    <h2 class="ink-bar" id="cast-h"><span>The cast</span><span>3 sprites</span></h2>
+    <div class="cast">
+      <div class="card"><button type="button" class="pic" id="pic-moth" data-show="moth" aria-label="Show the archaeologist on the desk"><span class="see">Show on the desk</span></button><div><h3>The archaeologist</h3><p>Your reading window. Its lantern lights the stretch of sheet the window shows. It reads only what lies flat, and only through damage light enough to read; it asks <b>?</b> over the roll and scowls at scrambled ink.</p></div></div>
+      <div class="card"><button type="button" class="pic" id="pic-roll" data-show="roll" aria-label="Show the roll on the desk"><span class="see">Show on the desk</span></button><div><h3>The roll</h3><p>The same synthetic papyrus as the CT slice below it, seen from the side. It turns with the real spiral as the sheet comes off: <b id="roll-turns">7.75 turns</b> still rolled.</p></div></div>
+      <div class="card"><button type="button" class="pic" id="pic-ash" data-show="ash" aria-label="Show the ash on the desk"><span class="see">Show on the desk</span></button><div><h3>The ash</h3><p>Stands in for the blur. One fleck per 2 % of ink brightness the current job threw off the true ink, measured from its output: <b id="ash-card">&ndash;</b>. Clean ink makes none.</p></div></div>
+    </div>
+  </section>
+
+  <section class="sec" id="data-sec" aria-labelledby="data-h">
+    <h2 class="ink-bar" id="data-h"><span>The data</span><span>9 jobs, measured</span></h2>
+    <figure class="datav" id="datav">
+      <svg id="chart" role="group" aria-label="The nine blur-v1 jobs: line kept r against ink moved, as measured from each job's output. Each job is a button that loads it."></svg>
+      <span class="chip tag">Data<span class="wide"> &middot; the nine jobs, measured from their outputs</span></span>
+      <div class="legend">
+        <span>&#9679; reach 0 &middot; &#9670; reach 0.5 &middot; &#9632; reach 1 &middot; filled = line readable in this view</span>
+        <span>Tap a job to load it</span>
+      </div>
+      <figcaption>
+        <p><b>The nine blur-v1 jobs: line kept r against ink moved, as measured from each job's output.</b> &ldquo;Line kept&rdquo; is the Pearson correlation between the blurred and clean ink over the hidden line, measured on the flattened sheet. &ldquo;Ink moved&rdquo; is the share of the output's brightness inside the roll that lands more than 2 px from any true ink.</p>
+        <p>The dashed lines are the thresholds the page uses to count the line as read (r &ge; 0.8 in the scan, r &ge; 0.55 in the ink layer only); the one in force for the current view is drawn solid. The ring marks the job loaded in the scan, the reading window and the readout above; the dotted point at r = 1 is the clean ink.</p>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="more sec" aria-labelledby="more-h">
+    <h2 class="ink-bar" id="more-h"><span>Behind the scroll</span><span>4 drawers</span></h2>
     <details class="drawer"><summary>Why a rolled scroll?</summary><div class="body">
       <p>Some scrolls can never be opened: the En-Gedi scroll was burnt to a lump, and the Herculaneum papyri were carbonised by Vesuvius in 79 CE. X-ray CT can see inside, and &ldquo;virtual unwrapping&rdquo; reads them without touching them: find the sheet in the scan, sample the scan along it, and lay it flat (Seales et al., <i>Science Advances</i> 2016).</p>
       <p>En-Gedi was readable because its ink absorbs X-rays more strongly than the parchment. Herculaneum's carbon ink barely shows in CT; Parker et al. (<i>PLoS ONE</i> 2019) showed it still leaves a subtle signature, and machine learning has since been trained to find it.</p>
@@ -354,6 +400,27 @@ h1{font-size:clamp(2.1rem,4.3vw,3.6rem);line-height:.98;letter-spacing:-.02em}
       <p class="honesty">One artistic liberty: in a real scroll a line of text runs across many CT slices. Here the letters are written into the thickness of the layer within one slice, so a single 1024 px image can carry a readable line.</p>
     </div></details>
   </section>
+
+  <section class="sec" id="jobs-sec" aria-labelledby="jobs-h">
+    <h2 class="ink-bar" id="jobs-h"><span>Jobs and credits</span><span>9 jobs &middot; 20 qubits each</span></h2>
+    <div class="tbl-wrap">
+      <table class="jobs" id="jobs-tbl">
+        <caption class="vh">The nine blur-v1 jobs in damage order, with their job IDs and both measures</caption>
+        <thead><tr><th scope="col">Job</th><th scope="col">Strength</th><th scope="col">Reach</th><th scope="col">Job ID</th><th scope="col">Line kept r</th><th scope="col">Ink moved</th></tr></thead>
+        <tbody id="jobs-body"></tbody>
+      </table>
+    </div>
+    <div class="jobs-note">
+      <p class="label">Rows are in damage order, which is the order of the page's damage slider. Each job number loads that job.</p>
+      <p class="honesty">Engine: blur-v1 v1.1.9 (Atlas, &ldquo;Quantum Blur&rdquo;), Atlas's classical statevector simulator; blur-v1 has no QPU mode. Fixed for every job: style rx, size 1024, the same ink layer and mask, so every job is 20 qubits. Credits: 1 per job, 9 spent of a 10-credit cap.</p>
+      <ul class="credits">
+        <li>The hidden line is the Epicurean <i>tetrapharmakos</i> (&ldquo;four-part cure&rdquo;), as preserved by Philodemus in the Herculaneum papyrus PHerc. 1005; the English translation on the page is ours.</li>
+        <li>Papers (context only; none of their data or code is used): W. B. Seales et al., &ldquo;From damage to discovery via virtual unwrapping: Reading the scroll from En-Gedi&rdquo;, <i>Science Advances</i> 2(9), e1601247 (2016); C. S. Parker et al., &ldquo;From invisibility to readability: Recovering the ink of Herculaneum&rdquo;, <i>PLoS ONE</i> 14(5), e0215775 (2019).</li>
+        <li>Engine: Moth Quantum Atlas, blur-v1 (Quantum Blur) v1.1.9, built on the QuantumBlur library.</li>
+        <li>No real scroll data is used. The scroll, its papyrus texture, CT-like artefacts and ink are all generated (seeded, reproducible). The pixel art is original, drawn for this piece in the shared ink palette.</li>
+      </ul>
+    </div>
+  </section>
   <style>
 .wtnr-nav{margin-top:2.5rem;border-top:1px solid var(--ink,#19238E);padding-top:1.1rem;display:grid;gap:1rem}
 .wtnr-nav .wn-row{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:space-between;align-items:center}
@@ -369,7 +436,7 @@ h1{font-size:clamp(2.1rem,4.3vw,3.6rem);line-height:.98;letter-spacing:-.02em}
 .wtnr-nav ol a b{font:500 .78rem/1.6 var(--mono,monospace);min-width:1.6rem}
 .wtnr-nav ol a[aria-current="page"]{font-weight:600}
 .wtnr-nav ol a small{color:var(--ink-2,#545BA9);font-size:.72rem}
-</style><nav class="wtnr-nav" aria-label="All pieces"><div class="wn-row"><a class="wn-btn" href="../21-quantum-nose/index.html" rel="prev">&larr; 21 The Quantum Nose Test</a><a class="wn-btn wn-hub" href="../../index.html">All 22 pieces</a><a class="wn-btn" href="../01-penrose-hole/index.html" rel="next">01 The Hole in the Penrose &rarr;</a></div><details><summary>Jump to any piece (22)</summary><ol><li><a href="../01-penrose-hole/index.html"><b>01</b><span>The Hole in the Penrose</span></a></li><li><a href="../02-coda-reservoir/index.html"><b>02</b><span>Coda Reservoir</span></a></li><li><a href="../03-moth-eye/index.html"><b>03</b><span>Moth Eye</span></a></li><li><a href="../04-magic-angle/index.html"><b>04</b><span>Magic Angle</span></a></li><li><a href="../05-jam-the-bat/index.html"><b>05</b><span>Jam the Bat</span></a></li><li><a href="../06-tweezer/index.html"><b>06</b><span>Tweezer</span></a></li><li><a href="../07-flavour/index.html"><b>07</b><span>FLAVOUR</span></a></li><li><a href="../08-pbit-or-qubit/index.html"><b>08</b><span>p-bit or qubit?</span></a></li><li><a href="../09-syndrome-loom/index.html"><b>09</b><span>Syndrome Loom</span></a></li><li><a href="../10-squeezed-chirp/index.html"><b>10</b><span>Squeezed Chirp</span></a></li><li><a href="../11-maxwells-ribbon/index.html"><b>11</b><span>Maxwell&#x27;s Ribbon</span></a></li><li><a href="../12-chirp-instrument/index.html"><b>12</b><span>Chirp Instrument <small>bonus</small></span></a></li><li><a href="../13-moth-to-flame/index.html"><b>13</b><span>Moth to Flame <small>bonus</small></span></a></li><li><a href="../14-hemibrain-ising/index.html"><b>14</b><span>Fly Brain Metro <small>bonus</small></span></a></li><li><a href="../15-tissue-blur/index.html"><b>15</b><span>Tissue Blur <small>bonus</small></span></a></li><li><a href="../16-busy-beaver-score/index.html"><b>16</b><span>Busy Beaver Score <small>bonus</small></span></a></li><li><a href="../17-quantum-lenia/index.html"><b>17</b><span>Quantum Lenia <small>bonus</small></span></a></li><li><a href="../18-oldest-light/index.html"><b>18</b><span>Oldest Light <small>bonus</small></span></a></li><li><a href="../19-frog-chorus/index.html"><b>19</b><span>Frog Chorus <small>bonus</small></span></a></li><li><a href="../20-antimatter-drop/index.html"><b>20</b><span>Antimatter Drop <small>bonus</small></span></a></li><li><a href="../21-quantum-nose/index.html"><b>21</b><span>The Quantum Nose Test <small>bonus</small></span></a></li><li><a href="../22-scroll-unroll/index.html" aria-current="page"><b>22</b><span>Scroll Unroll <small>bonus</small></span></a></li></ol></details></nav>
+</style><nav class="wtnr-nav" aria-label="All pieces"><div class="wn-row"><a class="wn-btn" href="../21-quantum-nose/index.html" rel="prev">&larr; 21 The Quantum Nose Test</a><a class="wn-btn wn-hub" href="../../index.html">All 22 pieces</a><a class="wn-btn" href="../01-penrose-hole/index.html" rel="next">01 The Hole in the Penrose &rarr;</a></div><details><summary>Jump to any piece (22)</summary><ol><li><a href="../01-penrose-hole/index.html"><b>01</b><span>The Hole in the Penrose</span></a></li><li><a href="../02-coda-reservoir/index.html"><b>02</b><span>Coda Reservoir</span></a></li><li><a href="../03-moth-eye/index.html"><b>03</b><span>Moth Eye</span></a></li><li><a href="../04-magic-angle/index.html"><b>04</b><span>Magic Angle</span></a></li><li><a href="../05-jam-the-bat/index.html"><b>05</b><span>Jam the Bat</span></a></li><li><a href="../06-tweezer/index.html"><b>06</b><span>Tweezer</span></a></li><li><a href="../07-flavour/index.html"><b>07</b><span>FLAVOUR</span></a></li><li><a href="../08-pbit-or-qubit/index.html"><b>08</b><span>p-bit or qubit?</span></a></li><li><a href="../09-syndrome-loom/index.html"><b>09</b><span>Syndrome Loom</span></a></li><li><a href="../10-squeezed-chirp/index.html"><b>10</b><span>Squeezed Chirp</span></a></li><li><a href="../11-maxwells-ribbon/index.html"><b>11</b><span>Maxwell&#x27;s Ribbon</span></a></li><li><a href="../12-chirp-instrument/index.html"><b>12</b><span>Chirp Instrument</span></a></li><li><a href="../13-moth-to-flame/index.html"><b>13</b><span>Moth to Flame</span></a></li><li><a href="../14-hemibrain-ising/index.html"><b>14</b><span>Fly Brain Metro</span></a></li><li><a href="../15-tissue-blur/index.html"><b>15</b><span>Tissue Blur</span></a></li><li><a href="../16-busy-beaver-score/index.html"><b>16</b><span>Busy Beaver Score</span></a></li><li><a href="../17-quantum-lenia/index.html"><b>17</b><span>Quantum Lenia</span></a></li><li><a href="../18-oldest-light/index.html"><b>18</b><span>Oldest Light</span></a></li><li><a href="../19-frog-chorus/index.html"><b>19</b><span>Frog Chorus</span></a></li><li><a href="../20-antimatter-drop/index.html"><b>20</b><span>Antimatter Drop</span></a></li><li><a href="../21-quantum-nose/index.html"><b>21</b><span>The Quantum Nose Test</span></a></li><li><a href="../22-scroll-unroll/index.html" aria-current="page"><b>22</b><span>Scroll Unroll</span></a></li></ol></details></nav>
   <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -676,10 +743,11 @@ function drawOverlay(fr,p){
     const mx=Math.max(hw,Math.min(ov.width-hw,m[0]*S)), my=Math.max(hh,Math.min(ov.height-hh,m[1]*S-hh-3*cs));
     octx.setTransform(1,0,0,1,0,0);
     InkSprite.draw(octx,spr,M.frame%spr.frames.length,mx,my,cs,{flipX:M.face<0});
-    if(cssW>=700){   // name the window once, beside the moth
-      octx.font=`500 ${Math.round(11*dpr)}px "IBM Plex Mono", ui-monospace, monospace`;
-      const tw=octx.measureText('READING WINDOW').width,right=mx+hw+tw+30*dpr<ov.width,lx=right?mx+hw+6*dpr:mx-hw-tw-26*dpr,ly=my;
-      pill(octx,lx,ly-10*dpr,tw+20*dpr,20*dpr,dpr);octx.textAlign='left';octx.fillStyle=CSS_INK;octx.fillText('READING WINDOW',lx+10*dpr,ly+0.5*dpr);
+    {   // name the window once, beside the moth (at every width; smaller type on a phone)
+      const fz=cssW>=700?11:9,ph=(fz+9)*dpr;
+      octx.font=`500 ${Math.round(fz*dpr)}px "IBM Plex Mono", ui-monospace, monospace`;
+      const tw=octx.measureText('READING WINDOW').width,right=mx+hw+tw+30*dpr<ov.width,lx=right?mx+hw+6*dpr:Math.max(2*dpr,mx-hw-tw-26*dpr),ly=my;
+      pill(octx,lx,ly-ph/2,tw+(fz+9)*dpr,ph,dpr);octx.textAlign='left';octx.fillStyle=CSS_INK;octx.textBaseline='middle';octx.fillText('READING WINDOW',lx+(fz+9)*dpr/2,ly+0.5*dpr);
     }
     octx.setTransform(S,0,0,S,0,0);
   }else{   // off screen: point to it from the nearest edge
@@ -743,8 +811,9 @@ function checkFound(){
   if(coverage()>=0.85){st.found=true;showFound();celebrate();toast('You read the hidden line. Its translation is below the controls.');}
 }
 function showFound(){$('reveal').hidden=false;$('rv-turns').textContent='turns '+SCROLL.text_turns[0].toFixed(1)+'\u2013'+SCROLL.text_turns[1].toFixed(1)+' from the core';$('c-found').classList.add('found');$('c-found').innerHTML='Hidden line: <b>found</b>, turns '+SCROLL.text_turns[0].toFixed(1)+'\u2013'+SCROLL.text_turns[1].toFixed(1);
-  const c=$('rv-pic'),d=window.devicePixelRatio||1,s=Math.max(1,Math.round(3*d)),sp_=SP.archCheer;c.width=sp_.w*s;c.height=sp_.h*s;c.style.width=(sp_.w*3)+'px';c.style.height=(sp_.h*3)+'px';
-  const x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);InkSprite.draw(x,sp_,0,c.width/2,c.height/2,s);}
+  const im=$('rv-pic'),c=document.createElement('canvas'),d=window.devicePixelRatio||1,s=Math.max(1,Math.round(3*d)),sp_=SP.archCheer;c.width=sp_.w*s;c.height=sp_.h*s;
+  im.style.width=(sp_.w*3)+'px';im.style.height=(sp_.h*3)+'px';
+  const x=c.getContext('2d');x.imageSmoothingEnabled=false;InkSprite.draw(x,sp_,0,c.width/2,c.height/2,s);im.src=c.toDataURL('image/png');}
 
 // ---- readouts ----
 function readouts(){
@@ -758,7 +827,7 @@ function readouts(){
   const tn=GEO.turnOf(st.w0+winW()/2);
   $('r-win').textContent=`turn ${tn.toFixed(2)} of ${SCROLL.geometry.TURNS} \u00b7 ${Math.round(st.w0).toLocaleString('en-US')}\u2013${Math.round(Math.min(L,st.w0+winW())).toLocaleString('en-US')} px`;
   $('w-pos').textContent=`turn ${tn.toFixed(1)} \u00b7 ${Math.round(st.w0).toLocaleString('en-US')} px from the core`;
-  $('c-view').innerHTML=`<b>${st.inkOnly?'Ink layer':'CT slice'}</b> \u00b7 ${st.clean?'clean ink':(st.inkOnly?'raw blur-v1 output':'blurred ink')}`;
+  $('c-view').innerHTML=`<b>${st.inkOnly?'Ink layer':'Scan'}</b> \u00b7 ${st.clean?'clean ink':(st.inkOnly?'raw blur-v1 output':'blurred ink')}`;
   if(!st.found){const cv=coverage();$('c-found').innerHTML='Hidden line: <b>'+(cv>0?Math.round(cv*100)+' % read':'not found yet')+'</b>';}
   const ashTxt=st.clean?'none (clean ink)':`${Math.round(j.off_ink*100)} % (${ashTarget()} flecks)`;
   $('ash-n').textContent=ashTxt;$('ash-card').textContent=ashTxt;
@@ -770,8 +839,8 @@ function readouts(){
   document.querySelectorAll('[data-layer]').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.layer==='ink')===st.inkOnly)));
   $('tint').setAttribute('aria-pressed',String(st.tint));$('close').setAttribute('aria-pressed',String(st.close));
   $('play').textContent=playLabel();
-  $('stage').dataset.view=st.view;document.querySelectorAll('#g-view button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===st.view)));
-  if(st.view==='data')drawChart();
+  drawChart();   // The data section: always visible, redrawn only when the job, the view or the width changes
+  [...$('jobs-body').children].forEach((tr,i)=>tr.setAttribute('aria-current',String(!st.clean&&i===st.d)));
   $('u').value=Math.round(st.u*1000);$('w').max=L-winW();$('w').value=Math.round(st.w0);$('d').value=st.d;$('k').value=st.k;$('z').value=Math.round(st.zoom*10);
 }
 let raf=0;
@@ -797,7 +866,6 @@ $('z').addEventListener('input',e=>{st.zoom=+e.target.value/10;render();});
 document.querySelectorAll('[data-ink]').forEach(b=>b.addEventListener('click',()=>setDamage(st.d,b.dataset.ink==='clean')));
 document.querySelectorAll('[data-layer]').forEach(b=>b.addEventListener('click',()=>{st.inkOnly=b.dataset.layer==='ink';render();}));
 $('tint').addEventListener('click',()=>{st.tint=!st.tint;render();});
-document.querySelectorAll('#g-view button').forEach(b=>b.addEventListener('click',()=>{st.view=b.dataset.v;chartKey='';if(st.view==='scene')sizeDesk();render();}));
 $('close').addEventListener('click',()=>{const c=st.w0+winW()/2;st.close=!st.close;st.focus='win';st.w0=c-winW()/2;render();});
 $('play').addEventListener('click',()=>{   // user-started, pausable, respects reduced motion
   if(anim){cancelAnimationFrame(anim);anim=0;paused=true;$('play').textContent=playLabel();return;}
@@ -809,6 +877,8 @@ $('play').addEventListener('click',()=>{   // user-started, pausable, respects r
     render();anim=requestAnimationFrame(step);};
   anim=requestAnimationFrame(step);$('play').textContent=playLabel();
 });
+// roll it back up: the whole sheet back on the roll, zoom back to 1x; what you have read is kept
+$('rollup').addEventListener('click',()=>{stopAnim();st.focus='roll';st.view='scene';st.u=0;st.zoom=1;render();});
 // start over: the view the page opened with, and nothing read yet
 $('reset').addEventListener('click',()=>{
   stopAnim();Object.assign(st,ST0);seen.fill(0);M.cheerUntil=0;chartKey='';
@@ -823,7 +893,7 @@ $('share').addEventListener('click',async()=>{
 // main canvas: drag sideways to push the roll, tap to send the reading window there
 function evPt(e,cv){const r=cv.getBoundingClientRect();return [(e.clientX-r.left)/r.width*cv.width,(e.clientY-r.top)/r.height*cv.height];}
 let drag=null;
-ov.addEventListener('pointerdown',e=>{stopAnim();drag={x:e.clientX,y:e.clientY,u:st.u,k:cam.k*ov.getBoundingClientRect().width/glc.width,moved:false,pt:evPt(e,glc)};ov.setPointerCapture(e.pointerId);});
+ov.addEventListener('pointerdown',e=>{stopAnim();st.view='scene';drag={x:e.clientX,y:e.clientY,u:st.u,k:cam.k*ov.getBoundingClientRect().width/glc.width,moved:false,pt:evPt(e,glc)};ov.setPointerCapture(e.pointerId);});
 ov.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x;if(Math.abs(dx)>6||Math.abs(e.clientY-drag.y)>6)drag.moved=true;
   if(drag.moved){ov.classList.add('dragging');st.focus='roll';st.u=Math.max(0,Math.min(1,drag.u-2*(dx/drag.k)/L));render();}});
 function endDrag(e){if(!drag)return;ov.classList.remove('dragging');
@@ -996,6 +1066,7 @@ function drawDesk(t){
   InkSprite.draw(bx,SP[M.sprite],M.frame,mx,my,1,{flipX:M.face<0});
   if(M.bubble){const right=mx+30<DK.bw,bxp=right?mx+21:mx-21,byp=Math.max(6,my-12);InkSprite.draw(bx,SP[M.bubble],0,bxp,byp,1);}
   if(t<M.cheerUntil+.4)for(const s of M.spark)InkSprite.draw(bx,SP.sparkle,Math.floor(t*6+s.ph*3)%2,Math.round(mx+s.dx),Math.round(Math.max(4,my+s.dy-(t-M.cheerUntil+2.8)*4)),1);
+  if(HL&&t<HL.until&&(reduce||Math.floor((HL.until-t)*4)%2===0))markOnDesk(HL.who,p,cx,R,mx,my);
   dctx.imageSmoothingEnabled=false;dctx.clearRect(0,0,desk.width,desk.height);dctx.drawImage(DB,0,0,DB.width*DK.s,DB.height*DK.s);
 }
 let dLoop=0,dLast=0,ctKey='';
@@ -1013,7 +1084,7 @@ if('IntersectionObserver' in window)new IntersectionObserver(es=>{deskVis=es.som
 let ddrag=null;
 function deskPt(e){const r=desk.getBoundingClientRect();return [(e.clientX-r.left)/r.width*DK.bw,(e.clientY-r.top)/r.height*BH];}
 function deskWin(x){st.focus='win';st.w0=sOfDesk(x)-winW()/2;render();}
-desk.addEventListener('pointerdown',e=>{stopAnim();const q=deskPt(e),p=sp(),R=rollPx(p),cx=dS(p);
+desk.addEventListener('pointerdown',e=>{stopAnim();st.view='scene';const q=deskPt(e),p=sp(),R=rollPx(p),cx=dS(p);
   const onRoll=Math.abs(q[0]-cx)<=R+3&&q[1]>=BOT+1-2*R-DEPTH-4&&q[1]<=BOT+2;
   ddrag={roll:onRoll,x0:q[0],u0:st.u};if(!onRoll)deskWin(q[0]);desk.setPointerCapture(e.pointerId);});
 desk.addEventListener('pointermove',e=>{if(!ddrag)return;const q=deskPt(e);
@@ -1023,28 +1094,59 @@ desk.addEventListener('keydown',e=>{const m={ArrowLeft:-1,ArrowRight:1}[e.key];i
 
 // the cast cards: the same sprites, at an integer scale
 let castKey=null;
-function pic(id,w,h){const el=$(id),d=window.devicePixelRatio||1,s=Math.max(1,Math.round(2*d));let c=el.querySelector('canvas');
-  if(!c){c=document.createElement('canvas');el.appendChild(c);}c.width=w*s;c.height=h*s;c.style.width=(w*2)+'px';c.style.height=(h*2)+'px';
-  const g=c.getContext('2d');g.imageSmoothingEnabled=false;return {g,s,c};}
+function pic(id,w,h){   // drawn off screen, shown as a still <img> inside the card's "Show on the desk" button
+  const el=$(id),d=window.devicePixelRatio||1,s=Math.max(1,Math.round(2*d));let im=el.querySelector('img');
+  if(!im){im=document.createElement('img');im.alt='';el.insertBefore(im,el.firstChild);}im.style.width=(w*2)+'px';im.style.height=(h*2)+'px';
+  const c=document.createElement('canvas');c.width=w*s;c.height=h*s;
+  const g=c.getContext('2d');g.imageSmoothingEnabled=false;return {g,s,c,done(){im.src=c.toDataURL('image/png');}};}
 function blitSmall(o,draw,w,h){const t=document.createElement('canvas');t.width=w;t.height=h;const g=t.getContext('2d');draw(g);o.g.drawImage(t,0,0,w*o.s,h*o.s);}
 function drawCast(){
-  const m=pic('pic-moth',32,28);InkSprite.draw(m.g,SP.archaeologist,0,m.c.width/2,m.c.height/2,m.s);
+  const m=pic('pic-moth',32,28);InkSprite.draw(m.g,SP.archaeologist,0,m.c.width/2,m.c.height/2,m.s);m.done();
   const r=pic('pic-roll',40,36);blitSmall(r,g=>{px(g,PAL.T,0,30,40,6);px(g,PAL.K,0,35,40,1);px(g,PAL.W,20,26,20,5);px(g,PAL.L,20,26,20,1);px(g,PAL.B,20,31,20,1);
-    drawRollAt(g,15,31,11,coreAngle(GEO.frame(L)),5);},40,36);
+    drawRollAt(g,15,31,11,coreAngle(GEO.frame(L)),5);},40,36);r.done();
   drawCastAsh();
 }
 function drawCastAsh(){
   castKey=st.clean?-1:st.d;const n=ashTarget(),a=pic('pic-ash',40,36);
   blitSmall(a,g=>{px(g,PAL.T,0,30,40,6);px(g,PAL.K,0,35,40,1);drawRollAt(g,19,31,7,coreAngle(GEO.frame(L)),4);
-    for(let i=0;i<n;i++){const k=hash(i,9);px(g,[PAL.K,PAL.B,PAL.L][i%3],Math.round(4+hash(i,7)*32),Math.round(14-k*13+(i%2)),hash(i,8)<.2?2:1,1);}},40,36);
+    for(let i=0;i<n;i++){const k=hash(i,9);px(g,[PAL.K,PAL.B,PAL.L][i%3],Math.round(4+hash(i,7)*32),Math.round(14-k*13+(i%2)),hash(i,8)<.2?2:1,1);}},40,36);a.done();
 }
 
-// ---- the Data view: the nine jobs' two measured numbers (from out/metrics.json, computed by unwrap.py) ----------
+// the cast cards' buttons: "Show on the desk" marks that character in the scene above for a moment
+let HL=null;
+function markBox(x0,y0,x1,y1){   // pixel corner brackets in ink, plus a small arrow above
+  x0=Math.max(1,Math.round(x0));x1=Math.min(DK.bw-2,Math.round(x1));y0=Math.max(1,Math.round(y0));y1=Math.min(BH-2,Math.round(y1));
+  for(const [x,y,dx,dy] of [[x0,y0,1,1],[x1,y0,-1,1],[x0,y1,1,-1],[x1,y1,-1,-1]]){px(bx,PAL.K,Math.min(x,x+dx*3),y,4,1);px(bx,PAL.K,x,Math.min(y,y+dy*3),1,4);}
+  const ax=Math.round((x0+x1)/2),ay=Math.max(1,y0-6);for(let i=0;i<3;i++)px(bx,PAL.K,ax-2+i,ay+i,5-2*i,1);
+}
+function markOnDesk(who,p,cx,R,mx,my){
+  if(who==='moth'){const sp_=SP[M.sprite];markBox(mx-sp_.w/2-2,my-sp_.h/2-2,mx+sp_.w/2+1,my+sp_.h/2+1);}
+  else if(who==='roll')markBox(cx-R-3,BOT-2*R-DEPTH-3,cx+R+3,BOT+2);
+  else{let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+    if(reduce){const n=ashTarget(),a=dS(p),b=dS(L);for(let i=0;i<n;i++){const r=i%2===0||b-a<6,x=r?cx+(hash(i,1)*2-1)*R:a+hash(i,2)*(b-a),y=(r?BOT-R*2-DEPTH:TOP)-2-hash(i,3)*24;
+      x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);}}
+    else for(const f of ash){x0=Math.min(x0,f.x);x1=Math.max(x1,f.x);y0=Math.min(y0,f.y);y1=Math.max(y1,f.y);}
+    if(x1<x0)markBox(cx-R-3,BOT-2*R-DEPTH-10,cx+R+3,BOT-2*R-DEPTH);   // clean ink: no ash, mark where it would rise
+    else markBox(x0-3,y0-3,x1+3,y1+3);}
+}
+function showOnDesk(who){
+  HL={who,until:performance.now()/1000+2.6};st.view='scene';
+  const n=ashTarget(),msg={moth:'The archaeologist is marked on the desk: it stands where the reading window is',
+    roll:'The roll is marked on the desk: '+$('roll-turns').textContent+' still rolled',
+    ash:n?`The ash is marked on the desk: ${n} flecks for this job's ${Math.round(job().off_ink*100)} % of ink moved`:'No ash on the desk: clean ink moved none'}[who];
+  $('stage').scrollIntoView({block:'start',behavior:reduce?'auto':'smooth'});
+  try{desk.focus({preventScroll:true});}catch(e){}
+  toast(msg);render();
+  if(reduce)setTimeout(render,2700);   // with reduced motion there is no loop: redraw once when the mark ends
+}
+document.querySelectorAll('[data-show]').forEach(b=>b.addEventListener('click',()=>showOnDesk(b.dataset.show)));
+
+// ---- The data: the nine jobs' two measured numbers (from out/metrics.json, computed by unwrap.py) --------------
 // x = ink moved off the true ink, y = line kept r. Marker shape = reach; filled = the line counts as read in the
-// current view (the same threshold the page uses). Every job is a button that loads it; the ring is clean ink.
+// current view (the same threshold the page uses). Every job is a button that loads it; the ring marks the loaded job.
 const chart=$('chart'),SVGNS='http://www.w3.org/2000/svg';let chartKey='',chartPts=[],chartVB=[1,1];
 function drawChart(){
-  const W=Math.max(280,Math.round($('stage').clientWidth||600)),Hh=W<560?264:286,thr=st.inkOnly?0.55:0.8;
+  const W=Math.max(280,Math.round($('datav').clientWidth||$('stage').clientWidth||600)),Hh=W<560?264:286,thr=st.inkOnly?0.55:0.8;
   const key=[W,Hh,st.d,st.clean,st.inkOnly].join();if(key===chartKey)return;chartKey=key;
   const fe=document.activeElement,refocus=fe&&fe.getAttribute&&chart.contains(fe)?fe.getAttribute('data-pt'):null;
   const nar=W<560,L0=nar?40:64,R0=nar?12:26,T0=nar?58:64,B0=36,pw=W-L0-R0,ph=Hh-T0-B0;
@@ -1066,17 +1168,25 @@ function drawChart(){
   const hitR=q=>{let d=1e9;for(const o of chartPts)if(o!==q)d=Math.min(d,Math.hypot(o.x-q.x,o.y-q.y));return Math.max(3,Math.min(13,d/2-0.5)).toFixed(1);};
   // clean ink: the original line, no job
   {const x=X(0),y=Y(1),on=st.clean;s+=`<g data-pt="clean" role="button" tabindex="0" aria-pressed="${on}" aria-label="Clean ink: no job, the line as written (r = 1). Load it."><circle class="hit" cx="${x}" cy="${y}" r="${hitR(chartPts[0])}"/><circle class="mk" cx="${x}" cy="${y}" r="5" stroke-dasharray="2 2"/>${on?`<circle class="ring" cx="${x}" cy="${y}" r="10"/>`:''}</g>`;
-    if(on)cur={x,y,t:'CLEAN INK \u00b7 NO JOB \u00b7 r = 1'};}
+    if(on)cur={x,y,v:'clean',t:'CLEAN INK \u00b7 NO JOB \u00b7 r = 1',ts:'CLEAN INK \u00b7 r = 1'};}
   JOBS.forEach((j,i)=>{const x=X(j.off_ink),y=Y(j.r_line),on=!st.clean&&i===st.d,ok=j.r_line>=thr,pct=Math.round(j.off_ink*100);
     s+=`<g data-pt="${i}" role="button" tabindex="0" aria-pressed="${on}" aria-label="Job ${i+1}: strength ${j.strength}, reach ${j.reach}, line kept r = ${fmtR(j.r_line)}, ${pct} % of ink moved${ok?', line readable in this view':''}. Load it."><circle class="hit" cx="${x}" cy="${y}" r="${hitR(chartPts[i+1])}"/>${shape(j,x,y,on?5.5:4.5,'mk'+(ok?' ok':''))}${on?`<circle class="ring" cx="${x}" cy="${y}" r="11"/>`:''}</g>`;
-    if(on)cur={x,y,t:`JOB ${i+1} \u00b7 s ${j.strength} \u00b7 REACH ${j.reach} \u00b7 r ${fmtR(j.r_line)} \u00b7 ${pct} % MOVED`};});
-  if(cur){const tw=cur.t.length*6.65+16,th=20,above=cur.y-th-16>T0-4,cx=Math.max(L0+2,Math.min(L0+pw-tw-2,cur.x-tw/2)),cy=above?cur.y-th-14:cur.y+14;
-    s+=`<g aria-hidden="true" pointer-events="none"><rect class="co" x="${cx}" y="${cy}" width="${tw}" height="${th}" rx="${th/2}"/><text class="cot" x="${cx+8}" y="${cy+14}">${cur.t}</text></g>`;}
+    if(on)cur={x,y,v:String(i),t:`JOB ${i+1} \u00b7 s ${j.strength} \u00b7 REACH ${j.reach} \u00b7 r ${fmtR(j.r_line)} \u00b7 ${pct} % MOVED`,ts:`JOB ${i+1} \u00b7 r ${fmtR(j.r_line)} \u00b7 ${pct} %`};});
+  if(cur){   // the callout names the loaded job; it goes where it hides no other point, and shortens to fit a phone
+    const th=20,wOf=t=>t.length*6.65+16,txt=wOf(cur.t)<=pw-4?cur.t:cur.ts,tw=wOf(txt);
+    const clampX=v=>Math.max(L0+2,Math.min(L0+pw-tw-2,v)),cands=[[clampX(cur.x-tw/2),cur.y-th-14],[clampX(cur.x-tw/2),cur.y+14],
+      [clampX(cur.x+16),cur.y-th/2],[clampX(cur.x-tw-16),cur.y-th/2],[clampX(cur.x+16),cur.y+14],[clampX(cur.x+16),cur.y-th-14]];
+    const cost=([cx,cy])=>{let n=0;if(cy<T0-4||cy+th>T0+ph+2)n+=100;
+      for(const o of chartPts)if(o.v!==cur.v&&o.x>cx-8&&o.x<cx+tw+8&&o.y>cy-8&&o.y<cy+th+8)n++;
+      if(cur.x>cx-6&&cur.x<cx+tw+6&&cur.y>cy-6&&cur.y<cy+th+6)n+=50;return n;};
+    let best=cands[0],bc=cost(best);for(const c of cands.slice(1)){const k=cost(c);if(k<bc){bc=k;best=c;}}
+    const [cx,cy]=best;
+    s+=`<g aria-hidden="true" pointer-events="none"><rect class="co" x="${cx}" y="${cy}" width="${tw}" height="${th}" rx="${th/2}"/><text class="cot" x="${cx+8}" y="${cy+14}">${txt}</text></g>`;}
   chart.setAttribute('viewBox',`0 0 ${W} ${Hh}`);chart.setAttribute('width',W);chart.setAttribute('height',Hh);chart.style.height=Hh+'px';
   chart.innerHTML=s;
   if(refocus!==null){const el=chart.querySelector(`[data-pt="${refocus}"]`);if(el)el.focus();}
 }
-function pickV(v){if(v==='clean')setDamage(st.d,true);else setDamage(+v,false);}
+function pickV(v){st.view='data';if(v==='clean')setDamage(st.d,true);else setDamage(+v,false);}
 function pickPt(el){pickV(el.getAttribute('data-pt'));}
 // a tap loads the nearest point within reach, so close neighbours (jobs 6 and 7) are each clickable at their own marker
 chart.addEventListener('click',e=>{const r=chart.getBoundingClientRect();if(!r.width||!r.height)return;
@@ -1089,6 +1199,9 @@ chart.addEventListener('keydown',e=>{const g=e.target.closest&&e.target.closest(
 $('ladder').innerHTML=JOBS.map((j,i)=>`<button type="button" data-d="${i}" style="height:${Math.max(12,Math.round(j.off_ink*100))}%" aria-label="Job ${i+1}: strength ${j.strength}, reach ${j.reach}, ${Math.round(j.off_ink*100)} % of ink moved, line kept r = ${fmtR(j.r_line)}" title="strength ${j.strength} \u00b7 reach ${j.reach} \u00b7 ${Math.round(j.off_ink*100)} % ink moved \u00b7 r = ${fmtR(j.r_line)}"></button>`).join('');
 $('ladder').addEventListener('click',e=>{const b=e.target.closest('button[data-d]');if(b)setDamage(+b.dataset.d,false);});
 $('d').max=JOBS.length-1;
+// Jobs and credits: every job's parameters, ID and both measures (the same JOBS the slider, ladder and chart use)
+$('jobs-body').innerHTML=JOBS.map((j,i)=>`<tr aria-current="false"><td><button type="button" class="jb" data-d="${i}" aria-label="Load job ${i+1}">${i+1}</button></td><td class="num">${j.strength}</td><td class="num">${j.reach}</td><td class="id">${j.job_id}</td><td class="num">${fmtR(j.r_line)}</td><td class="num">${Math.round(j.off_ink*100)} %</td></tr>`).join('');
+$('jobs-body').addEventListener('click',e=>{const b=e.target.closest('button[data-d]');if(b){st.view='data';setDamage(+b.dataset.d,false);}});
 function sizeAll(){
   const want=($('stage').clientWidth||800)<600?600:480;if(glc.height!==want){glc.height=want;}
   const r=glc.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
@@ -1102,6 +1215,9 @@ glOK=initGL();
 if(!glOK){$('notice').hidden=false;$('notice').textContent='WebGL is off in this browser, so the roll cannot animate. The reading window below still unrolls the sheet.';}
 (function(){const s=decodeHash(location.hash,JOBS.length-1,L);if(s)Object.assign(st,s);})();
 need();
+// a link shared from The data opens there (the scene stays on top of the page)
+if(st.view==='data'){const go=()=>{try{$('data-sec').scrollIntoView({block:'start'});}catch(e){}};
+  requestAnimationFrame(go);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(go);addEventListener('load',go,{once:true});}
 // warm the rest of the ladder after the first frame, so stepping through damage is instant
 setTimeout(()=>{loadGrey('img/ink_clean.webp').catch(()=>{});JOBS.forEach(j=>loadGrey(j.img).catch(()=>{}));},1200);
 </script>

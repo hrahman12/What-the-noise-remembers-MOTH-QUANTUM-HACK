@@ -1,0 +1,333 @@
+{
+  "$schema": "https://api.mothquantum.com/schemas/Engine.json",
+  "engine_id": "graph-v1",
+  "name": "Quantum Graph Engine",
+  "description": "Prepare a quantum graph state \u2014 your own couplings and correlations, or a random one \u2014 and sample it via Aer simulation (EMU) or an IBM QPU.",
+  "owner": "81908c64-fe37-4fe5-a13b-6590b200348a",
+  "owner_type": "organization",
+  "created_by": "moth",
+  "visibility": "public",
+  "queue": "engine/graph-v1",
+  "input_type": "application/json",
+  "output_type": "application/json",
+  "is_multipart": false,
+  "is_async": false,
+  "execution_mode": "steps",
+  "run_policy": {
+    "timeout": 300,
+    "max_retries": 3,
+    "heartbeat": 60
+  },
+  "params_schema": {
+    "$defs": {
+      "BlochOperation": {
+        "properties": {
+          "fraction": {
+            "default": 1,
+            "description": "Fraction of the full rotation to apply.",
+            "title": "Fraction",
+            "type": "number"
+          },
+          "paulis": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "description": "Single-qubit Pauli targets, e.g. {'X': 1.0}.",
+            "title": "Paulis",
+            "type": "object"
+          },
+          "qubit": {
+            "description": "Target qubit.",
+            "minimum": 0,
+            "title": "Qubit",
+            "type": "integer"
+          },
+          "type": {
+            "const": "bloch",
+            "title": "Type",
+            "type": "string"
+          },
+          "update": {
+            "default": true,
+            "description": "Refresh tomography after this operation so later operations see its effect (QuantumGraph's default). False is faster but blind.",
+            "title": "Update",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "type",
+          "qubit",
+          "paulis"
+        ],
+        "title": "BlochOperation",
+        "type": "object"
+      },
+      "RelationshipOperation": {
+        "properties": {
+          "fraction": {
+            "default": 1,
+            "description": "Fraction of the full rotation to apply.",
+            "title": "Fraction",
+            "type": "number"
+          },
+          "paulis": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "description": "Two-qubit Pauli targets, e.g. {'ZZ': 1.0}.",
+            "title": "Paulis",
+            "type": "object"
+          },
+          "qubits": {
+            "description": "The coupled qubit pair.",
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Qubits",
+            "type": "array"
+          },
+          "type": {
+            "const": "relationship",
+            "title": "Type",
+            "type": "string"
+          },
+          "update": {
+            "default": true,
+            "description": "Refresh tomography after this operation so later operations see its effect (QuantumGraph's default). False is faster but blind.",
+            "title": "Update",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "type",
+          "qubits",
+          "paulis"
+        ],
+        "title": "RelationshipOperation",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "backend_name": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "IBM backend to target; omit to auto-select the least busy device. Ignored when mode='emu'.",
+        "title": "Backend Name"
+      },
+      "coupling_map": {
+        "anyOf": [
+          {
+            "items": {
+              "items": {
+                "type": "integer"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Graph edges as qubit pairs; omit for a fully connected graph (QuantumGraph's default).",
+        "title": "Coupling Map"
+      },
+      "mode": {
+        "default": "emu",
+        "description": "'emu' runs on a local Aer simulator; 'qpu' submits to IBM hardware.",
+        "enum": [
+          "emu",
+          "qpu"
+        ],
+        "title": "Mode",
+        "type": "string"
+      },
+      "num_qubits": {
+        "default": 4,
+        "description": "Number of qubits (graph nodes), 2-20.",
+        "maximum": 20,
+        "minimum": 2,
+        "title": "Num Qubits",
+        "type": "integer"
+      },
+      "operations": {
+        "anyOf": [
+          {
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/BlochOperation"
+                },
+                {
+                  "$ref": "#/$defs/RelationshipOperation"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "State-preparation targets applied in order: 'bloch' sets single-qubit Pauli targets, 'relationship' sets two-qubit targets on a coupled pair. Omit for a random state drawn from 'seed'.",
+        "title": "Operations"
+      },
+      "qpu_instance": {
+        "anyOf": [
+          {
+            "format": "password",
+            "type": "string",
+            "writeOnly": true
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "IBM Quantum instance CRN; required when mode='qpu'.",
+        "title": "Qpu Instance"
+      },
+      "qpu_token": {
+        "anyOf": [
+          {
+            "format": "password",
+            "type": "string",
+            "writeOnly": true
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "IBM Quantum API token; required when mode='qpu'.",
+        "title": "Qpu Token"
+      },
+      "seed": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Seeds the random graph; the same seed always builds the same circuit. Omit for a fresh random graph.",
+        "title": "Seed"
+      },
+      "shots": {
+        "default": 1024,
+        "description": "Number of measurement shots.",
+        "exclusiveMinimum": 0,
+        "title": "Shots",
+        "type": "integer"
+      }
+    },
+    "title": "Params",
+    "type": "object"
+  },
+  "credits_per_run": 5,
+  "enabled": true,
+  "registered_at": "2026-06-17T15:22:23Z",
+  "updated_at": "2026-09-09T21:42:30Z",
+  "description_md": "Quantum Graph Engine \u2014 prepare a quantum graph state and sample it.\n\nYou describe a graph: which qubits are coupled (`coupling_map`, defaulting to\nfully connected) and what state to prepare on it (`operations` \u2014 single-qubit\nBloch targets and two-qubit Pauli correlations, applied in order). The engine\nprepares that state, returns its exact tomography (per-qubit Bloch vectors and\nper-edge two-qubit expectation values), samples it (locally or on IBM\nhardware), and scores the dominant outcome against the graph's edges. Omit\ngraph and operations and it demos itself with a random (seedable) state.\n\nBuilt on [QuantumGraph](https://github.com/moth-quantum/QuantumGraph).\n\n## What you send\n\n`application/json`:\n\n```json\n{\n  \"num_qubits\": 4,\n  \"coupling_map\": [[0, 1], [1, 2], [2, 3]],\n  \"operations\": [\n    {\"type\": \"bloch\", \"qubit\": 0, \"paulis\": {\"X\": 1.0}},\n    {\"type\": \"relationship\", \"qubits\": [0, 1], \"paulis\": {\"ZZ\": 1.0}}\n  ],\n  \"shots\": 1024,\n  \"mode\": \"emu\"\n}\n```\n\n- **`coupling_map`** *(optional)* \u2014 the graph edges as qubit pairs. Omit for a\n  fully connected graph.\n- **`operations`** *(optional)* \u2014 state-preparation targets, applied in order.\n  `\"bloch\"` sets single-qubit Pauli expectation targets on one qubit;\n  `\"relationship\"` sets two-qubit targets (e.g. `ZZ`) on a coupled pair, which\n  must be a `coupling_map` edge. Each operation's `update` flag (default true)\n  refreshes the tracked state so later operations account for earlier ones;\n  set it false for a faster, blind application. Omit `operations` entirely for\n  a random state \u2014 every qubit gets a random Bloch vector and every edge a\n  random \u00b11 ZZ correlation.\n- **`seed`** \u2014 fixes the random state when `operations` is omitted: the same\n  seed always builds the same circuit, so you can compare `emu` and `qpu` runs\n  on identical states.\n- **`mode`** \u2014 `\"emu\"` (local simulator, noiseless, seconds) or `\"qpu\"`\n  (IBM hardware, real noise, queue can be minutes\u2013hours; requires\n  `qpu_token` and `qpu_instance`).\n\nRemaining parameters (`num_qubits`, `shots`, `backend_name`) are documented in\nthe request schema below.\n\n## What you get back\n\n- **`output.tomography`** \u2014 the exact prepared state, before any sampling:\n  `bloch` (per-qubit `{X, Y, Z}` expectation values) and `relationships`\n  (per-edge two-qubit Pauli expectation values, keyed `\"a,b\"`). Computed\n  classically at build time, so it is noise-free even on QPU runs \u2014 compare it\n  against the sampled counts to see what the hardware did.\n- **`output.measurements`** \u2014 the top 20 bitstrings with count and\n  probability \u2014 plus `dominant_bitstring` and `edge_agreement_score`: the\n  fraction of graph edges whose two bits agree in the dominant bitstring.\n- The resolved `coupling_map` is echoed back so both are interpretable\n  without the request.\n\n---\n\n## Pipeline (internal)\n\n  build   \u2192 graph from coupling_map (default fully connected) \u2192 operations or\n             random (seeded) targets \u2192 capture exact tomography \u2192 QASM bytes\n  submit  \u2192 EMU: run Aer locally \u2192 counts \u2502 QPU: transpile + submit to IBM \u2192 job_id\n  collect \u2192 EMU: passthrough \u2502 QPU: poll IBM until done \u2192 counts\n  format  \u2192 rank bitstrings, score edge agreement \u2192 final output\n\nBitstring convention: submit/collect reverse Qiskit's qubit-0-rightmost counts\nto qubit-0-LEFTMOST before returning \u2014 index i of a bitstring addresses\nqubit i directly.",
+  "code_samples": [
+    {
+      "lang": "Python (EMU)",
+      "source": "import time, requests\n\nBASE = \"https://api.mothquantum.com/v1\"\nHEADERS = {\"Authorization\": \"Bearer YOUR_KEY\"}\n\nr = requests.post(f\"{BASE}/generation/graph-v1/process\",\n                  headers=HEADERS,\n                  json={\"num_qubits\": 6, \"shots\": 1024, \"seed\": 42, \"mode\": \"emu\"})\njob_id = r.json()[\"job_id\"]\n\nwhile True:\n    s = requests.get(f\"{BASE}/status/{job_id}\", headers=HEADERS).json()\n    if s[\"status\"] in (\"completed\", \"failed\"):\n        break\n    time.sleep(2)\n\nresult = requests.get(f\"{BASE}/result/{job_id}\", headers=HEADERS).json()\nout = result[\"result\"][\"output\"]\nprint(out[\"mode\"])                  # \"emu\"\nprint(out[\"dominant_bitstring\"])\nprint(out[\"edge_agreement_score\"])\n"
+    },
+    {
+      "lang": "Python (QPU)",
+      "source": "import time, requests\n\nBASE = \"https://api.mothquantum.com/v1\"\nHEADERS = {\"Authorization\": \"Bearer YOUR_KEY\"}\n\nr = requests.post(f\"{BASE}/generation/graph-v1/process\",\n                  headers=HEADERS,\n                  json={\"num_qubits\": 6, \"shots\": 1024, \"seed\": 42,\n                        \"mode\": \"qpu\", \"backend_name\": \"ibm_sherbrooke\"})\njob_id = r.json()[\"job_id\"]\n\nwhile True:\n    s = requests.get(f\"{BASE}/status/{job_id}\", headers=HEADERS).json()\n    for step in s.get(\"steps\", []):\n        print(step[\"name\"], \"\u2192\", step[\"status\"])\n    if s[\"status\"] in (\"completed\", \"failed\"):\n        break\n    time.sleep(10)\n\nresult = requests.get(f\"{BASE}/result/{job_id}\", headers=HEADERS).json()\nout = result[\"result\"][\"output\"]\nprint(out[\"mode\"])                  # \"qpu\"\nprint(out[\"ibm_job_id\"])\nprint(out[\"dominant_bitstring\"])\n"
+    },
+    {
+      "lang": "curl",
+      "source": "curl -X POST https://api.mothquantum.com/v1/generation/graph-v1/process \\\n  -H \"Authorization: Bearer YOUR_KEY\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"num_qubits\": 4, \"shots\": 1024, \"mode\": \"emu\"}'\n"
+    }
+  ],
+  "error_codes": [
+    {
+      "type": "graph_init_failed",
+      "description": "QuantumGraph initialization failed."
+    },
+    {
+      "type": "prep_failed",
+      "description": "State-preparation operations failed \u2014 an operation could not be applied to the graph."
+    },
+    {
+      "type": "simulation_failed",
+      "description": "Aer simulation failed."
+    },
+    {
+      "type": "ibm_auth_failed",
+      "description": "IBM authentication failed \u2014 IBM_QUANTUM_TOKEN missing or invalid."
+    },
+    {
+      "type": "ibm_submission_failed",
+      "description": "Circuit submission to the IBM QPU failed."
+    },
+    {
+      "type": "ibm_collection_failed",
+      "description": "Could not retrieve QPU result \u2014 job may have been cancelled or backend errored."
+    },
+    {
+      "type": "invalid_params",
+      "description": "Parameter validation failed."
+    }
+  ],
+  "steps": [
+    {
+      "name": "build",
+      "timeout": 600,
+      "heartbeat": 300,
+      "input_type": "application/json",
+      "max_retries": 0,
+      "output_type": "application/x-qasm"
+    },
+    {
+      "name": "submit",
+      "timeout": 600,
+      "heartbeat": 300,
+      "input_type": "application/x-qasm",
+      "max_retries": 2,
+      "output_type": "application/json"
+    },
+    {
+      "name": "collect",
+      "timeout": 3600,
+      "heartbeat": 900,
+      "input_type": "application/json",
+      "max_retries": 5,
+      "output_type": "application/json"
+    },
+    {
+      "name": "format",
+      "timeout": 120,
+      "heartbeat": 60,
+      "input_type": "application/json",
+      "max_retries": 0,
+      "output_type": "application/json"
+    }
+  ],
+  "banner_image_id": null,
+  "card_image_id": null,
+  "banner_image_tag": null,
+  "card_image_tag": null,
+  "has_estimate": true,
+  "estimate": null,
+  "has_estimate_fn": true,
+  "estimate_needs_container": true,
+  "sidecar_endpoint": null,
+  "has_validate_fn": true
+}

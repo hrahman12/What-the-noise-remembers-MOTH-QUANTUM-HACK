@@ -1,0 +1,40 @@
+{
+  "slug": "04-magic-angle",
+  "challenge": "04 Moving image",
+  "bonus": false,
+  "title": "Magic Angle",
+  "hook": "Twist two honeycombs. Find the order hiding in the noise.",
+  "sub": "A 21-qubit quantum morph scrambles two twisted lattices into speckle. Fourier analysis still pulls the twist back out from 1.5° up. At the magic angle, the qubit register's own echo gets in the way.",
+  "you_control": [
+    "Spin the turntable (or drag the slider) from 0° to 5° through 45 real engine frames; the 1.0–1.2° magic angle zone is marked, not claimed",
+    "Flip between the original layers and the quantum morph, and watch Ay, Bee and Lec the electron react to what the classical FFT actually reads",
+    "Open Frame for the full engine frame with raw pixels and a magnifier, or Data for the angular profile and the period-against-twist plot",
+    "Play or pause the sweep and the 30 s film on the page, and copy a link to your exact view"
+  ],
+  "engines": [
+    "telablur-v1"
+  ],
+  "qubits": 21,
+  "qubits_note": "1024 x 1024 frame, no mask: log2(1024) + log2(1024) = 20 pixel qubits + 1 selector = 21 per job, computed from the engine's documented rule at its size ceiling (the engine reports no qubit count). The 1024 px timing frame took 9.8 s, so no step-down was needed.",
+  "hardware": null,
+  "jobs": 49,
+  "credits_spent": 49,
+  "deliverables": [
+    "magic_angle.mp4",
+    "measurement_plot.png",
+    "web/index.html",
+    "web/sprites.json",
+    "web/video/magic_angle_web.mp4",
+    "README.md",
+    "PARAMS.md",
+    "CREDITS.md",
+    "out/measure.json",
+    "out/jobs.csv",
+    "out/probes.csv"
+  ],
+  "web_entry": "web/index.html",
+  "status": "built",
+  "honesty": "Geometry only, on Atlas's statevector simulator: no band structure or superconductivity is simulated; the quantum morph scrambles the bilayer and a classical FFT recovers the period from 1.5 to 5 deg (median 0.94 of a/(2 sin theta/2)), while near 1.1 deg it reads the register's own echo, which is reported, not hidden.",
+  "blockers": [],
+  "mascot": "web/img/mascot.png"
+}

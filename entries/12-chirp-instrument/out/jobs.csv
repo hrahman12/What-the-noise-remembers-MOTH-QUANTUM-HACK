@@ -1,0 +1,10 @@
+event,strength,reach,qubits,resolution,job_id,status,file,seconds,failed_job_ids,note
+GW150914,0.5,0.0,20,2,3d69e83c-cc19-4a91-9d9f-d30170dd4b04,completed,midi/blurred/GW150914_s0.5_r0.0.mid,293.6,,
+GW150914,0.5,0.5,20,2,9c28f32b-e560-4a0d-9e91-f97ee3e221ba,completed,midi/blurred/GW150914_s0.5_r0.5.mid,349.5,,
+GW150914,0.5,1.0,20,2,,not completed,,,,MOTH_FREEZE=1: refusing to submit a new blur-midi-v1 job (not in cache)
+GW150914,1.0,0.0,20,2,,not completed,,,886a934a-8704-4031-9733-5a341d3f9bd1 2809ac99-25e6-4681-8211-5b204535df3f 7e0eb695-789f-4779-80fb-f6903cbaaf21,MOTH_FREEZE=1: refusing to submit a new blur-midi-v1 job (not in cache)
+GW150914,1.0,0.5,20,2,,not completed,,,,MOTH_FREEZE=1: refusing to submit a new blur-midi-v1 job (not in cache)
+GW150914,1.0,1.0,20,2,,not completed,,,77d619a1-a610-406e-b216-66237d241789 77494cdb-e87a-4db9-9926-574f53451034 13785863-0ebf-4e5e-9742-028c570f4a84,MOTH_FREEZE=1: refusing to submit a new blur-midi-v1 job (not in cache)
+GW170817,0.5,0.0,20,2,,not completed,,,,MOTH_FREEZE=1: refusing to submit a new blur-midi-v1 job (not in cache)
+GW170817,0.5,0.5,20,2,,not completed,,,ad99770a-29a3-45a1-916b-bb56d306b316 236b2a82-50fc-493b-a950-89207eedbf36 77e8688c-2289-4378-b836-9adf69dafad8,MOTH_FREEZE=1: refusing to submit a new blur-midi-v1 job (not in cache)
+GW170817,0.5,1.0,20,2,,not completed,,,,MOTH_FREEZE=1: refusing to submit a new blur-midi-v1 job (not in cache)

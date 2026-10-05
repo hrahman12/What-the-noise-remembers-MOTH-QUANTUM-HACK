@@ -1,0 +1,42 @@
+[
+ {
+  "job_id": "5d5ac18d-4f24-4c07-b448-b2d78c6ee6a2",
+  "graph": "ring",
+  "J": 1.0,
+  "mode": "qpu",
+  "status": "failed",
+  "error": "ibm_collection_failed: QPU job ended as cancelled",
+  "submitted_at": "2026-10-05T05:10:13Z",
+  "updated_at": "2026-10-05T05:25:38Z"
+ },
+ {
+  "job_id": "837dae19-e175-4e0f-b20f-daee5b03d5ab",
+  "graph": "ladder",
+  "J": 1.0,
+  "mode": "qpu",
+  "status": "failed",
+  "error": "ibm_collection_failed: QPU job ended as cancelled",
+  "submitted_at": "2026-10-05T05:12:16Z",
+  "updated_at": "2026-10-05T05:28:11Z"
+ },
+ {
+  "job_id": "b1d47e77-1cf3-4924-a2e9-e4ab5c526496",
+  "graph": "random",
+  "J": 1.0,
+  "mode": "qpu",
+  "status": "failed",
+  "error": "ibm_collection_failed: QPU job ended as cancelled",
+  "submitted_at": "2026-10-05T05:12:24Z",
+  "updated_at": "2026-10-05T05:28:10Z"
+ },
+ {
+  "job_id": "64974654-b115-428e-a3df-7fc9b6e5800e",
+  "graph": "ring",
+  "J": 0.4,
+  "mode": "qpu",
+  "status": "failed",
+  "error": "ibm_collection_failed: QPU job ended as cancelled",
+  "submitted_at": "2026-10-05T05:12:32Z",
+  "updated_at": "2026-10-05T05:28:11Z"
+ }
+]

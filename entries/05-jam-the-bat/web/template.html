@@ -1,0 +1,910 @@
+<title>Jam the Bat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+/*BRAND*/
+/* Layout: the night scene is the hero (stage + dash under it, then the click tape, its legend, the job readout
+   and the cast list, all visible); the headline sits beside it on desktop and above it on phones, with the
+   noise-maker picker and controls after.
+   Below, titled sections: How to play (the game rule), Test it (the tournament, classical sim), The data (what came
+   off the chip), How it was made, The science, What this does not claim, Jobs and credits.
+   Look: Moth Hack brief pages. Paper ground, one ultramarine ink, hairlines, square panels, pill buttons.
+   The cast is ink pixel art (web/sprites.json, drawn with common/inksprite.js at integer scale, no smoothing);
+   the warm accent is used only for the flash of a jamming click. */
+.wrap{max-width:78rem;margin-inline:auto}
+.hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr);grid-template-areas:"play intro" "play rest";grid-template-rows:auto 1fr;gap:1.05rem clamp(1.25rem,3vw,2.5rem);align-items:start;padding-block:2rem 1rem}
+.play{grid-area:play;display:grid;gap:.75rem;min-width:0}
+.intro{grid-area:intro;display:grid;gap:1.05rem;min-width:0}
+.rest{grid-area:rest;display:grid;gap:1.05rem;min-width:0}
+.stage{position:relative;overflow:hidden;border:1px solid var(--ink);touch-action:none;user-select:none;-webkit-user-select:none;background:var(--paper)}
+.stage canvas{display:block;width:100%;height:auto;aspect-ratio:16/9;cursor:crosshair;image-rendering:crisp-edges;image-rendering:pixelated}
+.px{image-rendering:crisp-edges;image-rendering:pixelated;display:block;flex:none}
+.hud{position:absolute;left:.6rem;right:.6rem;top:.6rem;display:flex;justify-content:space-between;gap:.5rem;pointer-events:none;flex-wrap:wrap}
+.pill{font:500 .68rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;padding:.45rem .65rem;border-radius:999px;background:var(--panel);border:1px solid var(--ink);color:var(--ink);white-space:nowrap}
+.pill.hot{background:var(--ink);color:var(--on-ink)}
+.pips{display:flex;gap:.3rem;align-items:center}
+.pips i{width:.6rem;height:.6rem;border-radius:99px;border:1px solid currentColor;display:block}
+.pips i.on{background:currentColor}
+.overlay{position:absolute;inset:0;display:grid;place-items:center;background:rgba(251,250,249,.5);padding:1rem}
+.overlay[hidden]{display:none}
+.overlay.clear{background:transparent}
+.card{max-width:30rem;text-align:center;display:grid;gap:.8rem;justify-items:center;background:var(--panel);border:1px solid var(--ink);padding:1.3rem 1.4rem}
+.card h2{font-size:clamp(1.5rem,3.2vw,2.2rem);line-height:1.05}
+.card p{color:var(--ink-2);font-size:.92rem}
+.card p b{color:var(--ink);font-weight:500}
+.card .row{justify-content:center}
+.say{position:absolute;left:.6rem;bottom:.6rem;font:500 .74rem/1.2 var(--mono);color:var(--ink);background:var(--panel);border:1px solid var(--ink);padding:.45rem .6rem;max-width:calc(100% - 1.2rem);opacity:0;transition:opacity .25s;pointer-events:none}
+.say.on{opacity:1}
+.dash{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr) auto;gap:.6rem;align-items:stretch}
+.meter{background:var(--panel);border:1px solid var(--rule);padding:.6rem .75rem;display:grid;gap:.4rem;min-width:0}
+.meter.big{border-color:var(--ink)}
+.meter .top{display:flex;justify-content:space-between;gap:.5rem;align-items:baseline}
+.meter .num{font:500 1.05rem/1 var(--mono);font-variant-numeric:tabular-nums;color:var(--ink)}
+.meter.big .num{font-size:1.5rem}
+.meter .bar{height:8px;background:var(--panel-2);overflow:hidden}
+.meter .bar i{display:block;height:100%;width:0;background:var(--ink-2)}
+.meter.big .bar i{background:var(--ink)}
+.meter small{font:400 .7rem/1.3 var(--mono);color:var(--ink-2);overflow-wrap:anywhere}
+.pad{align-self:center;border:1px solid var(--ink);background:var(--panel);color:var(--ink);border-radius:999px;padding:0 1.4rem;font:500 .92rem/1.1 var(--body);cursor:pointer;min-height:3.6rem;touch-action:none;user-select:none;-webkit-user-select:none}
+.pad:hover{background:var(--tint)}
+.pad[aria-pressed="true"]{background:var(--ink);color:var(--on-ink)}
+/* under the stage: the click tape (with its legend and the job readout), then the cast list; all visible */
+.under{display:grid;gap:.6rem}
+.under > .label{display:block;border-top:1px solid var(--rule);padding-top:.7rem}
+.legend{display:flex;flex-wrap:wrap;gap:.35rem 1.1rem;font:400 .7rem/1.3 var(--mono);letter-spacing:.04em;color:var(--ink-2);margin:0}
+.legend span{display:inline-flex;gap:.45rem;align-items:center}
+.sw{width:.8rem;height:.8rem;display:inline-block;flex:none}
+.sw.ring{border:1.5px dashed var(--ink-2);border-radius:99px}
+.legend .si{display:inline-flex;align-items:center;justify-content:center;min-width:.8rem;height:1.15rem}
+.cast{display:grid;grid-template-columns:repeat(auto-fill,minmax(11.5rem,1fr));gap:.45rem;margin:0;padding:0;list-style:none}
+.cast li{display:grid;grid-template-columns:4.6rem minmax(0,1fr);gap:.55rem;align-items:center;background:var(--panel);border:1px solid var(--rule);padding:.45rem .6rem;min-width:0}
+.cast .ic{display:flex;gap:.3rem;align-items:center;justify-content:center;height:2.7rem}
+.cast li.ghost .ic img{opacity:.38}
+.cast b{display:block;font:500 .7rem/1.25 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
+.cast span{display:block;font-size:.8rem;line-height:1.3;color:var(--ink-2)}
+.castnote{font:400 .72rem/1.45 var(--mono);color:var(--ink-2);margin:0}
+.tape{display:block;width:100%;height:84px;border:1px solid var(--rule);background:var(--panel);cursor:pointer;touch-action:pan-y}
+.tape:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.taperead{font:500 .76rem/1.45 var(--mono);color:var(--ink);margin:0;min-height:2.2em}
+.btn[hidden]{display:none}
+.tapenote{font:400 .72rem/1.45 var(--mono);color:var(--ink-2);margin:0}
+.kicker{font:500 .74rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+h1{font-size:clamp(2.3rem,4.6vw,4rem);line-height:1;letter-spacing:-.02em}
+.sub{font-size:1.04rem;color:var(--ink-2);max-width:46ch}
+.steps{display:grid;gap:.55rem;counter-reset:s;margin:0;padding:0;list-style:none}
+.steps li{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:.6rem;align-items:baseline;font-size:.93rem}
+.steps li b{font-weight:500}
+.steps li::before{counter-increment:s;content:counter(s);font:500 .8rem/1.6 var(--mono);color:var(--on-ink);background:var(--ink);border-radius:99px;width:1.6rem;height:1.6rem;display:grid;place-items:center}
+.panel{display:grid;gap:.85rem;background:var(--panel);border:1px solid var(--rule);padding:1rem 1.1rem;min-width:0}
+.row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.row.split{justify-content:space-between}
+.srcnote{font-size:.85rem;color:var(--ink-2)}
+.srcnote b{color:var(--ink);font-weight:500}
+/* the noise-makers: each randomness source is a character card */
+.picker{display:grid;grid-template-columns:repeat(auto-fill,minmax(5.6rem,1fr));gap:.45rem}
+.picker button{display:grid;justify-items:center;align-content:start;gap:.3rem;padding:.55rem .35rem .5rem;border:1px solid var(--rule);background:var(--panel);cursor:pointer;font:500 .68rem/1.15 var(--mono);color:var(--ink);min-width:0;text-align:center}
+.picker button:hover{background:var(--tint)}
+.picker button[aria-pressed="true"]{border:2px solid var(--ink);padding:calc(.55rem - 1px) calc(.35rem - 1px) calc(.5rem - 1px);background:var(--tint)}
+.picker .ic{height:44px;display:flex;align-items:flex-end;justify-content:center}
+.picker small{display:block;font:400 .58rem/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.seedrow[hidden]{display:none}
+.seedrow input{width:8.5rem;background:var(--panel-2);border:1px solid var(--rule);border-radius:0;padding:.5rem .6rem;font:500 .8rem/1 var(--mono);color:var(--ink)}
+.seedrow input:focus{border-color:var(--ink)}
+.switch{border:1px solid var(--ink);background:transparent;border-radius:999px;padding:.45rem .8rem;font:500 .74rem/1 var(--mono);cursor:pointer;color:var(--ink)}
+.switch:hover{background:var(--tint)}
+.switch[aria-pressed="true"]{background:var(--ink);color:var(--on-ink)}
+.panel.slim{padding:.75rem 1rem}
+.readout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.2rem .9rem;font:400 .74rem/1.5 var(--mono);color:var(--ink-2);margin:0}
+.readout dd{margin:0}
+.readout b{color:var(--ink);font-weight:500;overflow-wrap:anywhere}
+.btn.sm{padding:.55rem .85rem;font-size:.8rem}
+section.block{margin-top:3rem;display:grid;gap:1rem}
+section.block h2{font-size:clamp(1.6rem,3vw,2.4rem)}
+.lede{color:var(--ink-2);max-width:70ch}
+.lede b{color:var(--ink);font-weight:500}
+.tour{display:grid;gap:0;border-top:1px solid var(--rule)}
+.trow{display:grid;grid-template-columns:minmax(0,15rem) minmax(0,1fr) 5.5rem minmax(0,9rem);gap:.75rem;align-items:center;font:400 .8rem/1.3 var(--mono);color:var(--ink-2);padding-block:.5rem;border-bottom:1px solid var(--rule)}
+.trow .name{color:var(--ink);display:grid;grid-template-columns:2.6rem minmax(0,1fr);gap:.55rem;align-items:center}
+.trow .name .ic{display:flex;justify-content:center;align-items:center;height:2.7rem}
+.trow .name small{display:block;color:var(--ink-2);font-size:.68rem}
+.track{position:relative;height:18px;background:var(--panel-2)}
+.track i{position:absolute;left:0;top:0;bottom:0;background:var(--ink)}
+.track b{position:absolute;top:-4px;bottom:-4px;border-left:2px solid var(--warn);border-right:2px solid var(--warn)}
+.trow .pct{color:var(--ink);font-variant-numeric:tabular-nums;text-align:right}
+.trow.head{font-size:.66rem;letter-spacing:.1em;text-transform:uppercase}
+.trow.head .name{display:block;color:var(--ink-2)}
+.progress{height:4px;background:var(--panel-2);overflow:hidden}
+.progress i{display:block;height:100%;width:0;background:var(--ink)}
+.chip{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.25rem;align-items:start}
+.chip svg{width:100%;height:auto;display:block}
+.tbl{width:100%;border-collapse:collapse;font:400 .74rem/1.4 var(--mono);color:var(--ink-2)}
+.tbl th,.tbl td{text-align:left;padding:.5rem .5rem;border-bottom:1px solid var(--rule);vertical-align:top}
+.tbl thead th{font-weight:500;color:var(--ink);letter-spacing:.06em;text-transform:uppercase;font-size:.64rem;border-bottom:1px solid var(--ink)}
+.tbl td b{color:var(--ink);font-weight:500}
+.scroll{overflow-x:auto;max-width:100%}
+/* the titled sections below the hero: prose stays readable, the honesty block keeps its rule */
+.prose{display:grid;gap:.85rem;color:var(--ink-2);max-width:70ch}
+.prose b{color:var(--ink);font-weight:500}
+.prose h3{font-size:1.3rem;line-height:1.2;margin-top:.4rem}
+.cap{font:400 .74rem/1.5 var(--mono);color:var(--ink-2);margin:0}
+.credits{display:grid;gap:.6rem;margin:0;padding:0;list-style:none;color:var(--ink-2);max-width:78ch;font-size:.92rem}
+.credits b{color:var(--ink);font-weight:500}
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:var(--ink);color:var(--on-ink);font:500 .85rem/1 var(--mono);padding:.8rem 1.1rem;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9}
+.toast.on{opacity:1}
+.shared{border:1px dashed var(--ink);padding:.6rem .8rem;font-size:.85rem;color:var(--ink);background:var(--panel)}
+.shared[hidden]{display:none}
+@media (max-width:1000px){.hero{grid-template-columns:minmax(0,1fr);grid-template-areas:"intro" "play" "rest";grid-template-rows:auto;row-gap:1.4rem}.chip{grid-template-columns:minmax(0,1fr)}
+  /* one column: headline, stage, dash, tape, then the noise picker and controls, then the cast list */
+  .hero{display:flex;flex-direction:column;align-items:stretch;gap:.75rem}.play{display:contents}
+  .intro{order:0;margin-bottom:.65rem}.stage{order:1}.dash{order:2}#v-data{order:3}.rest{order:4;margin-block:.65rem}#v-scene{order:5}}
+@media (max-width:640px){.dash{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.dash .meter.big{grid-column:1/-1}.pad{grid-column:1/-1;min-height:3.4rem}
+  .trow{grid-template-columns:minmax(0,1fr) 4.5rem;row-gap:.3rem}.trow .track{grid-column:1/-1;grid-row:2}.trow .hit{grid-column:1/-1}.trow.head{display:none}
+  .hud .pill{font-size:.6rem;padding:.35rem .45rem}
+  .overlay,.overlay.clear{background:rgba(251,250,249,.72)}
+  .card{padding:0;border:0;background:transparent}
+  .card .hint{display:none}.card{gap:.5rem}.card h2{font-size:1.25rem}.card p{font-size:.78rem}.overlay .btn{padding:.6rem .8rem;font-size:.8rem}
+  .cast li{grid-template-columns:4.6rem minmax(0,1fr);padding:.35rem .5rem}
+  .ink-bar{flex-wrap:wrap;gap:.35rem 1rem}}
+</style>
+
+<div class="wrap">
+  <nav class="wtnr-bar"><a href="https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa">What the Noise Remembers</a><span class="count"><b>Challenge 05</b> &middot; Hide</span></nav>
+
+  <div class="hero">
+    <div class="intro">
+      <p class="kicker">Challenge 05 &middot; Quantum game</p>
+      <h1>Jam a bat that learns your rhythm.</h1>
+      <p class="sub">You're a tiger moth. Your ultrasonic clicks scramble the bat's sonar, but its AI learns your timing. Feed your click jitter from a leaked seed, an emulator, or <span id="sub-hw">156 qubits of IBM hardware</span>, and see which one it can read.</p>
+    </div>
+
+    <div class="play">
+      <div class="stage" id="stage">
+        <canvas id="cv" width="960" height="540" tabindex="0" aria-label="Night sky. You are the moth; a bat hunts you by sonar. Steer with the arrow keys, hold Space to click. Before the first flight, Space or Enter starts one; P pauses."></canvas>
+        <div class="hud">
+          <span class="pill hot" id="h-phase">Ready</span>
+          <span class="pill pips" id="h-pass" aria-label="Passes survived"><span>Passes</span><i></i><i></i><i></i></span>
+        </div>
+        <div class="say" id="say" role="status" aria-live="polite"></div>
+        <div class="overlay clear" id="ov-start">
+          <div class="card">
+            <h2>Three passes. Survive them all.</h2>
+            <p class="hint">The bat hunts by sonar and learns the rhythm of your clicks. Steer with the pointer, a finger or the arrow keys. Hold <b>Space</b>, the mouse button or the click pad to jam it.</p>
+            <div class="row"><button type="button" class="btn" id="go">Start flight (sound on)</button><button type="button" class="btn ghost" id="go-mute">Start muted</button></div>
+          </div>
+        </div>
+        <div class="overlay" id="ov-pause" hidden>
+          <div class="card"><h2>Paused</h2><div class="row"><button type="button" class="btn" id="resume">Resume</button><button type="button" class="btn ghost" id="restart2">Restart</button></div></div>
+        </div>
+        <div class="overlay" id="ov-end" hidden>
+          <div class="card">
+            <h2 id="end-h">You escaped.</h2>
+            <p id="end-p"></p>
+            <div class="row"><button type="button" class="btn" id="again">Fly again</button><button type="button" class="btn ghost" id="share-run">Copy link to this run</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="dash">
+        <div class="meter big"><div class="top"><span class="label">Bat prediction confidence</span><span class="num" id="m-conf">0%</span></div><div class="bar"><i id="b-conf"></i></div><small id="m-mode">n-gram, order 0 &middot; guessed 0 of 0</small></div>
+        <div class="meter"><div class="top"><span class="label">Bat's fix</span><span class="num" id="m-lock">0%</span></div><div class="bar"><i id="b-lock"></i></div><small id="m-est">no echo yet</small></div>
+        <div class="meter"><div class="top"><span class="label">Your breath</span><span class="num" id="m-en">100</span></div><div class="bar"><i id="b-en"></i></div><small>each click costs 3</small></div>
+        <button type="button" class="pad" id="pad" aria-pressed="false">Hold to click</button>
+      </div>
+
+      <div class="under" id="v-data">
+        <span class="label" id="tape-label">Your clicks and the job behind them</span>
+        <canvas class="tape" id="tape" width="960" height="84" tabindex="0" role="img" aria-describedby="tape-read" aria-label="Your last click gaps (top) and the bat's guesses (bottom). Orange columns jammed the bat; pale columns it guessed and tuned out. Point at a column, or use the left and right arrow keys, to read that click."></canvas>
+        <p class="taperead" id="tape-read" aria-live="polite">Point at a column, or focus the tape and use the arrow keys, to read one click: your gap, the bat's guess and what it did.</p>
+        <p class="tapenote">Top row: your gaps (taller means a bigger jitter slot; full height is a pause). Bottom row: the bat's guess for each one. Orange columns jammed it. Pale columns it guessed and tuned out. The outlined column is the one you are reading.</p>
+        <p class="legend" id="legend"><span><i class="si" data-sp="moth:0"></i>You, the moth</span><span><i class="si" data-sp="bat:2"></i>The bat</span><span><i class="si" data-sp="arcs:0"></i>Clean echo</span><span><i class="si" data-sp="arcs:1"></i>Jammed echo or click</span><span><i class="sw ring"></i>Where the bat thinks you are</span></p>
+        <div class="panel slim">
+          <dl class="readout">
+            <dt>Engine</dt><dd><b id="r-engine">-</b></dd>
+            <dt>Job</dt><dd><b id="r-job">-</b></dd>
+            <dt>Bank</dt><dd><b id="r-bank">-</b></dd>
+            <dt>Last gap</dt><dd><b id="r-gap">-</b></dd>
+            <dt>Game</dt><dd>classical: bat AI, flight, echoes, sprites</dd>
+          </dl>
+        </div>
+      </div>
+      <div class="under" id="v-scene">
+        <span class="label">Who's who in the sky</span>
+        <ul class="cast" id="cast"></ul>
+        <p class="castnote">The cast is classical game art. Every reaction comes from the game state: a zap means the bat mispredicted that click, a swoop means it predicted it, and the noise-maker's lights show the real 3-bit slot each click used.</p>
+      </div>
+    </div>
+
+    <div class="rest">
+      <div class="proof" id="proof"></div>
+      <p class="shared" id="shared" hidden></p>
+      <ol class="steps">
+        <li><span><b>Steer</b> with the pointer, a finger or the arrow keys.</span></li>
+        <li><span><b>Click</b>: hold Space, the mouse or the pad for a click train. Tap for single clicks.</span></li>
+        <li><span><b>Choose your noise</b>, even mid-flight: metronome, leaked seed, emulator or a hardware bank.</span></li>
+        <li><span><b>Test it</b>: run hundreds of auto-rounds per source in the tournament below.</span></li>
+      </ol>
+
+      <div class="panel">
+        <div class="row split"><span class="label">Click jitter source</span><span class="label" id="src-where"></span></div>
+        <div class="picker" role="group" aria-label="Click jitter source" id="src-seg"></div>
+        <p class="srcnote" id="src-note"></p>
+        <div class="row seedrow" id="seedrow">
+          <label class="label" for="seed">Seed</label>
+          <input id="seed" value="0x5EED2009" spellcheck="false" aria-describedby="src-note">
+          <button type="button" class="switch" id="seedknown" aria-pressed="true">Bat has read the seed</button>
+        </div>
+        <div class="row">
+          <button type="button" class="btn sm ghost" id="pause" hidden>Pause</button>
+          <button type="button" class="btn sm ghost" id="restart">Start flight</button>
+          <button type="button" class="btn sm ghost" id="mute">Mute sound</button>
+          <button type="button" class="btn sm ghost" id="share">Copy link</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="block" id="how-to-play">
+    <div class="ink-bar"><span>How to play</span><span>The rule the bat plays by</span></div>
+    <h2>The game rule</h2>
+    <div class="prose" id="rule-body">
+      <p>While you hold, gaps between clicks are 70 ms + slot &times; 12 ms. The bat turns each gap into one of 12 symbols (8 slots, plus 4 lengths of pause) and predicts the next one with an <b>order-3 n-gram</b>: counts of what followed your last three symbols, backing off to shorter contexts until one has at least 4 examples, with add-half smoothing. The meter shows the probability it gives its best guess.</p>
+      <p>A click the bat predicted is tuned out. A click it got wrong jams every echo for the next 160 ms. Clean echoes give it your position and tighten its fix. Jammed echoes leave it flying at a stale guess (the dashed ring). In the terminal buzz it strikes at that guess. It catches you if you're within 24 px, and it breaks off if its fix falls below 20%. Clicks cost breath, and breath only comes back after 250 ms of silence.</p>
+      <p>On the stage, a click the bat predicted makes it swoop, and a click it got wrong shows a zap and breaks up its sonar arcs. The ghost moth inside the dashed ring is its stale guess.</p>
+      <p>With the seed leaked, the bat replays your PRNG: it has the seed and counts your clicks, so it knows every next slot and only guesses whether you'll keep holding. The flight, the bat and the tournament are all classical code. So are the sprites.</p>
+    </div>
+  </section>
+
+  <section class="block" id="tournament">
+    <div class="ink-bar"><span>Test it</span><span>Classical simulation, in your browser</span></div>
+    <h2>The bat tournament</h2>
+    <p class="lede">Same rule, same bat, same autopilot moth, same bat noise. Only the click jitter changes. This is a <b>classical simulation</b> that runs in your browser on the banks above: the autopilot holds its clicks once the bat is within 330 px, flies across the bat's path and dives late.</p>
+    <div class="row">
+      <span class="label">Rounds per source</span>
+      <div class="seg" role="group" aria-label="Rounds per source" id="n-seg"></div>
+      <button type="button" class="btn" id="tour-run">Run the tournament</button>
+    </div>
+    <div class="progress" aria-hidden="true"><i id="tour-prog"></i></div>
+    <div class="tour" id="tour" aria-live="polite"></div>
+    <p class="srcnote" id="tour-test" aria-live="polite"></p>
+    <p class="honesty" id="tour-note">Bars: share of rounds where the moth survived all three passes. Whiskers: 95% Wilson interval. Bank sources read fresh slots from slot 0 and never reuse one within a run.</p>
+    <p class="honesty" id="tour-long"></p>
+  </section>
+
+  <section class="block" id="chip">
+    <div class="ink-bar"><span>The data</span><span>Atlas comet-qrng-v1 job records</span></div>
+    <h2>What came off the chip</h2>
+    <p class="lede" id="chip-lede"></p>
+    <div class="row"><span class="label">Run</span><div class="seg" role="group" aria-label="Hardware run" id="hw-seg"></div></div>
+    <div class="chip">
+      <div class="panel">
+        <span class="label" id="grid-label">P(1) per qubit</span>
+        <svg id="grid" viewBox="0 0 470 430" role="img" aria-label="Measured probability of reading 1 on every qubit of the job, drawn as a chip package with one cell per qubit"></svg>
+        <p class="cap">The chip drawn as a package: one cell per qubit, shaded by the measured probability of reading 1. Point at a cell or use the slider.</p>
+        <label class="label" for="qsel">Inspect qubit</label>
+        <input type="range" id="qsel" min="0" max="155" value="0">
+        <p class="srcnote" id="qread">-</p>
+      </div>
+      <div class="panel">
+        <span class="label">CHSH witness S (4 Bell pairs, same job)</span>
+        <svg id="gauge" viewBox="0 0 480 190" role="img" aria-label="CHSH S values against the classical bound 2 and the quantum maximum 2.83"></svg>
+        <p class="honesty" id="s-note"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="made">
+    <div class="ink-bar"><span>How it was made</span><span>comet-qrng-v1, then classical code</span></div>
+    <h2>What the quantum engine did</h2>
+    <div class="prose" id="engine-body">
+      <p>Atlas <b>comet-qrng-v1</b> puts every register qubit in |+&#x27E9; and measures it 10,000 times. On IBM hardware it used <b>148 register qubits + 8 Bell-witness qubits = 156</b>, every qubit on the chip (the count comes from the job's own provenance record). It reads only counts, so the order of the shots is lost. It estimates a conservative per-bit min-entropy with NIST SP 800-90B estimators, subtracts log2(10,000!) &asymp; 118,458 bits for the lost shot order, and runs a Toeplitz extractor whose output is 2<sup>-64</sup>-close to uniform <i>given</i> that budget.</p>
+      <p>Each click's jitter is the next 3 bits of those bytes, a slot from 0 to 7, which adds 0 to 84 ms to the gap. Cutting bytes into 3-bit slots is a classical step. Nothing else is done to the bits. The three lights on the pixel chip and the emulator screen show exactly those 3 bits for the click just fired.</p>
+      <p>The emulator bank is the same pipeline on the Qiskit Aer simulator, which the engine caps at 20 qubits. A 12 + 8 run (12 register qubits plus the 8 witness qubits) returned <b>0 bytes</b>: 12 qubits &times; 10,000 shots carry less entropy than the shot-order penalty takes away. A 20 + 0 run fills the emulator bank instead, and the 12 + 8 run supplies the emulator's ideal S value.</p>
+    </div>
+  </section>
+
+  <section class="block" id="science">
+    <div class="ink-bar"><span>The science</span><span>Sonar jamming, in the lab and the field</span></div>
+    <h2>Why a tiger moth?</h2>
+    <div class="prose">
+      <p>Grote's tiger moth, <i>Bertholdia trigona</i>, answers an attacking big brown bat with bursts of ultrasonic clicks. Corcoran, Barber &amp; Conner (Science 325:325-327, 2009) filmed and recorded these duels and showed the clicks jam the bat's sonar. In the field, bats caught more than ten times as many moths with their sound organs silenced as clicking moths (Corcoran &amp; Conner, J. Exp. Biol. 215:4278-4287, 2012).</p>
+      <p>A hunting bat moves through three phases: a slow search call, an approach where calls speed up, and a terminal buzz just before the strike (Griffin, Webster &amp; Michael, Animal Behaviour 8:141-154, 1960). The bat in this game follows the same three phases.</p>
+      <p>The rest is a game. These papers do not show that bats learn a moth's click rhythm. That part is our cartoon, so that the quality of your randomness can matter. Real calls and clicks are ultrasonic. Here they're pitched down so you can hear them, and time is stretched so a human can play. The striped pixel moth is a cartoon too.</p>
+    </div>
+  </section>
+
+  <section class="block" id="claims">
+    <div class="ink-bar"><span>Honesty</span><span>Read this before the numbers</span></div>
+    <h2>What this does not claim</h2>
+    <div class="prose">
+      <p class="honesty">The hardware bank does not beat the emulator or a secret-seed PRNG in this game, and it shouldn't. An n-gram can't tell good sources apart, and the tournament shows them level within error. What loses is predictability: a metronome, or a seed the bat has read.</p>
+      <p class="honesty" id="no-claim-s"></p>
+      <p class="honesty">The hardware bytes are accounted, not certified. Their entropy budget assumes no dependence between qubits beyond pairwise correlations. The engine names that assumption and tests it only by collision counts. Its assumption-free budget is 0 bits. The bytes are also public: they ship inside this page. A bat that read the page source could replay them exactly like the leaked seed. The emulator bank is classical pseudo-randomness, an uncertified baseline.</p>
+    </div>
+  </section>
+
+  <section class="block" id="jobs-credits">
+    <div class="ink-bar"><span>Jobs and credits</span><span>Atlas job records, papers, art</span></div>
+    <h2>Jobs and credits</h2>
+    <span class="label">All four job records</span>
+    <div class="scroll"><table class="tbl" id="jobs"></table></div>
+    <h3>Credits</h3>
+    <ul class="credits">
+      <li><b>Engine.</b> Moth Quantum Atlas comet-qrng-v1: Born-rule sampling on IBM Quantum hardware (ibm_fez, ibm_marrakesh) or the Qiskit Aer simulator, NIST SP 800-90B min-entropy estimate, Toeplitz extractor, CHSH witness.</li>
+      <li><b>Papers.</b> Corcoran, Barber &amp; Conner, "Tiger moth jams bat sonar", Science 325:325-327 (2009). Corcoran &amp; Conner, "Sonar jamming in the field", J. Exp. Biol. 215:4278-4287 (2012). Griffin, Webster &amp; Michael, "The echolocation of flying insects by bats", Animal Behaviour 8:141-154 (1960), for the search, approach and terminal phases. Clauser, Horne, Shimony &amp; Holt, Phys. Rev. Lett. 23:880-884 (1969), for the CHSH inequality. Pironio et al., Nature 464:1021-1024 (2010), cited only for what this piece is not: device-independent certification. NIST SP 800-90B (2018), the estimators the engine reports using.</li>
+      <li><b>Code, art and sound.</b> The game, the tournament simulation, tests and scripts were written for this piece; mulberry32 is re-implemented from its published description. The cast is original ink pixel art drawn for this piece. Sounds are synthesised in the page (Web Audio). No third-party images or audio.</li>
+      <li><b>Fonts.</b> Geist and IBM Plex Mono via Google Fonts (SIL Open Font License).</li>
+    </ul>
+  </section>
+  <!--NAV-->
+  <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/*CORE*/
+</script>
+<script>
+/*INKSPRITE*/
+</script>
+<script>
+const BANKS = /*BANKS*/[];
+const SPRITES = /*SPRITES*/{};
+const J = window.JTB, W = J.W, H = J.H, R = J.R;
+const $ = id => document.getElementById(id);
+const fmt = n => Math.round(n).toLocaleString('en-US');
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const HUB_SEED = 0x5EED2009;
+
+// ---------- data ----------
+function unb64(s){const b=atob(s),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u;}
+const BANK = {};
+BANKS.forEach(b=>{ if(b.bytes>0) b.slots = J.slotsFromBytes(unb64(b.b64)); BANK[b.id] = b; });
+const HW = BANKS.filter(b=>b.mode==='qpu');
+const HERO = BANK.fez || BANK.mar || null;
+const SRC = [
+  {id:'none', name:'Metronome', where:'classical', tag:'classical', note:()=>'<b>Classical.</b> No jitter: every in-train gap is exactly 70 ms. The metronome ticks the same beat every click.'},
+  {id:'prng', name:'Leaked seed', where:'classical', tag:'classical', note:()=>`<b>Classical.</b> mulberry32 seeded with <b>${seedHex()}</b>. The seed is printed right here, so ${st.seedKnown?'the bat has it and replays every slot.':'anyone could read it; this bat has been told not to.'} ${st.seedKnown?'On the stage the seed packet is open: it leaks.':'On the stage the seed packet is sealed.'}`},
+];
+if (BANK.emu) SRC.push({id:'emu', name:'Emulator', where:'Aer simulator', tag:'Aer sim', note:()=>`<b>Atlas comet-qrng-v1 on the Aer simulator</b>, ${BANK.emu.total} qubits &times; ${fmt(BANK.emu.shots)} shots, ${fmt(BANK.emu.bytes)} bytes. An uncertified classical baseline. Its screen shows each click's 3-bit slot.`});
+for (const b of HW) SRC.push({id:b.id, name:b.backend, where:'IBM hardware', tag:'IBM QPU', note:()=>`<b>Atlas comet-qrng-v1 on IBM ${b.backend}</b>: ${b.reg} + ${b.total-b.reg} = ${b.total} qubits &times; ${fmt(b.shots)} shots, ${fmt(b.bytes)} bytes. Real hardware, CHSH S = ${b.S.toFixed(3)}. Entropy accounted under a stated assumption, not certified. The chip's three lights show each click's 3-bit slot.`});
+
+// ---------- state ----------
+const st = {src: HERO ? HERO.id : 'emu', seed: HUB_SEED, seedKnown: true, muted: false, paused: false, started: false,
+  round: 0, keys: new Set(), pointer: null, holdKey: false, holdMouse: false, holdPad: false, said: 0, lastWhy: null, outro: null};
+let g = null;
+const live = {};               // bank sources keep their cursor across rounds: no slot reused until the bank runs out
+function seedHex(){return '0x'+(st.seed>>>0).toString(16).toUpperCase().padStart(8,'0');}
+function liveSource(id){
+  if (id==='none') return J.makeSource('none');
+  if (id==='prng') return J.makeSource('prng', {seed: st.seed});
+  if (!live[id]) live[id] = J.makeSource('bank', {slots: BANK[id].slots, id});
+  return live[id];
+}
+function newRound(){
+  st.round++;
+  g = J.newGame({source: liveSource(st.src), seedKnown: st.seedKnown, noiseSeed: (st.round*7919+13)>>>0});
+  lastPulseT = -1; lastClickN = 0; lastLog = 0; st.lastWhy = null; st.outro = null;
+  $('ov-end').hidden = true;
+  tapeSel = null; $('tape-read').textContent = TAPE_HINT;
+  syncCtl();
+}
+// the control row only offers what can happen now: Pause exists only during a live round, and the
+// Restart button says "Start flight" until the first flight (it starts one)
+function syncCtl(){
+  $('pause').hidden = !(st.started && g && !g.over);
+  $('restart').textContent = st.started ? 'Restart' : 'Start flight';
+}
+
+// ---------- audio (starts only from the Start button) ----------
+let AC = null, master = null, noiseBuf = null;
+function audioInit(){
+  if (AC) return;
+  try { AC = new (window.AudioContext||window.webkitAudioContext)(); } catch(e) { AC = null; return; }
+  master = AC.createGain(); master.gain.value = st.muted ? 0 : 0.55; master.connect(AC.destination);
+  noiseBuf = AC.createBuffer(1, Math.floor(AC.sampleRate*0.02), AC.sampleRate);
+  const d = noiseBuf.getChannelData(0), r = J.mulberry32(77); for (let i=0;i<d.length;i++) d[i] = r()/2147483648-1;
+}
+function pan(x){ if(!AC.createStereoPanner) return master; const p=AC.createStereoPanner(); p.pan.value=Math.max(-1,Math.min(1,(x/W)*2-1)); p.connect(master); return p; }
+function chirp(phase, x, jam){
+  if (!AC || st.muted) return;
+  const t = AC.currentTime, o = AC.createOscillator(), gn = AC.createGain();
+  const buzz = phase==='buzz', f0 = buzz?2300:3200, f1 = buzz?1400:1500, dur = buzz?0.007:0.016;
+  o.type='sine'; o.frequency.setValueAtTime(f0,t); o.frequency.exponentialRampToValueAtTime(f1,t+dur);
+  gn.gain.setValueAtTime(0.0001,t); gn.gain.linearRampToValueAtTime(jam?0.05:0.12,t+0.0015); gn.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.connect(gn); gn.connect(pan(x)); o.start(t); o.stop(t+dur+0.01);
+}
+function tick(x, hit){
+  if (!AC || st.muted) return;
+  const t = AC.currentTime, s = AC.createBufferSource(), f = AC.createBiquadFilter(), gn = AC.createGain();
+  s.buffer = noiseBuf; f.type='bandpass'; f.frequency.value = hit?2600:5200; f.Q.value = 3;
+  gn.gain.setValueAtTime(hit?0.12:0.45,t); gn.gain.exponentialRampToValueAtTime(0.0001,t+0.006);
+  s.connect(f); f.connect(gn); gn.connect(pan(x)); s.start(t); s.stop(t+0.01);
+}
+function tone(f0, f1, dur, vol){
+  if (!AC || st.muted) return;
+  const t = AC.currentTime, o = AC.createOscillator(), gn = AC.createGain();
+  o.type='triangle'; o.frequency.setValueAtTime(f0,t); o.frequency.exponentialRampToValueAtTime(f1,t+dur);
+  gn.gain.setValueAtTime(vol,t); gn.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.connect(gn); gn.connect(master); o.start(t); o.stop(t+dur+0.02);
+}
+
+// ---------- the cast: ink pixel sprites (web/sprites.json), drawn at integer device-pixel scale ----------
+const SP = {}; for (const k in SPRITES) SP[k] = InkSprite.make(SPRITES[k]);
+const PAL = InkSprite.PALETTE;
+const ICONS = {};
+function iconURL(name, f){ const k = name+':'+f; return ICONS[k] || (ICONS[k] = InkSprite.toDataURL(SP[name], f, 1)); }
+function iconHTML(name, f, k){ const sp = SP[name]; return `<img class="px" src="${iconURL(name, f)}" width="${sp.w*k}" height="${sp.h*k}" alt="">`; }
+// which sprite stands for each noise-maker (frame 8 of the chip / emulator = idle, no bits shown)
+function srcIcon(id){ return id==='none' ? ['metro',0] : id==='prng' ? (st.seedKnown ? ['seeds',3] : ['seedsSealed',0]) : id==='emu' ? ['emu',8] : ['chip',8]; }
+
+const cv = $('cv'), ctx = cv.getContext('2d'), tape = $('tape'), tctx = tape.getContext('2d');
+let S = 1, BOOST = 1, BG = null;
+function fit(){
+  const cssW = cv.clientWidth || 960, dpr = window.devicePixelRatio || 1;
+  const w = Math.max(320, Math.round(cssW*dpr)), h = Math.round(w*H/W);
+  if (cv.width !== w || cv.height !== h){ cv.width = w; cv.height = h; }
+  S = w / W; BOOST = cssW < 560 ? 1.5 : 1; BG = null;
+}
+const pxb = k => Math.max(1, Math.round(k*S));          // scenery: device pixels per sprite pixel
+const pxa = k => Math.max(1, Math.round(k*S*BOOST));    // actors: a little larger on a phone-width stage
+function spr(name, f, wx, wy, k, o){ InkSprite.draw(ctx, SP[name], f, wx*S, wy*S, pxa(k), o); }
+function fr(name, t, fps){ return RM ? 0 : Math.floor(t*fps) % SP[name].frames.length; }
+function dot(x, y, d){ ctx.fillRect(Math.round(x/d)*d, Math.round(y/d)*d, d, d); }
+function pixArc(wx, wy, r, a0, a1, d, gap, wob){                // an arc of pixel dots snapped to the d grid
+  const cx = wx*S, cy = wy*S, Rr = r*S; if (Rr < 1) return;
+  const n = Math.max(3, Math.ceil((a1-a0)*Rr/(d*1.2)));
+  for (let i=0;i<=n;i++){ if (gap && gap(i)) continue; const a = a0+(a1-a0)*i/n;
+    let x = cx+Rr*Math.cos(a), y = cy+Rr*Math.sin(a); if (wob){ const j = wob(i); x += j[0]*d; y += j[1]*d; } dot(x, y, d); }
+}
+const ridge = x => H - 30 - 10*Math.sin(x/70) - 6*Math.sin(x/23+1);
+const TREES = [['pine',36,3],['bush',88,2.5],['oak',156,3],['pine',258,2.5],['pine',296,3],['bush',370,2.5],['pine',462,2.5],['oak',586,3],['bush',668,2.5],['pine',738,3],['pine',776,2.5],['bush',836,2.5]];
+const STARS = (()=>{ const r = J.mulberry32(2009), u = () => r()/4294967296, a = [];
+  while (a.length < 28){ const x = 20+u()*920, y = 16+u()*300; if (Math.hypot(x-800,y-112) < 70) continue; a.push([x, y, u()]); } return a; })();
+const SRC_X = 906;
+function buildBg(){
+  BG = document.createElement('canvas'); BG.width = cv.width; BG.height = cv.height;
+  const b = BG.getContext('2d'); b.imageSmoothingEnabled = false;
+  b.fillStyle = PAL.W; b.fillRect(0, 0, BG.width, BG.height);
+  InkSprite.draw(b, SP.moon, 0, 800*S, 112*S, pxb(3));
+  for (const [name, x, k] of TREES){ const sp = SP[name], sc = pxb(k); InkSprite.draw(b, sp, 0, x*S, ridge(x)*S - sp.h*sc/2 + 2*sc, sc); }
+  const d = pxb(2.5);                       // ground: a pixel-stepped ridge, tint under one ink pixel
+  for (let x = 0; x < BG.width; x += d){ const y = Math.round(ridge((x+d/2)/S)*S/d)*d;
+    b.fillStyle = PAL.T; b.fillRect(x, y, d, BG.height-y); b.fillStyle = PAL.K; b.fillRect(x, y, d, d); }
+}
+function drawSky(ts){
+  if (!BG) buildBg();
+  ctx.setTransform(1,0,0,1,0,0); ctx.imageSmoothingEnabled = false; ctx.globalAlpha = 1;
+  ctx.drawImage(BG, 0, 0);
+  for (const [x, y, p] of STARS) InkSprite.draw(ctx, SP.star, RM ? 0 : Math.floor(ts/700 + p*3) % 3, x*S, y*S, pxb(2));
+}
+// the noise-maker stands on the ridge and reacts to each real click: the metronome ticks, the packet drops a seed,
+// the emulator screen and the chip light up the click's actual 3-bit slot (frame = slot value)
+function noiseMaker(){
+  const id = st.src, c = g && g.clicks.length ? g.clicks[g.clicks.length-1] : null;
+  const age = c ? g.t - c.t : 1e9, mine = !!c && c.src === id;
+  let name, f;
+  if (id === 'none'){ name = 'metro'; f = (mine && age < 450) ? (g.clicks.length % 2 ? 1 : 2) : 0; }
+  else if (id === 'prng'){ if (st.seedKnown){ name = 'seeds'; f = (mine && age < 260) ? 1 + Math.min(2, Math.floor(age/90)) : 0; } else { name = 'seedsSealed'; f = 0; } }
+  else { name = id === 'emu' ? 'emu' : 'chip'; f = (mine && age < 700) ? c.slot : 8; }
+  const sp = SP[name], sc = pxa(2.6), hop = (mine && age < 110 && !RM) ? sc : 0;
+  InkSprite.draw(ctx, sp, f, SRC_X*S, ridge(SRC_X)*S - sp.h*sc/2 + sc - hop, sc);
+}
+let lastPulseT = -1, lastClickN = 0, lastLog = 0;
+
+function batLook(){
+  const b = g.bat, now = g.t;
+  if (g.over) return g.result === 'caught' ? ['batSwoop', 12] : st.lastWhy === 'jammed' ? ['batDizzy', 8] : st.lastWhy === 'missed' ? ['batSwoop', 8] : ['bat', 14];
+  if (b.phase === 'breakoff') return st.lastWhy === 'jammed' ? ['batDizzy', 8] : st.lastWhy === 'missed' ? ['batSwoop', 8] : ['bat', 14];
+  if (g.pulses.some(p => p.jam && now - p.t >= 0 && now - p.t < 400)) return ['batDizzy', 8];   // its last calls came back jammed
+  const lc = g.clicks[g.clicks.length-1];
+  if ((lc && lc.hit && now - lc.t < 300) || b.phase === 'buzz') return ['batSwoop', 12];     // it predicted you, or it is diving
+  return ['bat', b.phase === 'approach' ? 13 : 9];
+}
+function draw(ts){
+  drawSky(ts);
+  noiseMaker();
+  if (!g){   // before the first flight: the moth flutters on the left, the bat circles by the moon
+    spr('moth', fr('moth', ts/1000, 6), 70, 330, 2);
+    spr('bat', fr('bat', ts/1000, 5), 900, 165, 2);
+    return;
+  }
+  const b = g.bat, m = g.moth, now = g.t, gt = now/1000, out = st.outro, oage = out ? ts - out.t0 : 0;
+  // where the bat thinks you are: a ghost moth inside a dotted ring that tightens with its fix
+  if (b.phase !== 'breakoff' && !g.over){
+    const d = pxb(2); ctx.fillStyle = PAL.B; ctx.globalAlpha = .8;
+    pixArc(b.est.x, b.est.y, 10 + (1-b.lock)*46, 0, Math.PI*2, d, i => (i>>1) % 2 === 1);
+    ctx.globalAlpha = 1; spr('moth', 0, b.est.x, b.est.y, 2, {alpha: .3});
+  }
+  // sonar arcs from the bat: solid ink when the echo came back clean, broken warm arcs when it was jammed
+  const d = Math.max(1, Math.round(2*S*BOOST)); let shown = 0;
+  for (let i = g.pulses.length-1; i >= 0 && shown < 4; i--){
+    const p = g.pulses[i], age = now - p.t; if (age < 0) continue; if (age > 520) break; shown++;
+    const h = p._h != null ? p._h : b.h, a = 1 - age/520, r0 = RM ? 30 : 12 + age*0.42;
+    ctx.fillStyle = p.jam ? PAL.O : PAL.K; ctx.globalAlpha = p.jam ? a*.9 : a*.75;
+    for (let k = 0; k < (p.jam ? 2 : 3); k++){ const r = r0 - k*9; if (r < 6) continue;
+      if (p.jam) pixArc(p.x, p.y, r, h-.8, h+.8, d, j => (j+k) % 3 === 0, j => [((j*7+k) % 3)-1, ((j*5+k*3) % 3)-1]);
+      else pixArc(p.x, p.y, r, h-.75, h+.75, d); }
+  }
+  ctx.globalAlpha = 1;
+  // your clicks: little sound marks either side of the moth (warm if the click jammed, pale if the bat tuned it out)
+  for (let i = g.log.length-1; i >= 0; i--){ const e = g.log[i]; if (e.type !== 'click') continue; const age = now - e.t; if (age > 320) break;
+    ctx.fillStyle = e.hit ? PAL.L : PAL.O; ctx.globalAlpha = 1 - age/320;
+    const r = RM ? 22 : 16 + age*0.09;
+    for (const c of [0, Math.PI]) pixArc(e.x, e.y, r, c-.6, c+.6, d); }
+  ctx.globalAlpha = 1;
+  // the moth
+  const caught = g.over && g.result === 'caught';
+  if (!caught){
+    const sp = Math.hypot(m.vx, m.vy);
+    spr('moth', out && g.result === 'escaped' ? fr('moth', ts/1000, 16) : fr('moth', gt, sp > 20 ? 14 : 8), m.x, m.y, 2);
+    const lc = g.clicks[g.clicks.length-1];
+    if (lc && !lc.hit && now - lc.t < 260){ const f = RM ? 1 : Math.min(2, Math.floor((now - lc.t)/90));
+      spr('zap', f, m.x-22, m.y-14, 2.2); spr('zap', (f+1) % 3, m.x+22, m.y-6, 1.6); }
+  }
+  // the bat
+  const [look, fps] = batLook();
+  let bx = b.x, by = b.y;
+  if (out && g.result === 'escaped'){ bx += Math.cos(b.h)*0.22*oage; by += Math.sin(b.h)*0.22*oage; }
+  spr(look, out ? fr(look, ts/1000, fps) : fr(look, gt, fps), bx, by, 2);
+  // the end of a round: a flash where the bat struck, or a short green sparkle when you escaped
+  if (out && caught){ const f = RM ? 1 : Math.min(2, Math.floor(oage/140)); spr('zap', f, m.x, m.y, 2.6); }
+  if (out && g.result === 'escaped'){ for (let k = 0; k < 3; k++){ const a = (RM ? 0 : oage/260) + k*2.094;
+    spr('sparkle', fr('sparkle', ts/1000 + k*.17, 6), m.x + Math.cos(a)*40, m.y + Math.sin(a)*30, 2.6); } }
+}
+function sizeTape(){ TW = Math.max(200, Math.round(tape.clientWidth || 960)); const dpr = Math.min(2, window.devicePixelRatio||1); tape.width = TW*dpr; tape.height = 84*dpr; TDPR = dpr; }
+let TW = 960, TDPR = 1;
+const C = {paper:'#FBFAF9', panel:'#FFFFFF', panel2:'#F0F0F4', rule:'#D3D3E6', ink:'#19238E', ink2:'#545BA9', ink3:'#A1A4CE', warn:'#B4541A'};
+const INK = a => `rgba(25,35,142,${a})`, WARN = a => `rgba(180,84,26,${a})`;
+function drawTape(){
+  tctx.setTransform(TDPR,0,0,TDPR,0,0);
+  tctx.fillStyle = C.panel; tctx.fillRect(0,0,TW,84);
+  tctx.fillStyle = C.ink2; tctx.font = '500 11px IBM Plex Mono, monospace'; tctx.textBaseline = 'middle';
+  tctx.fillText('YOU', 10, 22); tctx.fillText('BAT', 10, 62);
+  tctx.fillStyle = C.rule; tctx.fillRect(48,42,TW-56,1);
+  if (!g || !g.clicks.length){ const msg = TW<520?'gaps and the bat\'s guesses':'your click gaps appear here, with the bat\'s guess for each';
+    tctx.fillStyle = C.panel; tctx.fillRect(54, 33, tctx.measureText(msg).width+12, 18);
+    tctx.fillStyle = C.ink2; tctx.fillText(msg, 60, 42); return; }
+  const {i0, w} = tapeWin(), cs = g.clicks.slice(i0);
+  cs.forEach((c,i)=>{
+    const x = 48 + i*w, hY = s => s<8 ? 6+3*s : 34;
+    tctx.fillStyle = c.hit ? INK(.04) : WARN(.10); tctx.fillRect(x+1,2,w-2,80);
+    tctx.fillStyle = c.hit ? C.ink3 : C.warn;
+    tctx.fillRect(x+3, 40-hY(c.sym), w-6, hY(c.sym));
+    tctx.fillStyle = c.hit ? C.ink3 : C.ink;
+    tctx.fillRect(x+3, 45, w-6, hY(c.pred));
+    if (i0+i === tapeSel){ tctx.strokeStyle = C.ink; tctx.lineWidth = 2; tctx.strokeRect(x+1, 1, w-2, 82); }
+  });
+}
+// the tape is readable: point at a column (or arrow through it) to read that click from the game state
+let tapeSel = null;
+const TAPE_HINT = $('tape-read').textContent;   // the hint shown until you pick a column
+function tapeWin(){ const n = Math.max(8, Math.floor((TW-56)/18)), len = g ? g.clicks.length : 0; return {n, w: (TW-56)/n, i0: Math.max(0, len-n), len}; }
+const PAUSE_TXT = ['a short pause (166-299 ms)', 'a pause (300-599 ms)', 'a long pause (600-1199 ms)', 'a very long pause (1.2 s or more)'];
+const symTxt = s => s < 8 ? `slot ${s} (a ${R.base+s*R.step} ms gap)` : PAUSE_TXT[s-8];
+function tapeRead(){
+  const el = $('tape-read');
+  if (!g || !g.clicks.length){ el.textContent = 'No clicks yet. Start a flight and hold Space, the mouse button or the pad: each click adds a column here.'; return; }
+  const c = g.clicks[tapeSel]; if (!c) return;
+  const src = c.src==='prng' ? 'the seeded PRNG' : c.src==='none' ? 'the metronome' : c.src==='emu' ? 'the emulator bank' : (BANK[c.src] ? BANK[c.src].backend+' bank' : c.src);
+  el.textContent = `Click ${tapeSel+1} of ${g.clicks.length} (${src}, bits ${c.slot.toString(2).padStart(3,'0')}): you made ${symTxt(c.sym)}. The bat guessed ${symTxt(c.pred)} at ${Math.round(c.conf*100)}% confidence, so ${c.hit ? 'it tuned that click out.' : `it was jammed for ${R.jamHold} ms.`}`;
+}
+function tapePick(e){
+  if (!g || !g.clicks.length){ tapeRead(); return; }
+  const r = tape.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * TW, {w, i0, len} = tapeWin();
+  tapeSel = Math.max(i0, Math.min(len-1, i0 + Math.floor((x-48)/w))); tapeRead(); drawTape();
+}
+tape.addEventListener('pointerdown', tapePick);
+tape.addEventListener('pointermove', e=>{ if (e.pointerType==='mouse' || e.buttons) tapePick(e); });
+tape.addEventListener('keydown', e=>{
+  if (e.key!=='ArrowLeft' && e.key!=='ArrowRight' && e.key!=='Home' && e.key!=='End') return;
+  e.preventDefault();
+  if (!g || !g.clicks.length){ tapeRead(); return; }
+  const {i0, len} = tapeWin(), cur = tapeSel==null || tapeSel < i0 ? len-1 : tapeSel;
+  tapeSel = e.key==='Home' ? i0 : e.key==='End' ? len-1 : Math.max(i0, Math.min(len-1, cur + (e.key==='ArrowRight' ? 1 : -1)));
+  tapeRead(); drawTape();
+});
+
+// ---------- the cast list (Scene view) ----------
+function castList(){
+  const s = SRC.find(x=>x.id===st.src), ic = srcIcon(st.src);
+  const items = [
+    ['', [['moth',0,2]], 'You', 'a tiger moth, clicking'],
+    ['', [['bat',2,2]], 'The bat', 'hunts by sonar, learns your rhythm'],
+    ['', [['arcs',0,2],['arcs',1,2]], 'Sonar arcs', 'solid: clean echo. Broken: jammed'],
+    ['', [['zap',1,3]], 'Zap', 'your click surprised it'],
+    ['', [['batSwoop',0,2]], 'Swoop', 'it predicted that click, or it is diving'],
+    ['', [['batDizzy',1,2]], 'Dizzy', 'its echoes came back jammed'],
+    ['ghost', [['moth',0,2]], 'Ghost moth', 'where the bat thinks you are'],
+    ['', [[ic[0], ic[1], 2]], 'Noise-maker', `deals your click jitter: ${s ? s.name : '-'}`],
+  ];
+  $('cast').innerHTML = items.map(([cls, ics, t, d]) => `<li${cls?` class="${cls}"`:''}><span class="ic">${ics.map(([n,f,k])=>iconHTML(n,f,k)).join('')}</span><span><b>${t}</b><span>${d}</span></span></li>`).join('');
+}
+// the legend under the tape: the same sprites the stage draws (the ring swatch is plain CSS)
+document.querySelectorAll('#legend [data-sp]').forEach(el=>{ const [n, f] = el.dataset.sp.split(':'); if (SP[n]) el.innerHTML = iconHTML(n, +f, 1); });
+
+// ---------- HUD ----------
+const PH = {search:'Search', approach:'Approach', buzz:'Terminal buzz', breakoff:'Break-off'};
+function hud(){
+  if (!g) return;
+  const b = g.bat, nc = g.clicks.length, hits = g.clicks.filter(c=>c.hit).length;
+  $('h-phase').textContent = g.over ? (g.result==='escaped'?'Escaped':'Caught') : PH[b.phase];
+  $('h-phase').classList.toggle('hot', b.phase==='buzz' || g.over);
+  [...$('h-pass').querySelectorAll('i')].forEach((el,i)=>el.classList.toggle('on', i < g.survived));
+  const conf = g.next ? g.next.conf : 0;
+  $('m-conf').textContent = Math.round(conf*100)+'%'; $('b-conf').style.width = (conf*100)+'%';
+  $('m-mode').textContent = `${g.next?g.next.mode:'-'} · guessed ${hits} of ${nc}${nc?` (${Math.round(100*hits/nc)}%)`:''}`;
+  $('m-lock').textContent = Math.round(b.lock*100)+'%'; $('b-lock').style.width = (b.lock*100)+'%';
+  $('m-est').textContent = b.phase==='breakoff' ? 'bat is turning for another pass' : `its guess is ${Math.round(Math.hypot(b.est.x-g.moth.x,b.est.y-g.moth.y))} px off`;
+  $('m-en').textContent = Math.floor(g.energy); $('b-en').style.width = g.energy+'%';
+  const last = g.clicks[nc-1];
+  $('r-gap').textContent = last ? (last.sym<8 ? `${R.base+last.slot*R.step} ms (slot ${last.slot}, ${last.slot.toString(2).padStart(3,'0')})` : `pause, then slot ${last.slot}`) + (last.hit?' · bat tuned it out':' · jammed') : '-';
+  bankReadout();
+}
+function bankReadout(){
+  const s = SRC.find(x=>x.id===st.src), b = BANK[st.src];
+  $('r-engine').textContent = b ? `comet-qrng-v1 · ${b.mode==='qpu'?b.backend+' (IBM hardware)':'Aer simulator'} · ${b.reg}+${b.total-b.reg} = ${b.total} qubits` : 'none: classical source';
+  $('r-job').textContent = b ? b.job_id : (st.src==='prng' ? `mulberry32(${seedHex()})` : '-');
+  if (b){ const L = live[b.id]; $('r-bank').textContent = `slot ${fmt(L?L.cursor:0)} of ${fmt(b.slots.length)}${L&&L.wrapped?' (wrapped: reusing slots)':' · no slot reused'}`; }
+  else $('r-bank').textContent = st.src==='prng' ? `${g&&g.source.kind==='prng'?fmt(g.source.used):0} slots drawn from the seed` : '-';
+  $('src-where').textContent = s.where;
+}
+
+// ---------- loop ----------
+let raf = 0, lastTs = 0;
+function say(msg){ const el=$('say'); el.textContent=msg; el.classList.add('on'); clearTimeout(el._h); el._h=setTimeout(()=>el.classList.remove('on'),1600); }
+function input(){
+  const k = st.keys, dx = (k.has('ArrowRight')||k.has('KeyD'))-(k.has('ArrowLeft')||k.has('KeyA')), dy = (k.has('ArrowDown')||k.has('KeyS'))-(k.has('ArrowUp')||k.has('KeyW'));
+  let target = null;
+  if (dx||dy) { target = {x:g.moth.x+dx*90, y:g.moth.y+dy*90}; st.pointer = null; }
+  else if (st.pointer) target = st.pointer;
+  return {hold: st.holdKey||st.holdMouse||st.holdPad, target};
+}
+const OUTRO_MS = RM ? 0 : 1100;
+function frame(ts){
+  const dt = Math.min(50, ts - (lastTs||ts)); lastTs = ts;
+  if (g && st.started && !st.paused && !g.over){
+    J.advance(g, dt, input());
+    for (; lastClickN < g.clicks.length; lastClickN++){ const c = g.clicks[lastClickN]; tick(g.moth.x, c.hit); }
+    for (const p of g.pulses) if (p.t > lastPulseT){ p._h = g.bat.h; chirp(p.phase, p.x, p.jam); lastPulseT = p.t; }
+    for (; lastLog < g.log.length; lastLog++){ const e = g.log[lastLog]; if (e.type!=='pass') continue; st.lastWhy = e.why;
+      if (e.why==='jammed'){ say('Jammed: the bat broke off its attack'); tone(900,300,.25,.1); }
+      else if (e.why==='missed'){ say('The bat struck at its guess and missed'); tone(700,350,.2,.08); }
+      else if (e.why==='gave up'){ say('The bat gave up this pass'); }
+      else if (e.why==='caught'){ tone(180,60,.5,.3); } }
+    if (g.over){ st.outro = {t0: ts}; syncCtl(); if (g.result==='escaped') tone(660,990,.35,.12); }
+  }
+  draw(ts); drawTape(); hud();
+  if (g && g.over && st.outro && !st.outro.done && ts - st.outro.t0 >= OUTRO_MS){ st.outro.done = true; endRound(); }
+  const going = st.started && !st.paused && g && (!g.over || (st.outro && !st.outro.done));
+  raf = going ? requestAnimationFrame(frame) : 0;
+}
+function kick(){ if (!raf){ lastTs = 0; raf = requestAnimationFrame(frame); } }
+function endRound(){
+  const nc = g.clicks.length, hits = g.clicks.filter(c=>c.hit).length, s = SRC.find(x=>x.id===st.src);
+  if (g.result==='escaped') $('end-h').textContent = 'You escaped.';
+  else $('end-h').textContent = `Caught on pass ${g.survived+1}.`;
+  $('end-p').textContent = `${nc} clicks from the ${s.name.toLowerCase()==='leaked seed'?'leaked seed':s.name+' source'}. The bat guessed ${hits} of them (${nc?Math.round(100*hits/nc):0}%)` + (g.result==='escaped' ? '.' : (nc ? '. Every right guess is a click it tuned out.' : '. You never clicked, so nothing jammed its sonar.'));
+  $('ov-end').hidden = false; st.lastRun = {passes: g.survived, clicks: nc, hits};
+}
+// a gentle idle loop before the first flight: the moth and bat flap, stars twinkle (stops when off screen)
+let idleTimer = 0, stageSeen = true;
+function idle(ts){ idleTimer = 0; if (st.started || RM || !stageSeen || document.hidden) return; draw(ts); idleTimer = setTimeout(()=>requestAnimationFrame(idle), 120); }
+function kickIdle(){ if (!idleTimer && !st.started && !RM) idleTimer = setTimeout(()=>requestAnimationFrame(idle), 30); }
+if ('IntersectionObserver' in window) new IntersectionObserver(es=>{ stageSeen = es[0].isIntersecting; if (stageSeen) kickIdle(); }).observe($('stage'));
+document.addEventListener('visibilitychange', ()=>{ if (!document.hidden) kickIdle(); });
+
+// ---------- controls ----------
+function start(muted){
+  st.muted = muted; syncMute(); audioInit(); if (AC && AC.state==='suspended') AC.resume();
+  clearTimeout(idleTimer); idleTimer = 0;
+  st.started = true; $('ov-start').hidden = true; newRound(); cv.focus(); kick();
+}
+$('go').addEventListener('click', ()=>start(false));
+$('go-mute').addEventListener('click', ()=>start(true));
+function setPaused(p){ if (!st.started || !g || g.over) return; st.paused = p; $('ov-pause').hidden = !p; $('pause').textContent = p?'Resume':'Pause'; st.holdKey = st.holdMouse = st.holdPad = false; if (!p){ cv.focus(); kick(); } else draw(performance.now()); }
+$('pause').addEventListener('click', ()=>setPaused(!st.paused));
+$('resume').addEventListener('click', ()=>setPaused(false));
+function restart(){ if (!st.started) return start(st.muted); st.paused = false; $('ov-pause').hidden = true; $('pause').textContent='Pause'; newRound(); cv.focus(); kick(); }
+$('restart').addEventListener('click', restart); $('restart2').addEventListener('click', restart); $('again').addEventListener('click', restart);
+function syncMute(){ $('mute').textContent = st.muted ? 'Sound off: unmute' : 'Mute sound';if (master) master.gain.value = st.muted?0:0.55; }
+$('mute').addEventListener('click', ()=>{ st.muted = !st.muted; if (!st.muted){ audioInit(); if (AC && AC.state==='suspended') AC.resume(); } syncMute(); });
+
+// noise-maker picker: one character card per source
+const seg = $('src-seg');
+function pickerIcons(){ [...seg.children].forEach(b=>{ const ic = srcIcon(b.dataset.src); b.querySelector('.ic').innerHTML = iconHTML(ic[0], ic[1], 2); }); }
+SRC.forEach(s=>{ const b=document.createElement('button'); b.type='button'; b.dataset.src=s.id;
+  b.innerHTML = `<span class="ic"></span><span>${s.name.replace('_', '_<wbr>')}<small>${s.tag}</small></span>`;
+  b.addEventListener('click',()=>setSource(s.id)); seg.appendChild(b); });
+function setSource(id){
+  st.src = id; [...seg.children].forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.src===id)));
+  $('seedrow').hidden = id!=='prng'; $('src-note').innerHTML = SRC.find(s=>s.id===id).note();
+  if (g && !g.over) J.setSource(g, liveSource(id));
+  pickerIcons(); castList();
+  hud(); bankReadout(); if (!raf) { draw(performance.now()); drawTape(); }
+}
+$('seed').addEventListener('change', ()=>{ const v = $('seed').value.trim(), n = /^0x[0-9a-f]+$/i.test(v) ? parseInt(v,16) : parseInt(v,10);
+  if (Number.isFinite(n)) st.seed = n>>>0; $('seed').value = seedHex(); setSource(st.src); });
+$('seedknown').addEventListener('click', ()=>{ st.seedKnown = !st.seedKnown; $('seedknown').setAttribute('aria-pressed', String(st.seedKnown));
+  $('seedknown').textContent = st.seedKnown ? 'Bat has read the seed' : 'Bat ignores the seed';
+  if (g){ g.seedKnown = st.seedKnown; g.next = J.predict(g, g.pending); } setSource(st.src); });
+
+// keyboard
+const GAME_KEYS = new Set(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','KeyW','KeyA','KeyS','KeyD','Space']);
+function gameFocus(){ const a = document.activeElement; return a===cv || a===document.body || a===$('pad'); }
+window.addEventListener('keydown', e=>{
+  // before the first flight, Space or Enter on the focused sky starts it (the same as Start flight)
+  if (!st.started && document.activeElement===cv && (e.code==='Space' || e.code==='Enter') && !e.repeat){ e.preventDefault(); start(st.muted); return; }
+  if (!st.started || !gameFocus()) return;
+  if (e.code==='KeyP' || e.code==='Escape'){ setPaused(!st.paused); e.preventDefault(); return; }
+  if (!GAME_KEYS.has(e.code)) return;
+  e.preventDefault(); if (e.code==='Space') st.holdKey = true; else st.keys.add(e.code);
+});
+window.addEventListener('keyup', e=>{ if (e.code==='Space') st.holdKey = false; st.keys.delete(e.code); });
+window.addEventListener('blur', ()=>{ st.keys.clear(); st.holdKey = st.holdMouse = st.holdPad = false; padSync(); });
+
+// pointer: mouse steers by hovering and clicks by holding the button; a finger steers by dragging
+function pt(e){ const r = cv.getBoundingClientRect(); return {x:(e.clientX-r.left)/r.width*W, y:(e.clientY-r.top)/r.height*H}; }
+cv.addEventListener('pointermove', e=>{ if (e.pointerType==='mouse' || e.buttons) st.pointer = pt(e); });
+cv.addEventListener('pointerdown', e=>{ if (!st.started) return; cv.focus(); st.pointer = pt(e); cv.setPointerCapture(e.pointerId); if (e.pointerType==='mouse' && e.button===0) st.holdMouse = true; });
+const mouseUp = e=>{ if (e.pointerType==='mouse') st.holdMouse = false; };
+cv.addEventListener('pointerup', mouseUp); cv.addEventListener('pointercancel', mouseUp);
+cv.addEventListener('contextmenu', e=>e.preventDefault());
+const pad = $('pad');
+function padSync(){ pad.setAttribute('aria-pressed', String(st.holdPad||st.holdKey)); }
+function padGate(){
+  if (!st.started){ start(st.muted); return true; }
+  if (st.paused){ toast('Paused: press Resume (or P) to fly on'); return false; }
+  if (g && g.over){ toast('This round is over: press Fly again'); return false; }
+  return true;
+}
+pad.addEventListener('pointerdown', e=>{ e.preventDefault(); if (!padGate()) return; st.holdPad = true; pad.setPointerCapture(e.pointerId); padSync(); });
+['pointerup','pointercancel','lostpointercapture'].forEach(ev=>pad.addEventListener(ev, ()=>{ st.holdPad = false; padSync(); }));
+pad.addEventListener('keydown', e=>{ if (e.code!=='Space' && e.code!=='Enter') return; e.preventDefault(); if (e.repeat && st.holdPad) return;
+  const first = !st.started; if (!padGate()) return; if (first) pad.focus(); st.holdPad = true; padSync(); });
+pad.addEventListener('keyup', e=>{ if (e.code==='Space'||e.code==='Enter'){ st.holdPad = false; padSync(); } });
+setInterval(padSync, 120);
+
+// share
+const toast = msg=>{ const t=$('toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('on'),1800); };
+async function share(withRun){
+  let tag = `${st.src}-${(st.seed>>>0).toString(16)}-${st.seedKnown?1:0}`;
+  if (withRun && st.lastRun) tag += `-x${st.lastRun.passes}.${st.lastRun.clicks}.${st.lastRun.hits}`;
+  history.replaceState(null,'','#'+tag);
+  try { await navigator.clipboard.writeText(location.href); toast('Link copied'); } catch(e){ toast('Copy failed: the link is in your address bar'); }
+}
+$('share').addEventListener('click', ()=>share(false)); $('share-run').addEventListener('click', ()=>share(true));
+(function(){
+  const m = location.hash.match(/^#(none|prng|emu|fez|mar)-([0-9a-f]{1,8})-([01])(?:-x(\d)\.(\d+)\.(\d+))?$/i);
+  if (!m) return;
+  if (SRC.some(s=>s.id===m[1].toLowerCase())) st.src = m[1].toLowerCase();
+  st.seed = parseInt(m[2],16)>>>0; st.seedKnown = m[3]==='1';
+  $('seed').value = seedHex(); $('seedknown').setAttribute('aria-pressed', String(st.seedKnown)); $('seedknown').textContent = st.seedKnown?'Bat has read the seed':'Bat ignores the seed';
+  if (m[4]!==undefined){ const p=+m[4], c=+m[5], h=+m[6], s = SRC.find(x=>x.id===st.src);
+    $('shared').hidden = false;
+    $('shared').textContent = `Someone sent you a run: ${p>=3?'escaped all 3 passes':'survived '+p+' of 3 passes'} with ${c} clicks from ${s?s.name:'?'}, and the bat guessed ${h}. That's what the link says; the page can't verify it. Can you beat it?`; }
+})();
+
+// ---------- tournament (classical simulation of the same rule) ----------
+const NS = [100, 250, 500]; let tourN = 500, tourJob = null;
+const LONG = /*TOURNAMENT*/null;
+const nseg = $('n-seg');
+NS.forEach(n=>{ const b=document.createElement('button'); b.type='button'; b.textContent=String(n); b.addEventListener('click',()=>{ tourN=n; [...nseg.children].forEach((x,i)=>x.setAttribute('aria-pressed',String(NS[i]===n))); }); nseg.appendChild(b); });
+[...nseg.children].forEach((x,i)=>x.setAttribute('aria-pressed',String(NS[i]===tourN)));
+function tourSources(){
+  const L = [
+    {id:'none', name:'Metronome', sub:'classical, no jitter', ic:['metro',0], mk:()=>J.makeSource('none'), seed:false},
+    {id:'prng_leaked', name:'PRNG, seed leaked', sub:'classical, bat has the seed', ic:['seeds',3], mk:r=>J.makeSource('prng',{seed:(st.seed+r)>>>0}), seed:true},
+    {id:'prng_hidden', name:'PRNG, seed secret', sub:'classical, same stream', ic:['seedsSealed',0], mk:r=>J.makeSource('prng',{seed:(st.seed+r)>>>0}), seed:false},
+  ];
+  for (const id of ['emu','fez','mar']) if (BANK[id] && BANK[id].slots){ const b = BANK[id];
+    L.push({id, name: id==='emu'?'Emulator bank':b.backend+' bank', sub: id==='emu'?'Aer simulator, uncertified':`IBM hardware, ${b.total} qubits`, ic: id==='emu'?['emu',8]:['chip',8], bank:b, seed:false}); }
+  return L;
+}
+function tourTable(rows){
+  const el = $('tour'); el.innerHTML = '<div class="trow head"><span class="name">Source</span><span>Survived all 3 passes</span><span></span><span>Bat guessed right</span></div>';
+  for (const r of rows){
+    const d = document.createElement('div'); d.className='trow';
+    const p = r.n ? r.surv/r.n : 0, ci = J.wilson(r.surv, r.n);
+    d.innerHTML = `<span class="name"><span class="ic">${iconHTML(r.ic[0], r.ic[1], 2)}</span><span>${r.name}<small>${r.sub}</small></span></span><span class="track"><i style="width:${(p*100).toFixed(1)}%"></i>${r.n?`<b style="left:${(ci[0]*100).toFixed(1)}%;width:${((ci[1]-ci[0])*100).toFixed(1)}%"></b>`:''}</span><span class="pct">${r.n?(p*100).toFixed(1)+'%':'-'}</span><span class="hit">${r.clicks?`${(100*r.hits/r.clicks).toFixed(1)}% of ${fmt(r.clicks)} clicks`:'-'}${r.n&&r.n<tourN?` · ${r.n}/${tourN}`:''}</span>`;
+    el.appendChild(d);
+  }
+}
+function runTour(){
+  if (tourJob){ tourJob.stop = true; return; }
+  const srcs = tourSources(), rows = srcs.map(s=>({name:s.name, sub:s.sub, ic:s.ic, n:0, surv:0, clicks:0, hits:0}));
+  const banks = {}; srcs.forEach(s=>{ if (s.bank) banks[s.id] = J.makeSource('bank',{slots:s.bank.slots, id:s.id}); });
+  const job = tourJob = {stop:false}; let si = 0, r = 0; const total = srcs.length*tourN;
+  $('tour-run').textContent = 'Stop';
+  function chunk(){
+    const t0 = performance.now();
+    while (!job.stop && si < srcs.length && performance.now()-t0 < 14){
+      const s = srcs[si], src = s.bank ? banks[s.id] : s.mk(r);
+      const res = J.simRound(src, {seedKnown:s.seed, noiseSeed:1000+r});
+      const row = rows[si]; row.n++; row.clicks += res.clicks; row.hits += res.hits; if (res.result==='escaped') row.surv++;
+      if (++r >= tourN){ r = 0; si++; }
+    }
+    $('tour-prog').style.width = (100*(si*tourN+r)/total)+'%';
+    tourTable(rows);
+    if (!job.stop && si < srcs.length) requestAnimationFrame(chunk);
+    else { tourJob = null; $('tour-run').textContent = 'Run the tournament';
+      const rnd = rows.filter((x,i)=>!['none','prng_leaked'].includes(srcs[i].id) && x.n>1);
+      if (rnd.length>1){ const h = J.homogeneity(rnd);
+        $('tour-test').innerHTML = `Do the unpredictable sources (${rnd.map(x=>x.name).join(', ')}) differ? Chi-square test of one shared survival rate: &#x3C7;&#xB2; = ${h.chi2.toFixed(2)}, df ${h.df}, <b>p = ${h.p.toFixed(2)}</b>. ${h.p<0.05?'That is below 0.05 on this run. Try another round count before reading anything into it: several sources and run sizes are being compared.':'No detectable difference: the bat cannot tell them apart.'} The metronome and the leaked seed are a different story.`; }
+      const used = Object.values(banks).map(b=>`${BANK[b.id].id==='emu'?'emulator':BANK[b.id].backend} ${fmt(b.cursor)} of ${fmt(BANK[b.id].slots.length)} slots${b.wrapped?' (wrapped)':''}`).join(', ');
+      $('tour-note').textContent = `Bars: share of rounds where the moth survived all three passes. Whiskers: 95% Wilson interval. Bank slots used this run: ${used}, none reused${Object.values(banks).some(b=>b.wrapped)?' except where marked wrapped':''}. Bat noise is seeded by round number, identical for every source.`; }
+  }
+  requestAnimationFrame(chunk);
+}
+$('tour-run').addEventListener('click', runTour);
+tourTable(tourSources().map(s=>({name:s.name, sub:s.sub, ic:s.ic, n:0, surv:0, clicks:0, hits:0})));
+if (LONG && LONG.long){ const L = LONG.long, nm = {prng_hidden:'secret-seed PRNG', fez:'ibm_fez bank', mar:'ibm_marrakesh bank'};
+  $('tour-long').innerHTML = `Longer run, same code in node (sim.js): over ${fmt(L.rounds)} rounds each, ${L.rows.map(r=>`${nm[r.id]} ${(100*r.survival).toFixed(1)}%`).join(', ')} (&#x3C7;&#xB2; = ${L.homogeneity.chi2.toFixed(2)}, p = ${L.homogeneity.p.toFixed(2)}). The emulator bank is too small for that many rounds.`; }
+
+// ---------- what came off the chip: the qubit map drawn as a chip package ----------
+let hwSel = HERO;
+function chipView(){
+  const b = hwSel; if (!b) return;
+  const svg = $('grid'), cols = 13, rows = Math.ceil(b.p1.length/cols), cw = 32, pin = 12, pad = 12;
+  const x0 = pin+pad, y0 = pin+pad, VW = cols*cw + 2*x0, VH = rows*cw + 2*y0;
+  svg.setAttribute('viewBox', `0 0 ${VW} ${VH}`);
+  let s = '';
+  for (let x = x0+6; x <= VW-x0-12; x += 22) s += `<rect x="${x}" y="0" width="8" height="${pin+1}" fill="${C.ink}"/><rect x="${x}" y="${VH-pin-1}" width="8" height="${pin+1}" fill="${C.ink}"/>`;
+  for (let y = y0+6; y <= VH-y0-12; y += 22) s += `<rect x="0" y="${y}" width="${pin+1}" height="8" fill="${C.ink}"/><rect x="${VW-pin-1}" y="${y}" width="${pin+1}" height="8" fill="${C.ink}"/>`;
+  s += `<rect x="${pin}" y="${pin}" width="${VW-2*pin}" height="${VH-2*pin}" fill="${C.panel2}" stroke="${C.ink}" stroke-width="2"/><rect x="${pin+4}" y="${pin+4}" width="6" height="6" fill="${C.ink}"/>`;
+  b.p1.forEach((p,i)=>{
+    const x = x0 + (i%cols)*cw, y = y0 + Math.floor(i/cols)*cw, wit = i >= b.reg, dev = Math.min(1, Math.abs(p-0.5)/0.25);
+    // pale (P(1) near 50%) to solid ink (|P(1) - 0.5| >= 0.25); witness qubits are white with a dashed ink outline
+    const fill = wit ? C.panel : `rgb(${Math.round(232-207*dev)},${Math.round(232-197*dev)},${Math.round(240-98*dev)})`, sel = i==+$('qsel').value;
+    s += `<rect x="${x+2}" y="${y+2}" width="${cw-4}" height="${cw-4}" fill="${fill}" stroke="${sel?C.warn:(wit?C.ink2:C.rule)}" stroke-width="${sel?3:1.2}"${wit&&!sel?' stroke-dasharray="3 2"':''} data-q="${i}"><title>qubit ${i}: P(1) = ${p.toFixed(4)}</title></rect>`;
+  });
+  svg.innerHTML = s;
+  $('grid-label').textContent = `P(1) per qubit on ${b.backend}: ${b.reg} register (darker = more biased) + ${b.total-b.reg} Bell witness (dashed outline)`;
+  $('qsel').max = b.p1.length-1; qRead();
+}
+function qRead(){
+  const b = hwSel; if (!b) return; const i = +$('qsel').value, p = b.p1[i], phys = b.layout ? b.layout[i] : null;
+  const role = i < b.reg ? 'randomness register' : `Bell witness pair ${b.witness_pairs.findIndex(w=>w.includes(i))+1}`;
+  $('qread').innerHTML = `<b>Circuit qubit ${i}</b>${phys!=null?` on physical qubit ${phys}`:''} (${role}): measured 1 in <b>${(p*100).toFixed(2)}%</b> of ${fmt(b.shots)} shots${i<b.reg?` (ideal 50%)`:''}.`;
+}
+$('qsel').addEventListener('input', chipView);
+$('grid').addEventListener('pointermove', e=>{ const q = e.target.getAttribute && e.target.getAttribute('data-q'); if (q!=null && q!==$('qsel').value){ $('qsel').value = q; chipView(); } });
+const hseg = $('hw-seg');
+HW.forEach(b=>{ const el=document.createElement('button'); el.type='button'; el.textContent=b.backend; el.addEventListener('click',()=>{ hwSel=b; [...hseg.children].forEach((x,i)=>x.setAttribute('aria-pressed',String(HW[i]===b))); chipView(); }); hseg.appendChild(el); });
+[...hseg.children].forEach((x,i)=>x.setAttribute('aria-pressed',String(HW[i]===hwSel)));
+function gauge(){
+  const pts = BANKS.filter(b=>b.S!=null), x0 = 1.8, x1 = 2.95, X = v => 30 + (v-x0)/(x1-x0)*420;
+  const MONO = 'font-family="IBM Plex Mono, monospace"';
+  let s = `<line x1="30" y1="150" x2="450" y2="150" stroke="${C.ink}"/>`;
+  for (let v=1.8; v<=2.951; v+=0.2) s += `<line x1="${X(v)}" y1="150" x2="${X(v)}" y2="155" stroke="${C.ink}"/><text x="${X(v)}" y="170" fill="${C.ink2}" font-size="11" text-anchor="middle" ${MONO}>${v.toFixed(1)}</text>`;
+  s += `<rect x="30" y="20" width="${X(2)-30}" height="130" fill="${INK(.06)}"/><text x="38" y="140" fill="${C.ink2}" font-size="10.5" ${MONO}>CLASSICAL</text>`;
+  s += `<line x1="${X(2)}" y1="16" x2="${X(2)}" y2="150" stroke="${C.ink2}" stroke-dasharray="4 4"/><text x="${X(2)+6}" y="30" fill="${C.ink2}" font-size="11" ${MONO}>classical bound 2</text>`;
+  s += `<line x1="${X(2*Math.SQRT2)}" y1="16" x2="${X(2*Math.SQRT2)}" y2="150" stroke="${C.ink}" stroke-dasharray="2 4"/><text x="${X(2*Math.SQRT2)-6}" y="30" fill="${C.ink}" font-size="11" text-anchor="end" ${MONO}>2&#x221A;2</text>`;
+  pts.forEach((b,i)=>{ const y = 60 + i*30, hw = b.mode==='qpu', col = hw ? C.ink : C.ink2;
+    s += `<line x1="${X(b.S-3*b.sS)}" y1="${y}" x2="${X(b.S+3*b.sS)}" y2="${y}" stroke="${col}" stroke-width="2"/><circle cx="${X(b.S)}" cy="${y}" r="5" fill="${hw?col:C.panel}" stroke="${col}" stroke-width="2"/>`;
+    s += `<text x="${X(b.S-3*b.sS)-8}" y="${y+4}" fill="${col}" font-size="11.5" text-anchor="end" font-family="IBM Plex Mono, monospace">${hw?b.backend:'Aer emulator'} ${b.S.toFixed(3)} &#xB1; ${b.sS.toFixed(3)}</text>`; });
+  $('gauge').innerHTML = s;
+}
+function jobsTable(){
+  let s = '<thead><tr><th>Run</th><th>Qubits</th><th>Shots</th><th>h per bit</th><th>Budget</th><th>Bytes</th><th>S &#xB1; <span style="text-transform:none">&#x3C3;</span></th><th>Grade</th><th>Atlas job</th></tr></thead><tbody>';
+  for (const b of BANKS) s += `<tr><td><b>${b.mode==='qpu'?b.backend:'Aer emulator'}</b><br>${b.mode==='qpu'?'IBM hardware':'simulator'}</td><td><b>${b.reg} + ${b.total-b.reg} = ${b.total}</b></td><td>${fmt(b.shots)}</td><td>${b.h_bit.toFixed(3)}</td><td>${fmt(b.budget_bits)} bits<br>(assumption-free: ${fmt(b.budget_af)})</td><td><b>${fmt(b.bytes)}</b></td><td>${b.S!=null?b.S.toFixed(3)+' &#xB1; '+b.sS.toFixed(3):'no witness'}</td><td>${b.grade}</td><td>${b.job_id}${b.provider_job_id&&b.mode==='qpu'?'<br>IBM '+b.provider_job_id:''}</td></tr>`;
+  $('jobs').innerHTML = s + '</tbody>';
+}
+function staticCopy(){
+  const proof = [];
+  if (HERO) proof.push(`<span class="hot"><b>${HERO.total}</b> qubits on ${HERO.backend}</span>`, `<span><b>S = ${HERO.S.toFixed(2)}</b> &#xB1; ${HERO.sS.toFixed(2)}</span>`);
+  proof.push(`<span><b>${BANKS.length}</b> real Atlas jobs</span>`);
+  const hwBytes = HW.reduce((a,b)=>a+b.bytes,0); if (hwBytes) proof.push(`<span><b>${fmt(hwBytes)}</b> hardware bytes</span>`);
+  $('proof').innerHTML = proof.join('');
+  if (HERO) $('sub-hw').textContent = `${HERO.total} qubits of IBM's ${HERO.backend}`;
+  const hw = HW.map(b=>`${b.backend} (${b.reg} + ${b.total-b.reg} = ${b.total} qubits, ${fmt(b.bytes)} bytes, S = ${b.S.toFixed(3)} &#xB1; ${b.sS.toFixed(3)})`).join(' and ');
+  $('chip-lede').innerHTML = `Every number here is read from the job records embedded in this page. Hardware runs: ${hw}. Each one used every qubit on the chip. Shading shows how far each register qubit's P(1) sits from 50%. The engine flagged ${HW.map(b=>b.n_biased+' qubits on '+b.backend).join(' and ')} as biased (p &lt; 10<sup>-6</sup>), and the worst qubit sets the conservative min-entropy per bit.`;
+  const sn = HW.map(b=>`${b.backend}: S = ${b.S.toFixed(3)} &#xB1; ${b.sS.toFixed(3)}, ${b.zS.toFixed(0)} &#x3C3; above 2`).join('; ');
+  $('s-note').innerHTML = `${sn}. Whiskers span &#xB1;3&#x3C3;. No local hidden-variable model gets past 2, but only if the test closes loopholes this one leaves open. The settings were fixed in the circuit, all the qubits sat on one chip with no space-like separation, and fair sampling is assumed. So read it as a fidelity witness: during the job the chip entangled and read out well. It is not device-independent certification. The emulator's ${BANK.emu12?BANK.emu12.S.toFixed(3):''} is the noiseless ideal of 2&#x221A;2 plus sampling error.`;
+  $('no-claim-s').innerHTML = `The CHSH value does not certify the 148 register qubits. ${sn}: four separate Bell pairs on the same chip, with fixed measurement settings, no space-like separation and fair sampling assumed. That's what the engine itself says in the job's caveat. It shows the chip was behaving quantum-mechanically, not that any particular byte is unpredictable.`;
+}
+
+fit(); sizeTape();
+window.addEventListener('resize', ()=>{ fit(); sizeTape(); drawTape(); if (!raf) draw(performance.now()); });
+staticCopy(); gauge(); jobsTable(); chipView(); setSource(st.src); syncCtl();
+$('seed').value = seedHex();
+draw(performance.now()); drawTape(); kickIdle();
+</script>

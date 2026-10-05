@@ -1,0 +1,328 @@
+{
+ "ok": true,
+ "steps": [
+  {
+   "step": "page opens on the scene, silent, with the brand bar linking the hub",
+   "ok": true,
+   "detail": {
+    "title": "Chirp Instrument",
+    "brand": "Challenge 02",
+    "sources": 0,
+    "media": 0,
+    "ctx": 0
+   }
+  },
+  {
+   "step": "tap the black holes in the scene: the next real half-wave sounds and the playhead steps",
+   "ok": true,
+   "detail": {
+    "pos": [
+     0,
+     0.787,
+     1.52
+    ],
+    "sources": 4
+   }
+  },
+  {
+   "step": "tap the pad and press Z: each steps one half-wave",
+   "ok": true,
+   "detail": {
+    "pos": [
+     1.52,
+     2.423,
+     3.155
+    ]
+   }
+  },
+  {
+   "step": "Play runs the transport with sound, and Play again stops it",
+   "ok": true,
+   "detail": {
+    "now": 1.6,
+    "sources": 10,
+    "label": "Pause"
+   }
+  },
+  {
+   "step": "scrub the blur reach: 0.5 loads its real job; reach 1 (never run) snaps back and says why",
+   "ok": true,
+   "detail": {
+    "off": [
+     "unblurred",
+     0
+    ],
+    "reach05": "reach 0.5 · strength 0.5",
+    "job": "9c28f32b-e560-4a0d-9e91-f97ee3e221ba · ran 350 s",
+    "snapped_to": 2,
+    "toast": "No data for GW150914 at reach 1, strength 0.5: never submitted, because the credit cap was reached first. Showing reach "
+   }
+  },
+  {
+   "step": "loop presets: Merger loops the merger and plays inside it; Whole clears the loop",
+   "ok": true,
+   "detail": {
+    "merger": [
+     17.8,
+     25.235
+    ],
+    "playhead_in_loop": 19.5
+   }
+  },
+  {
+   "step": "drag along the tape under the scene to set a loop",
+   "ok": true,
+   "detail": {
+    "loop": [
+     7.54,
+     13.9
+    ]
+   }
+  },
+  {
+   "step": "jam: the A key holds a note with sound, released on key-up",
+   "ok": true,
+   "detail": {
+    "held": 1,
+    "released": true
+   }
+  },
+  {
+   "step": "tap an observatory in the scene to mute its voice; the H1 button unmutes it",
+   "ok": true,
+   "detail": {
+    "toast": "H1 Hanford muted: laser off"
+   }
+  },
+  {
+   "step": "Hear the detector plays the real strain and stops on the second click",
+   "ok": true,
+   "detail": {
+    "label": "Stop",
+    "then": "Hear the detector (real speed)"
+   }
+  },
+  {
+   "step": "the renders: every card plays real audio, Stop stops it, the slider seeks, and it loads onto the roll",
+   "ok": true,
+   "detail": {
+    "cards": [
+     {
+      "src": "audio/GW150914_chirp.mp3",
+      "seeked_to": 13.7,
+      "loaded": [
+       0,
+       0
+      ]
+     },
+     {
+      "src": "audio/GW150914_s0.5_r0.0.mp3",
+      "seeked_to": 13.6,
+      "loaded": [
+       0,
+       1
+      ]
+     },
+     {
+      "src": "audio/GW150914_s0.5_r0.5.mp3",
+      "seeked_to": 13.8,
+      "loaded": [
+       0,
+       2
+      ]
+     },
+     {
+      "src": "audio/GW170817_chirp.mp3",
+      "seeked_to": 13.1,
+      "loaded": [
+       1,
+       0
+      ]
+     }
+    ],
+    "label_after_seek": "0:10 / 0:26"
+   }
+  },
+  {
+   "step": "every restored graph renders: Figures 1, 2 and 3, the stage roll and strain, the scene and the tape",
+   "ok": true,
+   "detail": {
+    "scene": {
+     "w": 1186,
+     "h": 465,
+     "ink": 81612,
+     "inkFrac": 0.5919,
+     "colours": 5
+    },
+    "tape": {
+     "w": 1186,
+     "h": 48,
+     "ink": 769,
+     "inkFrac": 0.054,
+     "colours": 4
+    },
+    "fig1": {
+     "w": 1152,
+     "h": 361,
+     "ink": 51852,
+     "inkFrac": 0.4987,
+     "colours": 89
+    },
+    "fig2": {
+     "w": 1152,
+     "h": 65,
+     "ink": 1845,
+     "inkFrac": 0.0986,
+     "colours": 88
+    },
+    "fig3": [
+     {
+      "w": 554,
+      "h": 119,
+      "ink": 7846,
+      "inkFrac": 0.476,
+      "colours": 81
+     },
+     {
+      "w": 554,
+      "h": 119,
+      "ink": 7784,
+      "inkFrac": 0.4723,
+      "colours": 97
+     },
+     {
+      "w": 554,
+      "h": 119,
+      "ink": 8885,
+      "inkFrac": 0.5391,
+      "colours": 122
+     },
+     {
+      "w": 554,
+      "h": 119,
+      "ink": 9612,
+      "inkFrac": 0.5832,
+      "colours": 85
+     }
+    ],
+    "stage_roll": {
+     "w": 1186,
+     "h": 361,
+     "ink": 53820,
+     "inkFrac": 0.5028,
+     "colours": 88
+    },
+    "stage_strip": {
+     "w": 1186,
+     "h": 66,
+     "ink": 1921,
+     "inkFrac": 0.0982,
+     "colours": 93
+    },
+    "stage_strip_click_pos": 7.04
+   }
+  },
+  {
+   "step": "Figure 1 and Figure 2 scrub: a click on the strain moves the playhead, a drag on the roll loops; Figure 3 loads a take",
+   "ok": true,
+   "detail": {
+    "strain_click_pos": 17.54,
+    "roll_loop": [
+     4.39,
+     8.33
+    ]
+   }
+  },
+  {
+   "step": "GW170817: Figure 2 switches to along-track power, the no-blur note shows, Hear explains itself",
+   "ok": true,
+   "detail": {
+    "fig2_title": "The measured along-track power, on the same clock"
+   }
+  },
+  {
+   "step": "dead-control false positives confirmed: GW150914 and Whole act once another option is selected",
+   "ok": true,
+   "detail": {
+    "gw150914": "switches back from GW170817",
+    "whole": "clears the Inspiral loop",
+    "strip": "the stage strain scrubs like the roll (see the graph step)",
+    "render_sliders": "seek (renders step)"
+   }
+  },
+  {
+   "step": "the six sections and the nav drawer open; the section links scroll to them",
+   "ok": true,
+   "detail": {
+    "sections": [
+     "How to play",
+     "The data",
+     "How it was made",
+     "The science",
+     "What this does not claim",
+     "Jobs and credits"
+    ],
+    "jobs_rows": 9,
+    "nav_items": 22
+   }
+  },
+  {
+   "step": "the prev / hub / next nav links point at the neighbours and the hub",
+   "ok": true,
+   "detail": {
+    "prev": "https://claude.ai/artifact/WG635H4YESspojDKRbEfG9",
+    "next": "https://claude.ai/artifact/DBZTD3SBmR9DAbo5cWw92B",
+    "hub": "https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa",
+    "prevT": "← 11 Maxwell's Ribbon",
+    "nextT": "13 Moth to Flame →",
+    "cur": "https://claude.ai/artifact/LtSumyftwmDvFqQVMPDDWB"
+   }
+  },
+  {
+   "step": "share link: a custom view goes into the hash, and a reload restores it",
+   "ok": true,
+   "detail": {
+    "hash": "#e0_r2_s0_v150_m2_l17.80-25.23",
+    "restored": {
+     "ev": 0,
+     "ri": 2,
+     "speed": 1.5,
+     "voices": [
+      false,
+      true
+     ],
+     "loop": true,
+     "loopA": 17.8,
+     "loopB": 25.23,
+     "speedUI": "1.50×",
+     "reachUI": "reach 0.5 · strength 0.5",
+     "v0": "false"
+    }
+   }
+  },
+  {
+   "step": "numbers on the page match piece.json, out/jobs.csv and the engine cache",
+   "ok": true,
+   "detail": {
+    "proof": "20 qubits per blur pass (engine max)2 completed Atlas jobs2 LIGO events · real strain7.32 ms Hanford–Livingston lag, measured",
+    "jobs": [
+     "3d69e83c-cc19-4a91-9d9f-d30170dd4b04",
+     "9c28f32b-e560-4a0d-9e91-f97ee3e221ba"
+    ],
+    "failed_attempts": 9,
+    "credits": 11,
+    "register": "20-qubit budget (engine max) · roll per track 42×11633, 42×11281 (pitch×steps) → 6 + 14 = 20 qubits, our calculation"
+   }
+  },
+  {
+   "step": "no console errors, failed requests or page errors",
+   "ok": true,
+   "detail": {
+    "errors": 0,
+    "media_range_requests_cancelled_by_seek_or_stop": [
+     "GW150914_s0.5_r0.0.mp3"
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,967 @@
+<title>Tissue Blur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+/*BRAND*/
+/* Layout: scene first. The slide (engine output + the pixel-art cast) is the hero on the left, the hook on the right;
+   exact numbers sit one click away behind Scene / Data. Paper/ink look from common/brand.css. */
+.wrap{max-width:78rem;margin-inline:auto}
+.top{display:grid;grid-template-columns:minmax(0,1fr) minmax(17rem,21rem);grid-template-areas:"scene head" "scene info";grid-template-rows:auto 1fr;gap:1.1rem clamp(1.25rem,2.6vw,2.25rem);padding-top:1.4rem;align-items:start}
+.head{grid-area:head;padding-top:.2rem}
+.scene{grid-area:scene;display:grid;gap:.7rem;min-width:0}
+.info{grid-area:info;display:grid;gap:1.1rem;align-content:start;min-width:0}
+.kicker{font:500 .72rem/1.35 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink);margin-bottom:.8rem}
+h1{font-size:clamp(2rem,3.3vw,2.85rem);line-height:1.02;letter-spacing:-.02em}
+.sub{font-size:1rem;color:var(--ink-2)}
+.steps{display:grid;gap:.55rem;counter-reset:s;margin:0;padding:0;list-style:none}
+.steps li{display:grid;grid-template-columns:1.9rem minmax(0,1fr);gap:.55rem;align-items:baseline;font-size:.93rem}
+.steps li b{font-weight:500}
+.steps li::before{counter-increment:s;content:counter(s);font:500 .78rem/1.6 var(--mono);color:var(--on-ink);background:var(--ink);border-radius:99px;width:1.55rem;height:1.55rem;display:grid;place-items:center}
+.bar{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+#g-view{margin-left:auto}
+.bar .btn{padding:.62rem 1rem;font-size:.86rem}
+.panel>.seg{justify-self:start}
+.stage{position:relative;overflow:hidden;border:1px solid var(--ink);background:var(--paper);touch-action:none;user-select:none;-webkit-user-select:none}
+#cv{display:block;width:100%;height:auto;aspect-ratio:1024/640}
+#fx{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;image-rendering:pixelated;image-rendering:crisp-edges}
+.stage[data-tool="move"] #cv{cursor:grab}
+.stage[data-tool="wipe"] #cv{cursor:ew-resize}
+.stage[data-hover="ghost"] #cv{cursor:pointer}
+.tag{position:absolute;top:.6rem;font:500 .66rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;padding:.42rem .55rem;background:var(--paper);border:1px solid var(--ink);color:var(--ink);pointer-events:none}
+.tag.l{left:.6rem}.tag.r{right:.6rem;background:var(--ink);color:var(--on-ink)}
+.stage:not([data-compare="on"]) .tag.l{display:none}
+/* the mouse's case notes under the slide (Scene) and the exact table (Data) */
+body[data-view="scene"] .only-data,body[data-view="data"] .only-scene{display:none !important}
+.case{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.4rem .9rem;align-items:start;border:1px solid var(--ink);background:var(--panel);padding:.75rem .9rem}
+.face{display:block;width:56px;height:52px;image-rendering:pixelated;image-rendering:crisp-edges}
+.say{font-size:.95rem;line-height:1.45;color:var(--ink);min-height:2.9em}
+.hunt{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:.5rem .9rem;align-items:center;justify-content:space-between;border-top:1px solid var(--rule);padding-top:.6rem}
+.tally{display:flex;align-items:center;gap:.55rem;font:400 .78rem/1.3 var(--mono);color:var(--ink-2)}
+.tally b{color:var(--ink);font-weight:500}
+.tally img{width:24px;height:24px;image-rendering:pixelated;image-rendering:crisp-edges}
+.tally .done{color:var(--good)}
+.hunt .btn{padding:.6rem 1rem;font-size:.86rem}
+.unit{grid-column:1/-1;font-size:.76rem;color:var(--ink-2)}
+.datablk{display:grid;gap:.5rem;border:1px solid var(--ink);background:var(--panel);padding:.8rem .9rem}
+.probe{display:flex;flex-wrap:wrap;gap:.25rem 1rem;font:400 .78rem/1.5 var(--mono);color:var(--ink-2);min-height:1.5em;padding-bottom:.55rem;border-bottom:1px solid var(--rule)}
+.probe b{color:var(--ink);font-weight:500}
+.controls{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);gap:.8rem;margin-top:1.4rem}
+.panel{display:grid;gap:.75rem;align-content:start;background:var(--panel);border:1px solid var(--rule);padding:1rem 1.1rem;min-width:0}
+.row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.note{font-size:.8rem;color:var(--ink-2)}
+.seg.chips{border:0;background:transparent;padding:0;gap:.4rem}
+.seg.chips button{border:1px solid var(--ink);background:var(--panel);padding:.5rem .85rem;display:inline-flex;align-items:center;gap:.4rem}
+.seg.chips button:hover{background:var(--tint)}
+.seg.chips button[aria-pressed="true"]{background:var(--ink);color:var(--on-ink)}
+.seg.chips button[aria-pressed="true"] img.cell{background:var(--paper);border-radius:3px}
+.seg.chips.genes-g button{padding:.3rem .75rem .3rem .35rem}
+img.cell{width:30px;height:30px;image-rendering:pixelated;image-rendering:crisp-edges;flex:none}
+.chip-dot{display:inline-block;width:.6rem;height:.6rem;border-radius:99px;flex:none}
+.readout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.25rem .9rem;font:400 .78rem/1.5 var(--mono);color:var(--ink-2);margin:0}
+.readout dd{margin:0}
+.readout b{color:var(--ink);font-weight:500;overflow-wrap:anywhere}
+table.stats{width:100%;border-collapse:collapse;font:400 .76rem/1.4 var(--mono);color:var(--ink-2)}
+table.stats th{font-weight:500;text-align:left;color:var(--ink-2);padding:.3rem .3rem .3rem 0;border-bottom:1px solid var(--ink);letter-spacing:.08em;text-transform:uppercase;font-size:.68rem}
+table.stats td{padding:.4rem .3rem .4rem 0;border-bottom:1px solid var(--rule);vertical-align:top}
+table.stats td:first-child{border-left:2px solid transparent;padding-left:.45rem;white-space:nowrap}
+table.stats td b{color:var(--ink);font-weight:500}
+table.stats tr.on td{color:var(--ink)}
+table.stats tr.on td:first-child{border-left-color:var(--ink)}
+.gbar{display:block;height:5px;background:var(--panel-2);border:1px solid var(--rule);margin-top:.35rem;overflow:hidden;max-width:14rem}
+.gbar i{display:block;height:100%;background:var(--ink)}
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:var(--ink);color:var(--on-ink);font:500 .78rem/1.45 var(--mono);padding:.8rem 1.1rem;opacity:0;transition:opacity .2s;pointer-events:none;width:max-content;max-width:min(92vw,36rem);text-align:center}
+.toast.on{opacity:1}
+.more{margin-top:2.75rem;display:grid;gap:0}
+.more .ink-bar{margin-bottom:.25rem}
+.genes{display:grid;gap:.35rem;margin:0;padding:0;list-style:none}
+.cast{display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:.5rem 1rem;margin:0;padding:0;list-style:none}
+.cast li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.6rem;align-items:center;font-size:.86rem}
+.cast img{image-rendering:pixelated;image-rendering:crisp-edges}
+/* titled sections under the scene: How to play, The data (figures), The science, How it was made, claims, jobs */
+.sec{margin-top:2.75rem;display:grid;gap:1rem}
+.sec>.ink-bar,.more>.ink-bar{margin-bottom:.25rem}
+.howto{display:grid;grid-template-columns:minmax(8rem,max-content) minmax(0,1fr);gap:.6rem 1.4rem;margin:0;max-width:62rem}
+.howto dt{font:500 .72rem/1.7 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
+.howto dd{margin:0;font-size:.93rem;color:var(--ink-2);padding-bottom:.6rem;border-bottom:1px solid var(--rule)}
+.howto dd b{color:var(--ink);font-weight:500}
+.fig{margin:0;display:grid;gap:.65rem;border:1px solid var(--ink);background:var(--panel);padding:.9rem 1rem 1rem;min-width:0}
+.fig-h{display:flex;flex-wrap:wrap;gap:.4rem 1rem;align-items:baseline;justify-content:space-between}
+.fig-h .label{color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:.3rem .9rem;font:400 .74rem/1.4 var(--mono);color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:.35rem}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
+.pane{position:relative;border:1px solid var(--ink);background:var(--paper);touch-action:pan-y}
+.pane canvas{display:block;width:100%;height:auto;aspect-ratio:1024/640;cursor:crosshair}
+.fig .probe{border-bottom:0;padding-bottom:0}
+.cap{font-size:.86rem;color:var(--ink-2);max-width:78ch}
+.cap b{color:var(--ink);font-weight:500}
+.prose{display:grid;gap:.75rem;color:var(--ink-2);max-width:68ch;padding-block:.6rem .2rem}
+.prose b{color:var(--ink);font-weight:500}
+.jobsblk{display:grid;gap:.6rem;padding-block:.6rem 1rem}
+.tscroll{overflow-x:auto;max-width:100%}
+table.jobs{min-width:40rem}
+table.jobs td{vertical-align:middle}
+table.jobs code{font:inherit;overflow-wrap:anywhere}
+table.jobs .btn{padding:.42rem .8rem;font-size:.78rem}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.datahint a,.note a{color:var(--link)}
+@media (max-width:1060px){.controls{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.controls .wide{grid-column:1/-1}}
+@media (max-width:900px){.top{grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "scene" "info";grid-template-rows:auto}.info{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){.controls{grid-template-columns:minmax(0,1fr)}.face{width:42px;height:39px}.say{font-size:.9rem}.pair{grid-template-columns:minmax(0,1fr)}.howto{grid-template-columns:minmax(0,1fr);gap:.2rem}.howto dt{padding-top:.4rem}}
+@media (max-width:480px){.wtnr-bar{font-size:.64rem;letter-spacing:.07em}.ink-bar span+span{display:none}.tag{font-size:.58rem;padding:.32rem .4rem;top:.4rem}.tag.l{left:.4rem}.tag.r{right:.4rem}.bar .btn{padding:.55rem .8rem}.seg button{padding:.5rem .62rem}#g-tool{order:1}#g-view{order:2;margin-left:0}#peek{order:3}}
+
+/* phone: wide tables scroll inside their own box */
+table.stats{display:block;position:relative;width:auto!important;min-width:0!important;max-width:100%!important;overflow-x:auto;-webkit-overflow-scrolling:touch}
+</style>
+
+<div class="wrap">
+  <nav class="wtnr-bar"><a href="https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa">What the Noise Remembers</a><span class="count">Challenge <b>01</b></span></nav>
+
+  <div class="top">
+    <header class="head">
+      <p class="kicker">Challenge 01 &middot; One image, one engine</p>
+      <h1>Slide a quantum lens across a mouse brain's genes.</h1>
+    </header>
+
+    <section class="scene" aria-label="Tissue Blur instrument">
+      <div class="bar">
+        <div class="seg" role="group" aria-label="Tool" id="g-tool">
+          <button type="button" data-tool="move" aria-pressed="true">Move lens</button>
+          <button type="button" data-tool="wipe" aria-pressed="false">Wipe compare</button>
+        </div>
+        <button type="button" class="btn ghost" id="peek" aria-label="Hold to show the measured map">Hold: measured</button>
+        <div class="seg" role="group" aria-label="View" id="g-view">
+          <button type="button" data-view="scene" aria-pressed="true">Scene</button>
+          <button type="button" data-view="data" aria-pressed="false">Data</button>
+        </div>
+      </div>
+
+      <div class="stage" id="stage" data-tool="move" data-compare="off">
+        <canvas id="cv" width="1024" height="640" tabindex="0" aria-label="Mouse brain section, gene expression map with a quantum-blurred lens. Move tool: arrow keys step the lens. Wipe tool: arrow keys move the wipe. Hold space to see the measured map. In the scene a lab mouse holds the lens. Press C to catch a ghost."></canvas>
+        <canvas id="fx" aria-hidden="true"></canvas>
+        <span class="tag l">Measured</span>
+        <span class="tag r" id="tag-r">Quantum-blurred</span>
+      </div>
+
+      <div class="case only-scene" id="case">
+        <img class="face" id="face" alt="" width="56" height="52">
+        <p class="say" id="say" aria-live="polite"></p>
+        <div class="hunt">
+          <span class="tally"><img id="ghost-ico" alt="" width="24" height="24"><span id="tally"></span></span>
+          <button type="button" class="btn ghost" id="catch">Catch a ghost</button>
+        </div>
+        <p class="unit">A ghost sits on a real pixel of this job where the blur put a gene's ink and the measurement had none. One ghost stands for about 10% of that gene's blurred ink landing on such pixels (at least one if any did). The mouse and the cells are decoration.</p>
+      </div>
+      <p class="note only-data datahint">Data view: the plain engine output with the dashed mask outline, no cast. The exact numbers for this job are always in <a href="#data">The data</a>, below.</p>
+      <div class="probe" id="probe" aria-live="off"><span>Point at the tissue to read measured and blurred values.</span></div>
+    </section>
+
+    <aside class="info">
+      <p class="sub">95,104 measured cells from one real mouse brain section. Six genes, 20 qubits per blur. Wipe back to the measurement to see what the blur kept, and what it made up.</p>
+      <div class="proof">
+        <span class="hot"><b>20</b> qubits per blur</span>
+        <span><b id="p-jobs">8</b> real Atlas jobs</span>
+        <span><b>95,104</b> measured cells</span>
+        <span><b>3</b> genes per job</span>
+      </div>
+      <ol class="steps" aria-label="You control">
+        <li><span><b>Pick</b> a gene, or all three genes of a set at once.</span></li>
+        <li><span><b>Move</b> the lens: drag it, or tap where you want it to go. The lab mouse holding it can be dragged too.</span></li>
+        <li><span><b>Wipe</b> across to compare the blur with the measured map.</span></li>
+        <li><span><b>Catch</b> the ghosts: tap one to read the pixel the blur invented.</span></li>
+      </ol>
+    </aside>
+  </div>
+
+  <div class="controls">
+    <div class="panel">
+      <span class="label">Gene set</span>
+      <div class="seg chips" role="group" aria-label="Gene set" id="g-set"></div>
+      <span class="label">Gene</span>
+      <div class="seg chips genes-g" role="group" aria-label="Gene" id="g-gene"></div>
+      <ul class="genes note" id="gene-notes"></ul>
+    </div>
+    <div class="panel">
+      <span class="label">Mask</span>
+      <div class="seg chips" role="group" aria-label="Mask" id="g-mask"></div>
+      <span class="label">Reach</span>
+      <div class="seg" role="group" aria-label="Reach" id="g-reach">
+        <button type="button" data-setting="echo" aria-pressed="true">0 &middot; local</button>
+        <button type="button" data-setting="plaid" aria-pressed="false">0.5 &middot; wider</button>
+      </div>
+      <p class="note" id="avail-note"></p>
+      <div class="row">
+        <button type="button" class="btn" id="sweep">Sweep the wipe</button>
+        <button type="button" class="btn ghost" id="share">Copy link to this view</button>
+      </div>
+    </div>
+    <div class="panel wide">
+      <span class="label">This job</span>
+      <dl class="readout">
+        <dt>Engine</dt><dd><b>blur-v1 v1.1.9</b> &middot; Atlas statevector simulator</dd>
+        <dt>Params</dt><dd><b id="r-params">-</b></dd>
+        <dt>Mask</dt><dd><b id="r-mask">-</b></dd>
+        <dt>Job</dt><dd><b id="r-job">-</b></dd>
+      </dl>
+      <p class="note">Exact agreement r and ghost signal per gene, and the measured and blurred maps side by side: <a href="#data">The data</a>, below. All 8 jobs: <a href="#jobs">Jobs and credits</a>.</p>
+      <p class="note only-data">The cast is hidden in Data view. Every number here comes from the downloaded job images.</p>
+    </div>
+  </div>
+
+  <section class="sec" id="how" aria-labelledby="how-h">
+    <div class="ink-bar"><span id="how-h">How to play</span><span>Every control, what it does</span></div>
+    <dl class="howto">
+      <dt>Gene set &middot; Gene</dt>
+      <dd>Pick a gene, or all three genes of a set at once. Each gene is one pigment on the paper: vermilion, teal or ultramarine, as on its chip.</dd>
+      <dt>Move lens</dt>
+      <dd>Drag the lens, or the lab mouse holding it, or tap where it should go. It snaps to the nearest of the three computed positions; the Mask chips pick Front, Centre, Back or Whole section directly. Move tool: arrow keys step the lens.</dd>
+      <dt>Wipe compare</dt>
+      <dd>Drag across the slide: left of the divider is the measured map, right of it the blur. Wipe tool: arrow keys move the wipe (hold Shift for small steps). <b>Sweep the wipe</b> moves it for you; press it again (Pause) to stop.</dd>
+      <dt>Hold: measured</dt>
+      <dd>Press and hold to see the whole measured map, with no blur and no ghosts. On the slide, holding Space does the same.</dd>
+      <dt>Catch a ghost</dt>
+      <dd>Tap a ghost, press C on the slide, or use the button. The probe then shows the real pixel under it: measured, then blurred.</dd>
+      <dt>Reach</dt>
+      <dd>0 &middot; local or 0.5 &middot; wider. Only views that were computed exist (8-credit cap): if a pick was not run, the page switches to the nearest computed view and says so.</dd>
+      <dt>Scene &middot; Data</dt>
+      <dd>Scene shows the cast on the slide; Data shows the plain engine output with the dashed mask outline.</dd>
+      <dt>Probe</dt>
+      <dd>Point at the tissue to read measured and blurred values, on the slide or on either map in The data.</dd>
+      <dt>Copy link to this view</dt>
+      <dd>Puts gene set, gene, mask, reach, wipe, tool and view in the link, so it opens on exactly this view.</dd>
+    </dl>
+  </section>
+
+  <section class="sec" id="data" aria-labelledby="data-h">
+    <div class="ink-bar"><span id="data-h">The data</span><span>Downloaded engine output &middot; classical statistics</span></div>
+    <figure class="fig" aria-labelledby="fig1-h">
+      <div class="fig-h"><span class="label" id="fig1-h">Figure 1 &middot; Measured and quantum-blurred, side by side</span><span class="legend" id="fig-legend"></span></div>
+      <div class="pair">
+        <div class="pane"><canvas id="fig-m" width="1024" height="640" role="img" aria-label="Measured expression map of the section for the genes in view"></canvas><span class="tag l">Measured</span></div>
+        <div class="pane"><canvas id="fig-b" width="1024" height="640" role="img" aria-label="The same map after blur-v1, for the job in view"></canvas><span class="tag r" id="fig-tag">Quantum-blurred</span></div>
+      </div>
+      <div class="probe" id="fig-probe" aria-live="off"><span>Point at either map to read that pixel in both.</span></div>
+      <figcaption class="cap" id="fig-cap"></figcaption>
+    </figure>
+    <figure class="fig" aria-labelledby="fig2-h">
+      <div class="fig-h"><span class="label" id="fig2-h">Inside the mask, this job</span></div>
+      <table class="stats" aria-label="Agreement and ghost signal per gene">
+        <thead><tr><th scope="col">Gene</th><th scope="col">Agreement r</th><th scope="col">Ghost signal</th></tr></thead>
+        <tbody id="stats"></tbody>
+      </table>
+      <figcaption class="cap" id="stats-cap"></figcaption>
+    </figure>
+  </section>
+
+  <section class="more" id="science" aria-labelledby="science-h">
+    <div class="ink-bar"><span id="science-h">The science</span><span>Classical map &middot; simulated quantum blur</span></div>
+    <details class="drawer"><summary>Why a mouse brain's genes?</summary><div class="body">
+      <p>Spatial transcriptomics measures which genes are switched on in each cell without losing where that cell sits. This map is one sagittal slice of an adult mouse brain from the whole-brain MERFISH atlas of Zhang et al. (Nature, 2023): animal 4, section 3, 95,104 cells and 1,120 genes in this release, read out by imaging. Front of the brain is on the left, the cerebellum on the right.</p>
+      <ul class="genes">
+        <li><b>Three territories:</b> Satb2 (mostly cortex), Gpr88 (striatum), Gabra6 (granule layer of the cerebellum).</li>
+        <li><b>Folds and tracts:</b> Fezf2 (deeper cortical layers, among other places), C1ql2 (the dentate gyrus of the hippocampus), Mog (myelinating oligodendrocytes, so the fibre tracts).</li>
+      </ul>
+      <p>The map itself is classical. Each cell's normalised expression value is placed at its position and smoothed with a Gaussian (1.6 px, about 17 &micro;m). Each gene is then scaled so its 99.5th percentile over the tissue is full brightness, and stored as one 8-bit colour channel of a 1024 &times; 1024 PNG: three genes per image. The values are relative brightness, not molecule counts.</p>
+      <p>On the page each gene is drawn as a pigment on paper (more expression, more ink), and the faint tint behind them is the tissue outline, found from cell density. Both are classical display choices made in your browser; the probe and the table read the raw pixel values.</p>
+      <p class="honesty">Non-clinical: laboratory mouse tissue. Data CC BY 4.0, distributed by CZ CELLxGENE Discover, downloaded without an account. Credits are below.</p>
+    </div></details>
+  </section>
+
+  <section class="more" id="made" aria-labelledby="made-h">
+    <div class="ink-bar"><span id="made-h">How it was made</span><span>Atlas blur-v1 &middot; 20 qubits &middot; simulator</span></div>
+    <details class="drawer"><summary>What the quantum engine did</summary><div class="body">
+      <p>Atlas <b>blur-v1</b> takes the image and a mask. For each connected mask region, and each colour channel on its own, it encodes the pixel brightnesses into the amplitudes of a quantum state, on a register where neighbouring pixels differ by one bit (QuantumBlur's Gray-code layout). It then applies one rotation gate per qubit and reads the probabilities back out as pixels. Outside the mask, every output pixel equals the input pixel (checked for all 8 jobs).</p>
+      <p><b>Qubits.</b> A lens is a disk with a 541 &times; 541 px bounding box: &lceil;log&#8322; 541&rceil; + &lceil;log&#8322; 541&rceil; = 10 + 10 = <b>20 qubits</b>, the engine's maximum. The whole-section mask's box is 1012 &times; 575 px, which is also 10 + 10 = 20. These counts come from the engine's documented rule. The engine does not report a qubit count.</p>
+      <p><b>Three genes per job.</b> The engine documents that colour channels are processed one at a time, so each job blurs three gene maps. What we see agrees with that: in the front lens, the Gabra6 channel stays at or below 19/255 even though Satb2 and Gpr88 fill the lens.</p>
+      <p><b>What the settings did here.</b> All jobs use strength 1.0 with rx gates. At reach 0 (local), detail inside the lens regroups into square blocks but the layout survives: agreement r <span data-sum="echo-r">-</span> wherever the gene is present. At reach 0.5, the lens becomes a plaid of blocks: r <span data-sum="plaid-r">-</span>, and <span data-sum="plaid-ghost">-</span> of the blurred brightness lands where the gene was not detected.</p>
+      <p class="honesty">blur-v1 runs on Atlas's classical statevector simulator. It has no QPU mode, so none of this ran on quantum hardware.</p>
+    </div></details>
+    <details class="drawer"><summary>Meet the cast</summary><div class="body">
+      <p>The pixel-art cast is drawn in the page's ink palette. Some of it is driven by the job data and some of it is decoration. Here is which is which.</p>
+      <ul class="cast" id="cast"></ul>
+      <p class="honesty">Ghost spots are found classically in <code>build_web.py</code>: the brightest blurred pixels (local maxima at least 41 px apart) among pixels that were dark (&lt; 4/255) in the measured map, inside the mask. Gene tags sit on each gene's densest measured spot (Gaussian-smoothed, 16 px). The mouse's mood follows the mean agreement r of the genes in view: happy at 0.8 or more, unsure from 0.5, dizzy below 0.5. Catching a ghost changes nothing in the data.</p>
+    </div></details>
+  </section>
+
+  <section class="sec" id="claims" aria-labelledby="claims-h">
+    <div class="ink-bar"><span id="claims-h">What this does not claim</span><span>Honesty notes</span></div>
+    <div class="prose">
+      <p><b>The blur is a visual effect, not an analysis method.</b> It does not denoise, impute, cluster or smooth expression for statistics. It moves brightness between pixel positions according to the bit patterns of their addresses. The ghost-signal column shows it placing expression where none was measured. Don't read any biology into a blurred pixel. The ghosts in the scene show the same thing, pixel by pixel.</p>
+      <p><b>How the two numbers are computed</b> (classical, from the downloaded images, inside the mask). Agreement r is the Pearson correlation between measured and blurred pixel values for that gene. Ghost signal is the share of that gene's brightness sitting on pixels that were dark (below 4/255) in the measured map, shown as measured &rarr; blurred.</p>
+      <p class="honesty">No quantum advantage or speed-up is claimed: the simulator computes these images on classical hardware. Display colours are added in your browser. The lens snaps to the three computed positions, and nothing is computed live. The 8-credit cap allowed 8 jobs, so reach 0.5 exists only for Three territories in the centre lens, and the whole-section mask only for Three territories. While you drag, the faint rim only previews where it will snap. The mouse, its moods and the cell drawings are illustrations.</p>
+    </div>
+  </section>
+
+  <section class="more" id="jobs" aria-labelledby="jobs-h">
+    <div class="ink-bar"><span id="jobs-h">Jobs and credits</span><span><b id="j-n">8</b> jobs &middot; 1 credit each</span></div>
+    <div class="jobsblk">
+      <p class="cap">Every view on this page is one of these blur-v1 jobs, downloaded and shown as computed. The row marked in ink is the one on the slide; <b>Show</b> loads any of them.</p>
+      <div class="tscroll"><table class="stats jobs" aria-label="Every blur-v1 job">
+        <thead><tr><th scope="col">#</th><th scope="col">Gene set</th><th scope="col">Mask</th><th scope="col">Reach</th><th scope="col">Qubits</th><th scope="col">Seconds</th><th scope="col">Job ID</th><th scope="col"><span class="vh">Load</span></th></tr></thead>
+        <tbody id="jobrows"></tbody>
+      </table></div>
+    </div>
+    <details class="drawer"><summary>Data, licence and credits</summary><div class="body">
+      <p>Meng Zhang, Xingjie Pan, Won Jung, Aaron R. Halpern, Stephen W. Eichhorn, Zhiyun Lei, Limor Cohen, Kimberly A. Smith, Bosiljka Tasic, Zizhen Yao, Hongkui Zeng and Xiaowei Zhuang, "Molecularly defined and spatially resolved cell atlas of the whole mouse brain", <i>Nature</i> (2023), <a href="https://doi.org/10.1038/s41586-023-06808-9">doi:10.1038/s41586-023-06808-9</a>.</p>
+      <p>Dataset "WB_MERFISH_animal4_sagittal", curated and distributed by <a href="https://cellxgene.cziscience.com/collections/0cca8620-8dee-45d0-aef5-23f032a5cf09">CZ CELLxGENE Discover</a> under CC BY 4.0. The same data is also listed as Zhuang-ABCA-4, CC BY 4.0, in the Allen Brain Cell Atlas.</p>
+      <p>Engine: Moth Quantum Atlas blur-v1, which wraps the <a href="https://github.com/qiskit-community/QuantumBlur">QuantumBlur</a> library.</p>
+    </div></details>
+  </section>
+  <!--NAV-->
+  <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/*INKSPRITE*/
+const D = /*DATA*/{};
+const SPR = /*SPRITES*/{};
+const W = 1024, H = D.crop.h;
+// Display pigments for channels R, G, B (classical): each gene is ink on paper, so more expression = more pigment.
+const COL = [[204,74,36],[13,128,108],[25,35,142]];   // vermilion, teal, ultramarine (the brand ink)
+const PAPER = '#FBFAF9', INK = '#19238E', INK2 = '#545BA9';
+const LENSES = ['lens_282','lens_512','lens_742'];
+const SETTING_LABEL = {echo:'reach 0 (local)', plaid:'reach 0.5'};
+const CELL_NOTE = {Satb2:'cortical pyramidal neurons, mostly upper layers', Gpr88:'striatal medium spiny neurons', Gabra6:'cerebellar granule cells',
+  Fezf2:'deep-layer (layer 5) pyramidal neurons', C1ql2:'dentate gyrus granule cells', Mog:'myelinating oligodendrocytes (fibre tracts)'};
+// where each gene sits in the brain (the gene notes under the Gene chips)
+const REGION_NOTE = {Satb2:'mostly cortex', Gpr88:'striatum', Gabra6:'cerebellar granule layer', Fezf2:'deeper cortical layers', C1ql2:'dentate gyrus', Mog:'fibre tracts (myelin)'};
+
+// ---------- pure helpers (unit-tested with node) ----------
+function findJob(jobs, set, mask, setting){ return jobs.find(j => j.composite===set && j.mask===mask && j.setting===setting) || null; }
+function nearestLens(masks, x){ let best = LENSES[0], bd = 1e9; for (const k of LENSES){ const d = Math.abs(masks[k].x - x); if (d < bd){ bd = d; best = k; } } return best; }
+// Resolve a requested view to one that was actually computed. `prefer` is the dimension the user just
+// changed: it is kept if any job has it. Otherwise change as little as possible (setting, then mask, then set).
+// Returns {set, mask, setting, changed:[dims]}.
+const DIMS = {set: j => j.composite, mask: j => j.mask, setting: j => j.setting};
+const COST = {setting: 1, mask: 2, set: 4};
+function settle(jobs, want, prefer){
+  let best = null, bc = Infinity;
+  for (const j of jobs){
+    const changed = Object.keys(DIMS).filter(k => DIMS[k](j) !== want[k]);
+    let c = changed.reduce((a, k) => a + COST[k], 0);
+    if (prefer && changed.includes(prefer)) c += 100;
+    if (c < bc){ bc = c; best = {set: j.composite, mask: j.mask, setting: j.setting, changed}; }
+  }
+  return best;
+}
+function settleNote(v, names){
+  if (!v.changed.length) return '';
+  const what = {set: 'gene set', mask: 'mask', setting: 'reach'};
+  return 'Switched ' + v.changed.map(k => what[k]).join(' and ') + ': the nearest computed view is ' + names.set + ' · ' + names.mask + ' · ' + SETTING_LABEL[v.setting] + ' (8-credit cap).';
+}
+function pointInPoly(pts, x, y){ let ins = false; for (let i = 0, k = pts.length - 1; i < pts.length; k = i++){ const [xi, yi] = pts[i], [xk, yk] = pts[k]; if ((yi > y) !== (yk > y) && x < (xk - xi) * (y - yi) / (yk - yi) + xi) ins = !ins; } return ins; }
+function inMask(mk, x, y){ return mk.kind === 'lens' ? (x - mk.x) ** 2 + (y - mk.y) ** 2 <= mk.r * mk.r : pointInPoly(mk.outline, x, y); }
+// Share token: set.gene.mask.reach.wipe.tool[.data], e.g. A.Satb2.lens_512.echo.w50.move (".data" when the Data view is on).
+// Older 5-part links (no tool) still open: the wipe tool comes on if the wipe was moved.
+function encodeToken(s){ return [s.set, s.gene < 0 ? 'all' : D.composites[s.set].genes[s.gene].gene, s.mask, s.setting, 'w' + Math.round(s.wipe * 100), s.tool === 'wipe' ? 'wipe' : 'move'].concat(s.view === 'data' ? ['data'] : []).join('.'); }
+function decodeToken(tok){
+  const p = String(tok || '').replace(/^#/, '').split('.'); if (p.length < 5 || p.length > 7) return null;
+  const [set, g, mask, setting, w, tl, vw] = p; const comp = D.composites[set]; if (!comp || !D.masks[mask] || !SETTING_LABEL[setting]) return null;
+  const gene = g === 'all' ? -1 : comp.genes.findIndex(x => x.gene === g); if (gene < -1 || (g !== 'all' && gene < 0)) return null;
+  const wm = /^w(\d{1,3})$/.exec(w); const wipe = wm ? Math.max(0, Math.min(100, +wm[1])) / 100 : .5;
+  if (tl !== undefined && tl !== 'move' && tl !== 'wipe') return null;
+  if (vw !== undefined && vw !== 'data' && vw !== 'scene') return null;
+  return {set, gene, mask, setting, wipe, tool: tl || (wipe !== .5 ? 'wipe' : 'move'), view: vw === 'data' ? 'data' : 'scene'};
+}
+// Output is a transmittance image on white (255 = no pigment). The page multiplies it onto the paper ground.
+// Single gene: white -> pigment, the top quarter deepens the pigment. All three: pigments layer subtractively.
+const LUT = COL.map(c => { const t = new Uint8ClampedArray(256 * 3); for (let v = 0; v < 256; v++){ const f = v / 255, s = Math.min(1, f * 1.15), w = Math.max(0, (f - .75) / .25) * .45; for (let k = 0; k < 3; k++) t[v * 3 + k] = Math.round(255 * (1 - s * (1 - c[k] / 255)) * (1 - w)); } return t; });
+const ABS = COL.map(c => c.map(x => 1 - x / 255));   // per-channel absorption of each pigment
+function colorize(p, o, gene){
+  for (let k = 0; k < p.length; k += 4){
+    if (gene < 0){ const a = p[k] / 255, b = p[k + 1] / 255, d = p[k + 2] / 255;
+      for (let c = 0; c < 3; c++) o[k + c] = 255 * (1 - a * ABS[0][c]) * (1 - b * ABS[1][c]) * (1 - d * ABS[2][c]); }
+    else { const v = p[k + gene] * 3; o[k] = LUT[gene][v]; o[k + 1] = LUT[gene][v + 1]; o[k + 2] = LUT[gene][v + 2]; }
+    o[k + 3] = 255;
+  }
+}
+const fmtPct = x => x == null ? 'n/a' : (x * 100 < 10 ? (x * 100).toFixed(1) : Math.round(x * 100)) + '%';
+function summary(jobs, setting){
+  const rs = [], gh = [];
+  for (const j of jobs) if (j.setting === setting) j.stats.forEach(s => { if (s.present && s.r != null){ rs.push(s.r); gh.push(s.ghost_blurred); } });
+  return {rmin: Math.min(...rs), rmax: Math.max(...rs), gmin: Math.min(...gh), gmax: Math.max(...gh), n: rs.length};
+}
+// One ghost per ~10% of a gene's blurred ink on pixels that were dark in the measured map (at least 1 if >= 1%).
+function ghostCount(s){ if (!s || !s.present || s.ghost_blurred == null || s.ghost_blurred < .01) return 0; return Math.max(1, Math.floor(s.ghost_blurred * 10 + .5)); }
+// The mouse's mood is the mean agreement r of the genes in view.
+function mood(rs){ if (!rs.length) return 'hmm'; const m = rs.reduce((a, b) => a + b, 0) / rs.length; return m >= .8 ? 'happy' : m >= .5 ? 'hmm' : 'dizzy'; }
+// Put each gene's ghosts on its strongest real ghost pixels, keeping sprites apart by minD canvas px when possible.
+function placeGhosts(job, genes, minD, avoid){
+  const out = [];
+  for (const g of genes){
+    const n = ghostCount(job.stats[g]), cand = (job.ghosts && job.ghosts[g]) || [], used = new Set();
+    let placed = 0;
+    for (let i = 0; i < cand.length && placed < n; i++){
+      const [x, y] = cand[i];
+      if ((avoid && avoid(x, y)) || out.some(o => (o.x - x) ** 2 + (o.y - y) ** 2 < minD * minD)) continue;
+      out.push({gene: g, i, x, y, m: cand[i][2], b: cand[i][3]}); used.add(i); placed++;
+    }
+    for (let i = 0; i < cand.length && placed < n; i++) if (!used.has(i)){ out.push({gene: g, i, x: cand[i][0], y: cand[i][1], m: cand[i][2], b: cand[i][3]}); placed++; }
+  }
+  return out;
+}
+const rng = (a, f) => { const lo = Math.min(...a), hi = Math.max(...a), L = f(lo), Hh = f(hi); return L === Hh ? L : L + ' to ' + Hh; };
+const pctRng = a => { const t = rng(a, fmtPct); return t.includes(' to ') ? t.replace(/%(?= to )/, '') : t; };
+// What the mouse says about this view: built only from the job's stats.
+function verdict(job, comp, genes, maskName){
+  const pres = genes.filter(g => job.stats[g] && job.stats[g].present && job.stats[g].r != null);
+  const absent = genes.filter(g => !pres.includes(g)).map(g => comp.genes[g].gene);
+  const rs = pres.map(g => job.stats[g].r), md = mood(rs);
+  const n = pres.reduce((a, g) => a + ghostCount(job.stats[g]), 0);
+  const where = maskName + ', reach ' + job.reach;
+  const isAre = absent.length > 1 ? 'are' : 'is';
+  if (!pres.length) return {mood: 'hmm', n: 0, text: `${where}: ${absent.join(' and ')} ${isAre} barely present here, so there is nothing to compare and no ghosts to catch.`};
+  const lead = md === 'happy' ? 'the layout survived' : md === 'hmm' ? 'the layout only partly survived' : 'the blur scrambled it into plaid';
+  const whose = pres.length === 1 ? comp.genes[pres[0]].gene + "'s" : "each gene's";
+  let t = `${where}: ${lead} (agreement r ${rng(rs, x => x.toFixed(2))}). ${n} ghost${n === 1 ? '' : 's'}: ${pctRng(pres.map(g => job.stats[g].ghost_blurred))} of ${whose} blurred ink lands on pixels that were dark in the measurement (measured map: ${pctRng(pres.map(g => job.stats[g].ghost_measured))}).`;
+  if (absent.length) t += ` ${absent.join(' and ')} ${isAre} barely present here, so no ghosts for ${absent.length > 1 ? 'them' : 'it'}.`;
+  return {mood: md, n, text: t};
+}
+// Where the mouse stands so its paw meets the lens handle (device px). side +1: mouse right of the lens.
+function mousePose(cx, cy, Rout, side, k, Hdev){
+  const th = .84, mh = 26 * k, top0 = Hdev - mh - k;
+  const rimX = cx + side * Rout * Math.cos(th), rimY = cy + Rout * Math.sin(th);
+  let pawY = top0 + 18.5 * k, L = (pawY - rimY) / Math.sin(th);
+  if (L < 3 * k){ L = 3 * k; pawY = rimY + L * Math.sin(th); }
+  const pawX = rimX + side * L * Math.cos(th), flip = side < 0;
+  return {left: flip ? pawX - 25.5 * k : pawX - 2.5 * k, top: pawY - 18.5 * k, flip, pawX, pawY, rimX, rimY};
+}
+if (typeof module !== 'undefined') module.exports = {findJob, nearestLens, settle, settleNote, pointInPoly, inMask, encodeToken, decodeToken, colorize, summary, ghostCount, mood, placeGhosts, verdict, mousePose, LUT, COL, D, SPR};
+
+// ---------- page ----------
+if (typeof document !== 'undefined') (function(){
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d'), stage = document.getElementById('stage');
+const fx = document.getElementById('fx'), fc = fx.getContext('2d');
+const st = {set:'A', gene:-1, mask:'lens_512', setting:'echo', tool:'move', wipe:.5, drag:null, cursor:null, peek:false, view:'scene'};
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const SP = {}; for (const k in SPR) SP[k] = InkSprite.make(SPR[k]);
+document.body.dataset.view = 'scene';
+const imgs = {};
+function img(src){ if (!imgs[src]){ const i = new Image(); i.decoding = 'async'; i.onload = () => draw(); i.src = src; imgs[src] = i; } return imgs[src]; }
+const ready = i => i && i.complete && i.naturalWidth > 0;
+let tainted = false;
+const pix = {};
+function pixels(src){
+  if (pix[src] !== undefined) return pix[src];
+  const i = img(src); if (!ready(i)) return null;
+  try { const c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d', {willReadFrequently:true}); x.drawImage(i, 0, 0); pix[src] = x.getImageData(0, 0, W, H).data; }
+  catch (e){ tainted = true; pix[src] = null; }
+  return pix[src];
+}
+const views = new Map();
+function view(src, gene){
+  const key = src + '|' + gene;
+  if (views.has(key)){ const v = views.get(key); views.delete(key); views.set(key, v); return v; }
+  const p = pixels(src);
+  if (!p){ const i = img(src); return tainted && ready(i) ? i : null; }   // fallback: raw channels, no recolouring
+  const c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d');
+  const out = x.createImageData(W, H); colorize(p, out.data, gene); x.putImageData(out, 0, 0);
+  views.set(key, c); if (views.size > 14) views.delete(views.keys().next().value);
+  return c;
+}
+const job = () => findJob(D.jobs, st.set, st.mask, st.setting);
+const comp = () => D.composites[st.set];
+const genesInView = () => st.gene < 0 ? [0, 1, 2] : [st.gene];
+const scene = () => st.view === 'scene';
+
+// paper ground + faint tissue tint, then the gene view multiplied on top (fallback for unreadable pixels: inverted raw channels)
+function layer(v){
+  ctx.fillStyle = PAPER; ctx.fillRect(0, 0, W, H);
+  const t = img(D.tissue); if (ready(t)) ctx.drawImage(t, 0, 0);
+  if (!v) return;
+  ctx.globalCompositeOperation = v instanceof HTMLImageElement ? 'difference' : 'multiply';
+  ctx.drawImage(v, 0, 0); ctx.globalCompositeOperation = 'source-over';
+}
+let K = 1;   // canvas px per screen px (>= 1), so chrome keeps its on-screen size on small screens
+function dashed(path, w, col, dash){   // ink line on a paper halo, readable over any pigment
+  ctx.save(); ctx.setLineDash([]); ctx.lineWidth = (w + 4) * K; ctx.strokeStyle = 'rgba(251,250,249,.9)'; path(); ctx.stroke();
+  ctx.lineWidth = w * K; ctx.strokeStyle = col; ctx.setLineDash(dash.map(d => d * K)); path(); ctx.stroke(); ctx.restore();
+}
+function draw(){
+  const j = job(), c = comp(), mk = D.masks[st.mask];
+  K = Math.max(1, Math.min(2.6, W / (cv.clientWidth || W)));
+  const vb = j && view(j.file, st.gene), vm = view(c.measured, st.gene);
+  layer(vb);
+  const compare = st.tool === 'wipe' || st.peek;
+  stage.dataset.compare = compare ? 'on' : 'off';
+  if (compare && vm){
+    const x = st.peek ? W : Math.round(st.wipe * W);
+    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, x, H); ctx.clip(); layer(vm); ctx.restore();
+    if (!st.peek){
+      const k = K, m = H / 2;
+      ctx.fillStyle = PAPER; ctx.fillRect(x - 4 * k, 0, 8 * k, H);
+      ctx.fillStyle = INK; ctx.fillRect(x - 1.5 * k, 0, 3 * k, H);
+      ctx.beginPath(); ctx.arc(x, m, 22 * k, 0, 2 * Math.PI); ctx.fill();
+      ctx.strokeStyle = PAPER; ctx.lineWidth = 2 * k; ctx.stroke();
+      ctx.fillStyle = PAPER; ctx.beginPath(); ctx.moveTo(x - 12 * k, m); ctx.lineTo(x - 4 * k, m - 7 * k); ctx.lineTo(x - 4 * k, m + 7 * k); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(x + 12 * k, m); ctx.lineTo(x + 4 * k, m - 7 * k); ctx.lineTo(x + 4 * k, m + 7 * k); ctx.fill(); }
+  }
+  // mask outline (in Scene view the mouse's pixel rim marks a lens instead)
+  if (!(scene() && mk.kind === 'lens' && !st.drag)) dashed(() => { ctx.beginPath();
+    if (mk.kind === 'lens') ctx.arc(mk.x, mk.y, mk.r + 3, 0, 2 * Math.PI);
+    else { mk.outline.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath(); } }, 3, INK, [14, 10]);
+  if (st.drag && !scene()){ const m0 = D.masks.lens_512, dx = dragX();
+    dashed(() => { ctx.beginPath(); ctx.arc(dx, m0.y, m0.r, 0, 2 * Math.PI); }, 2, INK2, [4, 8]); }
+  if (st.cursor && !(scene() && hoverGhost)){ const {x, y} = st.cursor, a = 14 * K, b = 5 * K;
+    dashed(() => { ctx.beginPath(); ctx.moveTo(x - a, y); ctx.lineTo(x - b, y); ctx.moveTo(x + b, y); ctx.lineTo(x + a, y); ctx.moveTo(x, y - a); ctx.lineTo(x, y - b); ctx.moveTo(x, y + b); ctx.lineTo(x, y + a); }, 1.75, INK, []); }
+  readouts(); if (!probeHold) probe();
+  kick(true);
+}
+
+// ---------- the cast (overlay canvas, device pixels, integer sprite scale) ----------
+let FX = {w: 1, h: 1, dpr: 1, sx: 1, sy: 1, k: 2, kg: 2};
+const ringCache = new Map();
+function sizeFx(){
+  const r = cv.getBoundingClientRect(), dpr = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
+  const w = Math.max(1, Math.round(r.width * dpr)), h = Math.max(1, Math.round(r.height * dpr));
+  if (fx.width !== w || fx.height !== h){ fx.width = w; fx.height = h; ringCache.clear(); }
+  const kc = Math.max(2, Math.min(4, Math.round(r.width / 200)));   // css px per sprite px: 2 on phones, 4 on a wide slide
+  FX = {w, h, dpr, css: r.width, sx: w / W, sy: h / H, k: kc * dpr, kg: Math.max(2, kc - 1) * dpr};
+}
+// pixel ring around the lens: ink, two cells of ink-2 (light glint upper left), ink; cached per size
+function ring(Rin, k){
+  const key = Math.round(Rin) + ':' + k; if (ringCache.has(key)) return ringCache.get(key);
+  const cells = Math.ceil(Rin / k) + 5, n = cells * 2, c = document.createElement('canvas'); c.width = c.height = n * k;
+  const x = c.getContext('2d'), ri = Rin / k;
+  for (let j = 0; j < n; j++) for (let i = 0; i < n; i++){
+    const dx = i + .5 - cells, dy = j + .5 - cells, d = Math.hypot(dx, dy) - ri;
+    if (d < 0 || d >= 4) continue;
+    const a = Math.atan2(dy, dx);
+    x.fillStyle = InkSprite.PALETTE[d < 1 || d >= 3 ? 'K' : (a < -1.7 && a > -2.85 && d < 2 ? 'W' : a < -1.2 && a > -3.1 ? 'L' : 'B')];
+    x.fillRect(i * k, j * k, k, k);
+  }
+  const o = {c, cells}; ringCache.set(key, o); return o;
+}
+// chunky handle from the rim to the paw, on the same k-px grid as the ring
+function handle(x0, y0, x1, y1, k, ox, oy){
+  const L2 = (x1 - x0) ** 2 + (y1 - y0) ** 2 || 1;
+  const i0 = Math.floor((Math.min(x0, x1) - ox) / k) - 2, i1 = Math.ceil((Math.max(x0, x1) - ox) / k) + 2;
+  const j0 = Math.floor((Math.min(y0, y1) - oy) / k) - 2, j1 = Math.ceil((Math.max(y0, y1) - oy) / k) + 2;
+  for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++){
+    const px = ox + (i + .5) * k, py = oy + (j + .5) * k;
+    const t = Math.max(0, Math.min(1, ((px - x0) * (x1 - x0) + (py - y0) * (y1 - y0)) / L2));
+    const d = Math.hypot(px - (x0 + t * (x1 - x0)), py - (y0 + t * (y1 - y0))) / k;
+    if (d > 1.5) continue;
+    fc.fillStyle = InkSprite.PALETTE[d <= .62 && !(t > .08 && t < .2) ? 'B' : 'K'];
+    fc.fillRect(ox + i * k, oy + j * k, k, k);
+  }
+}
+function sprite(sp, f, left, top, k, flip, alpha){   // top-left placement, snapped to whole device px
+  InkSprite.draw(fc, sp, f, Math.round(left) + sp.w * k / 2, Math.round(top) + sp.h * k / 2, k, {flipX: flip, alpha});
+}
+const fxs = {gaspUntil: 0, jumpUntil: 0, glintUntil: 0, glintAt: null, poofs: []};
+let VERD = {mood: 'hmm', n: 0, text: ''}, ghostsAll = [], caught = new Set(), hoverGhost = null, lastCatch = null, probeHold = false, grab = 0;
+const gid = g => job().job_id + ':' + g.gene + ':' + g.i;
+function ghostCanvasSize(){ return 12 * FX.kg / FX.sx; }
+function refreshGhosts(){   // prefer ghost pixels that the corner label does not cover
+  const j = job(), t = document.getElementById('tag-r').getBoundingClientRect(), c = cv.getBoundingClientRect(), f = W / (c.width || W), gs = ghostCanvasSize();
+  const x0 = (t.left - c.left) * f - gs / 2, y1 = (t.bottom - c.top) * f + gs * 1.3;
+  ghostsAll = j ? placeGhosts(j, genesInView(), gs * .8, (x, y) => t.width > 0 && x > x0 && y < y1) : [];
+}
+function ghostHidden(g){ return !scene() || st.peek || (st.tool === 'wipe' && g.x < st.wipe * W) || caught.has(gid(g)); }
+const visibleGhosts = () => ghostsAll.filter(g => !ghostHidden(g));
+function ghostAt(p){   // canvas px -> ghost under the pointer
+  const s = FX.kg / FX.sx; let best = null, bd = 1e9;
+  for (const g of visibleGhosts()){ const d = Math.hypot(p.x - g.x, p.y - (g.y - 8 * s)); if (d < 8 * s && d < bd){ bd = d; best = g; } }
+  return best;
+}
+const dragX = () => { const r = D.masks.lens_512.r; return Math.max(r, Math.min(W - r, st.drag.x + grab)); };
+function lensGeom(){   // where the lens (and so the mouse) is drawn: the drag preview or the computed lens
+  const mk = D.masks[st.mask], m0 = D.masks.lens_512;
+  if (st.drag) return {x: dragX(), y: m0.y, r: m0.r, live: false};
+  if (mk.kind === 'lens') return {x: mk.x, y: mk.y, r: mk.r, live: true};
+  return null;
+}
+function moodSprite(now){
+  if (st.drag) return SP.mouseWalk;
+  if (now < fxs.gaspUntil) return SP.mouseGasp;
+  if (st.peek) return SP.mouse;
+  return {happy: SP.mouseHappy, hmm: SP.mouseHmm, dizzy: SP.mouseDizzy}[VERD.mood] || SP.mouse;
+}
+function drawFx(now){
+  const t = now / 1000;
+  fc.clearRect(0, 0, fx.width, fx.height);
+  if (!scene()) return;
+  const {k, kg, sx, sy, dpr} = FX, lg = lensGeom();
+  // the mouse and its lens
+  const jump = !REDUCED && now < fxs.jumpUntil ? Math.round(Math.abs(Math.sin((fxs.jumpUntil - now) / 700 * Math.PI * 2)) * 3) * k : 0;
+  if (lg){
+    const cx = lg.x * sx, cy = lg.y * sy, Rin = (lg.r + 2) * sx, rg = ring(Rin, k);
+    const ox = Math.round(cx - rg.cells * k), oy = Math.round(cy - rg.cells * k);
+    const side = lg.x > 600 ? -1 : 1, pose = mousePose(cx, cy, Rin + 4 * k, side, k, fx.height);
+    const sp = moodSprite(now), f = InkSprite.frameAt(sp, t);
+    fc.save(); fc.globalAlpha = lg.live ? 1 : .6;
+    fc.drawImage(rg.c, ox, oy);
+    handle(pose.rimX - side * Math.cos(.84) * 2 * k, pose.rimY - Math.sin(.84) * 2 * k, pose.pawX, pose.pawY - jump, k, ox, oy);
+    fc.restore();
+    drawGhosts(t, now, lg);
+    sprite(sp, f, pose.left, pose.top - jump, k, pose.flip);
+    if (sp === SP.mouseDizzy) sprite(SP.stars, InkSprite.frameAt(SP.stars, t), pose.left + 8 * k, pose.top - 6 * k, k, false);
+    if (now < fxs.glintUntil) sprite(SP.glint, InkSprite.frameAt(SP.glint, t), cx - Math.cos(.8) * (Rin + 2 * k) - 3.5 * k, cy - Math.sin(.8) * (Rin + 2 * k) - 3.5 * k, k, false);
+  } else {   // whole-section mask: the mouse holds up a small lens in the corner
+    drawGhosts(t, now, lg);
+    const sp = now < fxs.gaspUntil ? SP.mouseGasp : SP.mascot;
+    sprite(sp, 0, fx.width - sp.w * k - 2 * k, fx.height - sp.h * k - k - jump, k, false);
+  }
+  if (!st.drag && (FX.css >= 520 || st.gene >= 0)) drawTags(lg);
+}
+// ghosts: a pigment dot on the exact pixel, the ghost floating just above it (drawn over the rim, under the mouse)
+function drawGhosts(t, now, lg){
+  const {kg, sx, sy, dpr} = FX;
+  for (const g of ghostsAll){
+    if (ghostHidden(g)) continue;
+    const px = g.x * sx, py = g.y * sy, bob = REDUCED ? 0 : Math.round(Math.sin(t * 2.4 + g.i * 1.7 + g.gene)) * kg;
+    fc.fillStyle = PAPER; fc.beginPath(); fc.arc(px, py, 4 * dpr, 0, 2 * Math.PI); fc.fill();
+    fc.fillStyle = `rgb(${COL[g.gene]})`; fc.beginPath(); fc.arc(px, py, 2.6 * dpr, 0, 2 * Math.PI); fc.fill();
+    const sp = hoverGhost === g ? SP.ghostBoo : SP.ghost;
+    sprite(sp, InkSprite.frameAt(sp, t + g.i * .37), px - 6 * kg, py - 14 * kg + bob, kg, g.x > (lg ? lg.x : W / 2));
+  }
+  fxs.poofs = fxs.poofs.filter(p => now - p.t0 < 330);
+  // frame 0..2; a rAF timestamp can sit a moment before the catch's performance.now(), so clamp below too
+  for (const p of fxs.poofs) sprite(SP.poof, Math.max(0, Math.min(2, Math.floor((now - p.t0) / 110))), p.x * sx - 6.5 * kg, p.y * sy - 14 * kg, kg, false);
+}
+// gene tags (cell drawing + name) pinned on each gene's densest measured spot; kept off the lens rim and the corner label
+function drawTags(lg){
+  const {k, sx, sy, dpr} = FX, s = Math.max(1, Math.round(k / 2)), fs = Math.round(10.5 * dpr);
+  fc.font = `500 ${fs}px "IBM Plex Mono", monospace`;
+  const ann = lg ? {x: lg.x * sx, y: lg.y * sy, r0: (lg.r - 4) * sx, r1: (lg.r + 2) * sx + 4 * k + 2} : null;
+  const hitsRim = (x, y, w, h) => { if (!ann) return false;
+    const nx = Math.max(x, Math.min(ann.x, x + w)), ny = Math.max(y, Math.min(ann.y, y + h));
+    const near = Math.hypot(nx - ann.x, ny - ann.y), far = Math.max(...[[x, y], [x + w, y], [x, y + h], [x + w, y + h]].map(([a, b]) => Math.hypot(a - ann.x, b - ann.y)));
+    return near < ann.r1 && far > ann.r0; };
+  const corner = (x, y, w) => x + w > fx.width - 190 * dpr && y < 44 * dpr;
+  const kg = FX.kg, boxes = ghostsAll.filter(g => !ghostHidden(g)).map(g => [g.x * sx - 6 * kg, g.y * sy - 15 * kg, 12 * kg, 15 * kg]);   // keep tags off the ghosts
+  genesInView().forEach(g => {
+    const gn = comp().genes[g], sp = SP['cell' + gn.gene]; if (!sp) return;
+    const x = gn.hot[0] * sx, y = gn.hot[1] * sy, w = sp.w * s, tw = fc.measureText(gn.gene).width;
+    const bw = Math.round(w + tw + 10 * dpr), bh = Math.round(Math.max(w, fs) + 4 * dpr), gap = Math.round(14 * dpr);
+    const opts = [[x - w / 2 - 3 * dpr, y - bh - gap], [x - w / 2 - 3 * dpr, y + gap], [x - bw + w / 2 + 3 * dpr, y - bh - gap], [x - bw + w / 2 + 3 * dpr, y + gap],
+      [x - bw - gap, y - bh / 2], [x + gap, y - bh / 2]]
+      .map(([bx, by]) => [Math.round(Math.min(fx.width - bw - 2, Math.max(2, bx))), Math.round(Math.min(fx.height - bh - 2, Math.max(2, by)))]);
+    const ok = ([bx, by]) => !hitsRim(bx, by, bw, bh) && !corner(bx, by, bw) && !(x > bx - 2 && x < bx + bw + 2 && y > by - 2 && y < by + bh + 2);
+    const clear = ([bx, by]) => !boxes.some(([gx, gy, gw, gh]) => bx < gx + gw && bx + bw > gx && by < gy + gh && by + bh > gy);
+    const [bx, by] = opts.find(o => ok(o) && clear(o)) || opts.find(ok) || opts[0];
+    boxes.push([bx, by, bw, bh]);
+    const col = `rgb(${COL[g]})`, side = by + bh <= y || by >= y;   // stem: vertical if the tag is above or below, else horizontal
+    if (side){ const a0 = by > y ? y : by + bh, a1 = by > y ? by : y;
+      fc.fillStyle = PAPER; fc.fillRect(Math.round(x) - 3 * dpr, a0, 6 * dpr, Math.max(2, a1 - a0)); fc.fillStyle = col; fc.fillRect(Math.round(x) - 1.5 * dpr, a0, 3 * dpr, Math.max(2, a1 - a0)); }
+    else { const a0 = bx > x ? x : bx + bw, a1 = bx > x ? bx : x;
+      fc.fillStyle = PAPER; fc.fillRect(a0, Math.round(y) - 3 * dpr, Math.max(2, a1 - a0), 6 * dpr); fc.fillStyle = col; fc.fillRect(a0, Math.round(y) - 1.5 * dpr, Math.max(2, a1 - a0), 3 * dpr); }
+    fc.fillStyle = col; fc.beginPath(); fc.arc(x, y, 3.2 * dpr, 0, 2 * Math.PI); fc.fill();
+    fc.fillStyle = 'rgba(251,250,249,.94)'; fc.fillRect(bx, by, bw, bh);
+    fc.strokeStyle = INK; fc.lineWidth = Math.max(1, Math.round(dpr)); fc.strokeRect(bx + .5, by + .5, bw - 1, bh - 1);
+    sprite(sp, 0, bx + 3 * dpr, by + (bh - w) / 2, s, false);
+    fc.fillStyle = INK; fc.textBaseline = 'middle'; fc.fillText(gn.gene, bx + w + 6 * dpr, by + bh / 2 + dpr * .5);
+  });
+}
+let raf = 0, lastT = 0, onScreen = true, dirty = true;
+function tick(now){
+  raf = 0;
+  if (dirty || now - lastT >= 66){ lastT = now; dirty = false; drawFx(now); }
+  const busy = fxs.poofs.length || now < fxs.glintUntil || now < fxs.gaspUntil || now < fxs.jumpUntil;
+  if (scene() && onScreen && !document.hidden && (!REDUCED || busy)) raf = requestAnimationFrame(tick);
+}
+function kick(changed){ if (changed) dirty = true; if (!raf) raf = requestAnimationFrame(tick); }
+if ('IntersectionObserver' in window) new IntersectionObserver(es => { onScreen = es[0].isIntersecting; if (onScreen) kick(true); }).observe(stage);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) kick(true); });
+
+// ---------- words, tally and table ----------
+const sayEl = document.getElementById('say'), faceEl = document.getElementById('face'), tallyEl = document.getElementById('tally');
+const faceCache = {};
+function setFace(sp){ const key = Object.keys(SP).find(k => SP[k] === sp) || 'mouse'; if (faceEl.dataset.k === key) return; faceEl.dataset.k = key; faceEl.src = faceCache[key] || (faceCache[key] = InkSprite.toDataURL(sp, 0, 2)); faceEl.width = sp.w * 2; faceEl.height = sp.h * 2; }
+function setSay(text){ if (sayEl.textContent !== text) sayEl.textContent = text; }
+function talk(){
+  const left = visibleGhosts().length, total = ghostsAll.length, got = ghostsAll.filter(g => caught.has(gid(g))).length;
+  tallyEl.innerHTML = total ? `<b>${total}</b> ghost${total === 1 ? '' : 's'} in this view &middot; <b>${got}</b> caught${got === total ? ' <span class="done">&middot; all caught</span>' : ''}` : 'No ghosts in this view';
+  document.getElementById('catch').disabled = !left;
+  if (lastCatch) return;
+  if (st.peek) setSay('This is the measurement: every bit of ink here comes from detected cells, so no ghosts live in it.');
+  else setSay(VERD.text + (st.tool === 'wipe' && total ? ' Left of the wipe is the measurement: no ghosts there.' : ''));
+  setFace(st.peek ? SP.mouse : moodSprite(performance.now()));
+}
+function readouts(){
+  const j = job(), c = comp(), mk = D.masks[st.mask];
+  document.getElementById('r-params').textContent = j ? `strength ${j.strength.toFixed(1)} · ${j.style} · reach ${j.reach}` : '-';
+  document.getElementById('r-mask').textContent = `${mk.name} · ${mk.bbox[0]} × ${mk.bbox[1]} px box · ${mk.qubits} qubits`;
+  document.getElementById('r-job').textContent = j ? j.job_id : '-';
+  document.getElementById('tag-r').textContent = st.setting === 'plaid' ? 'Blurred · reach 0.5' : 'Quantum-blurred';
+  const tb = document.getElementById('stats'); tb.textContent = '';
+  c.genes.forEach((g, i) => {
+    const s = j && j.stats[i]; const tr = document.createElement('tr'); if (st.gene < 0 || st.gene === i) tr.className = 'on';
+    const td1 = document.createElement('td'); td1.innerHTML = `<span class="chip-dot" style="background:rgb(${COL[i]});margin-right:.4rem"></span><b>${g.gene}</b>`;
+    const td2 = document.createElement('td'), td3 = document.createElement('td');
+    if (!s || !s.present){ td2.textContent = 'barely present here'; td3.textContent = '-'; }
+    else { td2.innerHTML = `<b>${s.r.toFixed(2)}</b>`;
+      td3.innerHTML = `${fmtPct(s.ghost_measured)} → <b>${fmtPct(s.ghost_blurred)}</b><span class="gbar" aria-hidden="true"><i style="width:${Math.min(100, s.ghost_blurred * 100)}%"></i></span>`; }
+    tr.append(td1, td2, td3); tb.appendChild(tr);
+  });
+  if (j) VERD = verdict(j, c, genesInView(), mk.name);
+  document.getElementById('stats-cap').innerHTML = j ? `Per gene, inside the ${mk.name.toLowerCase()} mask of job <b>${j.job_id.slice(0, 8)}</b> (${c.name}, reach ${j.reach}). Agreement r: Pearson correlation of measured and blurred pixel values. Ghost signal: share of the gene's brightness on pixels that were dark in the measurement, measured &rarr; blurred; the bar is the blurred share. Rows marked in ink are the genes in view. Both numbers are defined under What this does not claim, below.` : '';
+  sync(); talk(); drawFig(); markJob(j);
+}
+
+function probe(){
+  const el = document.getElementById('probe'), j = job(), c = comp();
+  if (!st.cursor){ el.innerHTML = '<span>Point at the tissue to read measured and blurred values.</span>'; return; }
+  const x = Math.max(0, Math.min(W - 1, Math.floor(st.cursor.x))), y = Math.max(0, Math.min(H - 1, Math.floor(st.cursor.y)));
+  const pm = pixels(c.measured), pb = j && pixels(j.file);
+  if (!pm || !pb){ el.innerHTML = tainted ? '<span>Pixel probe needs the published page (browsers block pixel reads from local files).</span>' : '<span>Loading…</span>'; return; }
+  const k = (y * W + x) * 4, inside = inMask(D.masks[st.mask], x, y);
+  const parts = [`<span>${inside ? 'inside mask' : 'outside mask: unchanged'}</span>`];
+  c.genes.forEach((g, i) => { if (st.gene < 0 || st.gene === i) parts.push(`<span>${g.gene} <b>${(pm[k + i] / 255).toFixed(2)}</b> measured → <b>${(pb[k + i] / 255).toFixed(2)}</b> blurred</span>`); });
+  el.innerHTML = parts.join('');
+}
+
+// ---------- The data: figure 1 (measured | blurred, the plain engine output), the per-gene table, the job list ----------
+// Figure 1 is the earlier slide without the cast: same paper, tissue tint, pigments and dashed mask outline, drawn for
+// the view the controls pick. It is redrawn only when that view (or an image, or the figure's size) changes.
+const figM = document.getElementById('fig-m'), figB = document.getElementById('fig-b');
+const gM = figM.getContext('2d'), gB = figB.getContext('2d');
+const figBase = {m: document.createElement('canvas'), b: document.createElement('canvas')};
+for (const c of Object.values(figBase)){ c.width = W; c.height = H; }
+let figKey = '', figShown = '', figCursor = null, figK = 1;
+function paint(g, v){   // paper ground + faint tissue tint, then the gene view multiplied on top (as layer() on the slide)
+  g.fillStyle = PAPER; g.fillRect(0, 0, W, H);
+  const t = img(D.tissue); if (ready(t)) g.drawImage(t, 0, 0);
+  if (!v) return;
+  g.globalCompositeOperation = v instanceof HTMLImageElement ? 'difference' : 'multiply';
+  g.drawImage(v, 0, 0); g.globalCompositeOperation = 'source-over';
+}
+function inkLine(g, path, w, dash, k){   // ink line on a paper halo (as dashed() on the slide)
+  g.save(); g.setLineDash([]); g.lineWidth = (w + 4) * k; g.strokeStyle = 'rgba(251,250,249,.9)'; path(); g.stroke();
+  g.lineWidth = w * k; g.strokeStyle = INK; g.setLineDash(dash.map(d => d * k)); path(); g.stroke(); g.restore();
+}
+function maskPath(g, mk){ return () => { g.beginPath();
+  if (mk.kind === 'lens') g.arc(mk.x, mk.y, mk.r + 3, 0, 2 * Math.PI);
+  else { mk.outline.forEach(([x, y], i) => i ? g.lineTo(x, y) : g.moveTo(x, y)); g.closePath(); } }; }
+function drawFig(){
+  const j = job(), c = comp(), mk = D.masks[st.mask];
+  figK = Math.max(1, Math.min(3.5, W / (figM.clientWidth || W)));
+  const vb = j && view(j.file, st.gene), vm = view(c.measured, st.gene);
+  const key = [j ? j.file : '-', c.measured, st.gene, st.mask, !!vb, !!vm, ready(img(D.tissue)), figK.toFixed(2)].join('|');
+  if (key !== figKey){
+    figKey = key;
+    const bm = figBase.m.getContext('2d'), bb = figBase.b.getContext('2d');
+    paint(bm, vm); inkLine(bm, maskPath(bm, mk), 3, [14, 10], figK);
+    paint(bb, vb); inkLine(bb, maskPath(bb, mk), 3, [14, 10], figK);
+    document.getElementById('fig-tag').textContent = st.setting === 'plaid' ? 'Blurred · reach 0.5' : 'Quantum-blurred';
+    document.getElementById('fig-legend').innerHTML = genesInView().map(i => `<span><span class="chip-dot" style="background:rgb(${COL[i]})"></span>${c.genes[i].gene}</span>`).join('');
+    const who = st.gene < 0 ? 'all three genes' : c.genes[st.gene].gene;
+    document.getElementById('fig-cap').innerHTML = j ? `${c.name}, ${who}, ${mk.name.toLowerCase()}, reach ${j.reach}. Left: the measured MERFISH map. Right: the blur-v1 output downloaded for job <b>${j.job_id.slice(0, 8)}</b>. The dashed ink line is the mask; outside it the two images are identical, pixel for pixel. Same pigments and paper as the slide, without the cast or the wipe. It follows every control above; point at either map to read that pixel in both.` : '';
+    figM.setAttribute('aria-label', `Measured expression map, ${c.name}, ${who}`);
+    figB.setAttribute('aria-label', `The same map after blur-v1, job ${j ? j.job_id : '-'}, ${mk.name}, reach ${j ? j.reach : '-'}`);
+    if (figCursor) figProbe();
+  }
+  const shown = key + '|' + (figCursor ? figCursor.x + ',' + figCursor.y : '');
+  if (shown === figShown) return;
+  figShown = shown;
+  gM.drawImage(figBase.m, 0, 0); gB.drawImage(figBase.b, 0, 0);
+  if (figCursor){ const x = figCursor.x + .5, y = figCursor.y + .5, a = 14, b = 5;
+    for (const g of [gM, gB]) inkLine(g, () => { g.beginPath(); g.moveTo(x - a * figK, y); g.lineTo(x - b * figK, y); g.moveTo(x + b * figK, y); g.lineTo(x + a * figK, y);
+      g.moveTo(x, y - a * figK); g.lineTo(x, y - b * figK); g.moveTo(x, y + b * figK); g.lineTo(x, y + a * figK); }, 1.75, [], figK); }
+}
+function figProbe(){
+  const el = document.getElementById('fig-probe');
+  if (!figCursor){ el.innerHTML = '<span>Point at either map to read that pixel in both.</span>'; return; }
+  const j = job(), c = comp(), pm = pixels(c.measured), pb = j && pixels(j.file);
+  if (!pm || !pb){ el.innerHTML = tainted ? '<span>Pixel probe needs the published page (browsers block pixel reads from local files).</span>' : '<span>Loading…</span>'; return; }
+  const {x, y} = figCursor, k = (y * W + x) * 4;
+  const parts = [`<span>pixel (${x}, ${y + D.crop.y0}) · ${inMask(D.masks[st.mask], x, y) ? 'inside mask' : 'outside mask: unchanged'}</span>`];
+  c.genes.forEach((g, i) => { if (st.gene < 0 || st.gene === i) parts.push(`<span>${g.gene} <b>${(pm[k + i] / 255).toFixed(2)}</b> measured → <b>${(pb[k + i] / 255).toFixed(2)}</b> blurred</span>`); });
+  el.innerHTML = parts.join('');
+}
+for (const c of [figM, figB]){
+  const at = e => { const r = c.getBoundingClientRect();
+    figCursor = {x: Math.max(0, Math.min(W - 1, Math.floor((e.clientX - r.left) / r.width * W))), y: Math.max(0, Math.min(H - 1, Math.floor((e.clientY - r.top) / r.height * H)))};
+    drawFig(); figProbe(); };
+  c.addEventListener('pointermove', at); c.addEventListener('pointerdown', at);
+  c.addEventListener('pointerleave', () => { figCursor = null; drawFig(); figProbe(); });
+}
+// every job, with a button that puts it on the slide
+const jobRows = document.getElementById('jobrows');
+D.jobs.forEach((j, i) => {
+  const tr = document.createElement('tr'); tr.dataset.job = j.job_id;
+  const cells = [i + 1, D.composites[j.composite].name, D.masks[j.mask].name, `${j.reach} · ${j.setting === 'plaid' ? 'wider' : 'local'}`, j.qubits, j.seconds.toFixed(1)];
+  for (const v of cells){ const td = document.createElement('td'); td.textContent = v; tr.appendChild(td); }
+  const tdId = document.createElement('td'); tdId.innerHTML = `<code>${j.job_id}</code>`; tr.appendChild(tdId);
+  const tdB = document.createElement('td'), b = document.createElement('button');
+  b.type = 'button'; b.className = 'btn ghost'; b.textContent = 'Show'; b.setAttribute('aria-label', `Show job ${i + 1} on the slide`);
+  b.addEventListener('click', () => { apply({set: j.composite, mask: j.mask, setting: j.setting}, 'set'); stage.scrollIntoView({behavior: REDUCED ? 'auto' : 'smooth', block: 'center'}); });
+  tdB.appendChild(b); tr.appendChild(tdB); jobRows.appendChild(tr);
+});
+document.getElementById('j-n').textContent = D.jobs.length;
+let markedJob = null;
+function markJob(j){
+  const id = j ? j.job_id : null; if (id === markedJob) return; markedJob = id;
+  jobRows.querySelectorAll('tr').forEach(tr => { const on = tr.dataset.job === id; tr.className = on ? 'on' : ''; const b = tr.querySelector('button'); b.textContent = on ? 'On the slide' : 'Show'; });
+}
+
+// ---------- catching ghosts ----------
+function catchGhost(g){
+  if (!g || caught.has(gid(g))) return;
+  const now = performance.now(), name = comp().genes[g.gene].gene;
+  caught.add(gid(g)); hoverGhost = null; stage.dataset.hover = '';
+  if (!REDUCED) fxs.poofs.push({x: g.x, y: g.y, t0: now});
+  fxs.gaspUntil = now + 900;
+  const left = visibleGhosts().length;
+  if (!left){ fxs.jumpUntil = now + 1100; }
+  lastCatch = g; probeHold = true;
+  document.getElementById('probe').innerHTML = `<span>ghost pixel (${g.x}, ${g.y + D.crop.y0})</span><span>${name} <b>${g.m.toFixed(2)}</b> measured → <b>${g.b.toFixed(2)}</b> blurred</span>`;
+  setSay(`Caught one! ${name} at this pixel: ${g.m.toFixed(2)} measured, ${g.b.toFixed(2)} blurred. The blur put that ink there. ` +
+    (left ? `${left} to go.` : 'That was the last ghost in this view. Catching them changes nothing: the blur still made them up.'));
+  setFace(SP.mouseGasp);
+  talk(); kick(true);
+}
+function catchNext(){
+  const vis = visibleGhosts(); if (!vis.length) return;
+  const lg = lensGeom(), ax = lg ? lg.x : W, ay = H;
+  vis.sort((a, b) => Math.hypot(a.x - ax, a.y - ay) - Math.hypot(b.x - ax, b.y - ay));
+  catchGhost(vis[0]);
+}
+document.getElementById('catch').addEventListener('click', catchNext);
+
+// ---------- controls ----------
+function press(container, attr, val){ container.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset[attr] === String(val)))); }
+const gSet = document.getElementById('g-set'), gGene = document.getElementById('g-gene'), gMask = document.getElementById('g-mask'), gReach = document.getElementById('g-reach'), gView = document.getElementById('g-view');
+Object.entries(D.composites).forEach(([k, c]) => { const b = document.createElement('button'); b.type = 'button'; b.dataset.set = k; b.textContent = c.name; b.addEventListener('click', () => apply({set:k}, 'set')); gSet.appendChild(b); });
+Object.entries(D.masks).forEach(([k, m]) => { const b = document.createElement('button'); b.type = 'button'; b.dataset.mask = k; b.textContent = m.name.replace(' lens', ''); b.addEventListener('click', () => apply({mask:k}, 'mask')); gMask.appendChild(b); });
+gReach.querySelectorAll('button').forEach(b => b.addEventListener('click', () => apply({setting:b.dataset.setting}, 'setting')));
+gView.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { st.view = b.dataset.view; document.body.dataset.view = st.view; hoverGhost = null; stage.dataset.hover = ''; draw(); }));
+const cellURL = {};
+const cellImg = (gene, s) => { const sp = SP['cell' + gene]; if (!sp) return ''; const u = cellURL[gene + s] || (cellURL[gene + s] = InkSprite.toDataURL(sp, 0, s)); return `<img class="cell" alt="" width="${sp.w * s}" height="${sp.h * s}" src="${u}">`; };
+function buildGenes(){
+  gGene.textContent = '';
+  const mk = (val, label, dot) => { const b = document.createElement('button'); b.type = 'button'; b.dataset.gene = val;
+    b.innerHTML = (dot ? cellImg(label, 2) + `<span class="chip-dot" style="background:rgb(${dot})"></span>` : '') + label;
+    b.addEventListener('click', () => { st.gene = +val; newView(); draw(); }); gGene.appendChild(b); };
+  mk(-1, 'All three'); comp().genes.forEach((g, i) => mk(i, g.gene, COL[i]));
+  const ul = document.getElementById('gene-notes'); ul.textContent = '';
+  comp().genes.forEach(g => { const li = document.createElement('li'); li.textContent = `${g.gene}: ${REGION_NOTE[g.gene] || ''} · ${g.cells.toLocaleString('en-US')} cells with signal`;
+    if (CELL_NOTE[g.gene]) li.textContent += ` · its drawing: ${CELL_NOTE[g.gene]}`; ul.appendChild(li); });
+}
+function sync(){
+  press(gSet, 'set', st.set); press(gGene, 'gene', st.gene); press(gMask, 'mask', st.mask); press(gReach, 'setting', st.setting); press(gView, 'view', st.view);
+  document.querySelectorAll('button[data-tool]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.tool === st.tool)));
+  const n = D.jobs.filter(j => j.setting === 'plaid')[0], s = D.jobs.filter(j => j.mask === 'section');
+  document.getElementById('avail-note').textContent = `Reach 0.5 was run once (${n ? D.composites[n.composite].name + ', ' + D.masks[n.mask].name.toLowerCase() : 'never'}); the whole section for ${s.map(j => D.composites[j.composite].name).join(', ')} only.`;
+}
+const toast = msg => { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 2600); };
+function newView(){ lastCatch = null; probeHold = false; refreshGhosts(); }
+function apply(change, prefer, quiet){
+  const prevSet = st.set, prev = st.set + st.mask + st.setting;
+  const v = settle(D.jobs, Object.assign({set:st.set, mask:st.mask, setting:st.setting}, change), prefer);
+  st.set = v.set; st.mask = v.mask; st.setting = v.setting;
+  const note = settleNote(v, {set: D.composites[v.set].name, mask: D.masks[v.mask].name.toLowerCase()});
+  if (note && !quiet) toast(note);
+  if (st.set !== prevSet){ st.gene = -1; buildGenes(); }
+  if (change.mask){ const mk = D.masks[st.mask]; st.wipe = mk.kind === 'lens' ? mk.x / W : .5; }   // keep the wipe splitting the blurred region
+  const j = job(); if (j){ img(j.file); img(comp().measured); }
+  newView();
+  if (!quiet && prev !== st.set + st.mask + st.setting && D.masks[st.mask].kind === 'lens'){ const now = performance.now(); fxs.glintUntil = now + 520; }
+  draw();
+}
+function setTool(t){ st.tool = t; stage.dataset.tool = t; stopSweep(); lastCatch = null; draw(); }
+document.querySelectorAll('button[data-tool]').forEach(b => b.addEventListener('click', () => setTool(b.dataset.tool)));
+
+// ---------- pointer ----------
+function pt(e){ const r = cv.getBoundingClientRect(); return {x:(e.clientX - r.left) / r.width * W, y:(e.clientY - r.top) / r.height * H}; }
+function onLensOrMouse(p){   // grabbing the lens or the mouse drags relative; a tap elsewhere sends the lens there
+  const lg = lensGeom(); if (!lg) return false;
+  if ((p.x - lg.x) ** 2 + (p.y - lg.y) ** 2 <= (lg.r + 20) ** 2) return true;
+  const side = lg.x > 600 ? -1 : 1, mx = lg.x + side * (lg.r + 60);
+  return scene() && Math.abs(p.x - mx) < 90 && p.y > H - 160;
+}
+let down = false;
+cv.addEventListener('pointerdown', e => {
+  stopSweep(); const p = pt(e); st.cursor = p;
+  if (scene()){ const g = ghostAt(p); if (g){ catchGhost(g); draw(); return; } }
+  down = true; cv.setPointerCapture(e.pointerId);
+  lastCatch = null; probeHold = false;
+  if (st.tool === 'move'){ const lg = lensGeom(); grab = onLensOrMouse(p) && lg ? lg.x - p.x : 0; st.drag = p; }
+  else st.wipe = Math.max(0, Math.min(1, p.x / W));
+  draw();
+});
+cv.addEventListener('pointermove', e => {
+  const p = pt(e); st.cursor = p;
+  if (down){ if (st.tool === 'move' && st.drag) st.drag = p; else if (st.tool === 'wipe') st.wipe = Math.max(0, Math.min(1, p.x / W)); }
+  else if (scene()){ const g = ghostAt(p); if (g !== hoverGhost){ hoverGhost = g; stage.dataset.hover = g ? 'ghost' : ''; } }
+  probeHold = false;
+  if (lastCatch && !down && Math.hypot(p.x - lastCatch.x, p.y - lastCatch.y) > 140) lastCatch = null;
+  draw();
+});
+function up(){
+  if (!down) return; down = false;
+  if (st.drag){ const k = nearestLens(D.masks, dragX()); st.drag = null; grab = 0; apply({mask:k}, 'mask'); return; }
+  draw();
+}
+cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+cv.addEventListener('pointerleave', () => { if (!down){ st.cursor = null; hoverGhost = null; stage.dataset.hover = ''; draw(); } });
+cv.addEventListener('keydown', e => {
+  const dir = {ArrowLeft:-1, ArrowRight:1}[e.key];
+  if (dir){ e.preventDefault();
+    if (st.tool === 'move'){ const i = LENSES.indexOf(st.mask); const k = LENSES[Math.max(0, Math.min(2, (i < 0 ? 1 : i) + dir))]; apply({mask:k}, 'mask'); }
+    else { st.wipe = Math.max(0, Math.min(1, st.wipe + dir * (e.shiftKey ? .01 : .05))); draw(); } }
+  if (e.key === ' '){ e.preventDefault(); st.peek = true; draw(); }
+  if ((e.key === 'c' || e.key === 'C') && scene()){ e.preventDefault(); catchNext(); }
+});
+cv.addEventListener('keyup', e => { if (e.key === ' '){ st.peek = false; draw(); } });
+const peek = document.getElementById('peek');
+const peekOn = () => { st.peek = true; lastCatch = null; draw(); }, peekOff = () => { if (st.peek){ st.peek = false; draw(); } };
+peek.addEventListener('pointerdown', peekOn); peek.addEventListener('pointerup', peekOff); peek.addEventListener('pointerleave', peekOff); peek.addEventListener('pointercancel', peekOff);
+peek.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); peekOn(); } });
+peek.addEventListener('keyup', e => { if (e.key === ' ' || e.key === 'Enter') peekOff(); });
+
+// ---------- sweep (user-started, pausable) ----------
+let anim = null, dirn = 1;
+const sweepBtn = document.getElementById('sweep');
+function stopSweep(){ if (anim){ cancelAnimationFrame(anim); anim = null; sweepBtn.textContent = 'Sweep the wipe'; } }
+sweepBtn.addEventListener('click', () => {
+  if (anim){ stopSweep(); return; }
+  lastCatch = null;
+  if (st.tool !== 'wipe'){ st.tool = 'wipe'; stage.dataset.tool = 'wipe'; }
+  if (REDUCED){ st.wipe = st.wipe < .5 ? 1 : 0; draw(); return; }
+  sweepBtn.textContent = 'Pause'; let last = performance.now();
+  const step = t => { const dt = (t - last) / 1000; last = t; st.wipe += dirn * dt * .35;
+    if (st.wipe >= 1){ st.wipe = 1; dirn = -1; } if (st.wipe <= 0){ st.wipe = 0; dirn = 1; }
+    draw(); anim = requestAnimationFrame(step); };
+  anim = requestAnimationFrame(step);
+});
+
+// ---------- share ----------
+document.getElementById('share').addEventListener('click', async () => {
+  history.replaceState(null, '', '#' + encodeToken(st));
+  try { await navigator.clipboard.writeText(location.href); toast('Link copied'); }
+  catch (e){ toast('Copy failed: the link is in your address bar'); }
+});
+
+// ---------- summary numbers in the drawer (computed from the job data) ----------
+const se = summary(D.jobs, 'echo'), sp = summary(D.jobs, 'plaid');
+document.querySelector('[data-sum="echo-r"]').textContent = `${se.rmin.toFixed(2)} to ${se.rmax.toFixed(2)} across ${se.n} gene views`;
+document.querySelector('[data-sum="plaid-r"]').textContent = `${sp.rmin.toFixed(2)} to ${sp.rmax.toFixed(2)}`;
+document.querySelector('[data-sum="plaid-ghost"]').textContent = `${fmtPct(sp.gmin)} to ${fmtPct(sp.gmax)}`;
+document.getElementById('p-jobs').textContent = D.jobs.length;
+// the cast drawer: who is data-driven and who is decoration
+const CAST = [['mouseHappy', 'The lab mouse', 'holds the lens. Its mood follows the mean agreement r of the genes in view; walking, gasping and the glint are decoration.'],
+  ['ghost', 'Ghosts', 'sit on real pixels where the blur put a gene\'s ink and the measurement had none. Count: about one per 10% of that gene\'s blurred ink on such pixels.'],
+  ...Object.keys(CELL_NOTE).map(g => ['cell' + g, g, CELL_NOTE[g] + ' (a drawing, shown on its gene tag).'])];
+document.getElementById('cast').innerHTML = CAST.map(([k, name, txt]) => { const s = SP[k], z = s.w > 20 ? 2 : 3; return `<li><img alt="" width="${s.w * z}" height="${s.h * z}" src="${InkSprite.toDataURL(s, 0, z)}"><span><b>${name}</b>: ${txt}</span></li>`; }).join('');
+document.getElementById('ghost-ico').src = InkSprite.toDataURL(SP.ghost, 0, 2);
+
+// ---------- start: restore a shared view, preload ----------
+function restore(quiet){
+  const s = decodeToken(location.hash); if (!s) return false;
+  stopSweep();
+  Object.assign(st, {set:s.set, gene:s.gene, mask:s.mask, setting:s.setting, wipe:s.wipe, tool:s.tool, view:s.view});
+  stage.dataset.tool = st.tool; document.body.dataset.view = st.view; hoverGhost = null; stage.dataset.hover = '';
+  buildGenes(); apply({}, 'set', quiet); return true;
+}
+sizeFx();
+if (!restore(true)){ buildGenes(); apply({}, 'set', true); }
+window.addEventListener('hashchange', () => restore(false));
+let rz = 0; window.addEventListener('resize', () => { cancelAnimationFrame(rz); rz = requestAnimationFrame(() => { sizeFx(); refreshGhosts(); draw(); }); });
+if ('ResizeObserver' in window) new ResizeObserver(() => { sizeFx(); refreshGhosts(); kick(true); }).observe(cv);
+img(D.tissue); Object.values(D.composites).forEach(c => img(c.measured));
+setTimeout(() => D.jobs.forEach(j => img(j.file)), 800);
+})();
+</script>

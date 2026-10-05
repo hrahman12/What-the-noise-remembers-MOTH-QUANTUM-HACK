@@ -1,0 +1,6 @@
+strength,reach,job_id,status,file,qubits,seconds
+0.5,0.0,19d2ef47-9936-49b8-ac33-fdf3fd92ca60,completed,k_s0.5_r0.0.npy,18,14.2
+0.25,0.0,45d63aa5-5a73-44db-85b2-13ca300fc302,completed,k_s0.25_r0.0.npy,18,10.7
+1.0,0.0,511aa24c-205d-455e-ba12-ed0cb1a196fa,completed,k_s1.0_r0.0.npy,18,12.7
+0.5,1.0,95f0b491-2f30-4575-b890-2f3b70c7881b,failed: TMPRL1103 payload,,,
+0.5,1.0,0c641ba0-11e4-4af0-ab62-abe905dda3e5,failed: TMPRL1103 payload,,,

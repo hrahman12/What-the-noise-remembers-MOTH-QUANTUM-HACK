@@ -1,0 +1,20 @@
+{
+ "wav": "coda_reservoir.wav",
+ "seconds": 83.96,
+ "sample_rate": 44100,
+ "channels": 2,
+ "bits": 16,
+ "clicks": 316,
+ "peak_dbfs": -1.01,
+ "real_codas": 31,
+ "reservoir_codas": 14,
+ "handoff_at_s": 38.771,
+ "whales_in_real_part": [
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6"
+ ]
+}

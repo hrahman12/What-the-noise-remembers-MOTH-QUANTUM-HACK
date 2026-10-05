@@ -1,0 +1,123 @@
+{
+ "piece": "02-coda-reservoir",
+ "port": 6241,
+ "ok": true,
+ "steps": [
+  {
+   "step": "load: page renders and nothing sounds or loads audio before a click",
+   "ok": true,
+   "ms": 2079
+  },
+  {
+   "step": "graphs: the sea and every restored graph render (non-empty canvases)",
+   "ok": true,
+   "ms": 1134
+  },
+  {
+   "step": "connect: brand bar to the hub, prev / hub / next nav and the jump list",
+   "ok": true,
+   "ms": 166
+  },
+  {
+   "step": "data: proof chips and readout match piece.json and PARAMS.md",
+   "ok": true,
+   "ms": 59
+  },
+  {
+   "step": "instrument: Play starts real clicks, the clock runs, Pause stops it",
+   "ok": true,
+   "ms": 2753
+  },
+  {
+   "step": "outcome: in the handoff, the reservoir takes over at the real split time",
+   "ok": true,
+   "ms": 2415
+  },
+  {
+   "step": "pickers: every track control loads the right job (PARAMS.md)",
+   "ok": true,
+   "ms": 2665
+  },
+  {
+   "step": "scene: tapping a whale plays only that caller; open water plays or pauses; keys pick the reservoir",
+   "ok": true,
+   "ms": 763
+  },
+  {
+   "step": "data: the timeline and histogram sit in a visible titled section, live with the instrument",
+   "ok": true,
+   "ms": 1333
+  },
+  {
+   "step": "view: timeline tap and drag, histogram readout",
+   "ok": true,
+   "ms": 1131
+  },
+  {
+   "step": "sections: every titled section is on the page, with its earlier words",
+   "ok": true,
+   "ms": 112
+  },
+  {
+   "step": "science: every drawer opens with real content",
+   "ok": true,
+   "ms": 264
+  },
+  {
+   "step": "jobs: the jobs table lists all 14 Atlas jobs from PARAMS.md and Listen plays each one",
+   "ok": true,
+   "ms": 3425
+  },
+  {
+   "step": "share: copy link to this moment, reload with the hash, state restored",
+   "ok": true,
+   "ms": 1259
+  },
+  {
+   "step": "submitted WAV: play, one sound at a time, seek, stop",
+   "ok": true,
+   "ms": 2323
+  },
+  {
+   "step": "clean: no page errors, no failed requests",
+   "ok": true,
+   "ms": 1
+  }
+ ],
+ "graphs": {
+  "#scene": {
+   "w": 650,
+   "h": 366,
+   "drawn": 0.8961916771752837,
+   "colours": 5,
+   "url": 15994
+  },
+  "#tl": {
+   "w": 1148,
+   "h": 300,
+   "drawn": 0.20995354239256678,
+   "colours": 64,
+   "url": 24726
+  },
+  "#hist": {
+   "w": 1148,
+   "h": 190,
+   "drawn": 0.06886117733357784,
+   "colours": 64,
+   "url": 16766
+  },
+  "#wavstrip": {
+   "w": 1148,
+   "h": 76,
+   "drawn": 0.08245461214010637,
+   "colours": 64,
+   "url": 8730
+  }
+ },
+ "share": {
+  "hash": "#res-v16-k1-t30.0",
+  "toast": "Link copied",
+  "clipboard": "http://127.0.0.1:6241/index.html#res-v16-k1-t30.0"
+ },
+ "errors": []
+}

@@ -1,0 +1,463 @@
+{
+ "engine": "tamagotchi-v1",
+ "code": "steane",
+ "simulator": "Qiskit Aer stabilizer simulator on Atlas (no QPU)",
+ "credits_per_run": 0.0,
+ "grid": {
+  "n_logical": 256,
+  "physical_data_qubits": 1792,
+  "shots": 64,
+  "seed": 2026,
+  "pattern": "X on odd-indexed logicals (stored bit 1), even-indexed stay 0"
+ },
+ "profiles": {
+  "loom": {
+   "title": "noisy loom: every gate, idle step and readout is noisy",
+   "noise": "p_1q = p_gate = p_idle = p_meas = p",
+   "levels": [
+    {
+     "p": 0.001,
+     "n_logical": 256,
+     "shots": 64,
+     "se": {
+      "job_id": "00747c70-eaa2-400d-9b71-7f9d5ea2008d",
+      "seconds": 208.5,
+      "wall_seconds": 208,
+      "n_logical": 256,
+      "shots": 64,
+      "logical_error_rate": 0.00762939453125,
+      "ler_bit0": 0.0068359375,
+      "ler_bit1": 0.0084228515625,
+      "logical_error_count": 53,
+      "syndromes_detected": 1075,
+      "corrections_applied": 1075,
+      "syndrome_rate": 0.06561279296875,
+      "success_rate": 0.171875,
+      "noise": {
+       "p_1q": 0.001,
+       "p_gate": 0.001,
+       "p_idle": 0.001,
+       "p_meas": 0.001
+      },
+      "simulator": {
+       "method": "stabilizer",
+       "transpiled": false
+      }
+     },
+     "bare": {
+      "job_id": "065612b5-7863-45f1-88a9-a918f5433297",
+      "seconds": 21.0,
+      "wall_seconds": 20,
+      "n_logical": 256,
+      "shots": 64,
+      "logical_error_rate": 0.00335693359375,
+      "ler_bit0": 0.00341796875,
+      "ler_bit1": 0.0032958984375,
+      "logical_error_count": 36,
+      "syndromes_detected": 0,
+      "corrections_applied": 0,
+      "syndrome_rate": 0.0,
+      "success_rate": 0.4375,
+      "noise": {
+       "p_1q": 0.001,
+       "p_gate": 0.001,
+       "p_idle": 0.001,
+       "p_meas": 0.001
+      },
+      "simulator": {
+       "method": "stabilizer",
+       "transpiled": false
+      }
+     }
+    },
+    {
+     "p": 0.005,
+     "n_logical": 256,
+     "shots": 64,
+     "se": {
+      "job_id": "7a9ce534-2768-4c98-87b4-0c1ab4e939c3",
+      "seconds": 217.6,
+      "wall_seconds": 217,
+      "n_logical": 256,
+      "shots": 64,
+      "logical_error_rate": 0.04058837890625,
+      "ler_bit0": 0.041015625,
+      "ler_bit1": 0.0401611328125,
+      "logical_error_count": 64,
+      "syndromes_detected": 5158,
+      "corrections_applied": 5158,
+      "syndrome_rate": 0.3148193359375,
+      "success_rate": 0,
+      "noise": {
+       "p_1q": 0.005,
+       "p_gate": 0.005,
+       "p_idle": 0.005,
+       "p_meas": 0.005
+      },
+      "simulator": {
+       "method": "stabilizer",
+       "transpiled": false
+      }
+     },
+     "bare": {
+      "job_id": "38e46cd7-579a-4332-a9bd-810a5a2864df",
+      "seconds": 20.5,
+      "wall_seconds": 20,
+      "n_logical": 256,
+      "shots": 64,
+      "logical_error_rate": 0.01995849609375,
+      "ler_bit0": 0.017822265625,
+      "ler_bit1": 0.0220947265625,
+      "logical_error_count": 64,
+      "syndromes_detected": 0,
+      "corrections_applied": 0,
+      "syndrome_rate": 0.0,
+      "success_rate": 0,
+      "noise": {
+       "p_1q": 0.005,
+       "p_gate": 0.005,
+       "p_idle": 0.005,
+       "p_meas": 0.005
+      },
+      "simulator": {
+       "method": "stabilizer",
+       "transpiled": false
+      }
+     }
+    },
+    {
+     "p": 0.01,
+     "n_logical": 256,
+     "shots": 64,
+     "se": {
+      "job_id": "a5ca0dfd-dba3-48f7-a61c-ccdbf35cfc1d",
+      "seconds": 261.2,
+      "wall_seconds": 259,
+      "n_logical": 256,
+      "shots": 64,
+      "logical_error_rate": 0.08837890625,
+      "ler_bit0": 0.0849609375,
+      "ler_bit1": 0.091796875,
+      "logical_error_count": 64,
+      "syndromes_detected": 9458,
+      "corrections_applied": 9458,
+      "syndrome_rate": 0.5772705078125,
+      "success_rate": 0,
+      "noise": {
+       "p_1q": 0.01,
+       "p_gate": 0.01,
+       "p_idle": 0.01,
+       "p_meas": 0.01
+      },
+      "simulator": {
+       "method": "stabilizer",
+       "transpiled": false
+      }
+     },
+     "bare": {
+      "job_id": "6ce56245-be91-49b5-9766-d5ccfa972187",
+      "seconds": 23.8,
+      "wall_seconds": 21,
+      "n_logical": 256,
+      "shots": 64,
+      "logical_error_rate": 0.044921875,
+      "ler_bit0": 0.044921875,
+      "ler_bit1": 0.044921875,
+      "logical_error_count": 64,
+      "syndromes_detected": 0,
+      "corrections_applied": 0,
+      "syndrome_rate": 0.0,
+      "success_rate": 0,
+      "noise": {
+       "p_1q": 0.01,
+       "p_gate": 0.01,
+       "p_idle": 0.01,
+       "p_meas": 0.01
+      },
+      "simulator": {
+       "method": "stabilizer",
+       "transpiled": false
+      }
+     }
+    }
+   ]
+  },
+  "thread": {
+   "title": "fraying thread: only stored threads (idle) and readout are noisy, the loom's gates are clean",
+   "noise": "p_idle = p_meas = p; p_1q = p_gate = 0",
+   "levels": [
+    {
+     "p": 0.001,
+     "n_logical": 256,
+     "shots": 64,
+     "se": {
+      "job_id": "2b720144-23fa-4eb6-a0c8-091b05f2c038",
+      "seconds": 252.0,
+      "wall_seconds": 250,
+      "n_logical": 256,
+      "shots": 64,
+      "logical_error_rate": 0.0001220703125,
+      "ler_bit0": 0.000244140625,
+      "ler_bit1": 0.0,
+      "logical_error_count": 2,
+      "syndromes_detected": 179,
+      "corrections_applied": 179,
+      "syndrome_rate": 0.01092529296875,
+      "success_rate": 0.96875,
+      "noise": {
+       "p_1q": 0,
+       "p_gate": 0,
+       "p_idle": 0.001,
+       "p_meas": 0.001
+      },
+      "simulator": {
+       "method": "stabilizer",
+       "transpiled": false
+      }
+     },
+     "bare": {
+      "job_id": "fc6aa200-c7fa-4257-9d6a-b7c54028238d",
+      "seconds": 24.6,
+      "wall_seconds": 23,
+      "n_logical": 256,
+      "shots": 64,
+      "logical_error_rate": 0.0,
+      "ler_bit0": 0.0,
+      "ler_bit1": 0.0,
+      "logical_error_count": 0,
+      "syndromes_detected": 0,
+      "corrections_applied": 0,
+      "syndrome_rate": 0.0,
+      "success_rate": 1,
+      "noise": {
+       "p_1q": 0,
+       "p_gate": 0,
+       "p_idle": 0.001,
+       "p_meas": 0.001
+      },
+      "simulator": {
+       "method": "stabilizer",
+       "transpiled": false
+      }
+     }
+    },
+    {
+     "p": 0.005,
+     "n_logical": 256,
+     "shots": 64,
+     "se": {
+      "job_id": "7f22c6d3-c544-4f0c-a5bb-1f06bbc11677",
+      "seconds": 216.6,
+      "wall_seconds": 215,
+      "n_logical": 256,
+      "shots": 64,
+      "logical_error_rate": 0.00152587890625,
+      "ler_bit0": 0.0020751953125,
+      "ler_bit1": 0.0009765625,
+      "logical_error_count": 22,
+      "syndromes_detected": 1027,
+      "corrections_applied": 1027,
+      "syndrome_rate": 0.06268310546875,
+      "success_rate": 0.65625,
+      "noise": {
+       "p_1q": 0,
+       "p_gate": 0,
+       "p_idle": 0.005,
+       "p_meas": 0.005
+      },
+      "simulator": {
+       "method": "stabilizer",
+       "transpiled": false
+      }
+     },
+     "bare": {
+      "job_id": "4be3d79b-653f-458e-be93-563dd1751e13",
+      "seconds": 24.5,
+      "wall_seconds": 22,
+      "n_logical": 256,
+      "shots": 64,
+      "logical_error_rate": 0.0003662109375,
+      "ler_bit0": 0.0003662109375,
+      "ler_bit1": 0.0003662109375,
+      "logical_error_count": 5,
+      "syndromes_detected": 0,
+      "corrections_applied": 0,
+      "syndrome_rate": 0.0,
+      "success_rate": 0.921875,
+      "noise": {
+       "p_1q": 0,
+       "p_gate": 0,
+       "p_idle": 0.005,
+       "p_meas": 0.005
+      },
+      "simulator": {
+       "method": "stabilizer",
+       "transpiled": false
+      }
+     }
+    },
+    {
+     "p": 0.01,
+     "n_logical": 256,
+     "shots": 64,
+     "se": {
+      "job_id": "70161217-2606-4ee1-a43c-a042bd44b3c0",
+      "seconds": 216.1,
+      "wall_seconds": 215,
+      "n_logical": 256,
+      "shots": 64,
+      "logical_error_rate": 0.00555419921875,
+      "ler_bit0": 0.005859375,
+      "ler_bit1": 0.0052490234375,
+      "logical_error_count": 50,
+      "syndromes_detected": 2043,
+      "corrections_applied": 2043,
+      "syndrome_rate": 0.12469482421875,
+      "success_rate": 0.21875,
+      "noise": {
+       "p_1q": 0,
+       "p_gate": 0,
+       "p_idle": 0.01,
+       "p_meas": 0.01
+      },
+      "simulator": {
+       "method": "stabilizer",
+       "transpiled": false
+      }
+     },
+     "bare": {
+      "job_id": "78350aec-f9a4-4ba7-bcd8-3e0674cec551",
+      "seconds": 23.9,
+      "wall_seconds": 22,
+      "n_logical": 256,
+      "shots": 64,
+      "logical_error_rate": 0.0018310546875,
+      "ler_bit0": 0.0020751953125,
+      "ler_bit1": 0.0015869140625,
+      "logical_error_count": 23,
+      "syndromes_detected": 0,
+      "corrections_applied": 0,
+      "syndrome_rate": 0.0,
+      "success_rate": 0.640625,
+      "noise": {
+       "p_1q": 0,
+       "p_gate": 0,
+       "p_idle": 0.01,
+       "p_meas": 0.01
+      },
+      "simulator": {
+       "method": "stabilizer",
+       "transpiled": false
+      }
+     }
+    }
+   ]
+  }
+ },
+ "ladder": [
+  {
+   "job_id": "97400f96-2c85-410a-b20f-2e8452eee025",
+   "seconds": 75.8,
+   "wall_seconds": 75,
+   "n_logical": 64,
+   "shots": 1024,
+   "logical_error_rate": 0.0430145263671875,
+   "ler_bit0": 0.041351318359375,
+   "ler_bit1": 0.044677734375,
+   "logical_error_count": 953,
+   "syndromes_detected": 21078,
+   "corrections_applied": 21078,
+   "syndrome_rate": 0.321624755859375,
+   "success_rate": 0.0693359375,
+   "noise": {
+    "p_1q": 0.005,
+    "p_gate": 0.005,
+    "p_idle": 0.005,
+    "p_meas": 0.005
+   },
+   "simulator": {
+    "method": "stabilizer",
+    "transpiled": false
+   },
+   "physical_data_qubits": 448
+  },
+  {
+   "job_id": "1dd2fd92-a57a-4dba-9918-bca80117cb0f",
+   "seconds": 474.7,
+   "wall_seconds": 473,
+   "n_logical": 128,
+   "shots": 1024,
+   "logical_error_rate": 0.04344940185546875,
+   "ler_bit0": 0.04339599609375,
+   "ler_bit1": 0.0435028076171875,
+   "logical_error_count": 1021,
+   "syndromes_detected": 41522,
+   "corrections_applied": 41522,
+   "syndrome_rate": 0.3167877197265625,
+   "success_rate": 0.0029296875,
+   "noise": {
+    "p_1q": 0.005,
+    "p_gate": 0.005,
+    "p_idle": 0.005,
+    "p_meas": 0.005
+   },
+   "simulator": {
+    "method": "stabilizer",
+    "transpiled": false
+   },
+   "physical_data_qubits": 896
+  },
+  {
+   "job_id": "0833a836-e2f0-4b45-a4b9-c42ad31140e4",
+   "seconds": 3.2,
+   "wall_seconds": 3788,
+   "n_logical": 256,
+   "shots": 1024,
+   "logical_error_rate": 0.042842864990234375,
+   "ler_bit0": 0.04229736328125,
+   "ler_bit1": 0.04338836669921875,
+   "logical_error_count": 1024,
+   "syndromes_detected": 82736,
+   "corrections_applied": 82736,
+   "syndrome_rate": 0.31561279296875,
+   "success_rate": 0,
+   "noise": {
+    "p_1q": 0.005,
+    "p_gate": 0.005,
+    "p_idle": 0.005,
+    "p_meas": 0.005
+   },
+   "simulator": {
+    "method": "stabilizer",
+    "transpiled": false
+   },
+   "physical_data_qubits": 1792
+  },
+  {
+   "job_id": "7ea460be-3e71-4511-bfda-e2740171662a",
+   "seconds": 234.2,
+   "wall_seconds": 233,
+   "n_logical": 512,
+   "shots": 8,
+   "logical_error_rate": 0.043212890625,
+   "ler_bit0": 0.0498046875,
+   "ler_bit1": 0.03662109375,
+   "logical_error_count": 8,
+   "syndromes_detected": 1281,
+   "corrections_applied": 1281,
+   "syndrome_rate": 0.312744140625,
+   "success_rate": 0,
+   "noise": {
+    "p_1q": 0.005,
+    "p_gate": 0.005,
+    "p_idle": 0.005,
+    "p_meas": 0.005
+   },
+   "simulator": {
+    "method": "stabilizer",
+    "transpiled": false
+   },
+   "physical_data_qubits": 3584
+  }
+ ]
+}

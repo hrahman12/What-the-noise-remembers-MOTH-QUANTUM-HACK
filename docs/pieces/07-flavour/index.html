@@ -7,7 +7,7 @@
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:#FBFAF9}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
-<title>FLAVOUR: Neutrino Flavour Synth</title>
+<title>FLAVOUR</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <style>
@@ -98,7 +98,9 @@ details.drawer .body{padding-bottom:1.25rem;color:var(--ink-2);max-width:68ch;di
 
 /* Layout: a short header, then the scene is the hero: an ink-engraved plate of real neutrino sources (a reactor,
    a Fermilab-style beamline, a cosmic-ray shower, the Sun), the journey along a real baseline, and a
-   Super-Kamiokande-style water-Cherenkov detector with its event display. Charts live behind Scene / Data.
+   Super-Kamiokande-style water-Cherenkov detector with its event display. Below the plate, titled sections hold
+   the earlier page's words and graphs: How to play, The data (the curves and meters, always drawn), the demos,
+   the plugin, How it was made, The science, What this does not claim, Jobs and credits.
    Brief-page look: paper, one ink, square panels, pill buttons, hairlines, solid-ink bars. */
 .wrap{max-width:78rem;margin-inline:auto}
 .head{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:1rem 2.5rem;align-items:start;padding-block:1.3rem .9rem}
@@ -139,7 +141,7 @@ h1{font-size:clamp(2rem,3.9vw,3.3rem);line-height:1;letter-spacing:-.02em}
 @keyframes glow{50%{opacity:.8}}
 @keyframes flash{0%{opacity:0}10%{opacity:1}100%{opacity:1}}
 @media (prefers-reduced-motion:reduce){#scene *{animation:none!important}}
-#start .btn{padding:.62rem 1.05rem;font-size:.88rem}
+#start .btn,.btn.jump{padding:.62rem 1.05rem;font-size:.88rem}
 #start[hidden]{display:none}
 .under{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.25rem 1rem;font:400 .74rem/1.5 var(--mono);color:var(--ink-2);margin:0}
 .under b{color:var(--ink);font-weight:500}
@@ -154,7 +156,10 @@ h1{font-size:clamp(2rem,3.9vw,3.3rem);line-height:1;letter-spacing:-.02em}
 .tag3 .bar i{display:block;height:100%;width:0;background:var(--ink)}
 .tastelog{display:grid;gap:.2rem;border:1px dashed var(--ink-3);padding:.55rem .7rem;font:400 .74rem/1.5 var(--mono);color:var(--ink-2)}
 .tastelog b{color:var(--ink);font-weight:500}
-.plate-key{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem 1.6rem;font:400 .72rem/1.45 var(--mono);color:var(--ink-2);border-top:1px solid var(--rule);padding-top:.7rem}
+.plate-key{font:400 .72rem/1.45 var(--mono);color:var(--ink-2);border-top:1px solid var(--rule);padding-top:.6rem}
+.plate-key summary{cursor:pointer;font:500 .66rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);padding:.2rem 0}
+.plate-key summary b{font-weight:500;color:var(--ink-2);text-transform:none;letter-spacing:.02em}
+.pk-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem 1.6rem;padding-top:.6rem}
 .plate-key h4{font:500 .64rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin:0 0 .35rem}
 .plate-key ol{list-style:none;margin:0;padding:0;display:grid;gap:.22rem}
 .plate-key li{display:grid;grid-template-columns:1.25rem minmax(0,1fr);gap:.4rem;align-items:start}
@@ -188,7 +193,7 @@ h1{font-size:clamp(2rem,3.9vw,3.3rem);line-height:1;letter-spacing:-.02em}
 .kbtn.hw{border-color:var(--ink)}
 .kbtn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
 .kbtn[aria-pressed="true"] small{color:var(--on-ink)}
-.knobs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.7rem 1rem;border-top:1px solid var(--rule);padding-top:.9rem}
+.knobs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.7rem 1rem;border-top:1px solid var(--rule);padding-top:.9rem}
 .knob{display:grid;gap:.3rem;min-width:0}
 .knob .row{display:flex;justify-content:space-between;gap:.3rem;flex-wrap:nowrap}
 .knob output{font:500 .72rem/1.2 var(--mono);color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -202,8 +207,9 @@ h1{font-size:clamp(2rem,3.9vw,3.3rem);line-height:1;letter-spacing:-.02em}
 .tag{display:inline-block;font:500 .62rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:.28rem .45rem;border-radius:99px;border:1px solid var(--rule);color:var(--ink-2);background:var(--panel)}
 .tag.hw{border-color:var(--ink);background:var(--ink);color:var(--on-ink)}
 /* data view */
-.plotwrap{position:relative;border:1px solid var(--rule);overflow:hidden;background:var(--panel);touch-action:none}
-#plot{display:block;width:100%;height:clamp(240px,31vw,370px);cursor:ew-resize}
+.plotwrap{position:relative;border:1px solid var(--rule);overflow:hidden;background:var(--panel);touch-action:pan-y}
+#plot{display:block;width:100%;height:clamp(240px,31vw,370px);cursor:ew-resize;touch-action:pan-y}
+#plot:focus-visible{outline:2px solid var(--ink);outline-offset:-3px}
 .legend{font:400 .74rem/1.6 var(--mono);color:var(--ink-2)}
 .legend i{display:inline-block;width:.8rem;height:3px;vertical-align:middle;margin-inline:.1rem .3rem}
 .meters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem}
@@ -214,6 +220,8 @@ h1{font-size:clamp(2rem,3.9vw,3.3rem);line-height:1;letter-spacing:-.02em}
 .meter .bar{height:6px;background:var(--panel-2);overflow:hidden}
 .meter .bar i{display:block;height:100%;width:0;background:currentColor}
 .meter canvas{display:block;width:100%;height:38px;border-top:1px solid var(--rule)}
+.meter canvas{cursor:pointer}.meter canvas:hover,.meter canvas.on{background:var(--tint)}.meter canvas:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.seg .e-only{display:inline-block;padding:.55rem .95rem;font:500 .76rem/1 var(--mono);letter-spacing:.04em;color:var(--ink)}
 .f-e{color:var(--warn)}.f-mu{color:var(--ink)}.f-tau{color:var(--good)}
 .toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:var(--ink);color:var(--on-ink);font:500 .85rem/1.3 var(--mono);text-align:center;padding:.8rem 1.1rem;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:5;max-width:calc(100vw - 32px)}
 .toast.on{opacity:1}
@@ -248,13 +256,30 @@ h1{font-size:clamp(2rem,3.9vw,3.3rem);line-height:1;letter-spacing:-.02em}
 .jobs td,.jobs th{text-align:left;padding:.3rem .4rem;border-bottom:1px solid var(--rule)}
 .jobs th{font-weight:500;color:var(--ink-2);text-transform:uppercase;letter-spacing:.06em;border-bottom-color:var(--ink)}
 .tblwrap{overflow-x:auto;max-width:100%}
-@media (max-width:980px){.head{grid-template-columns:minmax(0,1fr);align-items:start}.steps{grid-template-columns:repeat(2,minmax(0,1fr))}.demos,.plug{grid-template-columns:minmax(0,1fr)}.knobs{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media (max-width:640px){.plate-key{grid-template-columns:minmax(0,1fr)}}
-@media (max-width:560px){.lead{display:flex;flex-direction:column}.head{display:contents}.head-l{order:1;padding-block:1.3rem 1rem}.shop{order:2}.head-r{order:3;padding-top:1.4rem}.steps{order:4;margin-top:1.2rem}.kbtn b{font-size:.66rem}.steps{grid-template-columns:minmax(0,1fr)}.knobs{grid-template-columns:repeat(2,minmax(0,1fr))}.shop-body{padding:.7rem}.tags,.meters{gap:.35rem}.tag3{grid-template-columns:minmax(0,1fr);padding:.4rem;justify-items:start}.tag3 .ds{font-size:.6rem}.tag3 img{grid-row:auto}.tag3 .ds .fl{display:none}.hint-wide{display:none}.meter{padding:.45rem}.chipset{grid-template-columns:repeat(2,minmax(0,1fr))}.kbtn{grid-template-columns:32px minmax(0,1fr);padding:.3rem .4rem}.rack{gap:2px}.rack kbd{display:none}.wtnr-bar{font-size:.66rem;letter-spacing:.08em}h1{font-size:2rem}.toprow{gap:.5rem}.seg button{padding:.5rem .7rem}}
+/* the titled sections below the plate */
+.toc{display:flex;flex-wrap:wrap;gap:.4rem .45rem;align-items:center;margin-top:2.2rem;border-top:1px solid var(--rule);padding-top:1rem}
+.toc .label{margin-right:.4rem}
+.toc a{border:1px solid var(--rule);border-radius:999px;padding:.45rem .7rem;font:500 .7rem/1 var(--mono);letter-spacing:.04em;color:var(--ink);text-decoration:none;background:var(--panel)}
+.toc a:hover,.toc a:focus-visible{border-color:var(--ink);background:var(--tint)}
+.section{scroll-margin-top:1rem}
+.steps.steps3{grid-template-columns:repeat(3,minmax(0,1fr));margin:0}
+.steps a,.sub a,.body a{color:var(--ink);text-underline-offset:3px}
+.keyhelp{font:400 .76rem/1.55 var(--mono);color:var(--ink-2);max-width:96ch;margin:0}
+.fig{margin:0;display:grid;gap:.6rem;min-width:0}
+.claims{display:grid;gap:.8rem;max-width:80ch}
+.credits-h{font-size:1.35rem;margin-top:.8rem}
+.credits{display:grid;gap:.7rem;color:var(--ink-2);font-size:.9rem;max-width:96ch}
+.credits code{font-family:var(--mono);font-size:.85em;color:var(--ink)}
+.jobs .jb{border:1px solid var(--rule);background:var(--panel);color:var(--ink);font:500 .7rem/1 var(--mono);padding:.32rem .55rem;border-radius:999px;cursor:pointer;white-space:nowrap}
+.jobs .jb:hover{border-color:var(--ink);background:var(--tint)}
+.jobs .jb[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+@media (max-width:980px){.head{grid-template-columns:minmax(0,1fr);align-items:start}.steps,.steps.steps3{grid-template-columns:repeat(2,minmax(0,1fr))}.demos,.plug{grid-template-columns:minmax(0,1fr)}.knobs{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:640px){.pk-grid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:560px){.lead{display:flex;flex-direction:column}.head{display:contents}.head-l{order:1;padding-block:1.3rem 1rem}.shop{order:2}.head-r{order:3;padding-top:1.4rem}.steps{order:4;margin-top:1.2rem}.kbtn b{font-size:.66rem}.steps{grid-template-columns:minmax(0,1fr)}.knobs{grid-template-columns:repeat(2,minmax(0,1fr))}.shop-body{padding:.7rem}.tags,.meters{gap:.35rem}.tag3{grid-template-columns:minmax(0,1fr);padding:.4rem;justify-items:start}.tag3 .ds{font-size:.6rem}.tag3 img{grid-row:auto}.tag3 .ds .fl{display:none}.hint-wide{display:none}.meter{padding:.45rem}.chipset{grid-template-columns:repeat(2,minmax(0,1fr))}.kbtn{grid-template-columns:32px minmax(0,1fr);padding:.3rem .4rem}.rack{gap:2px}.rack kbd{display:none}.wtnr-bar{font-size:.66rem;letter-spacing:.08em}h1{font-size:2rem}.toprow{gap:.5rem}.steps.steps3{grid-template-columns:minmax(0,1fr);order:0;margin-top:0}.toc a{padding:.5rem .6rem}.seg button{padding:.5rem .7rem}#src-seg button,#e-seg button,#e-seg .e-only{padding:.5rem .42rem;font-size:.7rem;letter-spacing:.02em}}
 </style>
 
 <div class="wrap">
-  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count"><b>07</b> / 11 &middot; Hide</span></nav>
+  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count"><b>Challenge 07</b> &middot; Hide</span></nav>
 
   <div class="lead">
   <div class="head">
@@ -275,18 +300,15 @@ h1{font-size:clamp(2rem,3.9vw,3.3rem);line-height:1;letter-spacing:-.02em}
   </ol>
 
   <section class="shop" id="synth" aria-label="FLAVOUR, the neutrino flavour synth">
-    <div class="ink-bar"><span>FLAVOUR &middot; neutrino flavour synth</span><span id="bar-state">Silent</span></div>
+    <div class="ink-bar"><span>FLAVOUR &middot; browser synth</span><span id="bar-state">Silent</span></div>
     <div class="shop-body">
       <div class="toprow">
         <div class="grp"><span class="label">Source</span><div class="seg" id="src-seg" role="group" aria-label="Neutrino source"></div></div>
         <div class="grp"><span class="label">Energy</span><div class="seg" id="e-seg" role="group" aria-label="Neutrino energy"></div></div>
       </div>
       <div class="toprow">
-        <div class="grp" id="start"><button type="button" class="btn" id="start-btn">Switch on (sound on)</button><span class="label">nothing plays until you click</span></div>
-        <div class="seg" role="group" aria-label="View">
-          <button type="button" data-view="scene" aria-pressed="true">Scene</button>
-          <button type="button" data-view="data" aria-pressed="false">Data</button>
-        </div>
+        <div class="grp" id="start"><button type="button" class="btn" id="start-btn">Start the synth (sound on)</button><span class="label">Nothing plays until you play a note</span></div>
+        <a class="btn ghost jump" href="#data">The data: curves and meters &darr;</a>
       </div>
 
       <div class="view" id="view-scene">
@@ -299,12 +321,6 @@ h1{font-size:clamp(2rem,3.9vw,3.3rem);line-height:1;letter-spacing:-.02em}
         <div class="plate-key" id="plate-key"></div>
       </div>
 
-      <div class="view" id="view-data" hidden>
-        <div class="plotwrap"><canvas id="plot" tabindex="0" aria-label="Flavour probability curves against L/E. Drag or use the arrow keys to set L/E."></canvas></div>
-        <p class="legend" id="plot-legend"><i style="background:var(--warn)"></i>&nu;<sub>e</sub> <i style="background:var(--ink)"></i>&nu;<sub>&mu;</sub> <i style="background:var(--good)"></i>&nu;<sub>&tau;</sub> &middot; Lines: the exact classical curves for a muon neutrino. Dots: the values measured back through qpixl on the chosen chip. Dashed marker: your neutrino. Solid markers: notes in flight.</p>
-        <div class="meters" id="meters"></div>
-        <div class="row split"><span class="label" id="le-read">L/E</span><span class="label" id="sum-read">&Sigma; P</span></div>
-      </div>
 
       <div class="rackwrap">
         <div class="row split"><span class="label">Keys &middot; each one detects a neutrino and plays the mix</span><span class="label hint-wide">computer keys A to ; &middot; Z / X octave</span></div>
@@ -312,7 +328,7 @@ h1{font-size:clamp(2rem,3.9vw,3.3rem);line-height:1;letter-spacing:-.02em}
       </div>
 
       <div class="kitchens" id="kitchens">
-        <div class="row split"><span class="label">Chip &middot; the machine that wrote the &nu;<sub>&mu;</sub> curves onto qubits and read them back</span><span class="label">&#9632; = noise (rms vs exact)</span></div>
+        <div class="row split"><span class="label">Chip &middot; the machine that wrote the <span style="text-transform:none">&nu;<sub>&mu;</sub></span> curves onto qubits and read them back</span><span class="label">&#9632; = noise (rms vs exact)</span></div>
         <p class="chipnote" id="chipnote" hidden></p>
         <div class="chipset" id="chip-seg" role="group" aria-label="Chip"></div>
       </div>
@@ -320,6 +336,7 @@ h1{font-size:clamp(2rem,3.9vw,3.3rem);line-height:1;letter-spacing:-.02em}
       <div class="knobs" id="knobs"></div>
 
       <div class="row controls">
+        <span class="label">Model</span>
         <div class="seg" role="group" aria-label="Model">
           <button type="button" data-model="3" aria-pressed="true">3 flavours</button>
           <button type="button" data-model="2" aria-pressed="false">2 flavours</button>
@@ -327,7 +344,7 @@ h1{font-size:clamp(2rem,3.9vw,3.3rem);line-height:1;letter-spacing:-.02em}
         <button type="button" class="btn" id="drone" aria-pressed="false">Hold a drone</button>
         <button type="button" class="btn ghost" id="panel">Detect &times;100</button>
         <button type="button" class="btn ghost" id="panic">Stop all sound</button>
-        <button type="button" class="btn ghost" id="share">Copy link to this view</button>
+        <button type="button" class="btn ghost" id="share">Copy link to this sound</button>
       </div>
       <p class="honesty">The oscillation physics is classical. qpixl-v1 only encodes the muon-neutrino curves into qubits and measures them back. Chips named fake_* are noise models of IBM chips, run on a simulator; only ibm_fez is real hardware. Reactors and the Sun make electron-flavoured neutrinos, which no chip measured, so for them the page uses classical curves and says so. Each detection is a classical dice roll weighted by the curve at your spot. The rings are drawn with Super-K's geometry and the textbook Cherenkov angle to show how a water tank tells the flavours apart; they are an illustration, not a detector simulation.</p>
       <dl class="recipe" id="readout"></dl>
@@ -336,14 +353,56 @@ h1{font-size:clamp(2rem,3.9vw,3.3rem);line-height:1;letter-spacing:-.02em}
   </section>
   </div>
 
-  <section class="section" aria-labelledby="demos-h">
+  <nav class="toc" aria-label="On this page"><span class="label">On this page</span><a href="#play">How to play</a><a href="#data">The data</a><a href="#demos-sec">Hear it in use</a><a href="#plug-sec">The plugin</a><a href="#made">How it was made</a><a href="#science">The science</a><a href="#claims">What this does not claim</a><a href="#jobs-sec">Jobs and credits</a></nav>
+
+  <section class="section" id="play" aria-labelledby="play-h">
+    <div class="ink-bar"><span>How to play</span><span>Keys &middot; curves &middot; chips</span></div>
+    <h2 id="play-h">Play the particle that changes identity mid-flight.</h2>
+    <p class="sub">A muon neutrino turns into electron and tau neutrinos as it travels. We wrote its flavour curves onto qubits and read them back on a real IBM chip, 12 IBM noise models and a noiseless simulator. This synth plays what came back.</p>
+    <ol class="steps steps3">
+      <li><span><b>Play</b> the keys (or your computer keys A&ndash;K), or hold a drone.</span></li>
+      <li><span><b>Fly</b>: drag across <a href="#data">the curves</a> to set L/E, the distance travelled per unit of energy. Each flavour's loudness is its probability there.</span></li>
+      <li><span><b>Switch</b> CHIP and MIX to hear what each machine's noise did to the curves.</span></li>
+    </ol>
+    <p class="keyhelp">On a computer keyboard: A S D F G H J K L ; play the ten tubes, Z and X shift the octave. On the plate, the arrow keys move your neutrino (Shift for big steps, Home and End for the ends of the baseline) and Enter detects one; on the curves in The data, the arrow keys move it too.</p>
+    <details class="drawer"><summary>The plate, decoded</summary><div class="body">
+      <table class="map">
+        <tr><th>On the plate</th><th>In physics</th><th>Driven by</th></tr>
+        <tr><td>Source</td><td>Where the neutrino is born, which fixes its flavour and energy E. A reactor core (&nu;&#772;<sub>e</sub>, about 4 MeV), an accelerator beamline (&nu;<sub>&mu;</sub>, 0.6 GeV like T2K's off-axis beam or 2 GeV like NOvA's), cosmic-ray showers in the air (&nu;<sub>&mu;</sub>, sub-GeV or multi-GeV) or the Sun's core (&nu;<sub>e</sub>; 10 MeV, the <sup>8</sup>B neutrinos Super-K sees).</td><td>your choice</td></tr>
+        <tr><td>Journey</td><td>The distance L, on a log scale, with real baselines: Daya Bay's far hall 1.65 km, JUNO 52.5 km, KamLAND about 180 km; T2K 295 km, MINOS 735 km, NOvA 810 km, DUNE 1,300 km; air showers from about 15 km (straight down) to 12,757 km (straight up through the Earth), with the zenith angle your distance implies drawn through the Earth in Fig. 1; the Sun 1 AU. For the beam the header also gives how far below ground the straight path dips.</td><td>your drag (or arrow keys)</td></tr>
+        <tr><td>Flavour bands</td><td>P(&nu;&rarr;&nu;<sub>e</sub>), P(&nu;&rarr;&nu;<sub>&mu;</sub>), P(&nu;&rarr;&nu;<sub>&tau;</sub>) at every L along the way, stacked. For the beam and the atmosphere these are the measured curves of the chosen chip, mixed with the exact ones by Mix. For the reactor and the Sun they are classical (see below).</td><td>job data / classical</td></tr>
+        <tr><td>Dashed line in the bands</td><td>&Sigma;P = 1. Exact physics always adds up to 1; each measured value was read out separately, so a chip's curves over- or under-fill it.</td><td>job data</td></tr>
+        <tr><td>A detection</td><td>One neutrino interacting as one flavour: a classical dice roll weighted by the bands at your L.</td><td>job data / classical</td></tr>
+        <tr><td>The rings</td><td>How a water-Cherenkov tank tells flavours apart. A muon travels metres in a straight line and paints a filled ring with a sharp outer edge; an electron starts a shower that scatters, so its ring is fuzzy. Light leaves at about 42&deg; to the track. A tau decays at once into several particles: several overlapping rings. A few-MeV positron or electron lights only a few dozen tubes.</td><td>illustration (Super-K geometry)</td></tr>
+        <tr><td>No ring</td><td>Below threshold: a neutrino needs about 110 MeV to make a muon and about 3.5 GeV to make a tau. Reactor and solar &nu;<sub>&mu;</sub>, &nu;<sub>&tau;</sub> and low-energy &nu;<sub>&tau;</sub> are seen only as missing events. (Strictly, solar &nu;<sub>&mu;</sub> and &nu;<sub>&tau;</sub> can still scatter off electrons, about six times less often than &nu;<sub>e</sub>; this page counts them as missing.)</td><td>the source energy</td></tr>
+        <tr><td>Chip</td><td>The machine that wrote the &nu;<sub>&mu;</sub> curves onto qubits and read them back: ibm_fez (real IBM hardware), aer (a noiseless simulator) or a fake_* noise model. Its noise squares show its rms error against the exact curves.</td><td>job data</td></tr>
+      </table>
+    </div></details>
+  </section>
+
+  <section class="section" id="data" aria-labelledby="data-h">
+    <div class="ink-bar"><span>The data</span><span>Measured curves &middot; drawn live</span></div>
+    <h2 id="data-h">The curves you are playing</h2>
+    <p class="sub">Drawn from the job results bundled into this page, and tied to every control above: chip, mix, model, source and your neutrino's L/E. Drag across the curves (or focus them and use the arrow keys) to move the neutrino; the plate follows.</p>
+    <figure class="fig">
+      <div class="plotwrap"><canvas id="plot" tabindex="0" aria-label="Flavour probability curves against L/E. Drag or use the arrow keys to set L/E."></canvas></div>
+      <figcaption class="legend" id="plot-legend"><i style="background:var(--warn)"></i>&nu;<sub>e</sub> <i style="background:var(--ink)"></i>&nu;<sub>&mu;</sub> <i style="background:var(--good)"></i>&nu;<sub>&tau;</sub> &middot; Lines: exact classical curves. Dots: the values measured back through qpixl on the chosen chip. Dashed marker: your L/E. Solid markers: notes in flight.<br>Lines and dots are for a neutrino born as a muon neutrino. With the reactor or the Sun selected they fade, and the thick dashed lines are that source's classical electron-flavour curves, which no chip measured. The pale strip on the axis is the selected source's real range of L/E; the T2K and NOvA ticks mark those beams' peak L/E.</figcaption>
+    </figure>
+    <div class="row split"><span class="label" id="le-read">L/E</span><span class="label" id="sum-read">&Sigma; P</span></div>
+    <figure class="fig">
+      <div class="meters" id="meters"></div>
+      <figcaption class="legend">Each flavour at your L/E: its probability (the number and the bar), which is its oscillator's loudness, and one cycle of the waveform that oscillator plays there, cut from the curve itself. Smooth curves give soft waves; measurement noise gives jagged ones. Click a waveform (or focus it and press Enter) to hear that oscillator alone for about a second, at a fixed level so its shape is audible.</figcaption>
+    </figure>
+  </section>
+
+  <section class="section" id="demos-sec" aria-labelledby="demos-h">
     <div class="ink-bar"><span>Audio examples</span><span>3 renders &middot; classical DSP</span></div>
     <h2 id="demos-h">Hear it in use</h2>
-    <p class="sub">Three demos rendered by the Python replica of the plugin's engine (<code>synth.py</code>) from the same measured muon-neutrino curves. Each one starts only when you press play, and pause or stop ends it.</p>
+    <p class="sub">Three demos rendered by the Python replica of the plugin's engine (<code>synth.py</code>) from the same measured curves. Each one starts only when you press play, and pause or stop ends it. All three play the muon-neutrino curves the chips measured; the reactor and the Sun are on the synth above only.</p>
     <div class="demos" id="demos"></div>
   </section>
 
-  <section class="section" aria-labelledby="plug-h">
+  <section class="section" id="plug-sec" aria-labelledby="plug-h">
     <div class="ink-bar"><span>Plugin</span><span>JUCE 8 &middot; VST3 &middot; AU &middot; Standalone</span></div>
     <h2 id="plug-h">The plugin</h2>
     <div class="plug">
@@ -353,35 +412,41 @@ h1{font-size:clamp(2rem,3.9vw,3.3rem);line-height:1;letter-spacing:-.02em}
       </div>
       <div class="card">
         <table>
-          <tr><th>Parameter (editor label)</th><th>What it does</th></tr>
-          <tr><td>L/E (JOURNEY)</td><td>Distance over energy, 20 to 50,000 km/GeV (log). On this page the source sets E and your drag sets L.</td></tr>
-          <tr><td>CHIP (KITCHEN)</td><td>Whose measured curves you hear: ibm_fez, aer or one of 12 noise models.</td></tr>
-          <tr><td>MIX (RECIPE)</td><td>0 = the exact classical curves, 1 = the chip's measured curves.</td></tr>
+          <tr><th>Knob (editor label)</th><th>What it does</th></tr>
+          <tr><td>L/E (JOURNEY)</td><td>Distance over energy, 20 to 50,000 km/GeV (log). Picks the point on the curves. On this page the source sets E and your drag sets L.</td></tr>
+          <tr><td>CHIP (KITCHEN)</td><td>Which machine's measured curves you hear: ibm_fez, aer or one of 12 noise models.</td></tr>
+          <tr><td>MIX (RECIPE)</td><td>0 = exact classical curves, 1 = the chip's measured curves.</td></tr>
           <tr><td>MODEL (MENU)</td><td>3 flavours (e, mu, tau) or the 2-flavour approximation (e, mu).</td></tr>
-          <tr><td>FLIGHT (CONVEYOR)</td><td>Each held note keeps travelling outward in L/E, in decades per second.</td></tr>
-          <tr><td>ATTACK / RELEASE / GAIN</td><td>Envelope and level (the editor calls them SCOOP-IN, MELT, VOLUME).</td></tr>
+          <tr><td>FLIGHT (CONVEYOR)</td><td>Each note flies outward in L/E while held, in decades per second.</td></tr>
+          <tr><td>ATTACK / RELEASE / GAIN</td><td>Envelope and level. The editor calls them SCOOP-IN, MELT, VOLUME.</td></tr>
         </table>
       </div>
     </div>
   </section>
 
-  <section class="more">
-    <div class="ink-bar"><span>The science</span><span>Plate &middot; physics &middot; engine &middot; limits</span></div>
-    <details class="drawer"><summary>The plate, decoded</summary><div class="body">
-      <table class="map">
-        <tr><th>On the plate</th><th>In physics</th><th>Driven by</th></tr>
-        <tr><td>Source</td><td>Where the neutrino is born, which fixes its flavour and energy E. A reactor core (&nu;&#772;<sub>e</sub>, about 4 MeV), an accelerator beamline (&nu;<sub>&mu;</sub>, 0.6 GeV like T2K's off-axis beam or 2 GeV like NOvA's), cosmic-ray showers in the air (&nu;<sub>&mu;</sub>, sub-GeV or multi-GeV) or the Sun's core (&nu;<sub>e</sub>; 10 MeV, the <sup>8</sup>B neutrinos Super-K sees).</td><td>your choice</td></tr>
-        <tr><td>Journey</td><td>The distance L, on a log scale, with real baselines: Daya Bay's far hall 1.65 km, JUNO 52.5 km, KamLAND about 180 km; T2K 295 km, MINOS 735 km, NOvA 810 km, DUNE 1,300 km; air showers from about 15 km (straight down) to 12,757 km (straight up through the Earth); the Sun 1 AU.</td><td>your drag (or arrow keys)</td></tr>
-        <tr><td>Flavour bands</td><td>P(&nu;&rarr;&nu;<sub>e</sub>), P(&nu;&rarr;&nu;<sub>&mu;</sub>), P(&nu;&rarr;&nu;<sub>&tau;</sub>) at every L along the way, stacked. For the beam and the atmosphere these are the measured curves of the chosen chip, mixed with the exact ones by Mix. For the reactor and the Sun they are classical (see below).</td><td>job data / classical</td></tr>
-        <tr><td>Dashed line in the bands</td><td>&Sigma;P = 1. Exact physics always adds up to 1; each measured value was read out separately, so a chip's curves over- or under-fill it.</td><td>job data</td></tr>
-        <tr><td>A detection</td><td>One neutrino interacting as one flavour: a classical dice roll weighted by the bands at your L.</td><td>job data / classical</td></tr>
-        <tr><td>The rings</td><td>How a water-Cherenkov tank tells flavours apart. A muon travels metres in a straight line and paints a filled ring with a sharp outer edge; an electron starts a shower that scatters, so its ring is fuzzy. Light leaves at about 42&deg; to the track. A tau decays at once into several particles: several overlapping rings. A few-MeV positron or electron lights only a few dozen tubes.</td><td>illustration (Super-K geometry)</td></tr>
-        <tr><td>No ring</td><td>Below threshold: a neutrino needs about 110 MeV to make a muon and about 3.5 GeV to make a tau. Reactor and solar &nu;<sub>&mu;</sub>, &nu;<sub>&tau;</sub> and low-energy &nu;<sub>&tau;</sub> are seen only as missing events.</td><td>the source energy</td></tr>
-        <tr><td>Chip</td><td>The machine that wrote the &nu;<sub>&mu;</sub> curves onto qubits and read them back: ibm_fez (real IBM hardware), aer (a noiseless simulator) or a fake_* noise model. Its noise squares show its rms error against the exact curves.</td><td>job data</td></tr>
-      </table>
+  <section class="section" id="made" aria-labelledby="made-h">
+    <div class="ink-bar"><span>How it was made</span><span>Engine &middot; sound</span></div>
+    <h2 id="made-h">How it was made</h2>
+    <div class="drawers">
+    <details class="drawer"><summary>What the quantum engine did</summary><div class="body">
+      <p>Four curves (2-flavour P(&mu;&rarr;e), and 3-flavour P(&mu;&rarr;e), P(&mu;&rarr;&mu;), P(&mu;&rarr;&tau;)) are computed classically on a log-spaced L/E axis, each divided by its own maximum, and joined into one array. Atlas <code>qpixl-v1</code> writes every number as a rotation angle on a data qubit, addressed by the states of neighbouring address qubits (Interwoven QPIXL), then measures and decodes them. We multiply the decoded values back by each curve's maximum. Nothing else is done to them.</p>
+      <p id="engine-detail"></p>
+      <p>Look at the ibm_fez dots: the errors come in short blocks of neighbouring points that sit too high or too low together. Neighbouring errors correlate at 0.88 on ibm_fez but only 0.06 on the noiseless simulator, and the error jumps where each 4-value block starts are about twice the jumps inside a block. That fits each block sharing one data qubit, whose own miscalibration shifts all its values at once. It's the chip's layout showing through the curve, and you can hear it as steps in the waveform. On the plate the same blocks show as steps in the flavour bands as you drag.</p>
+      <p>Every job, with where it ran, its size, its rms error against the exact curves and its Atlas job id, is listed under <a href="#jobs-sec">Jobs and credits</a>.</p>
     </div></details>
-    <details class="drawer"><summary>Why a neutrino is a qubit you can't hold</summary><div class="body">
-      <p>A neutrino is made in one flavour but travels as a mix of three mass states. Each mass state picks up phase at its own rate, so the mix drifts and the flavour you would detect changes with distance L over energy E.</p>
+    <details class="drawer"><summary>How the sound is made</summary><div class="body">
+      <p>Three wavetable oscillators per note: &nu;<sub>e</sub> a fifth above the key you play, &nu;<sub>&mu;</sub> on it, &nu;<sub>&tau;</sub> an octave below. Each oscillator's loudness is that flavour's probability at the current L/E. The keys are an A minor pentatonic, so any two sound fine together.</p>
+      <p>Each oscillator's waveform is the curve itself: half a decade of the flavour's curve around the current L/E, mirrored into one cycle. Smooth physics gives soft, rounded waves. Measurement noise shows up as jagged edges, which you hear as brighter, buzzier harmonics. MIX crossfades the exact curves into the measured ones, so you can hear exactly what each machine added. With the Sun selected the curves are flat (fully averaged), so the three oscillators become pure sine tones.</p>
+    </div></details>
+    </div>
+  </section>
+
+  <section class="section" id="science" aria-labelledby="science-h">
+    <div class="ink-bar"><span>The science</span><span>Physics &middot; sources</span></div>
+    <h2 id="science-h">The science</h2>
+    <div class="drawers">
+    <details class="drawer" open><summary>Why a neutrino is a qubit you can't hold</summary><div class="body">
+      <p>A neutrino is made in one flavour (here a muon neutrino) but travels as a mix of three mass states. Each mass state picks up phase at its own rate, so the mix drifts and the flavour you would detect changes with distance L over energy E. (The reactor and the Sun on the plate make electron-flavoured ones instead; see the next drawer.)</p>
       <p>With two flavours this is exactly a qubit. The mixing angle &theta; is a fixed change of basis, travel is a phase rotation by &Delta;m&sup2;L/2E between the two mass states, and detection measures in the flavour basis. That gives P(&nu;<sub>&mu;</sub>&rarr;&nu;<sub>e</sub>) = sin&sup2;2&theta; &middot; sin&sup2;(1.267 &Delta;m&sup2;[eV&sup2;] L[km] / E[GeV]), the same form as a Rabi oscillation. Three flavours make it a qutrit, set by the 3&times;3 PMNS matrix.</p>
       <p>The curves use the NuFIT 6.0 global-fit best values (normal ordering, the &ldquo;IC19 without SK atmospheric data&rdquo; column of Table 1): sin&sup2;&theta;<sub>12</sub> = 0.307, sin&sup2;&theta;<sub>23</sub> = 0.561, sin&sup2;&theta;<sub>13</sub> = 0.02195, &delta;<sub>CP</sub> = 177&deg;, &Delta;m&sup2;<sub>21</sub> = 7.49&times;10<sup>&minus;5</sup> eV&sup2;, &Delta;m&sup2;<sub>31</sub> = 2.534&times;10<sup>&minus;3</sup> eV&sup2;. Interference terms are averaged over a 5% spread in L/E, as a detector's energy resolution would. Vacuum only: matter effects are left out.</p>
     </div></details>
@@ -390,31 +455,53 @@ h1{font-size:clamp(2rem,3.9vw,3.3rem);line-height:1;letter-spacing:-.02em}
       <p>One bridge does exist. CPT symmetry makes P(&nu;&#772;<sub>e</sub>&rarr;&nu;&#772;<sub>&mu;</sub>) equal to P(&nu;<sub>&mu;</sub>&rarr;&nu;<sub>e</sub>), which the chips did measure, so with the reactor selected the readout puts the classical number next to the chosen chip's measured one at the same L/E.</p>
       <p>The Sun is 1 AU away, so at solar energies L/E is about 10<sup>10</sup> km/GeV, far past the right-hand end of the curves. There the oscillations average out completely and the page uses that average, &Sigma;<sub>i</sub>|U<sub>ei</sub>|&sup2;|U<sub>&alpha;i</sub>|&sup2;, which gives 55% &nu;<sub>e</sub>. The real Sun delivers fewer: for the <sup>8</sup>B neutrinos that Super-K sees, SNO measured about a third arriving as &nu;<sub>e</sub>, because the Sun's own dense matter converts them on the way out (the MSW effect). This page leaves matter effects out, so the Sun card shows the vacuum number and names the gap.</p>
     </div></details>
-    <details class="drawer"><summary>What the quantum engine did</summary><div class="body">
-      <p>Four curves (2-flavour P(&mu;&rarr;e), and 3-flavour P(&mu;&rarr;e), P(&mu;&rarr;&mu;), P(&mu;&rarr;&tau;)) are computed classically on a log-spaced L/E axis, each divided by its own maximum, and joined into one array. Atlas <code>qpixl-v1</code> writes every number as a rotation angle on a data qubit, addressed by the states of neighbouring address qubits (Interwoven QPIXL), then measures and decodes them. We multiply the decoded values back by each curve's maximum. Nothing else is done to them.</p>
-      <p id="engine-detail"></p>
-      <p>Look at the ibm_fez dots in the Data view, or at the steps in the flavour bands as you drag: the errors come in short blocks of neighbouring points that sit too high or too low together. Neighbouring errors correlate at 0.88 on ibm_fez but only 0.06 on the noiseless simulator, and the error jumps where each 4-value block starts are about twice the jumps inside a block. That fits each block sharing one data qubit, whose own miscalibration shifts all its values at once. It is the chip's layout showing through the curve, and you can hear it as steps in the waveform.</p>
-      <div class="tblwrap"><table class="jobs" id="jobs"></table></div>
-    </div></details>
-    <details class="drawer"><summary>How the sound is made</summary><div class="body">
-      <p>Three wavetable oscillators per note: &nu;<sub>e</sub> a fifth above the key you play, &nu;<sub>&mu;</sub> on it, &nu;<sub>&tau;</sub> an octave below. Each oscillator's loudness is that flavour's probability at your neutrino's L/E. The keys are an A minor pentatonic, so any two sound fine together.</p>
-      <p>Each oscillator's waveform is the curve itself: half a decade of the flavour's curve around the current L/E, mirrored into one cycle. Smooth physics gives soft, rounded waves. Measurement noise shows up as jagged edges, which you hear as brighter, buzzier harmonics. The Mix slider crossfades the exact curves into the measured ones, so you can hear exactly what each chip added. With the Sun selected the curves are flat (fully averaged), so the three oscillators become pure sine tones.</p>
-    </div></details>
+    </div>
+  </section>
+
+  <section class="section" id="claims" aria-labelledby="claims-h">
+    <div class="ink-bar"><span>Honesty</span><span>Physics &middot; engine &middot; limits</span></div>
+    <h2 id="claims-h">What this does not claim</h2>
+    <div class="claims">
+      <p class="honesty">The oscillation physics is computed classically. qpixl-v1 only encodes the curves into qubits and measures them back. Chips named fake_* are noise models of IBM chips, run on a simulator. Only ibm_fez is real hardware.</p>
+      <p class="honesty">No neutrino is simulated on a quantum computer here. The physics is closed-form classical maths, and the quantum step is a data round trip: encode the curves into qubits, measure them, decode. The differences you hear between chips are qubit and readout noise (real on ibm_fez, modelled on fake_*), not neutrino physics. No quantum advantage is claimed.</p>
+      <p class="honesty">The two-flavour curve is the standard leading-order approximation, not a separate measurement. The &ldquo;&Sigma; P&rdquo; readout should be 1 for the exact 3-flavour curves; on measured curves it drifts because each value was measured independently. The demo audio comes from the Python replica of the plugin engine, not from a compiled plugin.</p>
+      <p class="honesty">The curves are vacuum oscillations: matter effects are ignored, so they are not a prediction for T2K, NOvA, DUNE or the Sun, and the baselines are distances only. The detector drawn is Super-Kamiokande, T2K's far detector; MINOS, NOvA and DUNE use other kinds of detector, and Daya Bay, JUNO and KamLAND use liquid scintillator.</p>
+    </div>
     <details class="drawer"><summary>What the plate shows, and what it doesn't</summary><div class="body">
       <p>Everything on the plate that looks like a number comes from the curves on this page: the flavour bands and their &Sigma;P, the percentages at your neutrino, which flavour each detection draws, the noise squares on each chip, and where each held note has travelled to. For the beam and the atmosphere those are measured job outputs; for the reactor and the Sun they are classical and labelled so.</p>
-      <p>The drawings are original ink engravings made from published descriptions of the real objects (see Credits); no photograph is traced or embedded. They are not to scale, and the beamline's slope is drawn steeper than the real 3.3&deg;. The event display places light with Super-K's real tank size and the 42&deg; Cherenkov angle, but the hit pattern is a simple sketch: charged-current events only, no neutral currents, no detector response, a few random dark hits.</p>
-    </div></details>
-    <details class="drawer"><summary>What this does not claim</summary><div class="body">
-      <p class="honesty">No neutrino is simulated on a quantum computer here. The physics is closed-form classical maths, and the quantum step is a data round trip: encode the curves into qubits, measure them, decode. The differences you hear between chips are qubit and readout noise (real on ibm_fez, modelled on fake_*), not neutrino physics. No quantum advantage is claimed.</p>
-      <p class="honesty">The curves are vacuum oscillations: matter effects are ignored, so they are not a prediction for T2K, NOvA, DUNE or the Sun, and the baselines are distances only. The two-flavour curve is the standard leading-order approximation, not a separate measurement. The &ldquo;&Sigma; P&rdquo; readout should be 1 for exact 3-flavour curves; on measured curves it drifts because each value was measured independently. The detector drawn is Super-Kamiokande, T2K's far detector; MINOS, NOvA and DUNE use other kinds of detector, and Daya Bay, JUNO and KamLAND use liquid scintillator. The demo audio comes from the Python replica of the plugin engine, not from a compiled plugin.</p>
-    </div></details>
-    <details class="drawer"><summary>Credits</summary><div class="body">
-      <p>NuFIT 6.0: I. Esteban, M. C. Gonzalez-Garcia, M. Maltoni, I. Martinez-Soler, J. P. Pinheiro, T. Schwetz, &ldquo;NuFit-6.0: updated global analysis of three-flavor neutrino oscillations&rdquo;, JHEP 12 (2024) 216, arXiv:2410.05380.</p>
-      <p>QPIXL: M. G. Amankwah, D. Camps, E. W. Bethel, R. Van Beeumen, T. Perciano, &ldquo;Quantum pixel representations and compression for N-dimensional images&rdquo;, Scientific Reports 12 (2022), doi:10.1038/s41598-022-11024-y.</p>
-      <p>Drawn from: the Super-Kamiokande collaboration's detector description (www-sk.icrr.u-tokyo.ac.jp); P. Adamson et al., &ldquo;The NuMI Neutrino Beam&rdquo;, Nucl. Instrum. Meth. A 806 (2016) 279, arXiv:1507.06690; published descriptions of pressurized-water-reactor containments (US NRC); the Daya Bay, JUNO and KamLAND baselines as published. SNO's one third: Q. R. Ahmad et al. (SNO), Phys. Rev. Lett. 89 (2002) 011301. Super-K's tau appearance: K. Abe et al., Phys. Rev. Lett. 110 (2013) 181802. All drawings are original; see CREDITS.md for the full list.</p>
-      <p>Moth Quantum Atlas (qpixl-v1). JUCE 8 (plugin framework). pluginval by Tracktion (validation). Small pixel icons (photomultiplier tubes, ring displays, chips) drawn for this piece in the shared ink palette (<code>make_sprites.py</code>).</p>
+      <p>The drawings are original ink engravings made from published descriptions of the real objects (see Credits); no photograph is traced or embedded. They are not to scale, and the beamline's slope is drawn steeper than the real 3.3&deg;. The event display places light with Super-K's real inner-detector size (33.8 m by 36.2 m) and the 42&deg; Cherenkov angle, but the hit pattern is a simple sketch: charged-current events only, no neutral currents, no detector response, a few random dark hits. The wall carries about one dot for every four real tubes; low-energy events light about six tubes per MeV, as Super-K's do. Beam neutrinos enter from the left, and other directions are chosen so the ring faces the cut-away; for the atmosphere the zenith angle follows your distance.</p>
     </div></details>
   </section>
+
+  <section class="section" id="jobs-sec" aria-labelledby="jobs-h">
+    <div class="ink-bar"><span>Jobs and credits</span><span id="jobs-count">Atlas jobs &middot; sources</span></div>
+    <h2 id="jobs-h">Jobs and credits</h2>
+    <p class="sub">Every completed Atlas job behind the curves: the machine it ran on, how many values it carried, its rms error against the exact curves, and its Atlas job id. Click a machine to hear it on the synth.</p>
+    <div class="tblwrap"><table class="jobs" id="jobs"></table></div>
+    <h3 class="credits-h">Credits</h3>
+    <div class="credits">
+      <p>NuFIT 6.0: I. Esteban, M. C. Gonzalez-Garcia, M. Maltoni, I. Martinez-Soler, J. P. Pinheiro, T. Schwetz, &ldquo;NuFit-6.0: updated global analysis of three-flavor neutrino oscillations&rdquo;, JHEP 12 (2024) 216, arXiv:2410.05380.</p>
+      <p>QPIXL: M. G. Amankwah, D. Camps, E. W. Bethel, R. Van Beeumen, T. Perciano, &ldquo;Quantum pixel representations and compression for N-dimensional images&rdquo;, Scientific Reports 12 (2022), doi:10.1038/s41598-022-11024-y.</p>
+      <p>Drawn from: the Super-Kamiokande collaboration's detector description (www-sk.icrr.u-tokyo.ac.jp); P. Adamson et al., &ldquo;The NuMI Neutrino Beam&rdquo;, Nucl. Instrum. Meth. A 806 (2016) 279, arXiv:1507.06690; the T2K beamline as summarised in its flux paper (arXiv:1211.0469); published descriptions of pressurized-water reactors and their containments (US NRC training manuals); ESA's &ldquo;Anatomy of our Sun&rdquo;; the reactor antineutrino yield as reviewed by LLNL (OSTI 2473630); the Daya Bay, JUNO and KamLAND baselines as published. SNO's one third: Q. R. Ahmad et al. (SNO), Phys. Rev. Lett. 89 (2002) 011301. Super-K's tau appearance: K. Abe et al., Phys. Rev. Lett. 110 (2013) 181802. All drawings are original; see CREDITS.md for the full list.</p>
+      <p>Moth Quantum Atlas (qpixl-v1). JUCE 8 (plugin framework). pluginval by Tracktion (validation). Small pixel icons (photomultiplier tubes, ring displays, chips) drawn for this piece in the shared ink palette (<code>make_sprites.py</code>).</p>
+    </div>
+  </section>
+  <style>
+.wtnr-nav{margin-top:2.5rem;border-top:1px solid var(--ink,#19238E);padding-top:1.1rem;display:grid;gap:1rem}
+.wtnr-nav .wn-row{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:space-between;align-items:center}
+.wtnr-nav a.wn-btn{display:inline-flex;align-items:center;gap:.45rem;min-height:44px;padding:.6rem 1rem;border:1px solid var(--ink,#19238E);border-radius:999px;color:var(--ink,#19238E);text-decoration:none;font:500 .82rem/1.2 var(--body,system-ui,sans-serif);max-width:100%}
+.wtnr-nav a.wn-btn:hover,.wtnr-nav a.wn-btn:focus-visible{background:rgba(25,35,142,.07)}
+.wtnr-nav a.wn-hub{background:var(--ink,#19238E);color:var(--on-ink,#FBFAF9)}
+.wtnr-nav a.wn-hub:hover{background:#121A6E}
+.wtnr-nav details{border:1px solid var(--rule,#D3D3E6);background:var(--panel,#fff)}
+.wtnr-nav summary{cursor:pointer;padding:.75rem 1rem;font:500 .72rem/1.2 var(--mono,monospace);letter-spacing:.12em;text-transform:uppercase;color:var(--ink,#19238E)}
+.wtnr-nav ol{list-style:none;margin:0;padding:.25rem 1rem 1rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(14rem,1fr));gap:.15rem .9rem}
+.wtnr-nav ol a{display:flex;gap:.6rem;padding:.4rem 0;color:var(--ink,#19238E);text-decoration:none;font-size:.9rem;border-bottom:1px solid var(--rule,#D3D3E6)}
+.wtnr-nav ol a:hover{text-decoration:underline}
+.wtnr-nav ol a b{font:500 .78rem/1.6 var(--mono,monospace);min-width:1.6rem}
+.wtnr-nav ol a[aria-current="page"]{font-weight:600}
+.wtnr-nav ol a small{color:var(--ink-2,#545BA9);font-size:.72rem}
+</style><nav class="wtnr-nav" aria-label="All pieces"><div class="wn-row"><a class="wn-btn" href="../06-tweezer/index.html" rel="prev">&larr; 06 Tweezer</a><a class="wn-btn wn-hub" href="../../index.html">All 22 pieces</a><a class="wn-btn" href="../08-pbit-or-qubit/index.html" rel="next">08 p-bit or qubit? &rarr;</a></div><details><summary>Jump to any piece (22)</summary><ol><li><a href="../01-penrose-hole/index.html"><b>01</b><span>The Hole in the Penrose</span></a></li><li><a href="../02-coda-reservoir/index.html"><b>02</b><span>Coda Reservoir</span></a></li><li><a href="../03-moth-eye/index.html"><b>03</b><span>Moth Eye</span></a></li><li><a href="../04-magic-angle/index.html"><b>04</b><span>Magic Angle</span></a></li><li><a href="../05-jam-the-bat/index.html"><b>05</b><span>Jam the Bat</span></a></li><li><a href="../06-tweezer/index.html"><b>06</b><span>Tweezer</span></a></li><li><a href="../07-flavour/index.html" aria-current="page"><b>07</b><span>FLAVOUR</span></a></li><li><a href="../08-pbit-or-qubit/index.html"><b>08</b><span>p-bit or qubit?</span></a></li><li><a href="../09-syndrome-loom/index.html"><b>09</b><span>Syndrome Loom</span></a></li><li><a href="../10-squeezed-chirp/index.html"><b>10</b><span>Squeezed Chirp</span></a></li><li><a href="../11-maxwells-ribbon/index.html"><b>11</b><span>Maxwell&#x27;s Ribbon</span></a></li><li><a href="../12-chirp-instrument/index.html"><b>12</b><span>Chirp Instrument</span></a></li><li><a href="../13-moth-to-flame/index.html"><b>13</b><span>Moth to Flame</span></a></li><li><a href="../14-hemibrain-ising/index.html"><b>14</b><span>Fly Brain Metro</span></a></li><li><a href="../15-tissue-blur/index.html"><b>15</b><span>Tissue Blur</span></a></li><li><a href="../16-busy-beaver-score/index.html"><b>16</b><span>Busy Beaver Score</span></a></li><li><a href="../17-quantum-lenia/index.html"><b>17</b><span>Quantum Lenia</span></a></li><li><a href="../18-oldest-light/index.html"><b>18</b><span>Oldest Light</span></a></li><li><a href="../19-frog-chorus/index.html"><b>19</b><span>Frog Chorus</span></a></li><li><a href="../20-antimatter-drop/index.html"><b>20</b><span>Antimatter Drop</span></a></li><li><a href="../21-quantum-nose/index.html"><b>21</b><span>The Quantum Nose Test</span></a></li><li><a href="../22-scroll-unroll/index.html"><b>22</b><span>Scroll Unroll</span></a></li></ol></details></nav>
   <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -588,14 +675,14 @@ function decodeToken(tok) {
 // ==== FLAVOUR: the plate (a real source, the journey, Super-Kamiokande), the synth and the controls ====
 // Inlined into web/template.html at the SCENE marker by build_web.py. Pure ink-engraving SVG, drawn from published
 // descriptions of the real objects (see CREDITS.md); no photograph is traced or embedded.
-const SPR = {"mascot":{"frames":[["..................L..L..L..L..L..L..L..L..L..L..................","..............L..L..L....................L..L..L..L.............","..........L..L..L................................L..L...........","......L..L..L......................................L..L..L......",".....L..L...............................................L..L....","....L..L..................................................L..L..","...L........................................................L...","..L..................KKKKKKKKKKKKKKKKKKKKK.................L....","..............KKKKKKKKKWWKLLLLLKLLKLLLLLKWKKKKKKK............L..","...........KKKWWKLLLLLKLLKBBBBBKWWKBBBBBKLKLLLLLKKKK............",".........KWWLLLWKBBBBBKWWKBBBBBKWWKBBBBBKWKBBBBBKLLWWK..........","........KWLWWWWWKBBBBBKWWKKKKKKKWWKKKKKKKWKBBBBBKWWWLWK.........","........KWLWWWWWKKKKKKKWWWWWWWWWWWWWWWWWWWKKKKKKKWWWLWKK........","........KKWWLLLWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWLLLWWKBK........","........KLKKKKWWLLLLLLLLLLWWWWWWWWWWWLLLLLLLLLLWWKKKTKLK........","........KBKTTTKKKKKKWWWWWWLLLLLLLLLLLWWWWWWKKKKKKTTTTKBK........","........KLKTTTTTTTTTTKKKKKKKKKKKKKKKKKKKKKTTTTTTTTTTTKLK........","........KBKTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTKBK........","........KLKBTBTTBLTBLTTBLTTBLTTBLTTBLTTBLTTBLTBLTBTBBKLK........","........KBKTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTKBK........","........KLKTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTKLK........","........KBKBTBTTBLTBLTTBLTTOOOOOOOOBLTTBLTTBLTBLTBTBBKBK........","........KLKTTTTTTTTTTTTTTOOOOTTTTOOOOTTTTTTTTTTTTTTTTKLK........","........KBKTTTTTTTTTTTTTOOOTTTTTTTTOOOTTTTTTTTTTTTTTTKBK........","........KLKBTBTTBLTBLTTBOTTOOTTBLTTOOOTBLTTBLTBLTBTBBKLK........","........KBKTTTTTTTTTTTTOOTTTTTTTTTTTTOOTTTTTTTTTTTTTTKBK........","........KLKTTTTTTTTTTTTOTTTTTTTTTTTTTTOOTTTTTTTTTTTTTKLK........","........KBKBTBTTBLTBLTOOOTTBLTTBLTTBLTOOOTTBLTBLTBTBBKBK........","........KLKTTTTTTTTTTTOTTTTTTTTTTTTTTTTOTTTTTTTTTTTTTKLK........","........KBKTTTTTTTTTTTOTTTTTTTTTTTTTTTTOTTTTTTTTTTTTTKBK........","........KLKBTBTTBLTBLTOOOTTBLTTBLTTBLTTOOTTBLTBLTBTBBKLK........","........KBKTTTTTTTTTTTOTTTTTTTTTTTTTTTTOTTTTTTTTTTTTTKBK........","........KLKTTTTTTTTTTTOOTTTTTTTTTTTTTTOOTTTTTTTTTTTTTKLK........","........KBKBTBTTBLTBLTTOOTTBLTTBLTTBLTOOOTTBLTBLTBTBBKBK........","........KLKTTTTTTTTTTTTOOTTTTTTTTTTTTOOTTTTTTTTTTTTTTKLK........","........KBKTTTTTTTTTTTTTOTTTTTTTTTTTTOTTTTTTTTTTTTTTTKBK........","........KLKBTBTTBLTBLTTBOOOOOTTBLTTOOOTBLTTBLTBLTBTBBKLK........","........KBKTTTTTTTTTTTTTTLOOOTTTTOOOOTLTTTTTTTTTTTTTTKBK........","........KLKTTTTTTTTTTTTTTTTOOOOOOOOTTTTTTTTTTTTTTTTTTKLK........","........KBKBTBTTBLTBLTTBLTTBLTTOOTTBLTTBLTTBLTBLTBTBBKBK........","........KLKTTTTTTTTTTTTTTTTLTTTTTTTTTLTTTTTTTTTTTTTTTKLK........","........KBKTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTKBK........","........KLKBTBTTBLTBLTTBLTTBLTTBLTTBLTTBLTTBLTBLTBTBBKLK........","........KBKTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTKBK........","........KLKTTTTTTTTTTTTTTTTTLTTTKTTTLTTTTTTTTTTTTTTTTKLK........","........KBKBTBTTBLTBLTTBLTTBLTTBKTTBLTTBLTTBLTBLTBTBBKBK........","........KLKTTTTTTTTTTTTTTTTTTTTTKTTTTTTTTTTTTTTTTTTTTKLK........","........KBKTTTTTTTTTTTTTTTTTTTTTKTTTTTTTTTTTTTTTTTTTTKBK........","........KLKBTBTTBLTBLTTBLTTBLTLBKTTLLTTBLTTBLTBLTBTBBKLK........","........KBKTTTTTTTTTTTTTTTTTTTTTTKTTTTTTTTTTTTTTTTTTTKBK........","........KLKTTTTTTTTTTTTTTTTTTTTTTKTTTTTTTTTTTTTTTTTTTKLK........","........KBKBTBTTBLTBLTTBLTTBLTTBLKLBLTTBLTTBLTBLTBTBBKBK........","........KLKTTTTTTTTTTTTTTTTTTTTTTKTTTTTTTTTTTTTTTTTTTKLK........","........KBKTTTTTTTTTTTTTTTTTTTTTKKKTTTTTTTTTTTTTTTTTTKBK........","........KLKBTBTTBLTBLTTBLTTBLTTBLKTBLTTBLTTBLTBLTBTBBKLK........","........KBKTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTKBK........","........KLKTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTKLK........","........KBKLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLTKBK........","........KLKLLLBLLBLLBLLBLLBLLBLLBLLBLLBLLBLLBLLBLLBLTKKK........","........KKK.LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL..KBK........","...........KKK..LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL..KKK............","..............KKKKKK...LLLLLLLLLLLLLLLLL...KKKKKK...............",".....................KKKKKKKKKKKKKKKKKKKKK......................","......KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK......"]],"fps":1},"pmt":{"frames":[["...KKLLKK...","..KLLLLLLK..",".KLLWLLLLLK.","KLLWLLLLLLLK","KLLWLLLLLLLK","KLLLLLLLLLLK","LLLLLLLLLLBB","LLLLLLLLBBBB","KLLLLLLBBBBK","KLLLLLBBBBBK",".KTTTTTTTTK.","..KTTTTTTK..","...KTTTTK...","...KLLLLK...","...KBBBBK...","...KBBBBK...","....KKKK....",".....KK....."]],"fps":1},"pmt_lit":{"frames":[["...KKLLKK...","..KLLLLLLK..",".KLLWLLLLLK.","KLLWLLOLLLLK","KLLWLOLOLLLK","KLLLOLOLOLLK","LLLLLOLOLLBB","LLLLLLOLBBBB","KLLLLLLBBBBK","KLLLLLBBBBBK",".KTTTTTTTTK.","..KTTTTTTK..","...KTTTTK...","...KLLLLK...","...KBBBBK...","...KBBBBK...","....KKKK....",".....KK....."]],"fps":1},"ring_e":{"frames":[["KKKKKKKKKKKKKKKKKKKK","KWWWWWOOWWWWWWWWWWWK","KWLWWLWWLOOLWWOWWLWK","KWWWOWWOOWWOOWOWWWWK","KWWWWWOWOWWWWOOOWWWK","KWLWWOOOLWWLOOOOWLWK","KWWWWOWWWWWWWWOWWWWK","KWWWWOWWWWWWWOOWWWWK","KWLOOOOWLWWLOOOWWLWK","KWWWOWOWWWOWWOWWWWWK","KWWWWWOOOOWOOWOWWWWK","KWLWWLWOLOOLWOLOWLWK","KWWWWWOWWWWWOOOWWWWK","KKKKKKKKKKKKKKKKKKKK"]],"fps":1},"ring_mu":{"frames":[["KKKKKKKKKKKKKKKKKKKK","KWWWWWWWWWWWWWWWWWWK","KWLWWLWWOOOOWWLWWLWK","KWWWWWWOOOOOOWWWWWWK","KWWWWWOOWWWWOOWWWWWK","KWLWWOOWLWWLWOOWWLWK","KWWWWOWWWWWWWWOWWWWK","KWWWWOWWWWWWWWOWWWWK","KWLWWOOWLWWLWOOWWLWK","KWWWWWOOWWWWOOWWWWWK","KWWWWWWOOOOOOWWWWWWK","KWLWWLWWOOOOWWLWWLWK","KWWWWWWWWWWWWWWWWWWK","KKKKKKKKKKKKKKKKKKKK"]],"fps":1},"ring_tau":{"frames":[["KKKKKKKKKKKKKKKKKKKK","KWWWWWWWWWOWWWWWWWWK","KWLOWLOOLOWOOWLWWLWK","KWWWOOOWOOWWWOWWWWWK","KWWWOWOWOOWWWOWWWWWK","KWLOWLWWLOOOOOOWWLWK","KWWOWWWWWWOOWWWWWWWK","KOWWOWWWOOWWWWOOWWWK","KWLWOOOOOOWLWWLOWLWK","KOWWWWOOWWOWWWWOWWWK","KWWWWWWWWWWOOWOWWWWK","KWLWWLWWLWWLWWLWWLWK","KWWWWWOWWWWWWWWWWWWK","KKKKKKKKKKKKKKKKKKKK"]],"fps":1},"chip_real":{"frames":[["................","....K.K.K.K.....","....K.K.K.K.....","...KKKKKKKKKK...",".KKKKKKKKKKKKKK.","...KKBBBBBBKK...",".KKKKBWWBBBKKKK.","...KKBWBBBBKK...",".KKKKBBBBBBKKKK.","...KKBBBBBBKK...",".KKKKBBBBBBKKKK.","...KKKKKKKKKK...","...KKKKKKKKKK...","....K.K.K.K.....","....K.K.K.K.....","................"]],"fps":1},"chip_sim":{"frames":[["................","....B.B.B.B.....","....B.B.B.B.....","...KKKKKKKKKK...",".BBKBBBBBBBBKBB.","...KBWWWWWWBK...",".BBKBWWWBWWBKBB.","...KBWWBKBWBK...",".BBKBWBWBWBBKBB.","...KBWWWWWWBK...",".BBKBWWWWWWBKBB.","...KBBBBBBBBK...","...KKKKKKKKKK...","....B.B.B.B.....","....B.B.B.B.....","................"]],"fps":1},"chip_model":{"frames":[["................","....L.L.L.L.....","....L.L.L.L.....","...BLBLBLBLBB...",".LLLLLLLLLLLLLL.","...BLTTTTTTLB...",".LLLLTTTTTTLLLL.","...BLTTBTTTLB...",".LLLLTTTBTTLLLL.","...BLTTTTTTLB...",".LLLLTTTTTTLLLL.","...BLLLLLLLLB...","...BLBLBLBLBL...","....L.L.L.L.....","....L.L.L.L.....","................"]],"fps":1}};
+const SPR = {"mascot":{"frames":[["L....L....L....L....L....L....L....L....L....L....L....L....L....L....L....L....L....L....L....L","...L....L....L....L....L....L....L....L....L....L....L....L....L....L....L....L....L....L....L..",".L....L....L....L....L....L....L....L.KKKKKKKKKKKKKKKKKKK....L....L....L....L....L....L....L....","....L....L....L....L....L....L.KKKKKKK...................KKKKKKKL....L....L....L....L....L....L.","..L....L....L....L....L....KKKK.................................KKKK....L....L....L....L....L...","L....L....L....L....L..KKKK.........................................KKKK...L....L....L....L....L","...L....L....L....L.KKK.................................................KKK...L....L....L....L..",".L....L....L....L.KK.......................................................KK....L....L....L....","....L....L....L.KK...........................................................KKL....L....L....L.","..L....L....L.KK.....................KKKKKKKKK....KKKKKKKKK....................KK.L....L....L...","L....L....L.KK.......................KWWWWWBBK....KWWWWWBBK......................KK..L....L....L","...L....L..K.........................KLLLLLBBK.K..KLLLLLBBK........................K....L....L..",".L....L...K................KKKKKKKKKKKLLLLLBBKTTTTKLLLLLBBKKKKKKKKKKK...............K.L....L....","....L....K.............KKKKKWWWWWBBKTKKKKKKKKKWWWWKKKKKKKKKTKWWWWWBBKKKK.............K...L....L.","..L....LK..........KKKWWTTTKLLLLLBBKWWWWWWWWWWWWWWWWWWWWWWWWKLLLLLBBKTTWWKKK..........KL....L...","L....L.K.........KWWWTTWWWWKLLLLLBBKWWWWWWWWWWWWWWWWWWWWWWWWKLLLLLBBKWWWTTWWWK.........K..L....L","...L..K.........KWWWTWWWWWWKKKKKKKKKWWWWWWWWWWWWWWWWWWWWWWWWKKKKKKKKKWWWWWTWWWK.........K....L..",".L....K.........KWWWTWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWTWWWKK........K..L....","....LK..........KKWWWTTWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWTTWWWKTK.........K....L.","..L..K..........KKKKKKWWTTTTWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWTTTTWWKKKKKKK.........K..L...","L....K..........KWKKKKKKKKKKWTTTTTTTTTWWWWWWWWWWWWWWWWWWWTTTTTTTTTWKKKKKKKKKKWWK.........KL....L","...L.K..........KWK.KKKKKKBBBKKKKKKKKKKTTTTTTTTTTTTTTTTTKKKKKKKKKKBBBKKKKKK.KWWK.........K...L..",".L...K..........KWK.LKKKKBKKKKKKKKTLBTLBBBBBBBBKBBBBBBBBBTLBTKKKKKKKKBKKKKL.KWTK..........KL....","....LK..........KTK.LKKKTLTLBBBBBBKKKKKKKKKKKKKKKKKKKKKKKKKKKBBBBBBBTLTLKKL.KTWK..........K...L.","..L..K..........KBK.KLLKKBBBBBBBBBBBBBBBTLBBTLBTLBTLBBTLBBBBBBBBBBBBBBKKLLK.KWBK..........K.L...","L....K..........KWK.LKKKKBBBBTLTLBTLBTLBBBBBBBBBBBBBBBBBBTLBTLBTLTLBBBKKKKL.KWWK..........K....L","...L.K..........KWK.LKKKTLTLBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBTLTLKKL.KWTK..........K..L..",".L...K..........KTK.KLLKKBBBBBBBBBBBBBBBTLBBTLBTLBTLBBTLBBBBBBBBBBBBBBKKLLK.KTWK..........KL....","....LK..........KWK.LKKKKBBBBTLTLBTLBTLBBBBBBBBBBBBBBBBBBTLBTLBTLTLBBBKKKKL.KWWK..........K...L.","..L..K..........KWK.LKKKTLTLBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBTLTLKKL.KWWK..........K.L...","L....K..........KWK.KLLKKBBBBBBBBBBBBBBBTLBBTLBTLBTLBBTLBBBBBBBBBBBBBBKKLLK.KWTK..........K....L","...L.K..........KBK.LKKKKBBBBTLTLBTLBTLBBBBBBBBBBBBBBBBBBTLBTLBTLTLBBBKKKKL.KTBK..........K..L..",".L...K..........KWK.LKKKTLTLBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBTLTLKKL.KWWK..........KL....","....LK..........KWK.KLLKKBBBBBBBBBBBBBBBTLBBTLBTLBOOOOOOBBBBBBBBBBBBBBKKLLK.KWWK..........K...L.","..L..K..........KWK.LKKKKBBBBTLTLBTLBTLBBBBBBBBOOOBBBBBBOTLBTLBTLTLBBBKKKKL.KWTK..........K.L...","L....K..........KTK.LKKKTLTLBBBBBBBBBBBBBBBBBBOBBBBBBBBBBBOOBBBBBBBBTLTLKKL.KTWK..........K....L","...L.K..........KWK.KLLKKBBBBBBBBBBBBBBBTLBBTLBOOBOOBBTLBBBBOBBBBBBBBBKKLLK.KWWK..........K..L..",".L...K..........KWK.LKKKKBBBBTLTLBTLBTLBBBBBOBBBBBBBBBBBBOOBOOBTLTLBBBKKKKL.KWWK..........KL....","....LK..........KBK.LKKKTLTLBBBBBBBBBBBBBBBOBBBBBBBBBBBBBBBBBOBBBBBBTLTLKKL.KWBK..........K...L.","..L..K..........KTK.KLLKKBBBBBBBBBBBBBBBTLOOOOBTLBTLBBTLBBBBBBOBBBBBBBKKLLK.KTWK..........K.L...","L....K..........KWK.LKKKKBBBBTLTLBTLBTLBBBOBBBBBBBBBBBBBBTLBOOOTLTLBBBKKKKL.KWWK..........K....L","...L.K..........KWK.LKKKTLTLBBBBBBBBBBBBBBOBBBBBBBBBBBBBBBBBBBBBBBBBTLTLKKL.KWWK..........K..L..",".L...K..........KWK.KLLKKBBBBBBBBBBBBBBBTLBBOOBTLBTLBBTLBBBBBBBOBBBBBBKKLLK.KWTK..........KL....","....LK..........KTK.LKKKKBBBBTLTLBTLBTLBBOBBBBBBBBBBBBBBBTLBTLBOOTLBBBKKKKL.KTWK..........K...L.","..L..K..........KWK.LKKKTLTLBBBBBBBBBBBBBOBBBBBBBBBBBBBBBBBBBBBOBBBBTLTLKKL.KWWK..........K.L...","L....K..........KBK.KLLKKBBBBBBBBBBBBBBBTLBBOOBTLBTLBBTLBBBBBBBOBBBBBBKKLLK.KWBK..........K....L","...L.K..........KWK.LKKKKBBBBTLTLBTLBTLBBOBBBBBBBBBBBBBBBTLBTLBOOTLBBBKKKKL.KWTK..........K..L..",".L...K..........KTK.LKKKTLTLBBBBBBBBBBBBBOBBBBBBBBBBBBBBBBBBBBBOBBBBTLTLKKL.KTWK..........KL....","....LK..........KWK.KLLKKBBBBBBBBBBBBBBBTLOBOOBTLBTLBBTLBBBBBBBBBBBBBBKKLLK.KWWK..........K...L.","..L..K..........KWK.LKKKKBBBBTLTLBTLBTLBBBOBBBBBBBBBBBBBBTLBTLOOOTLBBBKKKKL.KWWK..........K.L...","L....K..........KWK.LKKKTLTLBBBBBBBBBBBBBBOOBBBBBBBBBBBBBBBBBBOBBBBBTLTLKKL.KWTK..........K....L","...L.K..........KTK.KLLKKBBBBBBBBBBBBBBBTLWOOOBTLBTLBBTLBBBBBWBBBBBBBBKKLLK.KTWK..........K..L..",".L...K..........KBK.LKKKKBBBBTLTLBTLBTLBBBBBOBBBBBBBBBBBBTLBOOBTLTLBBBKKKKL.KWBK..........KL....","....LK..........KWK.LKKKTLTLBBBBBBBBBBBBBBBBBOBBBBBBBBBBBBBBOBBBBBBBTLTLKKL.KWWK..........K...L.","..L..K..........KWK.KLLKKBBBBBBBBBBBBBBBTLWBTLOOOBOOBBOOBBWOBBBBBBBBBBKKLLK.KWTK..........K.L...","L....K..........KTK.LKKKKBBBBTLTLBTLBTLBBBBBBBBOOOBBBBBBOOOBTLBTLTLBBBKKKKL.KTWK..........K....L","...L.K..........KWK.LKKKTLTLBBBBBBBBBBBBBBBBBBBBBBOOOOOOBBBBBBBBBBBBTLTLKKL.KWWK..........K..L..",".L...K..........KWK.KLLKKBBBBBBBBBBBBBBBTLWBTLBTLBTLBBTLWBBBBBBBBBBBBBKKLLK.KWWK..........KL....","....LK..........KWK.LKKKKBBBBTLTLBTLBTLBBBBBBBBBBBBBBBBBBTLBTLBTLTLBBBKKKKL.KWTK..........K...L.","..L..K..........KBK.LKKKTLTLBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBTLTLKKL.KTBK..........K.L...","L....K..........KWK.KLLKKBBBBBBBBBBBBBBBTLWBTLBTLWWLBWTLBBBBBBBBBBBBBBKKLLK.KWWK..........K....L","...L.K..........KWK.LKKKKBBBBTLTLBTLBTLBBBBBBBBBWBWBBBBBBTLBTLBTLTLBBBKKKKL.KWWK..........K..L..",".L...K..........KWK.LKKKTLTLBBBBBBBBBBBBBBBBBBBBWWBBBBBBBBBBBBBBBBBBTLTLKKL.KWTK..........KL....","....LK..........KTK.KLLKKBBBBBBBBBBBBBBBTLWBTLBTWBTWBBTLBBBBBBBBBBBBBBKKLLK.KTWK..........K...L.","..L..K..........KWK.LKKKKBBBBTLTLBTLBTLBBBBBBBBWWBBBBBBBBTLBTLBTLTLBBBKKKKL.KWWK..........K.L...","L....K..........KWK.LKKKTLTLBBBBBBBBBBBBBBBBBBWBWBBBBBBBBBBBBBBBBBBBTLTLKKL.KWWK..........K....L","...L.K..........KBK.KLLKKBBBBBBBBBBBBBBBTLWBTLWWWBTLBBTLBBBBBBBBBBBBBBKKLLK.KWBK..........K..L..",".L...K..........KTK.LKKKKBBBBTLTLBTLBTLBBBBBBWWBBBBBBBBBBTLBTLBTLTLBBBKKKKL.KTWK..........KL....","....LK..........KWK.LKKKTLTLBBBBBBBBBBBBBBBBWBWBBBBBBBBBBBBBBBBBBBBBTLTLKKL.KWWK..........K...L.","..L..K..........KWK.KLLKKBBBBBBBBBBBBBBBTLWBWWWTLBTLBBTLBBBBBBBBBBBBBBKKLLK.KWWK..........K.L...","L....K..........KWK.LKKKKBBBBTLTLBTLBTLBBBBBWBBBBBBBBBBBBTLBTLBTLTLBBBKKKKL.KWTK..........K....L","...L.K..........KTK.LKKKTLTLBBBBBBBBBBBBBBBWWBBBBBBBBBBBBBBBBBBBBBBBTLTLKKL.KTWK..........K..L..",".L...K..........KWK.KLLKKBBBBBBBBBBBBBBBTLWWWLBTLBTLBBTLBBBBBBBBBBBBBBKKLLK.KWWK..........KL....","....LK..........KBK.LKKKKBBBBTLTLBTLBTLBBBOOBBBBBBBBBBBBBTLBTLBTLTLBBBKKKKL.KWBK..........K...L.","..L..K..........KWK.LKKKTLTLBBBBBBBBBBBBBBOBBBBBBBBBBBBBBBBBBBBBBBBBTLTLKKL.KWTK..........K.L...","L....K..........KTK.KLLKKBBBBBBBBBBBBBBBTLBBTLBTLBTLBBTLBBBBBBBBBBBBBBKKLLK.KTWK..........K....L","...L.K..........KWK.LKKKKBBBBTLTLBTLBTLBBBBBBBBBBBBBBBBBBTLBTLBTLTLBBBKKKKL.KWWK..........K..L..",".L...K..........KWK.LKKKTLTLBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBTLTLKKL.KWWK..........KL....","....LK..........KWK.KLLKKBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBKKLLK.KWTK..........K...L.","..L..K..........KTK.LKKKKBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBKKKKL.KTWK..........K.L...","L....K..........KBK.LKKKKBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBKKKKL.KWBK..........K....L","...L.K..........KWK.KKKKKBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBKKKKK.KWWK..........K..L..",".L...K..........KWK.KLKKLKKLKKLKKLKKLKKLKKLKKLKKLKKLKKLKKLKKLKKLKKLKKLKKLKK.KWTK..........KL....","....LK..........KTK.KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK.KTWK..........K...L.","..L..K..........KWK..KLKKLKKLKKLKKLKKLKKLKKLKKLKKLKKLKKLKKLKKLKKLKKLKKLKKL..KWWK..........K.L...","L....K..........KWKWWWWWKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKWWWWWKWKK..........K....L","...L.K...........K.WWWWWWWWWWKLKKLKKLKKLKKLKKLKKLKKLKKLKKLKKLKKLKKWWWWWWWWWW.K............K..L..",".L...K.............KKKWWWWWWWWWWWWWWWWWKKKKKKKKKKKKKKKKKWWWWWWWWWWWWWWWWWKKK..............KL....","....LK.................KKKKKWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWKKKKK..................K...L.","..L..K.......................KKKKKKKKKKKKKKKKKKWKKKKKKKKKKKKKKKKKK........................K.L...","L....K.........................................K..........................................K....L","...L.K....KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK....K..L..",".L...K......LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL......KL....","....LK....................................................................................K...L.","..L..K....................................................................................K.L...","L....K....................................................................................K....L"]],"fps":1},"pmt":{"frames":[["...KKLLKK...","..KLLLLLLK..",".KLLWLLLLLK.","KLLWLLLLLLLK","KLLWLLLLLLLK","KLLLLLLLLLLK","LLLLLLLLLLBB","LLLLLLLLBBBB","KLLLLLLBBBBK","KLLLLLBBBBBK",".KTTTTTTTTK.","..KTTTTTTK..","...KTTTTK...","...KLLLLK...","...KBBBBK...","...KBBBBK...","....KKKK....",".....KK....."]],"fps":1},"pmt_lit":{"frames":[["...KKLLKK...","..KLLLLLLK..",".KLLWLLLLLK.","KLLWLLOLLLLK","KLLWLOLOLLLK","KLLLOLOLOLLK","LLLLLOLOLLBB","LLLLLLOLBBBB","KLLLLLLBBBBK","KLLLLLBBBBBK",".KTTTTTTTTK.","..KTTTTTTK..","...KTTTTK...","...KLLLLK...","...KBBBBK...","...KBBBBK...","....KKKK....",".....KK....."]],"fps":1},"ring_e":{"frames":[["KKKKKKKKKKKKKKKKKKKK","KWWWWWOOWWWWWWWWWWWK","KWLWWLWWLOOLWWOWWLWK","KWWWOWWOOWWOOWOWWWWK","KWWWWWOWOWWWWOOOWWWK","KWLWWOOOLWWLOOOOWLWK","KWWWWOWWWWWWWWOWWWWK","KWWWWOWWWWWWWOOWWWWK","KWLOOOOWLWWLOOOWWLWK","KWWWOWOWWWOWWOWWWWWK","KWWWWWOOOOWOOWOWWWWK","KWLWWLWOLOOLWOLOWLWK","KWWWWWOWWWWWOOOWWWWK","KKKKKKKKKKKKKKKKKKKK"]],"fps":1},"ring_mu":{"frames":[["KKKKKKKKKKKKKKKKKKKK","KWWWWWWWWWWWWWWWWWWK","KWLWWLWWOOOOWWLWWLWK","KWWWWWWOOOOOOWWWWWWK","KWWWWWOOWWWWOOWWWWWK","KWLWWOOWLWWLWOOWWLWK","KWWWWOWWWWWWWWOWWWWK","KWWWWOWWWWWWWWOWWWWK","KWLWWOOWLWWLWOOWWLWK","KWWWWWOOWWWWOOWWWWWK","KWWWWWWOOOOOOWWWWWWK","KWLWWLWWOOOOWWLWWLWK","KWWWWWWWWWWWWWWWWWWK","KKKKKKKKKKKKKKKKKKKK"]],"fps":1},"ring_tau":{"frames":[["KKKKKKKKKKKKKKKKKKKK","KWWWWWWWWWOWWWWWWWWK","KWLOWLOOLOWOOWLWWLWK","KWWWOOOWOOWWWOWWWWWK","KWWWOWOWOOWWWOWWWWWK","KWLOWLWWLOOOOOOWWLWK","KWWOWWWWWWOOWWWWWWWK","KOWWOWWWOOWWWWOOWWWK","KWLWOOOOOOWLWWLOWLWK","KOWWWWOOWWOWWWWOWWWK","KWWWWWWWWWWOOWOWWWWK","KWLWWLWWLWWLWWLWWLWK","KWWWWWOWWWWWWWWWWWWK","KKKKKKKKKKKKKKKKKKKK"]],"fps":1},"chip_real":{"frames":[["................","....K.K.K.K.....","....K.K.K.K.....","...KKKKKKKKKK...",".KKKKKKKKKKKKKK.","...KKBBBBBBKK...",".KKKKBWWBBBKKKK.","...KKBWBBBBKK...",".KKKKBBBBBBKKKK.","...KKBBBBBBKK...",".KKKKBBBBBBKKKK.","...KKKKKKKKKK...","...KKKKKKKKKK...","....K.K.K.K.....","....K.K.K.K.....","................"]],"fps":1},"chip_sim":{"frames":[["................","....B.B.B.B.....","....B.B.B.B.....","...KKKKKKKKKK...",".BBKBBBBBBBBKBB.","...KBWWWWWWBK...",".BBKBWWWBWWBKBB.","...KBWWBKBWBK...",".BBKBWBWBWBBKBB.","...KBWWWWWWBK...",".BBKBWWWWWWBKBB.","...KBBBBBBBBK...","...KKKKKKKKKK...","....B.B.B.B.....","....B.B.B.B.....","................"]],"fps":1},"chip_model":{"frames":[["................","....L.L.L.L.....","....L.L.L.L.....","...BLBLBLBLBB...",".LLLLLLLLLLLLLL.","...BLTTTTTTLB...",".LLLLTTTTTTLLLL.","...BLTTBTTTLB...",".LLLLTTTBTTLLLL.","...BLTTTTTTLB...",".LLLLTTTTTTLLLL.","...BLLLLLLLLB...","...BLBLBLBLBL...","....L.L.L.L.....","....L.L.L.L.....","................"]],"fps":1}};
 const SP = {}; for (const k in SPR) SP[k] = InkSprite.make(SPR[k]);
 const st = { chip: 0, src: 1, ei: 0, u: uOf(295 / 0.6), mix: 1, model: 3, flight: 0, attack: 0.02, release: 0.6, gain: 0.8 };
 const $ = id => document.getElementById(id);
 const TOK = (() => { const cs = getComputedStyle(document.documentElement), g = (n, f) => (cs.getPropertyValue(n) || '').trim() || f;
   return { paper: g('--paper', '#FBFAF9'), panel: g('--panel', '#FFFFFF'), rule: g('--rule', '#D3D3E6'), ink: g('--ink', '#19238E'), ink2: g('--ink-2', '#545BA9'), ink3: g('--ink-3', '#A1A4CE'), good: g('--good', '#1F7A4D'), warn: g('--warn', '#B4541A'), onink: g('--on-ink', '#FBFAF9') }; })();
 const C = { K: '#19238E', B: '#545BA9', L: '#A1A4CE', T: '#D3D3E6', W: '#FBFAF9', O: '#B4541A', P: '#FFFFFF' };   // the shared sprite palette
-const COL = [TOK.warn, TOK.ink, TOK.good];   // nu_e, nu_mu, nu_tau in the Data view
+const COL = [TOK.warn, TOK.ink, TOK.good];   // nu_e, nu_mu, nu_tau in The data section
 const NAME = ['\u03bde', '\u03bd\u03bc', '\u03bd\u03c4'], NAMEBAR = ['\u03bd\u0304e', '\u03bd\u0304\u03bc', '\u03bd\u0304\u03c4'], FLN = ['electron', 'muon', 'tau'], LEP = ['e', '\u03bc', '\u03c4'];
 const RINGN = ['fuzzy ring', 'sharp ring', 'several rings'];
 const nm = f => (SRC[srcIdx(st)].anti ? NAMEBAR : NAME)[f];
@@ -606,7 +693,7 @@ const nowS = () => performance.now() / 1000;
 const REDUCED = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 const sprURL = (name, scale) => { try { return InkSprite.toDataURL(SP[name], 0, scale || 2); } catch (e) { return ''; } };
 const eBorn = () => SRC[srcIdx(st)].nu === 'e';
-let ctx = null, master = null, voices = [], dirty = true, droneOn = false, view = 'scene';
+let ctx = null, master = null, voices = [], dirty = true, droneOn = false;
 
 // where each source's journey is marked: real, published baselines (km)
 const MARKS = {
@@ -635,10 +722,11 @@ const chordDepth = L => R_E - Math.sqrt(Math.max(0, R_E * R_E - (L / 2) ** 2)); 
 // ---- flavour tags (scene) and meters with waveforms (data) ----
 const RING_ICON = ['ring_e', 'ring_mu', 'ring_tau'];
 $('tags').innerHTML = FL.map((f, i) => `<div class="tag3"><img alt="" width="40" height="28" src="${sprURL(RING_ICON[i], 2)}"><span class="nm"><span id="tn-${f}">${NAME[i]}</span><span id="p-${f}">0%</span></span><span class="ds"><span>${RINGN[i]}</span><span class="fl"> &middot; ${FLN[i]}-like</span></span><span class="bar"><i id="pb-${f}"></i></span></div>`).join('');
-$('meters').innerHTML = FL.map((f, i) => `<div class="meter f-${f}"><div class="top"><span class="nm">${NAME[i]}</span><span class="val" id="v-${f}">0.000</span></div><div class="bar"><i id="b-${f}"></i></div><canvas id="w-${f}" width="160" height="38" aria-label="${f} waveform"></canvas></div>`).join('');
+$('meters').innerHTML = FL.map((f, i) => `<div class="meter f-${f}"><div class="top"><span class="nm">${NAME[i]}</span><span class="val" id="v-${f}">0.000</span></div><div class="bar"><i id="b-${f}"></i></div><canvas id="w-${f}" width="160" height="38" tabindex="0" role="button" aria-label="${NAME[i]} waveform: click or press Enter to hear this oscillator alone" title="Hear the ${NAME[i]} oscillator alone"></canvas></div>`).join('');
 
 // ---- knobs ----
 const KN = [
+  { k: 'u', label: 'L/E', min: U0, max: U1, step: 0.001, show: v => SRC[srcIdx(st)].fixed ? '~10\u00b9\u2070 km/GeV' : fmt(leOf(v)) + ' km/GeV' },
   { k: 'mix', label: 'Mix', min: 0, max: 1, step: 0.01, show: v => v === 0 ? 'exact' : v === 1 ? 'measured' : Math.round(v * 100) + '% meas.' },
   { k: 'flight', label: 'Flight', min: 0, max: 0.5, step: 0.01, show: v => v === 0 ? 'off' : v.toFixed(2) + ' dec/s' },
   { k: 'attack', label: 'Attack', min: 0.002, max: 1.5, step: 0.001, show: v => (v * 1000 < 1000 ? Math.round(v * 1000) + ' ms' : v.toFixed(2) + ' s') },
@@ -649,7 +737,7 @@ $('knobs').innerHTML = KN.map(o => `<label class="knob"><span class="row"><span 
 KN.forEach(o => {
   const el = $('k-' + o.k);
   el.value = st[o.k];
-  el.addEventListener('input', () => { st[o.k] = +el.value; if (o.k === 'gain' && master) master.gain.setTargetAtTime(st.gain * 0.3, ctx.currentTime, 0.02); dirty = true; ui(); });
+  el.addEventListener('input', () => { if (o.k === 'u') { setUAnywhere(+el.value); return; } st[o.k] = +el.value; if (o.k === 'gain' && master) master.gain.setTargetAtTime(st.gain * 0.3, ctx.currentTime, 0.02); dirty = true; ui(); });
 });
 function syncKnobs() { KN.forEach(o => { $('k-' + o.k).value = st[o.k]; $('o-' + o.k).textContent = o.show(st[o.k]); }); }
 
@@ -675,24 +763,22 @@ function setSource(i, ei, keepL) {
 document.querySelectorAll('[data-src]').forEach(b => b.addEventListener('click', () => { const i = +b.dataset.src; if (i !== st.src) setSource(i, 0, false); }));
 function buildESeg() {
   const s = SRC[srcIdx(st)];
+  // a source with one energy gets a plain label, not a button that could never change anything
+  if (s.es.length === 1) { $('e-seg').innerHTML = `<span class="e-only" title="${s.es[0].note}">${s.es[0].label} &middot; fixed</span>`; return; }
   $('e-seg').innerHTML = s.es.map((e, k) => `<button type="button" data-e="${k}" aria-pressed="${k === st.ei}" title="${e.note}">${e.label}</button>`).join('');
   $('e-seg').querySelectorAll('[data-e]').forEach(b => b.addEventListener('click', () => { const k = +b.dataset.e; if (k !== st.ei) setSource(srcIdx(st), k, true); }));
 }
 
-// ---- Scene / Data ----
-document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => {
-  view = b.dataset.view;
-  document.querySelectorAll('[data-view]').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.view === view)));
-  $('view-scene').hidden = view !== 'scene'; $('view-data').hidden = view !== 'data';
-  if (view === 'data') size(); else plate();
-  dirty = true; ui();
-}));
-
-// ---- job table in the drawer ----
+// ---- the job table (Jobs and credits): each machine's name is a button that puts that chip on the synth ----
 (function () {
-  const rows = D.machines.map(m => `<tr><td>${m.id}</td><td>${m.kind_label}</td><td>${m.values}</td><td>${m.n}</td><td>${m.rms[1].toFixed(3)} / ${m.rms[2].toFixed(3)} / ${m.rms[3].toFixed(3)}</td><td>${m.job_id}</td></tr>`).join('');
-  $('jobs').innerHTML = `<tr><th>chip</th><th>where it ran</th><th>values</th><th>pts/curve</th><th>rms e / mu / tau</th><th>Atlas job</th></tr>` + rows;
+  const rows = D.machines.map((m, i) => `<tr><td><button type="button" class="jb" data-jobchip="${i}" aria-pressed="false" title="Play the curves measured on ${m.id}">${m.id}</button></td><td>${m.kind_label}</td><td>${m.values}</td><td>${m.n}</td><td>${m.rms[1].toFixed(3)} / ${m.rms[2].toFixed(3)} / ${m.rms[3].toFixed(3)}</td><td>${m.job_id}</td></tr>`).join('');
+  $('jobs').innerHTML = `<tr><th>machine</th><th>where it ran</th><th>values</th><th>pts/curve</th><th>rms e / mu / tau</th><th>Atlas job</th></tr>` + rows;
   const hw = D.machines.find(m => m.kind === 'qpu'), aer = D.machines.find(m => m.id === 'aer');
+  $('jobs-count').textContent = `${D.machines.length} Atlas jobs \u00b7 sources`;
+  $('jobs').querySelectorAll('[data-jobchip]').forEach(b => b.addEventListener('click', () => {
+    st.chip = +b.dataset.jobchip; dirty = true; ui();
+    toast(eBorn() ? `Chip: ${D.machines[st.chip].id} (${SRC[srcIdx(st)].id === 'sun' ? 'the Sun' : 'the reactor'} plays classical curves; pick the accelerator or the atmosphere to hear the chip)` : `Chip: ${D.machines[st.chip].id}`);
+  }));
   $('engine-detail').innerHTML = `The noiseless simulator (aer) took all ${aer ? aer.values : 4096} values: 4 curves &times; 1024 points. 4096 = 2<sup>12</sup> addresses, which the documented QPIXL rule counts as 12 address qubits + 1 data qubit = 13. The engine actually splits them into data-qubit groups (its leftover scatter matches 16 values, or 4 address qubits, per data qubit). On IBM chips the engine itself reported the data-qubit capacity when we asked for 4096 values: 448 on fake_fez, 378 on fake_torino, 360 on fake_brisbane. The chips of the same families (fake_marrakesh, ibm_fez, and the other eight 127-qubit Eagle models) then took the same sizes. Each chip got 4 curves at the most points that fit.` + (hw ? ` The ibm_fez run is IBM job <code>${hw.ibm_job_id.join(', ')}</code> (${hw.qpu_seconds} s of QPU time, ${hw.shots} shots).` : '');
 })();
 
@@ -704,7 +790,7 @@ $('demos').innerHTML = DEMOS.map((d, i) => `<div class="demo" id="demo-${i}"><h3
   + `<div class="player"><div class="row"><button type="button" class="btn" data-play="${i}" aria-pressed="false">Play</button>`
   + `<button type="button" class="btn ghost" data-stop="${i}">Stop</button><span class="time" id="dt-${i}">0:00 / ${mmss(d.seconds)}</span></div>`
   + `<input type="range" id="ds-${i}" min="0" max="${d.seconds || 30}" step="0.1" value="0" aria-label="${d.title} position">`
-  + (d.cues ? `<div class="cues" role="group" aria-label="Jump to a chip">${d.cues.map((c, k) => `<button type="button" data-cue="${i}:${k}">${c.label}</button>`).join('')}</div>` : '')
+  + (d.cues ? `<div class="cues" role="group" aria-label="Jump to a machine">${d.cues.map((c, k) => `<button type="button" data-cue="${i}:${k}">${c.label}</button>`).join('')}</div>` : '')
   + `</div><p class="label">${d.settings}</p></div>`).join('');
 const demoEls = DEMOS.map((d, i) => ({ d, au: $('demo-' + i).querySelector('audio'), play: $('demo-' + i).querySelector('[data-play]'), time: $('dt-' + i), seek: $('ds-' + i), cues: [...$('demo-' + i).querySelectorAll('[data-cue]')] }));
 function demoSeek(p, t) {   // a seek the file can't take yet (preload="none") is kept and applied once it can
@@ -730,6 +816,8 @@ demoEls.forEach(p => {
   p.cues.forEach((b, k) => b.addEventListener('click', () => { demoSeek(p, p.d.cues[k].t + 0.01); demoPlay(p); demoUI(p); }));
   ['loadedmetadata', 'progress', 'canplay', 'canplaythrough'].forEach(ev_ => p.au.addEventListener(ev_, () => { if (p.pending != null) demoSeek(p, p.pending); }));
   ['play', 'pause', 'ended', 'timeupdate', 'loadedmetadata', 'seeked'].forEach(ev_ => p.au.addEventListener(ev_, () => demoUI(p)));
+  // once it plays, a seek the server still can't take (no byte ranges) is dropped, so the time shown is the time heard
+  p.au.addEventListener('playing', () => { if (p.pending == null) return; demoSeek(p, p.pending); if (p.pending != null) { p.pending = null; toast('This host cannot jump inside the file, so it plays from the start'); } demoUI(p); });
 });
 
 // ---- the keys: an A minor pentatonic, A2..G4; each key is a 50 cm photomultiplier tube ----
@@ -775,7 +863,7 @@ function ensureAudio() {
   $('start').hidden = true;
   return true;
 }
-$('start-btn').addEventListener('click', () => { if (ensureAudio()) { toast('Synth on: play a tube key or click the detector'); light(); $('keys').querySelector('[data-note="57"]').focus({ preventScroll: true }); } });
+$('start-btn').addEventListener('click', () => { if (ensureAudio()) { toast('Synth on: play the keys, or click the detector'); light(); $('keys').querySelector('[data-note="57"]').focus({ preventScroll: true }); } });
 function voiceU(v) { return Math.min(U1, st.u + st.flight * Math.max(0, ctx.currentTime - v.t0)); }
 function noteOn(note, key, quiet) {
   if (!ensureAudio()) return;
@@ -817,8 +905,9 @@ function updateVoice(v, force) {
 function light() {
   const live = voices.filter(v => !v.rel), on = new Set(live.map(v => v.note));
   document.querySelectorAll('#keys [data-note]').forEach(b => { const o = on.has(+b.dataset.note), im = b.querySelector('img'); b.classList.toggle('on', o); if (im) im.src = o ? im.dataset.on : im.dataset.off; });
-  $('bar-state').textContent = live.length ? `Sounding \u00b7 ${live.length} note${live.length > 1 ? 's' : ''}` : (ctx ? 'On \u00b7 play a key' : 'Silent');
+  $('bar-state').textContent = live.length ? `Sounding \u00b7 ${live.length} note${live.length > 1 ? 's' : ''}` : (ctx ? 'Ready \u00b7 play a key' : 'Silent');
   if (PL.svg) PL.svg.classList.toggle('live', live.length > 0 && !REDUCED);
+  dirty = true;   // the curves redraw their note markers
 }
 $('drone').addEventListener('click', () => {
   if (!droneOn) {
@@ -832,7 +921,35 @@ $('panic').addEventListener('click', () => {   // silences everything: synth voi
   if (ctx) voices.filter(v => !v.rel).forEach(release);
   droneOn = false; down.clear(); syncDrone();
   demoEls.forEach(p => { if (!p.au.paused) p.au.pause(); });
+  soloStop();
   light(); toast('All sound stopped');
+});
+
+// ---- The data: click a waveform (or focus it and press Enter) to hear that one oscillator alone for about a second ----
+// It is the oscillator the A3 key plays for that flavour, with the waveform drawn above it at your L/E, at a fixed level
+// so its shape is audible even where its probability (its loudness in the synth) is small. Not a detection.
+let solo = null;
+function soloStop() {
+  if (solo) { try { solo.o.stop(); } catch (_) {} try { solo.g.disconnect(); } catch (_) {} }
+  solo = null; document.querySelectorAll('#meters canvas').forEach(c => c.classList.remove('on'));
+}
+function soloPlay(f) {
+  if (st.model === 2 && f === 2 && !eBorn()) { toast(`${NAME[2]} is off in the 2-flavour model`); return; }
+  if (!ensureAudio()) return;
+  soloStop();
+  const now = ctx.currentTime, w = waveFor(st, f, st.u), o = ctx.createOscillator(), g = ctx.createGain();
+  o.frequency.value = 220 * MULT[f];
+  o.setPeriodicWave(ctx.createPeriodicWave(w.real, w.imag, { disableNormalization: true }));
+  g.gain.setValueAtTime(0, now); g.gain.linearRampToValueAtTime(0.5, now + 0.02); g.gain.setValueAtTime(0.5, now + 0.9); g.gain.linearRampToValueAtTime(0, now + 1.1);
+  o.connect(g); g.connect(master); o.start(now); o.stop(now + 1.15);
+  const me = solo = { o, g, f }; $('w-' + FL[f]).classList.add('on');
+  o.onended = () => { if (solo === me) soloStop(); };
+  toast(`${nm(f)} oscillator alone: its waveform at L/E ${SRC[srcIdx(st)].fixed ? '~10\u00b9\u2070' : fmt(leOf(st.u))} km/GeV (probability there ${level(st, f, st.u).toFixed(3)}; played at a fixed level)`);
+}
+FL.forEach((fl, f) => {
+  const c = $('w-' + fl);
+  c.addEventListener('click', () => soloPlay(f));
+  c.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && !e.repeat) { e.preventDefault(); soloPlay(f); } });
 });
 
 // ---- detection: one neutrino interacts as ONE flavour, a classical draw weighted by the curves at your L ----
@@ -970,7 +1087,7 @@ function figReactor(s) {   // a pressurized-water reactor, its containment cut o
   [-0.85, -0.55, 0.3, 0.55, 0.72, 0.84, 0.92, 0.97].forEach(k => { let d = ''; for (let y = 117; y <= 258; y += 6) d += (d ? 'L' : 'M') + n1(tcx + hw(y) * k) + ' ' + y; o.push(pth(d, 0, k > 0 ? C.B : C.L, 0.6)); });
   o.push(elp(tcx, 116, hw(116), 3.5, C.P, C.K, 1));
   for (let x = tcx - hw(256) + 4; x < tcx + hw(256) - 2; x += 7) o.push(lin(x, 262, x + 3.5, 255, C.B, 0.7), lin(x + 3.5, 255, x + 7, 262, C.B, 0.7));
-  [[56, 104, 10], [70, 92, 12], [86, 82, 10], [99, 70, 8], [108, 58, 6]].forEach(([x, y, r]) => o.push(cir(x, y, r, C.P, C.L, 0.8, ' stroke-dasharray="2 2"')));
+  ['M48 112C40 98 58 92 52 78C47 66 62 60 66 46', 'M62 110C58 96 74 90 72 76C70 64 84 58 90 48', 'M78 112C78 100 90 94 90 82C90 72 102 66 108 58', 'M40 108C30 98 40 88 34 76'].forEach((d, k) => o.push(pth(d, 0, k === 1 ? C.B : C.L, 0.8, ' stroke-dasharray="3 2.2"')));
   // turbine hall and the steam line from the containment
   o.push(rct(292, 206, 100, 56, C.P, C.K, 1.1), pth('M289 206L341 193L395 206', 0, C.K, 1.1));
   for (let x = 298; x < 388; x += 9) o.push(rct(x, 214, 5, 8, C.T, C.B, 0.6));
@@ -1006,7 +1123,7 @@ function figReactor(s) {   // a pressurized-water reactor, its containment cut o
   let z = 'M130 152'; for (let x = 134; x <= 270; x += 4) z += `L${x} ${(x / 4) % 2 ? 149 : 152}`; o.push(pth(z, 0, C.B, 0.6));
   o.push(rct(194, 143, 12, 5, C.K), lin(200, 153, 200, 170, C.K, 0.8), pth('M200 170q-3 0-3 3q0 3 3 3', 0, C.K, 0.9));
   // antineutrinos leave the core in every direction (decoration; they animate while a note sounds)
-  [-150, -118, -62, -30, 14, 40, 168].forEach(a => { const t = a * Math.PI / 180; o.push(lin(200 + 14 * Math.cos(t), 238 + 14 * Math.sin(t), 200 + 168 * Math.cos(t), 238 + 168 * Math.sin(t), C.B, 0.8, ' class="flow" stroke-dasharray="1.2 3.2"')); });
+  [-150, -118, -62, -30, 14, 40, 168].forEach(a => { const t = a * Math.PI / 180, c = Math.cos(t), sn_ = Math.sin(t), Lr = Math.min(168, c > 0 ? 196 / c : c < 0 ? -196 / c : 999, sn_ > 0 ? 58 / sn_ : sn_ < 0 ? -234 / sn_ : 999); o.push(lin(200 + 14 * c, 238 + 14 * sn_, 200 + Lr * c, 238 + Lr * sn_, C.B, 0.8, ' class="flow" stroke-dasharray="1.2 3.2"')); });
   o.push(tx(356, 140, '\u03bd\u0304e', 11 / s, ` font-style="italic" fill="${C.B}"`));
   o.push(badge(1, 141, 109, s), badge(2, 254, 150, s), badge(3, 150, 142, s), badge(4, 226, 122, s, 226, 152), badge(5, 166, 214, s, 190, 236), badge(6, 65, 196, s), badge(7, 341, 228, s));
   return { w: 400, h: 300, svg: o.join('') };
@@ -1066,7 +1183,7 @@ function figAtmo(s) {   // a cosmic-ray air shower over the Earth's surface, and
   o.push(pth(`M0 ${gy}Q125 ${gy - 6} 250 ${gy}V280H0Z`, 'url(#pr)'), pth(`M0 ${gy}Q125 ${gy - 6} 250 ${gy}`, 0, C.K, 1.2));
   o.push(lin(16, km(40), 16, gy, C.K, 0.8));
   [10, 20, 30, 40].forEach(k => o.push(lin(16, km(k), 21, km(k), C.K, 0.8), lin(24, km(k), 236, km(k), C.T, 0.6, ' stroke-dasharray="3 4"'), tx(24, km(k) - 3, k + ' km', 8.5 / s, ` fill="${C.B}"`)));
-  o.push(tx(236, km(12) - 3, 'tropopause ~12 km', 8 / s, ` text-anchor="end" fill="${C.L}"`), lin(24, km(12), 236, km(12), C.L, 0.6, ' stroke-dasharray="1 3"'));
+  o.push(tx(236, km(12) - 3, s < 0.9 ? 'tropopause' : 'tropopause ~12 km', 8 / s, ` text-anchor="end" fill="${C.L}"`), lin(24, km(12), 236, km(12), C.L, 0.6, ' stroke-dasharray="1 3"'));
   const X0 = [126, km(17)];
   o.push(lin(117, 2, X0[0], X0[1] - 3, C.K, 1.8), pth(`M${X0[0] - 3.3} ${X0[1] - 10}L${X0[0]} ${X0[1] - 2}L${X0[0] + 2.4} ${X0[1] - 10.4}Z`, C.K));
   for (let k = 0; k < 10; k++) { const t = k / 10 * 2 * Math.PI; o.push(lin(X0[0] + 2 * Math.cos(t), X0[1] + 2 * Math.sin(t), X0[0] + 5.5 * Math.cos(t), X0[1] + 5.5 * Math.sin(t), C.K, 0.8)); }
@@ -1079,7 +1196,13 @@ function figAtmo(s) {   // a cosmic-ray air shower over the Earth's surface, and
     o.push(lin(b[0], b[1], b[0] + (b[0] - a[0]) * 1.1, 280, C.B, 0.7, ' class="flow" stroke-dasharray="1.2 3.2"'), lin(b[0], b[1], b[0] - 5, b[1] + 6, C.B, 0.7));
     o.push(cir(a[0], a[1], 1.4, C.K), cir(b[0], b[1], 1.3, C.B));
   });
-  let zz = `M${X0[0]} ${X0[1]}`; for (let k = 1; k < 7; k++) zz += `L${X0[0] - 3 * k + (k % 2 ? 3 : -2)} ${X0[1] + 6 * k}`; o.push(pth(zz, 0, C.B, 0.7));
+  [[-1, 0.9], [1, 0.7], [-0.3, 1.2]].forEach(([dx, sl], j) => {   // pi0 -> two photons -> electromagnetic sub-showers (e+ e- pairs)
+    let x = X0[0], y = X0[1]; const pts = [];
+    for (let k = 1; k <= 6; k++) { x += dx * 3 * sl + (k % 2 ? 2 : -2); y += 7; pts.push([x, y]); }
+    o.push(pth('M' + X0.join(' ') + pts.map(q => 'L' + q.map(n1).join(' ')).join(''), 0, C.L, 0.7));
+    pts.forEach((q, k) => { if (k % 2) o.push(lin(q[0], q[1], q[0] + (k % 4 ? 4 : -4), q[1] + 6, C.L, 0.6)); });
+  });
+  [[X0[0], X0[1], 70, 214], [X0[0], X0[1], 196, 222], [150, 190, 186, 226], [106, 186, 118, 226]].forEach(([a, b, c, d]) => o.push(lin(a, b, c, d, C.B, 0.6)));
   o.push(tx(108, 183, '\u03c0', 10 / s, ` text-anchor="end" font-style="italic"`), tx(95, 222, '\u03bc', 10 / s, ` text-anchor="end" font-style="italic" fill="${C.B}"`), tx(103, 266, '\u03bd', 10 / s, ` text-anchor="end" font-style="italic"`));
   // the Earth, cut through: crust, mantle, liquid outer core, solid inner core (radii to scale)
   const ex = 326, ey = 150, er = 64;
@@ -1101,7 +1224,7 @@ function figSun(s) {   // the Sun cut open, and the Earth 1 AU away (not to scal
   const o = [], cx = 140, cy = 140, R = 126, a0 = -38 * Math.PI / 180, a1 = 38 * Math.PI / 180, pt = (r, a) => [cx + r * Math.cos(a), cy + r * Math.sin(a)];
   o.push(cir(cx, cy, R, 'url(#pd)', C.K, 1.4));
   for (let r = R - 2.5; r > R * 0.82; r -= 2.6) o.push(cir(cx, cy, r, 0, C.L, 0.45));   // limb darkening, engraved
-  [[92, 70, 5, 3.6], [74, 186, 3.4, 2.4], [178, 52, 2.6, 1.8]].forEach(([x, y, a, b]) => o.push(elp(x, y, a + 2.2, b + 1.6, C.T, C.B, 0.6), elp(x, y, a, b, C.K)));
+  [[62, 96, 3, 2.1], [69, 92, 1.8, 1.3], [57, 101, 1.4, 1], [66, 100, 1, 0.8], [104, 214, 2.4, 1.6], [109, 217, 1.2, 0.9]].forEach(([x, y, a, b]) => o.push(elp(x, y, a + 1.6, b + 1.2, C.T, C.B, 0.5), elp(x, y, a, b, C.K)));
   o.push(pth('M58 30Q52 4 74 6Q90 8 84 26', 0, C.O, 1, ' stroke-dasharray="2 1.6"'), pth('M30 196Q4 206 12 222', 0, C.O, 1, ' stroke-dasharray="2 1.6"'));
   // the cut-away wedge: core, radiative zone, convective zone, photosphere
   const [p0, p1] = [pt(R, a0), pt(R, a1)];
@@ -1111,7 +1234,12 @@ function figSun(s) {   // the Sun cut open, and the Earth 1 AU away (not to scal
   let rw = `M${n1(pt(0.25 * R, -0.1)[0])} ${n1(pt(0.25 * R, -0.1)[1])}`;
   for (let k = 1; k < 26; k++) { const r = 0.25 * R + k * 0.45 * R / 26, a = -0.1 + 0.33 * Math.sin(k * 1.9) * (k % 3 ? 1 : -0.6); const q = pt(r, a); rw += `L${n1(q[0])} ${n1(q[1])}`; }
   o.push(pth(rw, 0, C.B, 0.6));
-  for (let k = 0; k < 5; k++) { const a = a0 + (k + 0.5) * (a1 - a0) / 5, [qx, qy] = pt(0.85 * R, a); o.push(elp(qx, qy, 0.13 * R, 7, 0, C.B, 0.7, ` transform="rotate(${n1(a * 180 / Math.PI + 90)} ${n1(qx)} ${n1(qy)})"`)); }
+  for (let k = 0; k < 5; k++) {   // convection cells: hot gas rises, cools at the surface and sinks again
+    const a = a0 + (k + 0.5) * (a1 - a0) / 5, [qx, qy] = pt(0.845 * R, a), rr = 0.105 * R, sg = k % 2 ? 1 : -1;
+    o.push(pth(`M${n1(qx + rr)} ${n1(qy)}A${n1(rr)} ${n1(rr)} 0 1 ${sg > 0 ? 1 : 0} ${n1(qx - rr * 0.5)} ${n1(qy - sg * rr * 0.866)}`, 0, C.B, 0.8, ` transform="rotate(${n1(a * 180 / Math.PI)} ${n1(qx)} ${n1(qy)})"`));
+    const tx_ = qx + rr * Math.cos(a + sg * 2.1), ty_ = qy + rr * Math.sin(a + sg * 2.1), dx = -Math.sin(a + sg * 2.1) * sg, dy = Math.cos(a + sg * 2.1) * sg;
+    o.push(pth(`M${n1(tx_ + 3.2 * dx)} ${n1(ty_ + 3.2 * dy)}L${n1(tx_ - 2 * dy)} ${n1(ty_ + 2 * dx)}L${n1(tx_ + 2 * dy)} ${n1(ty_ - 2 * dx)}Z`, C.B));
+  }
   o.push(pth(arc(0.7 * R), 0, C.K, 0.9), pth(arc(R), 0, C.K, 2.2));
   o.push(pth(`M${cx} ${cy}L${n1(pt(0.25 * R, a0)[0])} ${n1(pt(0.25 * R, a0)[1])}A${0.25 * R} ${0.25 * R} 0 0 1 ${n1(pt(0.25 * R, a1)[0])} ${n1(pt(0.25 * R, a1)[1])}Z`, C.O, C.K, 0.9, ' class="core" opacity="0.4"'));
   o.push(cir(cx, cy, 0.25 * R, 0, C.K, 0.9, ' stroke-dasharray="2 2"'));
@@ -1201,19 +1329,20 @@ const KEY = {
     'Earth, 1 AU = 149.6 million km away (147.1 to 152.1 over the year), not to scale: about 8.3 minutes for the neutrinos.'] },
 };
 const KEY_DET = ['Mt. Ikeno: 1,000 m of rock overhead cuts the cosmic-ray muons about 100,000-fold.', 'A cavern with a domed roof, deep in the Kamioka mine.',
-  'Stainless-steel tank, 39.3 m wide and 41.4 m tall, holding 50,000 t of ultrapure water.', 'Inner detector: 11,129 PMTs of 50 cm (20 in) looking inward (drawn at about one in eight).',
+  'Stainless-steel tank, 39.3 m wide and 41.4 m tall, holding 50,000 t of ultrapure water.', 'Inner detector: 11,129 PMTs of 50 cm (20 in) looking inward, covering 40% of the wall (drawn at about one in four).',
   'Outer detector: 1,885 PMTs of 20 cm (8 in) looking outward, a veto behind black sheet.', 'Four electronics huts on the tank top.',
   'A charged lepton faster than light in water throws a cone of Cherenkov light (about 42&deg;) that prints a ring on the wall.'];
 function plateKey() {
   const s = SRC[srcIdx(st)], k = KEY[s.id], li = a => `<ol>${a.map((x, i) => `<li><i>${i + 1}</i><span>${x}</span></li>`).join('')}</ol>`;
-  $('plate-key').innerHTML = `<div><h4>Fig. 1 &middot; ${k.t}</h4>${li(k.items)}</div><div><h4>Fig. 2 &middot; Super-Kamiokande, cut away</h4>${li(KEY_DET)}`
+  if (PL.keyOpen == null) PL.keyOpen = !(window.matchMedia && window.matchMedia('(max-width: 560px)').matches);
+  $('plate-key').innerHTML = `<details id="pk"${PL.keyOpen ? ' open' : ''}><summary>Key to the plate <b>&middot; every numbered part, named</b></summary><div class="pk-grid"><div><h4>Fig. 1 &middot; ${k.t}</h4>${li(k.items)}</div><div><h4>Fig. 2 &middot; Super-Kamiokande, cut away</h4>${li(KEY_DET)}`
     + `<h4 style="margin-top:.7rem">Fig. 3 &middot; Event display</h4><p style="margin:0">The inner wall unrolled: top cap, barrel, bottom cap; each dot a PMT, lit ones sized by the light they caught. Sharp outer edge: muon-like. Fuzzy edge: electron-like. Several rings: a tau decaying.</p></div>`
-    + `<p class="note">${k.note ? k.note + ' ' : ''}Original ink drawings made from published descriptions (see Credits); not to scale. Numbers on the plate come only from the curves on this page; ring shapes are an illustration, not a detector simulation.</p>`;
+    + `<p class="note">${k.note ? k.note + ' ' : ''}Original ink drawings made from published descriptions (see Credits); not to scale. Numbers on the plate come only from the curves on this page; ring shapes are an illustration, not a detector simulation.</p></div></details>`;
+  $('pk').addEventListener('toggle', () => { PL.keyOpen = $('pk').open; });
 }
 
 // ---------- layout: three figures over the journey (wide), or stacked (narrow) ----------
 function plate() {
-  if (view !== 'scene') return;
   const W = Math.round(($('scenewrap').getBoundingClientRect().width || 0));
   if (W < 200) return;
   const s = SRC[srcIdx(st)], key = W + ':' + s.id + ':' + st.ei;
@@ -1235,7 +1364,7 @@ function plate() {
     const h = Math.round((W - 2 * pad) * 0.78) + cap;
     boxes.push({ id: 'src', x: pad, y, w: W - 2 * pad, h }); y += h + 6;
   }
-  const J = { x: pad, y, w: W - 2 * pad, h: mode === 'narrow' ? 212 : 200 }; y += J.h + 8;
+  const J = { x: pad, y, w: W - 2 * pad, h: mode === 'narrow' ? 228 : 200 }; y += J.h + 8;
   if (mode === 'mid') { const h = Math.round(W * 0.42); boxes.push({ id: 'ed', x: W * 0.28, y, w: W * 0.44, h }); y += h + 6; }
   if (mode === 'narrow') { const h = Math.round((W - 2 * pad) / 2 * 1.14) + cap + 18; boxes.push({ id: 'det', x: pad, y, w: (W - 2 * pad) / 2 - 3, h }, { id: 'ed', x: W / 2 + 3, y, w: (W - 2 * pad) / 2 - 3, h }); y += h + 6; }
   const H = y + 4;
@@ -1305,7 +1434,7 @@ function journeyStatic(J) {
 }
 // ---- data-bound layers: the flavour bands along the journey, the marker, notes in flight, the atmospheric path ----
 function plateDyn() {
-  if (view !== 'scene' || !PL.J) return;
+  if (!PL.J) return;
   const g = PL.svg.querySelector('#j-dyn'); if (!g) return;
   const s = SRC[srcIdx(st)], A = jAxis(), J = PL.J, e = eOf(st), o = [], nar = PL.mode === 'narrow';
   const top = A.yb - A.bh, unit = A.bh / 1.16;   // sum P = 1 sits at unit; measured curves may over-fill up to 1.16
@@ -1324,7 +1453,7 @@ function plateDyn() {
   o.push(lin(A.x0, yv(1), A.x1, yv(1), C.K, 1, ' stroke-dasharray="4 3"'), rct(A.x1 - 50, yv(1) - 15, 50, 12, C.P), tx(A.x1 - 2, yv(1) - 5, '\u03a3P = 1', 9.5, ` text-anchor="end" fill="${C.B}"`));
   // band names where they have room, at the left end
   [0, 1, 2].forEach(f => { const mid = (cum[f][0] + cum[f + 1][0]) / 2, hgt = (cum[f + 1][0] - cum[f][0]) * unit; if (hgt > 13) { const lab = nm(f); o.push(rct(A.x0 + 3, yv(mid) - 7, textW(lab, 10.5) + 6, 13, C.P, C.K, 0.6), tx(A.x0 + 6, yv(mid) + 3.5, lab, 10.5, ' font-weight="600"')); } });
-  if (s.fixed) o.push(rct(A.x0 + 70, top + 2, 286, 15, C.P), tx(A.x0 + 74, top + 13, 'fully averaged: oscillation length \u226a distance', 9.5, ` fill="${C.B}"`));
+  if (s.fixed) { const fa = nar ? 'fully averaged' : 'fully averaged: oscillation length \u226a distance', fw = textW(fa, 9.5) + 8, fx = A.x0 + (A.x1 - A.x0) * 0.3; o.push(rct(fx, yv(0.62) - 9, fw, 13, C.P, C.K, 0.6), tx(fx + 4, yv(0.62) + 1, fa, 9.5, ` fill="${C.K}"`)); }
   // notes in flight: each held note's own distance (FLIGHT knob)
   if (ctx && !s.fixed) voices.filter(v => !v.rel).forEach(v => { const x = A.xOf(leOf(voiceU(v)) * e); o.push(lin(x, top, x, A.yb, C.K, 1.6, ' opacity="0.55"'), pth(`M${n1(x)} ${n1(top - 1)}l-3 -5h6Z`, C.K)); });
   // the marker: your detector's distance, and what arrives there
@@ -1338,8 +1467,8 @@ function plateDyn() {
   const extra = s.id === 'atmo' ? `${Math.round(Math.acos(cosZen(L)) * 180 / Math.PI)}\u00b0 from overhead` : s.fixed ? 'L/E far beyond the curves' : L > 60 ? `straight path dips ${chordDepth(L) < 10 ? chordDepth(L).toFixed(1) : Math.round(chordDepth(L))} km below ground` : '';
   const hdr = `E ${fmtE(e)} \u00b7 L/E ${s.fixed ? '~10\u00b9\u2070' : fmt(le)} km/GeV` + (extra && !nar ? ' \u00b7 ' + extra : '');
   if (nar) o.push(tx(J.x + 2, J.y + 31, hdr, 10, ` fill="${C.B}"`)); else o.push(tx(J.x + J.w - 2, J.y + 13, hdr, 10, ` text-anchor="end" fill="${C.B}"`));
-  if (nar && extra) o.push(tx(J.x + J.w - 2, J.y + J.h - 5, extra, 9.5, ` text-anchor="end" fill="${C.B}"`));
-  if (eBorn()) o.push(tx(J.x + 2, J.y + J.h - (nar && extra ? 19 : 5), nar ? 'classical curves (no chip measured \u03bde)' : 'classical curves: no chip measured electron-born neutrinos', 9.5, ` fill="${C.O}"`));
+  if (nar && extra) o.push(tx(J.x + J.w - 2, J.y + J.h - 4, extra, 9.5, ` text-anchor="end" fill="${C.B}"`));
+  if (eBorn()) o.push(tx(J.x + 2, J.y + J.h - (nar && extra ? 18 : 4), nar ? 'classical curves (no chip measured \u03bde)' : 'classical curves: no chip measured electron-born neutrinos', 9.5, ` fill="${C.O}"`));
   g.innerHTML = o.join('');
   // the atmospheric path through the Earth
   const sb = PL.box.src, sg = PL.svg.querySelector('#src-dyn');
@@ -1404,18 +1533,21 @@ PL.svg.addEventListener('keydown', e => {
 });
 PL.svg.addEventListener('keyup', e => { if ((e.key === 'Enter' || e.key === ' ') && scH.hold) { scH.hold = false; noteOff(57); } });
 
-// ---- the Data view: the measured curves you can drag ----
+// ---- The data section: the measured curves you can drag, always drawn (graph G1 of the earlier page) ----
 const cv = $('plot'), g2 = cv.getContext('2d');
-function size() { const r = cv.getBoundingClientRect(); if (!r.width) return; const d = Math.min(2, window.devicePixelRatio || 1); cv.width = Math.round(r.width * d); cv.height = Math.round(r.height * d); drawPlot(); }
+function size() { const r = cv.getBoundingClientRect(); if (!r.width) return; const d = Math.min(2, window.devicePixelRatio || 1); const w = Math.round(r.width * d), h = Math.round(r.height * d); if (w !== cv.width || h !== cv.height) { cv.width = w; cv.height = h; } drawPlot(); }
 let rsT = 0;
-const onResize = () => { clearTimeout(rsT); rsT = setTimeout(() => { if (view === 'data') size(); else plate(); }, 60); };
+const onResize = () => { clearTimeout(rsT); rsT = setTimeout(() => { size(); plate(); }, 60); };
 addEventListener('resize', onResize);
-if (window.ResizeObserver) new ResizeObserver(onResize).observe($('scenewrap'));
+if (window.ResizeObserver) { const ro = new ResizeObserver(onResize); ro.observe($('scenewrap')); ro.observe(cv); }
+// redraw the curves only while they are on screen; a change made off screen is drawn when they scroll back in
+let plotSeen = true;
+if (window.IntersectionObserver) new IntersectionObserver(es => es.forEach(e => { plotSeen = e.isIntersecting; if (plotSeen) dirty = true; })).observe(cv);
 function geom() { const d = cv.width / cv.getBoundingClientRect().width || 1; return { d, x0: 34 * d, x1: cv.width - 10 * d, y0: 12 * d, y1: cv.height - 22 * d }; }
 const xOfU = (G, u) => G.x0 + (G.x1 - G.x0) * (u - U0) / (U1 - U0);
 function curveVal(P, f, i) { if (st.model === 3) return P[f + 1][i]; if (f === 0) return P[0][i]; if (f === 1) return 1 - P[0][i]; return 0; }
 function drawPlot() {
-  if (view !== 'data' || !cv.width) return;
+  if (!cv.width) return;
   const G = geom(), d = G.d, m = D.machines[st.chip], eb = eBorn(), s = SRC[srcIdx(st)];
   g2.fillStyle = TOK.panel; g2.fillRect(0, 0, cv.width, cv.height);
   g2.font = `500 ${11 * d}px IBM Plex Mono, monospace`; g2.textBaseline = 'middle';
@@ -1461,12 +1593,13 @@ function drawWave(f) {
   for (let t = 0; t < cyc.length; t++) { const px_ = w * t / (cyc.length - 1), py = h / 2 - (h / 2 - 3) * cyc[t]; t ? x.lineTo(px_, py) : x.moveTo(px_, py); }
   x.stroke(); x.globalAlpha = 1;
 }
-// a drag on the curves may leave the current source's range: then move to a muon-neutrino source that reaches it
+// a drag on the curves (or the L/E knob) may leave the current source's range: then move to a muon-neutrino source
+// that reaches it; past every muon-neutrino baseline it stops at the end of the current source's range
 function setUAnywhere(u) {
   u = clamp(u, U0, U1);
   const r = srcRange(srcIdx(st), st.ei);
   if (u < r[0] - 1e-9 || u > r[1] + 1e-9 || SRC[srcIdx(st)].fixed) {
-    const f = srcFor(u); if (!f) return;
+    const f = srcFor(u); if (!f) { moveTo(clamp(u, r[0], r[1])); ui(); return; }
     const was = SRC[srcIdx(st)].label; st.src = f[0]; st.ei = f[1]; tally.sig = ''; ev.cur = null; buildESeg(); PL.key = '';
     toast(`That L/E is out of the ${was.toLowerCase()}'s range: switched to ${SRC[f[0]].label.toLowerCase()} at ${SRC[f[0]].es[f[1]].label}`);
   }
@@ -1487,29 +1620,32 @@ function ui() {
   document.querySelectorAll('[data-model]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.model === st.model)));
   document.querySelectorAll('[data-src]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.src === srcIdx(st))));
   document.querySelectorAll('[data-e]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.e === st.ei)));
+  document.querySelectorAll('[data-jobchip]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.jobchip === st.chip)));
   $('kitchens').classList.toggle('idle', eb);
   const cn = $('chipnote'); cn.hidden = !eb;
-  if (eb) cn.textContent = `${s.label}: electron-born neutrinos, which no chip measured. The bands and the sound use classical curves; Chip and Mix change only the Data view${s.anti ? ' and the CPT comparison in the readout' : ''}.`;
+  if (eb) cn.textContent = `${s.label}: electron-born neutrinos, which no chip measured. The bands and the sound use classical curves; Chip and Mix change only the dots in The data section below${s.anti ? ' and the CPT comparison in the readout' : ''}.`;
   const P = probsAt(st.u), sum = P[0] + P[1] + P[2], tot = sum || 1;
   FL.forEach((f, i) => {
     const a = P[i], off = st.model === 2 && i === 2 && !eb;
     $('v-' + f).textContent = a.toFixed(3); $('b-' + f).style.width = (100 * a) + '%';
     $('tn-' + f).textContent = nm(i);
     $('p-' + f).textContent = off ? 'off' : Math.round(100 * a / tot) + '%'; $('pb-' + f).style.width = (100 * a / tot) + '%';
-    if (view === 'data') drawWave(i);
+    drawWave(i);
   });
   const le = leOf(st.u), L = s.fixed ? s.fixed : le * e;
   $('le-line').innerHTML = `<b>${s.label}</b> &middot; ${s.born} at ${fmtE(e)} &middot; L <b>${fmtL(L)} km</b> &middot; L/E <b>${s.fixed ? '~10<sup>10</sup>' : fmt(le)} km/GeV</b>`;
   $('sum-line').innerHTML = `&Sigma;P <b>${sum.toFixed(3)}</b>` + (st.mix > 0 && !eb ? ' (exact: 1)' : '');
-  $('le-read').textContent = `L/E ${fmt(le)} km/GeV  (${s.label}: L ${fmtL(L)} km at ${fmtE(e)})`;
+  $('le-read').textContent = s.fixed ? `L/E about 10\u00b9\u2070 km/GeV, past the right-hand end of the curves  (${s.label}: L ${fmtL(L)} km at ${fmtE(e)})`
+    : `L/E ${fmt(le)} km/GeV  (e.g. ${fmt(le)} km at 1 GeV; ${s.label}: L ${fmtL(L)} km at ${fmtE(e)})`;
   $('sum-read').textContent = `\u03a3 P = ${sum.toFixed(3)}` + (st.mix > 0 && !eb ? '  (exact: 1)' : '');
   const m = D.machines[st.chip], kind = m.kind === 'qpu' ? `<span class="tag hw">IBM hardware</span>` : m.kind === 'sim' ? `<span class="tag">noiseless simulator</span>` : `<span class="tag">noise model &middot; emulator</span>`;
   let cpt = '';
   if (s.anti) { const cl = interp(ER.P[1], st.u), me = interp(m.P[1], st.u); cpt = `<dt>CPT check</dt><dd>classical P(\u03bd\u0304e&rarr;\u03bd\u0304\u03bc) <b>${cl.toFixed(3)}</b> = P(\u03bd\u03bc&rarr;\u03bde), which ${m.id} measured as <b>${me.toFixed(3)}</b> here</dd>`; }
   $('readout').innerHTML = `<dt>Chip</dt><dd><b>${m.id}</b> ${kind}</dd>`
+    + `<dt>Encoded</dt><dd><b>${m.values} values</b> = 4 curves &times; ${m.n} points &middot; ${m.shots} shots</dd>`
     + `<dt>Source</dt><dd><b>${s.what}</b>, born ${s.born} at ${fmtE(e)} (${s.es[eIdx(srcIdx(st), st.ei)].note})</dd>`
     + `<dt>Journey</dt><dd>L <b>${fmtL(L)} km</b> &rarr; L/E <b>${s.fixed ? 'about 10<sup>10</sup> (averaged)' : fmt(le)} km/GeV</b></dd>`
-    + `<dt>Curves</dt><dd>${eb ? '<b>classical</b> (physics.py, NuFIT 6.0, vacuum); never on a chip' : `<b>${m.values} values</b> = 4 curves &times; ${m.n} points &middot; ${m.shots} shots &middot; mix ${Math.round(st.mix * 100)}% measured`}</dd>`
+    + `<dt>Curves</dt><dd>${eb ? '<b>classical</b> (physics.py, NuFIT 6.0, vacuum); never on a chip' : `<b>mix ${Math.round(st.mix * 100)}% measured</b> (${m.id}'s values, crossfaded with the exact curves)`}</dd>`
     + cpt
     + `<dt>Qubits</dt><dd><b>${m.qubits.address} address + 1 data = ${m.qubits.rule}</b> (QPIXL rule for ${m.values} values); ${m.qubits.how}</dd>`
     + `<dt>Atlas job</dt><dd><b>${m.job_id}</b></dd>`
@@ -1518,14 +1654,14 @@ function ui() {
     + `<dt>Physics</dt><dd>classical (NuFIT 6.0, vacuum)</dd>`;
   detectLog();
   dirty = true;
-  if (view === 'scene') plateDyn();
-  if (view === 'data' && !ctx) drawPlot();
+  plateDyn();
 }
 let lastDyn = 0;
 function loop(ts) {
   if (ctx) voices.forEach(v => { if (!v.rel) updateVoice(v, false); });
-  if (view === 'data') { if (dirty || (ctx && st.flight > 0 && voices.length)) { drawPlot(); dirty = false; } }
-  else if (ctx && st.flight > 0 && voices.some(v => !v.rel) && ts - lastDyn > 50) { lastDyn = ts; plateDyn(); }
+  const flying = !!ctx && st.flight > 0 && voices.some(v => !v.rel);
+  if (plotSeen && (dirty || flying)) { drawPlot(); dirty = false; }
+  if (flying && ts - lastDyn > 50) { lastDyn = ts; plateDyn(); }
   requestAnimationFrame(loop);
 }
 
@@ -1536,8 +1672,14 @@ $('share').addEventListener('click', async () => {
   try { await navigator.clipboard.writeText(location.href); toast('Link copied'); } catch (e) { toast('Copy failed: the link is in your address bar'); }
 });
 (function () { const s = decodeToken(location.hash); if (s) Object.assign(st, s); })();
-buildESeg(); ui(); plate(); requestAnimationFrame(loop);
-if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { PL.key = ''; plate(); });
+// a shared link opened in a tab that already shows this page changes only the #token (no reload): apply it the same way
+addEventListener('hashchange', () => {
+  const s = decodeToken(location.hash); if (!s) return;
+  Object.assign(st, s); tally.sig = ''; ev.cur = null;
+  buildESeg(); PL.key = ''; plate(); dirty = true; ui(); toast('Opened the shared view');
+});
+buildESeg(); ui(); plate(); size(); requestAnimationFrame(loop);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { PL.key = ''; plate(); size(); });
 
 </script>
 

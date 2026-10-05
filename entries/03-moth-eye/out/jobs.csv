@@ -1,0 +1,9 @@
+tag,series,layers,incoming_rays,reflectance,absorption,interaction,job_id,status,seconds
+L1_R6,sweep,1,6,0.2,0.95,1,2ff303ed-dcc4-481d-b981-db2aa94de39e,completed,25.0
+L2_R6,sweep,2,6,0.2,0.95,1,761ee901-278b-4b78-982d-0c0ac87431e5,completed,28.2
+L3_R6,sweep,3,6,0.2,0.95,1,3ba1f189-a5b0-485e-a6af-f83427e1fdfe,completed,80.6
+L4_R6,sweep,4,6,0.2,0.95,1,6b0fcb3c-a6c5-429a-8f6e-80cc43d4e88e,completed,68.2
+L5_R6,sweep,5,6,0.2,0.95,1,20510fd1-5d75-4ca8-966f-83ab860029ca,completed,80.6
+L6_R6,sweep,6,6,0.2,0.95,1,0dfd9339-f7f8-4fde-9b06-f3b5624bf888,completed,61.0
+L1_R6_int0,control,1,6,0.2,0.95,0,dd9c780f-5fe3-48c2-a436-a87cad9d5fce,completed,50.2
+L6_R6_int0,control,6,6,0.2,0.95,0,49da4043-6974-46c2-8556-a74c3b1ea18f,completed,212.6

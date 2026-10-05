@@ -1,0 +1,43 @@
+{
+ "fake_fez": {
+  "chip_qubits": 156,
+  "data_qubits": 64,
+  "address_qubits": 92,
+  "qubits_used_at_capacity": 156,
+  "capacity_values": 448,
+  "max_group_qubits": 4,
+  "measured_capacity": 448,
+  "rule_matches_measurement": true
+ },
+ "fake_brisbane": {
+  "chip_qubits": 127,
+  "data_qubits": 54,
+  "address_qubits": 73,
+  "qubits_used_at_capacity": 127,
+  "capacity_values": 360,
+  "max_group_qubits": 4,
+  "measured_capacity": 360,
+  "rule_matches_measurement": true
+ },
+ "fake_torino": {
+  "chip_qubits": 133,
+  "data_qubits": 56,
+  "address_qubits": 77,
+  "qubits_used_at_capacity": 133,
+  "capacity_values": 378,
+  "max_group_qubits": 4,
+  "measured_capacity": 378,
+  "rule_matches_measurement": true
+ },
+ "ibm_fez": {
+  "chip_qubits": 156,
+  "data_qubits": 64,
+  "address_qubits": 92,
+  "qubits_used_at_capacity": 156,
+  "capacity_values": 448,
+  "max_group_qubits": 4,
+  "measured_capacity": 448,
+  "rule_matches_measurement": true,
+  "note": "same Heron r2 coupling map as fake_fez"
+ }
+}

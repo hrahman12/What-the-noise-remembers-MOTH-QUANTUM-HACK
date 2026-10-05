@@ -1,0 +1,9 @@
+{
+ "img/GW150914_bg.webp": "entries/12-chirp-instrument/web/img/GW150914_bg.webp",
+ "img/GW170817_bg.webp": "entries/12-chirp-instrument/web/img/GW170817_bg.webp",
+ "audio/GW150914_chirp.mp3": "entries/12-chirp-instrument/web/audio/GW150914_chirp.mp3",
+ "audio/GW150914_s0.5_r0.0.mp3": "entries/12-chirp-instrument/web/audio/GW150914_s0.5_r0.0.mp3",
+ "audio/GW150914_s0.5_r0.5.mp3": "entries/12-chirp-instrument/web/audio/GW150914_s0.5_r0.5.mp3",
+ "audio/GW170817_chirp.mp3": "entries/12-chirp-instrument/web/audio/GW170817_chirp.mp3",
+ "img/mascot.png": "entries/12-chirp-instrument/web/img/mascot.png"
+}

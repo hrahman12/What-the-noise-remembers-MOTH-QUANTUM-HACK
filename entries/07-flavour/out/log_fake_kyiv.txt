@@ -1,0 +1,3 @@
+  qpixl-v1: submitted 631cb2ba-a7a8-4013-9b79-393705d7caf1
+FAILED: qpixl-v1 631cb2ba-a7a8-4013-9b79-393705d7caf1 failed: {"$schema": "https://api.mothquantum.com/schemas/JobStatusOutputBody.json", "job_id": "631cb2ba-a7a8-4013-9b79-393705d7caf1", "engine_id": "qpixl-v1", "status": "failed", "progress": {"detail": "17/54 gcells executed", "step": "encoding"}, "error": {"message": "Stream removed (Socket closed)", "retryable": false, "type": "unavailable"}, "warnings": [], "submitted_at": "2026-10-05T05:04:48Z", "updated_at": "2026-10-05T05:04:59Z"}
+spent 17 / 45

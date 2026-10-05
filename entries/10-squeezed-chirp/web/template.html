@@ -1,0 +1,2258 @@
+<title>LIGO Night Shift</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+/*BRAND*/
+/* LIGO Night Shift. The game console is the hero: two monitors (the real spectrogram, a lensed-black-hole
+   illustration), a squeezer rack with a hardware dial, the MERGER! button, a shift log, and two engraved plates
+   (the optics, the site). Look: paper ground, one ultramarine ink, square panels, pill buttons, hairlines.
+   Monitors are solid ink screens. No glows, gradients or drop shadows. */
+[hidden]{display:none!important}
+.wrap{max-width:80rem;margin-inline:auto}
+.head{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:1rem 2.5rem;align-items:end;padding-block:1.6rem 1.25rem}
+.intro{display:grid;gap:.8rem;min-width:0}
+.kicker{font:500 .74rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+.gname{display:flex;align-items:center;gap:.75rem;font:500 .95rem/1 var(--mono);letter-spacing:.32em;text-transform:uppercase;color:var(--ink)}
+.gname img{image-rendering:pixelated;image-rendering:crisp-edges;width:44px;height:44px}
+h1{font-size:clamp(2.1rem,4.3vw,3.6rem);line-height:1.02;letter-spacing:-.02em}
+.sub{font-size:1.02rem;color:var(--ink-2);max-width:56ch}
+.intro2{display:grid;gap:.9rem;min-width:0}
+.steps{display:grid;gap:.45rem;counter-reset:s;margin:0;padding:0;list-style:none}
+.steps li{display:grid;grid-template-columns:1.8rem minmax(0,1fr);gap:.55rem;align-items:baseline;font-size:.92rem;color:var(--ink-2)}
+.steps li b{color:var(--ink);font-weight:500}
+.steps li::before{counter-increment:s;content:counter(s);font:500 .76rem/1.5 var(--mono);color:var(--on-ink);background:var(--ink);border-radius:99px;width:1.5rem;height:1.5rem;display:grid;place-items:center}
+
+/* ---- console ---- */
+.console{border:1px solid var(--ink);background:var(--panel)}
+.cbar{display:flex;justify-content:space-between;align-items:center;gap:.4rem 1.2rem;flex-wrap:wrap;background:var(--ink);color:var(--on-ink);padding:.6rem .85rem;font:500 .68rem/1.35 var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.cbar .site{display:flex;gap:.3rem .9rem;flex-wrap:wrap;align-items:baseline}
+.cbar .clock{font-variant-numeric:tabular-nums;font-size:.8rem;letter-spacing:.06em}
+.lamps{display:flex;flex-wrap:wrap;gap:.3rem .9rem;align-items:center}
+.lamp{display:inline-flex;align-items:center;gap:.4rem;color:var(--ink-3)}
+.lamp i{width:.6rem;height:.6rem;border-radius:50%;border:1px solid currentColor;display:inline-block}
+.lamp.on{color:var(--on-ink)} .lamp.on i{background:var(--on-ink)}
+.lamp.hot{color:var(--on-ink)} .lamp.hot i{background:var(--warn);border-color:var(--warn)}
+.cgrid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);grid-template-areas:"spec src" "desk desk" "alert alert" "score score" "note note";gap:.75rem;padding:.75rem;align-items:stretch}
+.mon{margin:0;border:1px solid var(--ink);background:var(--ink);display:flex;flex-direction:column;min-width:0}
+.mon-h,.mon-f{display:flex;justify-content:space-between;gap:.2rem .8rem;flex-wrap:wrap;font:500 .64rem/1.35 var(--mono);letter-spacing:.09em;text-transform:uppercase;padding:.45rem .65rem}
+.mon-h{color:var(--on-ink);border-bottom:1px solid var(--ink-2)}
+.mon-f{color:var(--ink-3);border-top:1px solid var(--ink-2);font-variant-numeric:tabular-nums}
+.mon-f b{color:var(--on-ink);font-weight:500}
+.screen{position:relative;flex:1;min-height:0}
+.spec{grid-area:spec}.src{grid-area:src}
+.spec .screen{aspect-ratio:2/1}
+.src .screen{min-height:190px}
+.tm-strip{border-top:1px solid var(--ink-2);background:var(--ink)}
+.tm-strip svg{display:block;width:100%;height:auto;max-height:96px}
+.tm-strip text{font:500 11.5px var(--mono);letter-spacing:.05em;fill:var(--ink-3)}
+.tm-strip text.b{fill:var(--on-ink)}
+.screen canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#spec{cursor:pointer}
+#lens{cursor:ew-resize}
+#spec:focus-visible,#lens:focus-visible{outline:2px solid var(--on-ink);outline-offset:-4px}
+.desk{grid-area:desk;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr) minmax(0,1fr);gap:1.1rem;border:1px solid var(--rule);background:var(--panel-2);padding:.85rem 1rem;min-width:0}
+.unit{display:grid;gap:.5rem;align-content:start;min-width:0}
+.unit-h{font:500 .64rem/1.3 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);border-bottom:1px solid var(--ink);padding-bottom:.35rem;display:flex;justify-content:space-between;gap:.5rem}
+.unit-h span{color:var(--ink-2)}
+#dial{width:100%;max-width:240px;height:auto;display:block;margin-inline:auto;touch-action:none;cursor:grab}
+#dial:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:8px}
+#dial[aria-disabled="true"]{cursor:not-allowed}
+#dial .det{cursor:pointer}
+#dial text{font:500 13px var(--mono);fill:var(--ink)}
+#dial .side{font-size:10px;letter-spacing:.08em;fill:var(--ink-2)}
+.setline{font:500 .74rem/1.4 var(--mono);color:var(--ink);text-align:center}
+.setline span{color:var(--ink-2)}
+.setcap{font:500 .64rem/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);text-align:center}
+.setcap b{color:var(--ink);font-weight:500}
+.meter{display:grid;gap:.25rem}
+.meter .lab{display:flex;justify-content:space-between;gap:.4rem;font:500 .62rem/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.meter .lab b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+.meter .bar{position:relative;height:10px;border:1px solid var(--ink);background:var(--panel)}
+.meter .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--ink);transition:width .35s}
+.meter .bar s{position:absolute;top:-3px;bottom:-3px;width:1px;background:var(--ink-2)}
+#ellip{width:100%;height:auto;display:block;max-height:170px}
+#ellip text{font:500 10px var(--mono);fill:var(--ink-2)}
+.jobl{font:400 .66rem/1.45 var(--mono);color:var(--ink-2);overflow-wrap:anywhere}
+.jobl b{color:var(--ink);font-weight:500}
+.deck{display:grid;gap:.6rem;align-content:start;justify-items:center;min-width:0}
+.prompt{font:500 .72rem/1.45 var(--mono);color:var(--ink);text-align:center;min-height:3.2em;letter-spacing:.02em}
+.merger{width:132px;height:132px;border-radius:50%;border:3px solid var(--ink);outline:1px solid var(--ink);outline-offset:4px;background:var(--ink);color:var(--on-ink);font:600 1.15rem/1 var(--mono);letter-spacing:.06em;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.45rem;text-align:center;padding:0 14px;margin:.35rem 0;touch-action:manipulation;user-select:none}
+.merger small{display:block;max-width:96px;font:500 .58rem/1.3 var(--mono);letter-spacing:.06em;opacity:.9}
+.merger:hover:not(:disabled){background:#121A6E}
+.merger:active:not(:disabled){transform:scale(.97)}
+.merger:disabled{background:var(--panel);color:var(--ink-2);border-color:var(--ink-3);outline-color:var(--ink-3);cursor:not-allowed}
+.merger.count{background:var(--panel);color:var(--ink);border-color:var(--ink);outline-color:var(--ink)}
+.merger.logged{background:var(--panel);color:var(--ink);border-color:var(--ink);outline-color:var(--ink)}
+.merger:focus-visible{outline:3px solid var(--ink);outline-offset:4px}
+.btns{display:flex;flex-wrap:wrap;gap:.45rem;justify-content:center}
+.btn.sm{padding:.6rem 1rem;font-size:.82rem}
+.btn.big{padding:.85rem 1.4rem;font:500 .86rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase}
+.pitchbtn{min-width:3.2rem;justify-content:center}
+.score{grid-area:score;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.9fr) minmax(0,1.25fr);gap:.75rem 1.2rem;align-items:start;border:1px solid var(--rule);background:var(--panel);padding:.85rem 1rem;min-width:0}
+.score>div{display:grid;gap:.6rem;align-content:start;min-width:0}
+.tot{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem}
+.tot div{border:1px solid var(--rule);padding:.5rem .55rem;display:grid;gap:.25rem}
+.tot div.all{border-color:var(--ink)}
+.tot span{font:500 .6rem/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.tot b{font:500 1.6rem/1 var(--mono);font-variant-numeric:tabular-nums;color:var(--ink)}
+.tot em{font:400 .62rem/1.2 var(--mono);color:var(--ink-2);font-style:normal}
+.bests{display:grid;gap:.3rem;margin:0;padding:0;list-style:none}
+.bests li{display:grid;grid-template-columns:3.2rem minmax(0,1fr) 3rem;gap:.5rem;align-items:center;font:500 .66rem/1.2 var(--mono);color:var(--ink-2)}
+.bests li.cur{color:var(--ink)}
+.bests .bb{position:relative;height:9px;background:var(--panel-2);border:1px solid var(--rule)}
+.bests .bb i{position:absolute;left:0;top:0;bottom:0;background:var(--ink)}
+.bests .bb s{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink-3)}
+.bests b{font-weight:500;color:var(--ink);text-align:right;font-variant-numeric:tabular-nums}
+.ach{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.4rem;margin:0;padding:0;list-style:none}
+.ach li{border:1px dashed var(--ink-3);padding:.45rem .55rem;display:grid;gap:.15rem;color:var(--ink-3)}
+.ach li b{font:500 .7rem/1.2 var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.ach li span{font-size:.72rem;line-height:1.35}
+.ach li.got{border:1px solid var(--ink);background:var(--ink);color:var(--on-ink)}
+.ach li.got b::before{content:"\2713  "}
+.formula{font:400 .66rem/1.5 var(--mono);color:var(--ink-2)}
+.alert{grid-area:alert;border:2px solid var(--ink);background:var(--paper);display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1fr);gap:.4rem 1.2rem;padding:.9rem 1rem;align-items:start}
+.alert .badge{image-rendering:pixelated;image-rendering:crisp-edges;width:96px;height:96px}
+.alert h3{font:500 .82rem/1.3 var(--mono);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.35rem}
+.alert h3.miss{color:var(--ink-2)}
+.alert dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.2rem .8rem;margin:0;font:400 .72rem/1.45 var(--mono);color:var(--ink-2)}
+.alert dd{margin:0;color:var(--ink);overflow-wrap:anywhere}
+.alert p{font:400 .7rem/1.5 var(--mono);color:var(--ink-2);grid-column:2/-1}
+/* ---- the engraved plates ---- */
+.plates{margin-top:2.5rem;display:grid;gap:1rem}
+.plates .defs{position:absolute;width:0;height:0;overflow:hidden}
+.plate{margin:0;border:1px solid var(--rule);background:var(--paper);padding:.75rem .85rem .9rem;display:grid;gap:.7rem;align-content:start;min-width:0}
+.plate figcaption{font:500 .66rem/1.45 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.plate figcaption span{color:var(--ink-2)}
+.plate svg{display:block;width:100%;height:auto}
+.pv{min-width:0}
+.mobhint{display:none}
+.p1-grid{display:grid;grid-template-columns:minmax(0,2.6fr) minmax(0,1fr);gap:.9rem;align-items:start}
+.p1-side{display:grid;gap:.9rem;min-width:0}
+.p1-side .pv{border:1px solid var(--rule);background:var(--panel);padding:.35rem}
+.p23{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);gap:1rem;align-items:start}
+.eng text{font:500 12px var(--mono);fill:var(--ink);letter-spacing:.03em}
+.eng text.s{font-size:10.5px;fill:var(--ink-2)}
+.eng text.h{font-size:13px;letter-spacing:.1em}
+.eng text.halo{paint-order:stroke;stroke:var(--paper);stroke-width:4px;stroke-linejoin:round}
+#site text.h{font-size:15px}
+.co{cursor:pointer}
+.co line{stroke:var(--ink);stroke-width:.8}
+.co circle{fill:var(--paper);stroke:var(--ink);stroke-width:1.2}
+.eng .co text{font:600 10.5px var(--mono);fill:var(--ink);text-anchor:middle;dominant-baseline:central;letter-spacing:0}
+#site .co circle{stroke-width:1.5}#site .eng .co text,#site .co text{font-size:15px}
+.co.hl circle{fill:var(--ink)}.eng .co.hl text{fill:var(--on-ink)}.co.hl line{stroke-width:2}
+.key{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(15.5rem,1fr));gap:.1rem .9rem}
+.key button{display:grid;grid-template-columns:1.6rem minmax(0,1fr);gap:.5rem;align-items:baseline;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--rule);padding:.4rem .15rem;cursor:pointer;color:var(--ink-2);font:400 .8rem/1.45 var(--body)}
+.key button:hover{background:var(--tint)}
+.key button b{font:600 .7rem/1.6 var(--mono);color:var(--ink);border:1px solid var(--ink);border-radius:99px;width:1.45rem;height:1.45rem;display:grid;place-items:center}
+.key button em{font-style:normal;color:var(--ink);font-weight:500}
+.key button[aria-pressed="true"]{background:var(--tint)}
+.key button[aria-pressed="true"] b{background:var(--ink);color:var(--on-ink)}
+.p3 .key,.p1 .key{grid-template-columns:repeat(auto-fill,minmax(14rem,1fr))}
+.note{grid-area:note;display:flex;justify-content:space-between;align-items:center;gap:.6rem 1.2rem;flex-wrap:wrap;border-top:1px solid var(--rule);padding-top:.7rem}
+.note .honesty{max-width:80ch}
+
+/* ---- data room (the previous instrument, one click away) ---- */
+.dataroom{display:grid;gap:.9rem;padding:.75rem}
+.droom-bar{display:flex;justify-content:space-between;align-items:center;gap:.5rem 1rem;flex-wrap:wrap}
+.stage{position:relative;overflow:hidden;border:1px solid var(--ink);background:var(--panel);touch-action:none;user-select:none}
+.stage canvas#cv{display:block;width:100%;height:auto;aspect-ratio:900/720;cursor:crosshair}
+.toolbar{position:absolute;left:.75rem;top:.75rem;right:.75rem;display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap;pointer-events:none}
+.toolbar>*{pointer-events:auto}
+.toolbar .seg button{padding:.5rem .75rem}
+.tag{position:absolute;right:.75rem;top:3.9rem;max-width:calc(100% - 7rem);background:rgba(251,250,249,.94);border:1px solid var(--ink);padding:.45rem .65rem;font:500 .7rem/1.4 var(--mono);letter-spacing:.02em;color:var(--ink);pointer-events:none;text-align:right}
+.tag span{color:var(--ink-2)}
+.tag i.sw{display:inline-block;width:.6rem;height:.6rem;vertical-align:-.04rem;margin-right:.3rem}
+.tag i.sw.g{background:var(--ink)}
+.tag i.sw.l{background:var(--warn)}
+.droom-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:.9rem;align-items:start}
+.panel{display:grid;gap:.85rem;background:var(--panel);border:1px solid var(--rule);padding:1rem 1.1rem;min-width:0}
+.row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.row.split{justify-content:space-between}
+/* the squeeze slider, width readouts with bars and the ridge-spread glyph, and the play rows (restored from the
+   earlier instrument page) */
+#ratio{height:2rem}
+.ticks{display:flex;justify-content:space-between;font:500 .74rem/1 var(--mono);color:var(--ink-2);padding-inline:.15rem}
+.ticks button{background:none;border:1px solid transparent;color:inherit;font:inherit;cursor:pointer;padding:.35rem .55rem;border-radius:999px}
+.ticks button:hover{background:var(--tint)}
+.ticks button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+.ends{font:500 .7rem/1.2 var(--mono);color:var(--ink-2);letter-spacing:.06em;text-transform:uppercase}
+.widths{display:grid;grid-template-columns:minmax(0,1fr) 108px;gap:.5rem 1rem;align-items:center;border-top:1px solid var(--rule);padding-top:.85rem}
+.wm{display:grid;gap:.35rem}
+.wm .v{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap}
+.wm b{font:500 1.35rem/1 var(--mono);font-variant-numeric:tabular-nums;color:var(--ink)}
+.wm .d{font:500 .74rem/1 var(--mono);color:var(--ink-2)}
+.wm .bar{position:relative;height:6px;border-radius:99px;background:var(--panel-2);overflow:hidden}
+.wm .bar i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--ink)}
+.ell{grid-row:span 2;width:108px;height:108px;overflow:visible}
+.ell text{font:500 9px var(--mono);fill:var(--ink-2)}
+.listen{display:grid;gap:.5rem;border-top:1px solid var(--rule);padding-top:.85rem}
+.plays{display:grid;gap:.4rem}
+.play{display:grid;grid-template-columns:2.4rem minmax(0,1fr) auto;gap:.6rem;align-items:center}
+.play button.pb{width:2.4rem;height:2.4rem;border-radius:99px;border:1px solid var(--ink);background:var(--panel);color:var(--ink);cursor:pointer;font:600 .8rem/1 var(--mono);display:grid;place-items:center;padding:0}
+.play button.pb:hover{background:var(--tint)}
+.play button.pb[aria-pressed="true"]{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
+.play .nm{display:grid;gap:.3rem;min-width:0}
+.play .nm span{font:500 .78rem/1.2 var(--mono);color:var(--ink-2)}
+.play .nm .pr{height:3px;border-radius:99px;background:var(--panel-2);overflow:hidden}
+.play .nm .pr i{display:block;height:100%;width:0;background:var(--ink)}
+.play .wx{font:400 .72rem/1.2 var(--mono);color:var(--ink-2);text-align:right;white-space:nowrap}
+.play.cur .nm span{color:var(--ink);font-weight:600}
+.readout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.25rem .9rem;font:400 .74rem/1.5 var(--mono);color:var(--ink-2);margin:0;border-top:1px solid var(--rule);padding-top:.85rem}
+.readout dd{margin:0}
+.readout b{color:var(--ink);font-weight:500;overflow-wrap:anywhere}
+.lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.9rem}
+.lab .ink-bar,.lab .trade{grid-column:1/-1}
+.lab figure{margin:0;background:var(--panel);border:1px solid var(--rule);padding:.9rem 1rem;display:grid;gap:.5rem;align-content:start;min-width:0}
+.lab figcaption{font:500 .7rem/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.lab figcaption b{color:var(--ink);font-weight:500}
+.lab canvas{width:100%;height:auto;aspect-ratio:560/260;display:block}
+.lab svg{width:100%;height:auto;display:block;max-height:380px}
+.cutw{font:400 .76rem/1.45 var(--mono);color:var(--ink-2)}
+.cutw b{color:var(--ink);font-weight:500}
+.cutw em{font-style:normal;color:var(--ink);font-weight:600}
+#trade .pt{cursor:pointer}
+#trade .pt:focus-visible{outline:none}
+#trade .pt:focus-visible circle.ring{stroke:var(--ink);stroke-width:3}
+.legend{display:flex;flex-wrap:wrap;gap:.4rem 1rem;font:400 .7rem/1.3 var(--mono);color:var(--ink-2)}
+.legend i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:.35rem;background:var(--ink)}
+.legend i.o{background:var(--ink-3)}
+.legend i.c{background:none;border-top:2px dashed var(--ink-2);height:0}
+.legend i.h{background:none;border-top:2px dotted var(--ink-3);height:0}
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:var(--ink);color:var(--on-ink);font:500 .82rem/1.2 var(--mono);padding:.8rem 1.1rem;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100vw - 32px);text-align:center}
+.toast.on{opacity:1}
+.sec .body ul{margin:0;padding-inline-start:1.1rem;display:grid;gap:.35rem}
+.sec table{border-collapse:collapse;font:400 .76rem/1.4 var(--mono);width:100%}
+.sec th,.sec td{border-bottom:1px solid var(--rule);padding:.4rem .5rem;text-align:left;vertical-align:top}
+.sec th{color:var(--ink);font-weight:500;border-bottom-color:var(--ink)}
+.tbl{overflow-x:auto}
+code{font-family:var(--mono);font-size:.9em;color:var(--ink)}
+
+/* ---- sections below the game: a solid-ink title bar, then the content, always visible ---- */
+.toc{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:2.5rem}
+.toc a{font:500 .68rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);text-decoration:none;border:1px solid var(--rule);border-radius:999px;padding:.6rem .85rem;background:var(--panel)}
+.toc a:hover{background:var(--tint)}
+.sec{margin-top:2.25rem;display:grid;gap:1.25rem;scroll-margin-top:1rem;min-width:0}
+.plates,#console{scroll-margin-top:1rem}
+.sec>.ink-bar{flex-wrap:wrap}
+.sec>.ink-bar h2{font:inherit;letter-spacing:inherit;color:inherit;margin:0}
+.sec>.ink-bar span{opacity:.82;text-align:right}
+.sec h3{font-size:1.3rem;line-height:1.2}
+.sec .prose{display:grid;gap:.75rem;max-width:68ch;color:var(--ink-2);align-content:start;min-width:0}
+.sec .prose h3{margin-top:.4rem}
+.sec .prose h3:first-child{margin-top:0}
+.sec .cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem 2.5rem}
+.sec a{color:var(--ink);text-underline-offset:3px}
+.sec a.btn{text-decoration:none}
+.howto{display:grid;grid-template-columns:minmax(6.5rem,auto) minmax(0,1fr);margin:0;border-top:1px solid var(--rule)}
+.howto dt,.howto dd{padding:.6rem 0;border-bottom:1px solid var(--rule);margin:0}
+.howto dt{font:500 .72rem/1.5 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);padding-right:1.2rem}
+.howto dd{color:var(--ink-2);font-size:.93rem}
+.howto dd b{color:var(--ink);font-weight:500}
+.sec .steps li{font-size:.95rem}
+.dintro{display:grid;gap:.6rem;max-width:64ch}
+.dintro h3{font-size:clamp(1.7rem,3.3vw,2.7rem);line-height:1.04;letter-spacing:-.02em}
+.dintro .sub{font-size:1.02rem;color:var(--ink-2)}
+.dataroom{border:1px solid var(--ink);background:var(--panel)}
+.dfig{margin:0;display:grid;gap:.5rem;align-content:start;min-width:0}
+.dfig figcaption,.figx .fnote{font:400 .72rem/1.5 var(--mono);color:var(--ink-2)}
+.figx{margin:0;background:var(--panel);border:1px solid var(--rule);padding:.9rem 1rem;display:grid;gap:.6rem;min-width:0}
+.figx figcaption{font:500 .7rem/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.figx figcaption b{color:var(--ink);font-weight:500}
+.six{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.5rem}
+.six .pan{display:grid;gap:.2rem;align-content:start;padding:.35rem .35rem .4rem;border:1px solid var(--rule);background:var(--paper);cursor:pointer;text-align:center;color:var(--ink);font:500 .72rem/1.3 var(--mono);min-width:0;border-radius:0}
+.six .pan:hover{background:var(--tint)}
+.six .pan[aria-pressed="true"]{border-color:var(--ink);outline:1px solid var(--ink);outline-offset:-2px}
+.six .pan .pw{color:var(--ink-2);font-weight:400;font-size:.66rem}
+.six canvas{width:100%;height:auto;aspect-ratio:300/270;display:block}
+.wr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.9rem}
+.wr svg{width:100%;height:auto;display:block}
+.wr .pt{cursor:pointer}
+.wr .pt:focus-visible{outline:none}
+.wr .pt:focus-visible circle.ring{stroke:var(--ink);stroke-width:3}
+.legend i.s{width:10px;height:10px;background:var(--panel);border:1.5px solid var(--ink-2)}
+.legend i.d{background:none;border-top:2px dotted var(--ink-2);height:0}
+.drawers{display:grid}
+.jobs td{white-space:nowrap}
+.jobs td.id{white-space:normal;overflow-wrap:anywhere;color:var(--ink);min-width:12rem}
+.jobs td.why{white-space:normal;min-width:14rem}
+.jobs tr[aria-current="true"] td{background:var(--tint)}
+.jobs tr.fail td{color:var(--ink-2)}
+.jobs .jb{border:1px solid var(--ink);background:var(--panel);color:var(--ink);border-radius:999px;padding:.35rem .7rem;font:500 .74rem/1 var(--mono);cursor:pointer;white-space:nowrap}
+.jobs .jb:hover{background:var(--tint)}
+.jobs tr[aria-current="true"] .jb{background:var(--ink);color:var(--on-ink)}
+.facts{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.4rem 1rem;margin:0;font:400 .8rem/1.5 var(--mono);color:var(--ink-2);align-content:start}
+.facts dt{color:var(--ink);font-weight:500}
+.facts dd{margin:0}
+.credits{margin:0;padding-inline-start:1.1rem;display:grid;gap:.5rem;color:var(--ink-2);font-size:.9rem;align-content:start}
+.credits b{color:var(--ink);font-weight:500}
+
+@media (max-width:1060px){.desk{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.deck{grid-column:1/-1}.score{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.score>.sc-c{grid-column:1/-1}
+  .p23{grid-template-columns:minmax(0,1fr)}.p3 .pv{max-width:420px;margin-inline:auto;width:100%}}
+@media (max-width:900px){
+  .head{grid-template-columns:minmax(0,1fr)}
+  /* phones and tablets: 1 squeezer, 2 the screen, 3 the MERGER deck right under it, then the rest */
+  .cgrid{grid-template-columns:minmax(0,1fr);grid-template-areas:"sq" "spec" "deck" "alert" "allow" "src" "score" "note"}
+  .desk{display:contents}
+  .u-sq,.u-allow,.deck{border:1px solid var(--rule);background:var(--panel-2);padding:.75rem .85rem}
+  .u-sq{grid-area:sq}.u-allow{grid-area:allow}.deck{grid-area:deck}
+  .score{grid-template-columns:minmax(0,1fr)}
+  .spec .screen{aspect-ratio:16/11}
+  .src .screen{aspect-ratio:4/3;flex:none}
+  .droom-grid{grid-template-columns:minmax(0,1fr)}
+  .six{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .sec .cols{grid-template-columns:minmax(0,1fr)}
+  .p1-grid{grid-template-columns:minmax(0,1fr)}
+  .p1-side{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+}
+@media (max-width:620px){
+  .cgrid{padding:.5rem;gap:.6rem}
+  .spec .screen{aspect-ratio:4/3.5}
+  .alert{display:block}
+  .alert .badge{float:left;width:56px;height:56px;margin:0 .7rem .5rem 0}
+  .alert h3{min-height:56px;display:flex;align-items:center}
+  .alert dl{clear:both}
+  .alert .pub{margin-top:.9rem}
+  .alert .pub h3{min-height:0}
+  .alert p{margin-top:.8rem}
+  .mon-h,.mon-f{font-size:.6rem}
+  .p1-side{grid-template-columns:minmax(0,1fr)}
+  .plate{padding:.6rem .55rem .7rem}
+  .pv.wide{overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;border:1px solid var(--rule)}
+  .pv.wide svg{min-width:640px}
+  .mobhint{display:inline}
+  .lab{grid-template-columns:minmax(0,1fr)}
+  .toolbar{position:static;padding:.6rem;background:var(--panel);border-bottom:1px solid var(--rule)}
+  .tag{position:static;max-width:none;text-align:left;border:0;border-top:1px solid var(--rule);background:var(--panel)}
+  .toolbar .seg button{padding:.45rem .55rem;font-size:.72rem}
+  .ink-bar{flex-wrap:wrap}
+  .tot b{font-size:1.3rem}
+  .merger{width:136px;height:136px}
+  .cbar{padding:.55rem .65rem}
+  .btn.big{padding:.95rem 1.5rem}
+  .pitchbtn{min-width:3.6rem;min-height:2.9rem}
+  .six{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .wr{grid-template-columns:minmax(0,1fr)}
+  .widths{grid-template-columns:minmax(0,1fr) 92px}
+  .ell{width:92px;height:92px}
+  .play .wx{white-space:normal}
+  .howto{grid-template-columns:minmax(0,1fr)}
+  .howto dt{padding-bottom:0;border-bottom:0}
+  .facts{grid-template-columns:minmax(0,1fr)}
+  .facts dd{margin-bottom:.35rem}
+  .dataroom .panel{padding:.85rem .8rem}
+}
+@media (max-width:420px){.ach{grid-template-columns:minmax(0,1fr)}}
+</style>
+
+<div class="wrap">
+  <nav class="wtnr-bar"><a href="https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa">What the Noise Remembers</a><span class="count"><b>Challenge 10</b> · Recover</span></nav>
+
+  <header class="head">
+    <div class="intro">
+      <p class="kicker">Challenge 10 · Quantum-native 2 · Notebook + game</p>
+      <p class="gname"><img id="gname-img" alt="" width="44" height="44">LIGO Night Shift</p>
+      <h1>Catch the first black-hole merger ever heard.</h1>
+      <p class="sub">Livingston, Louisiana, 04:50 on 14 September 2015. You work the night shift. Set the squeezer, hear the real GW150914 chirp, hit MERGER! at its peak and mark its pitch. Every squeezer setting is a real 18-qubit Atlas <code>blur-core-v1</code> output (statevector simulator), and its measured blur caps how sharp each score can be.</p>
+    </div>
+    <div class="intro2">
+      <div class="proof">
+        <span class="hot"><b>18</b> qubits per blur</span>
+        <span><b>6</b> real Atlas jobs</span>
+        <span><b>GW150914</b> LIGO H1 + L1</span>
+        <span><b>8</b> credits, ledgered</span>
+      </div>
+      <ol class="steps">
+        <li><span><b>Set</b> the squeezer dial: five ratios that trade time sharpness for pitch sharpness, plus the isotropic control.</span></li>
+        <li><span><b>Listen</b> to the real chirp, 8&times; slower and 4&times; higher, as the spectrogram scrolls in.</span></li>
+        <li><span><b>Hit MERGER!</b> at the loudest moment, then <b>drag</b> the pitch line to it. No setting can max both scores.</span></li>
+      </ol>
+    </div>
+  </header>
+
+  <section class="console" id="console" aria-label="LIGO Night Shift: the game">
+    <div class="cbar">
+      <div class="site"><span>LLO control room · Livingston, LA</span><span class="clock" id="clock">04:50:45.262 CDT</span><span id="gps">GPS 1126259462.262</span></div>
+      <div class="lamps" aria-label="Status lamps">
+        <span class="lamp on"><i></i>L1 locked</span>
+        <span class="lamp on"><i></i>H1 locked</span>
+        <span class="lamp" id="lamp-run"><i></i>Audio 8&times; slow</span>
+        <span class="lamp" id="lamp-cand"><i></i>Candidate</span>
+      </div>
+    </div>
+
+    <div class="cgrid" id="game">
+      <figure class="mon spec">
+        <div class="mon-h"><span>Spectrogram · real L1 + H1 · <span id="spec-ver">r = 1</span></span><span id="spec-state">standby</span></div>
+        <div class="screen"><canvas id="spec" tabindex="0" aria-label="The real GW150914 spectrogram for the squeezer setting you picked. While it plays, tap or click it to log MERGER. In the pitch step, drag up or down, or use the arrow keys, to place the pitch line; Enter locks it."></canvas></div>
+        <div class="mon-f"><span>ms from merger &rarr; · Hz &uarr; · whitened power, blurred by your setting</span><span id="spec-read"></span></div>
+      </figure>
+
+      <figure class="mon src">
+        <div class="mon-h"><span>Source view · illustration</span><span id="src-t">t = &minus;160 ms</span></div>
+        <div class="screen"><canvas id="lens" tabindex="0" aria-label="Illustration: GW150914's two black holes, dark shadows with photon rings, bending the light of the stars behind them. They spiral in on a chirp fitted to the real data and merge at 0 ms. Between rounds, drag across it or use the arrow keys to scrub through the chirp."></canvas></div>
+        <div class="tm-strip"><svg id="tms" viewBox="0 0 480 84" role="img" aria-label="The two end test masses on their fibres. While the chirp plays they swing apart and together with the real ridge power of this output, enlarged about a million billion times."></svg></div>
+        <div class="mon-f" id="src-cap"><span>36 + 29 suns · orbit from a chirp fitted to the measured ridge</span></div>
+      </figure>
+
+      <div class="desk" id="desk">
+        <div class="unit u-sq">
+          <div class="unit-h">1 · Squeezer <span id="dial-lock">what-if</span></div>
+          <svg id="dial" viewBox="0 0 240 244" role="slider" tabindex="0" aria-label="Squeezer setting" aria-valuemin="0" aria-valuemax="5" aria-valuenow="2"></svg>
+          <div class="setline" id="setline">r = 1 <span>· s_time 0.50 · s_freq 0.50</span></div>
+          <div class="setcap" id="setcap"></div>
+        </div>
+        <div class="unit u-allow">
+          <div class="unit-h">What this setting allows <span>measured</span></div>
+          <div class="meter"><div class="lab"><span>Time sharpness kept</span><b id="m-t">&ndash;</b></div><div class="bar"><i id="mb-t"></i></div></div>
+          <div class="meter"><div class="lab"><span>Pitch sharpness kept</span><b id="m-f">&ndash;</b></div><div class="bar"><i id="mb-f"></i></div></div>
+          <svg id="ellip" viewBox="0 0 240 132" role="img" aria-label="The squeeze ellipse: the blur this setting added in time (width) and in pitch (height), measured from the real outputs"></svg>
+          <p class="jobl" id="jobl"></p>
+        </div>
+        <div class="deck">
+          <div class="unit-h" style="justify-self:stretch">2 · 3 · Operator <span id="phase-name">ready</span></div>
+          <p class="prompt" id="prompt" aria-live="polite"></p>
+          <button type="button" class="merger" id="merger" disabled aria-label="MERGER: log the moment of the peak">MERGER!<small id="merger-sub">arms when you listen</small></button>
+          <div class="btns" id="btns-idle"><button type="button" class="btn big" id="start">&#9654; Start run</button></div>
+          <div class="btns" id="btns-run" hidden><button type="button" class="btn ghost sm" id="pause">&#10074;&#10074; Pause</button><button type="button" class="btn ghost sm" id="abort">&#9632; Abort</button></div>
+          <div class="btns" id="btns-pitch" hidden><button type="button" class="btn ghost sm pitchbtn" id="p-up" aria-label="Raise the pitch line">&#9650;</button><button type="button" class="btn ghost sm pitchbtn" id="p-dn" aria-label="Lower the pitch line">&#9660;</button><button type="button" class="btn big" id="lock">Lock pitch</button></div>
+          <div class="btns" id="btns-done" hidden><button type="button" class="btn ghost sm" id="replay">&#9654; Replay</button><button type="button" class="btn sm" id="next">Next round</button></div>
+        </div>
+      </div>
+
+      <div class="alert" id="alert" hidden aria-live="polite"></div>
+
+      <section class="score" aria-label="Shift log">
+        <div class="sc-a">
+        <div class="unit-h">Shift log <span id="rounds">0 rounds</span></div>
+        <div class="tot">
+          <div><span>Timing</span><b id="s-t">&ndash;</b><em id="s-tm"></em></div>
+          <div><span>Pitch</span><b id="s-f">&ndash;</b><em id="s-fm"></em></div>
+          <div class="all"><span>Total</span><b id="s-all">&ndash;</b><em id="s-best"></em></div>
+        </div>
+        <p class="formula">score per challenge = 1000 &times; sharpness kept &times; aim. Sharpness kept = (original width &divide; this output's width)&sup2;. Aim = e<sup>&minus;&frac12;(miss &divide; 2 widths)&sup2;</sup>. Widths are the real measured ones.</p>
+        </div>
+        <div class="sc-b">
+        <div class="unit-h">Best per setting <span>bar = yours · tick = the most it allows</span></div>
+        <ul class="bests" id="bests"></ul>
+        <div class="row" style="justify-content:flex-end"><button type="button" class="btn ghost sm" id="wipe">Reset scores</button></div>
+        </div>
+        <div class="sc-c">
+        <div class="unit-h">Achievements <span id="ach-n"></span></div>
+        <ul class="ach" id="ach"></ul>
+        </div>
+      </section>
+
+      <div class="note">
+        <p class="honesty">A game built on real numbers. The spectrogram and the audio are the real blur-core-v1 outputs, and every score comes from their real measured widths. The squeezer is an analogy (two blur strengths with a fixed product), not LIGO's squeezed light, and the 2015 detectors had no squeezer at all. The source view is an illustration, not a simulation of general relativity.</p>
+        <div class="row"><button type="button" class="btn ghost sm" id="to-data">Go to the data room &darr;</button><a class="btn ghost sm" href="notebook.html">Read the notebook</a></div>
+      </div>
+    </div>
+
+  </section>
+
+  <nav class="toc" aria-label="Sections on this page">
+    <a href="#how-to-play">How to play</a><a href="#data">The data</a><a href="#plates">The real detector</a><a href="#made">How it was made</a><a href="#science">The science</a><a href="#claims">What this does not claim</a><a href="#credits">Jobs and credits</a>
+  </nav>
+
+  <section class="sec" id="how-to-play" aria-labelledby="h-play">
+    <div class="ink-bar"><h2 id="h-play">How to play</h2><span>the night shift, then the data room</span></div>
+    <div class="cols">
+      <div class="prose">
+        <h3>The night shift</h3>
+        <dl class="howto">
+          <dt>Set</dt><dd>Turn the squeezer dial across the five constant-product ratios and the isotropic control; each is a real engine output.</dd>
+          <dt>Listen</dt><dd><b>START RUN</b> counts 3-2-1, then plays that output's real audio while the spectrogram scrolls in, the lensed black holes merge on the real chirp and the end test masses swing with the real signal.</dd>
+          <dt>Catch</dt><dd>Hit <b>MERGER!</b> at the loudest moment, then drag the pitch line to the peak; tolerances are 2&times; the output's real measured widths, so no setting can max both scores.</dd>
+          <dt>Keys</dt><dd>Space or M logs MERGER while the chirp plays; the arrow keys (or &#9650; &#9660;) move the pitch line and Enter locks it. Pause, Abort, Replay and Next round sit under the button.</dd>
+          <dt>Explore</dt><dd>Tap the numbered parts of three engraved plates (the Livingston site, the O1 interferometer, the quadruple pendulum), or open the data room to cut the real grids by hand.</dd>
+        </dl>
+        <h3>The data room</h3>
+        <ol class="steps">
+          <li><span><b>Squeeze</b> the slider from "keep time sharp" to "keep pitch sharp". Each stop is a real engine output.</span></li>
+          <li><span><b>Listen</b> to any version, 8&times; slower and 4&times; higher.</span></li>
+          <li><span><b>Cut</b> through the ridge: drag on the spectrogram and watch its profiles widen or narrow.</span></li>
+        </ol>
+        <p>Between rounds the squeezer dial and the data room follow each other: turn the dial and the data room shows that output; pick a ratio in the data room, a panel, a point on a chart or a row of the job table, and the dial turns to it.</p>
+      </div>
+      <div class="prose">
+        <h3>How the game scores you</h3>
+      <p>The target is the chirp's loudest moment in the <b>original</b> (unblurred) real spectrogram. Its time is the power-weighted centre of the moments whose total power (20 to 340 Hz) is within 5 % of the loudest, at <span id="peak-t">&ndash;</span> ms on our clock (0 ms = GPS 1126259462.422, close to the published merger time); the original audio is loudest within 2 ms of it. Its pitch is the power-weighted centre frequency of the strongest cells at those moments, <span id="peak-f">&ndash;</span> Hz. The audio and the screen you work from are the blurred output for your setting, which shifts and spreads the peak a little: that is the game.</p>
+      <p><b>Timing</b> = 1000 &times; (original time-width &divide; this output's time-width)&sup2; &times; e<sup>&minus;&frac12;(miss &divide; tolerance)&sup2;</sup>, with the tolerance = 2 &times; this output's measured time-width (18 to 20 ms of real time, 144 to 164 ms in the slowed audio). <b>Pitch</b> is the same with the frequency widths (tolerance 24 to 26 Hz). A catch inside one tolerance raises the candidate alert. Each round starts with a 3, 2, 1 count, so you know when the chirp begins; the screen only shows what has already played.</p>
+      <p>Because the squeezer moves blur from one axis to the other, the time-sharp settings cap pitch and the pitch-sharp settings cap timing: <span id="caps-line"></span>. The highest possible total is at r = 1, where the measured width product is smallest. The blur this setting adds, &radic;(width&sup2; &minus; original width&sup2;), is the squeeze ellipse: its area stays within a few per cent of 14.5 ms&middot;Hz across all five ratios.</p>
+      <p class="honesty">These are game rules made from real measurements, not a detection statistic. LIGO's real low-latency searches found GW150914 without any human pressing a button.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="data" aria-labelledby="h-data">
+    <div class="ink-bar"><h2 id="h-data">The data</h2><span>six real grids &middot; every graph live</span></div>
+    <div class="dintro">
+      <p class="kicker">Challenge 10 · Quantum-native 2 · Notebook + instrument</p>
+      <h3>Squeeze the first black-hole collision ever heard.</h3>
+      <p class="sub">Real LIGO data from GW150914, blurred by an 18-qubit quantum circuit (run on Atlas&rsquo;s simulator) that trades sharpness in time for sharpness in pitch at a fixed product, the way LIGO's squeezed light trades one kind of quantum noise for another.</p>
+    </div>
+    <div class="dataroom" id="dataroom">
+      <div class="droom-bar">
+        <span class="label">Data room · the six real grids, cut by hand</span>
+        <button type="button" class="btn ghost sm" id="to-game">&uarr; Back to the night shift</button>
+      </div>
+      <div class="droom-grid">
+        <figure class="dfig">
+          <div class="stage" id="stage">
+          <canvas id="cv" width="900" height="720" tabindex="0" aria-label="Spectrogram of the GW150914 chirp. Drag or use the arrow keys to move the two cuts; the profiles below update."></canvas>
+          <div class="toolbar">
+            <div class="seg" role="group" aria-label="Show">
+              <button type="button" data-mode="blurred" aria-pressed="true">Blurred</button>
+              <button type="button" data-mode="original" aria-pressed="false">Original</button>
+              <button type="button" data-mode="change" aria-pressed="false">Change</button>
+            </div>
+            <div class="seg" role="group" aria-label="Zoom">
+              <button type="button" data-zoom="chirp" aria-pressed="true">Chirp</button>
+              <button type="button" data-zoom="full" aria-pressed="false">Full grid</button>
+            </div>
+          </div>
+          <div class="tag" id="tag"></div>
+        </div>
+          <figcaption>The spectrogram: whitened power of the real GW150914 chirp (LIGO H1 + L1), shown as the selected blur-core-v1 output, the original, or the change between them. Drag or use the arrow keys to move the two cuts.</figcaption>
+        </figure>
+        <div class="panel">
+          <div class="row split"><label class="label" for="ratio">Squeeze ratio · s<sub>time</sub> / s<sub>freq</sub></label><span class="label" id="r-val"></span></div>
+          <input type="range" id="ratio" min="0" max="4" step="1" value="2">
+          <div class="ticks" id="ticks"></div>
+          <div class="row split ends"><span>&larr; keep time sharp</span><span>keep pitch sharp &rarr;</span></div>
+          <div class="widths">
+            <div class="wm"><span class="label">Ridge time-width</span><div class="v"><b id="w-t">&ndash;</b><span class="d" id="w-td"></span></div><div class="bar"><i id="b-t"></i></div></div>
+            <svg class="ell" id="ell" viewBox="0 0 120 120" role="img" aria-label="Ridge spread: the dashed circle is the original, the solid ink ellipse the selected version, with width changes drawn four times larger"></svg>
+            <div class="wm"><span class="label">Ridge freq-width</span><div class="v"><b id="w-f">&ndash;</b><span class="d" id="w-fd"></span></div><div class="bar"><i id="b-f"></i></div></div>
+          </div>
+          <div class="listen">
+            <div class="row split"><span class="label">Listen &middot; 8&times; slower, 4&times; higher</span><button type="button" class="btn ghost sm" id="stop" aria-label="Stop playback">&#9632; Stop</button></div>
+            <div class="plays" id="plays" role="group" aria-label="Play each version"></div>
+          </div>
+          <div class="row">
+            <button type="button" class="btn ghost sm" id="ridge" aria-pressed="false">Show measured ridge</button>
+            <button type="button" class="btn ghost sm" id="share">Copy link to this view</button>
+            <a class="btn ghost sm" href="notebook.html">Read the notebook</a>
+          </div>
+          <dl class="readout">
+            <dt>Engine</dt><dd><b>blur-core-v1</b> · Atlas statevector simulator (no QPU)</dd>
+            <dt>Params</dt><dd><b id="r-params">&ndash;</b></dd>
+            <dt>Qubits</dt><dd><b>18</b> = 9 + 9 · 257 &times; 257 grid padded to 512 &times; 512 · <span id="r-says"></span></dd>
+            <dt>Job</dt><dd><b id="r-job">&ndash;</b></dd>
+            <dt>Control</dt><dd id="r-iso">&ndash;</dd>
+          </dl>
+        </div>
+      </div>
+      <section class="lab" id="lab" aria-label="Measurements">
+        <div class="ink-bar"><span>Measure the ridge</span><span>drag the cuts</span></div>
+        <figure>
+          <figcaption>Time profile at <b id="c-f">&ndash;</b></figcaption>
+          <canvas id="pt" width="560" height="260" aria-label="Power along time at the selected frequency: original as a pale line, selected version in solid ink. Click, drag or use the left and right arrow keys along it to move the time cut."></canvas>
+          <div class="legend"><span><i class="o"></i>original</span><span><i></i><span class="lgv">&ndash;</span></span></div>
+          <p class="cutw" id="cw-t"></p>
+        </figure>
+        <figure>
+          <figcaption>Frequency profile at <b id="c-t">&ndash;</b></figcaption>
+          <canvas id="pf" width="560" height="260" aria-label="Power along frequency at the selected time: original as a pale line, selected version in solid ink. Click, drag or use the left and right arrow keys along it to move the frequency cut."></canvas>
+          <div class="legend"><span><i class="o"></i>original</span><span><i></i><span class="lgv">&ndash;</span></span></div>
+          <p class="cutw" id="cw-f"></p>
+        </figure>
+        <figure class="trade">
+          <figcaption>The trade: measured ridge widths for all five squeezes</figcaption>
+          <svg id="trade" viewBox="0 0 560 330" role="group" aria-label="Freq-width against time-width for each squeeze ratio. Select a point to switch to it."></svg>
+          <div class="legend"><span><i></i>blur-core-v1 (quantum circuit, simulator)</span><span><i class="c"></i>Gaussian blur (classical reference)</span><span><i class="h"></i>constant width product through r = 1</span></div>
+        </figure>
+      </section>
+      <figure class="figx" id="fig-six">
+        <figcaption>The GW150914 chirp and its five squeezes</figcaption>
+        <div class="six" id="six" role="group" aria-label="The six real grids side by side: tap one to load it"></div>
+        <p class="fnote">time from merger (ms) &middot; GW150914, LIGO H1+L1 &middot; blur-core-v1, 18 qubits, Atlas simulator. The project's hero.png (out/panels.png), drawn live from the same six grids, each titled with its measured ridge widths; tap a panel to load it in the data room.</p>
+      </figure>
+      <figure class="figx" id="fig-wr">
+        <figcaption>Ridge widths against the squeeze ratio r = s_time / s_freq</figcaption>
+        <div class="wr">
+          <svg id="wr-t" viewBox="0 0 400 270" role="group" aria-label="Ridge time-width against the squeeze ratio. Select a point to switch to it."></svg>
+          <svg id="wr-f" viewBox="0 0 400 270" role="group" aria-label="Ridge freq-width against the squeeze ratio. Select a point to switch to it."></svg>
+        </div>
+        <div class="legend"><span><i></i>blur-core-v1 (quantum circuit, simulator)</span><span><i class="c"></i>Gaussian blur (classical reference)</span><span><i class="d"></i>original</span></div>
+        <p class="fnote">The project's out/widths_vs_ratio.png, drawn live from the measured widths: as r rises, the ridge gets wider in time and narrower in pitch. Tap a point to load that ratio.</p>
+      </figure>
+    </div>
+  </section>
+
+
+  <section class="plates" id="plates" aria-label="The real detector, engraved">
+    <div class="ink-bar"><span>The real detector · three engraved plates</span><span>tap a number to find the part</span></div>
+    <svg class="defs" width="0" height="0" aria-hidden="true" focusable="false">
+      <defs>
+        <pattern id="hSil" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="4" stroke="#545BA9" stroke-width=".8"/></pattern>
+        <pattern id="hMet" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V4M0 0H4" stroke="#19238E" stroke-width=".7"/></pattern>
+        <pattern id="hRea" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><line x1="0" y1="0" x2="0" y2="5" stroke="#A1A4CE" stroke-width=".9"/></pattern>
+        <pattern id="hTube" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r=".55" fill="#A1A4CE"/><circle cx="4.5" cy="4.2" r=".45" fill="#A1A4CE"/></pattern>
+        <pattern id="hCon" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="1.6" cy="2" r=".7" fill="#545BA9"/><circle cx="5" cy="5.4" r=".5" fill="#545BA9"/><path d="M4.4 1.2l1 1.6h-2z" fill="#A1A4CE"/><circle cx="2.6" cy="5.8" r=".35" fill="#19238E"/></pattern>
+        <pattern id="hGnd" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)"><line x1="0" y1="0" x2="0" y2="6" stroke="#A1A4CE" stroke-width=".8"/></pattern>
+        <marker id="arw" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L8 4L0 8z" fill="#19238E"/></marker>
+      </defs>
+    </svg>
+
+    <figure class="plate p1">
+      <figcaption>Plate I · LIGO Livingston Observatory, Louisiana <span>· oblique aerial view from the north-north-east, drawn from the published layout · both arms 4 km, foreshortened · covers drawn several times too wide, buildings simplified · an original drawing, not traced</span><span class="mobhint"> · swipe the view sideways &#8596;</span></figcaption>
+      <div class="p1-grid">
+        <div class="pv wide"><svg class="eng" id="site" viewBox="0 0 1000 560" role="img" aria-label="Engraved oblique aerial view of LIGO Livingston: the corner station, two 4 kilometre arms at right angles under concrete covers, cleared corridors and access roads through pine forest with logged stands, and an end station at the end of each arm."></svg></div>
+        <div class="p1-side">
+          <div class="pv"><svg class="eng" id="plan" viewBox="0 0 300 262" role="img" aria-label="Plan with north up: the X arm runs 4 km on a bearing of 252 degrees and the Y arm 4 km on 162 degrees from the corner station; the eye marks where Plate I is seen from.">
+            <text class="h" x="10" y="20">PLAN · TRUE NORTH UP</text>
+            <path d="M214 36 L38.7 91.9" stroke="#19238E" stroke-width="5" stroke-linecap="square"/><path d="M214 36 L38.7 91.9" stroke="#FBFAF9" stroke-width="2.2"/>
+            <path d="M214 36 L269.9 211.3" stroke="#19238E" stroke-width="5" stroke-linecap="square"/><path d="M214 36 L269.9 211.3" stroke="#FBFAF9" stroke-width="2.2"/>
+            <rect x="207" y="29" width="14" height="14" fill="url(#hMet)" stroke="#19238E" transform="rotate(-17.7 214 36)"/>
+            <rect x="33.7" y="86.9" width="10" height="10" fill="#19238E" transform="rotate(-17.7 38.7 91.9)"/>
+            <rect x="264.9" y="206.3" width="10" height="10" fill="#19238E" transform="rotate(-17.7 269.9 211.3)"/>
+            <text x="120" y="54" transform="rotate(-17.7 120 54)" text-anchor="middle">X ARM · 4 km · 252&#176;</text>
+            <text x="263" y="146" transform="rotate(72.3 263 146)" text-anchor="middle">Y ARM · 4 km · 162&#176;</text>
+            <text class="s" x="40" y="114" text-anchor="middle">X END</text>
+            <text class="s" x="262" y="232" text-anchor="end">Y END</text>
+            <text class="s" x="206" y="72" text-anchor="end">corner</text>
+            <g transform="translate(232 14)"><path d="M-6 -4 Q0 -9 6 -4 Q0 1 -6 -4Z" fill="none" stroke="#19238E" stroke-width=".9"/><circle cx="0" cy="-4" r="1.6" fill="#19238E"/><path d="M-3 0 L-12 22 M3 0 L-6 24" stroke="#545BA9" stroke-width=".7" stroke-dasharray="2 2"/></g>
+            <text class="s" x="296" y="30" text-anchor="end">view of</text><text class="s" x="296" y="42" text-anchor="end">Plate I</text>
+            <g transform="translate(46 168)"><path d="M0 -26 L7 6 L0 0 L-7 6Z" fill="#19238E"/><path d="M0 0 L0 22" stroke="#19238E"/><text x="0" y="-31" text-anchor="middle">N</text></g>
+            <g transform="translate(24 230)"><rect x="0" y="0" width="46" height="5" fill="#19238E"/><rect x="46" y="0" width="46" height="5" fill="none" stroke="#19238E"/><text class="s" x="0" y="-5">0</text><text class="s" x="46" y="-5" text-anchor="middle">1</text><text class="s" x="92" y="-5" text-anchor="middle">2 km</text></g>
+            <text class="s" x="296" y="256" text-anchor="end">bearings from GWOSC detector constants</text>
+          </svg></div>
+          <div class="pv"><svg class="eng" id="sect" viewBox="0 0 300 214" role="img" aria-label="Cross-section of an arm: a 1.2 metre steel vacuum tube with a stiffening ring, on a support on a concrete slab, under an arched concrete cover, with the laser beam at the centre.">
+            <text class="h" x="10" y="20">SECTION THROUGH AN ARM</text>
+            <rect x="0" y="186" width="300" height="20" fill="url(#hGnd)"/><line x1="0" y1="186" x2="300" y2="186" stroke="#19238E"/>
+            <rect x="40" y="174" width="220" height="12" fill="url(#hCon)" stroke="#19238E"/>
+            <path d="M36 174 A114 132 0 0 1 264 174 L254 174 A104 122 0 0 0 46 174 Z" fill="url(#hCon)" stroke="#19238E" stroke-width="1.1"/>
+            <circle cx="150" cy="118" r="45" fill="none" stroke="#A1A4CE" stroke-width="2.4"/>
+            <circle cx="150" cy="118" r="40" fill="#FBFAF9" stroke="#19238E" stroke-width="2"/>
+            <circle cx="150" cy="118" r="40" fill="url(#hTube)" opacity=".7"/>
+            <path d="M124 152 L130 174 H170 L176 152" fill="url(#hMet)" stroke="#19238E"/>
+            <circle cx="150" cy="118" r="3.4" fill="#B4541A"/>
+            <path d="M110 68 V62 M190 68 V62 M110 65 H190" stroke="#19238E" stroke-width=".8"/>
+            <text class="s" x="150" y="58" text-anchor="middle">1.2 m</text>
+            <g class="co" data-part="s-a" tabindex="-1"><line x1="220" y1="96" x2="186" y2="104"/><circle cx="230" cy="92" r="9"/><text x="230" y="92">a</text></g>
+            <g class="co" data-part="s-b" tabindex="-1"><line x1="78" y1="92" x2="109" y2="106"/><circle cx="68" cy="88" r="9"/><text x="68" y="88">b</text></g>
+            <g class="co" data-part="s-c" tabindex="-1"><line x1="210" y1="160" x2="174" y2="164"/><circle cx="220" cy="158" r="9"/><text x="220" y="158">c</text></g>
+            <g class="co" data-part="s-d" tabindex="-1"><line x1="20" y1="166" x2="44" y2="178"/><circle cx="14" cy="160" r="9"/><text x="14" y="160">d</text></g>
+            <g class="co" data-part="s-e" tabindex="-1"><line x1="276" y1="70" x2="246" y2="112"/><circle cx="282" cy="62" r="9"/><text x="282" y="62">e</text></g>
+            <g class="co" data-part="s-f" tabindex="-1"><line x1="160" y1="146" x2="152" y2="121"/><circle cx="166" cy="146" r="9" class="sm"/><text x="166" y="146">f</text></g>
+            <text class="s" x="290" y="210" text-anchor="end">tube to scale; cover schematic</text>
+          </svg></div>
+        </div>
+      </div>
+      <ol class="key" aria-label="Key to Plate I">
+        <li><button type="button" data-k="site-1"><b>1</b><span><em>Corner station.</em> The laser, the beam splitter, the input and output optics in their vacuum chambers, the control room and offices. From space the main building looks X-shaped; it is simplified here.</span></button></li>
+        <li><button type="button" data-k="site-2"><b>2</b><span><em>X arm.</em> 4 km of concrete cover over the beam tube, running on a bearing of 252&#176; (west-south-west).</span></button></li>
+        <li><button type="button" data-k="site-3"><b>3</b><span><em>Y arm.</em> 4 km at 90&#176; to the X arm, on 162&#176; (south-south-east).</span></button></li>
+        <li><button type="button" data-k="site-4"><b>4</b><span><em>X end station.</em> The end test mass ETMX hangs here in its vacuum chamber.</span></button></li>
+        <li><button type="button" data-k="site-5"><b>5</b><span><em>Y end station.</em> Home of ETMY.</span></button></li>
+        <li><button type="button" data-k="site-6"><b>6</b><span><em>Access roads</em> in cleared corridors beside each arm.</span></button></li>
+        <li><button type="button" data-k="site-7"><b>7</b><span><em>Loblolly pine.</em> The arms run through a working forest; logging nearby shakes the ground, and the detector has to isolate itself from it.</span></button></li>
+        <li><button type="button" data-k="site-8"><b>8</b><span><em>A logged stand,</em> cut to stumps (placed here for illustration).</span></button></li>
+        <li><button type="button" data-k="s-a"><b>a</b><span><em>Beam tube.</em> 1.2 m across, stainless steel only about 3 mm thick, pumped to about a trillionth of an atmosphere.</span></button></li>
+        <li><button type="button" data-k="s-b"><b>b</b><span><em>Stiffening ring,</em> welded on about every metre so the air outside cannot crush the tube.</span></button></li>
+        <li><button type="button" data-k="s-c"><b>c</b><span><em>Tube support</em> on a precisely levelled slab: over 4 km the Earth curves away by nearly a metre.</span></button></li>
+        <li><button type="button" data-k="s-d"><b>d</b><span><em>Concrete slab.</em></span></button></li>
+        <li><button type="button" data-k="s-e"><b>e</b><span><em>Arched concrete cover</em> that shelters the tube from weather, wind and stray bullets.</span></button></li>
+        <li><button type="button" data-k="s-f"><b>f</b><span><em>The laser beam,</em> 100 kW circulating, in vacuum.</span></button></li>
+      </ol>
+    </figure>
+
+    <div class="p23">
+      <figure class="plate p2">
+        <figcaption>Plate II · The interferometer as it ran on 14 Sep 2015 <span>· plan view, arms broken, recycling folds straightened · mirrors move with the real signal when you play</span><span class="mobhint"> · swipe the plan sideways &#8596;</span></figcaption>
+        <div class="pv wide"><svg class="eng" id="optics" viewBox="0 0 760 660" role="img" aria-label="Engraved plan of the Advanced LIGO interferometer: laser, input mode cleaner, power-recycling mirror, beam splitter, two 4 km Fabry-Perot arm cavities between input and end test masses, vacuum chambers, signal-recycling mirror, output Faraday isolator, output mode cleaner and photodetectors, with a what-if squeezer injecting at the output port and a ring of free test particles showing how a wave stretches space.">
+          <text class="h" x="22" y="34">L1 · ADVANCED LIGO · O1</text>
+          <text class="s" x="22" y="52">plan view · not to scale</text>
+          <text class="s" x="22" y="67">mirror motion enlarged ~10&#185;&#8309;&#215;</text>
+          <text x="22" y="100" id="h-read">SIGNAL NOW · at rest</text>
+          <rect x="22" y="108" width="200" height="8" fill="none" stroke="#19238E"/>
+          <rect x="22" y="108" width="0" height="8" fill="#19238E" id="h-bar"/>
+          <text class="s" x="22" y="146">laser power in O1</text>
+          <text x="22" y="164">20 W &#8594; 700 W &#8594; 100 kW</text>
+          <text class="s" x="22" y="180">into the IFO · on the splitter · each arm</text>
+
+          <!-- vacuum chambers: round BSC, square HAM -->
+          <g fill="none" stroke="#545BA9" stroke-dasharray="4 3">
+            <circle cx="346" cy="420" r="26"/><circle cx="410" cy="420" r="24"/><circle cx="346" cy="356" r="24"/>
+            <circle cx="718" cy="420" r="24"/><circle cx="346" cy="46" r="24"/>
+            <rect x="106" y="374" width="94" height="92"/><rect x="232" y="398" width="44" height="44"/>
+            <rect x="324" y="458" width="44" height="44"/><rect x="314" y="512" width="64" height="130"/>
+          </g>
+          <!-- beam tubes -->
+          <rect x="436" y="406" width="258" height="28" fill="url(#hTube)"/>
+          <path d="M436 406 H694 M436 434 H694" stroke="#19238E"/>
+          <rect x="332" y="70" width="28" height="262" fill="url(#hTube)"/>
+          <path d="M332 70 V332 M360 70 V332" stroke="#19238E"/>
+          <!-- laser light (warm accent: light only) -->
+          <line x1="96" y1="420" x2="132" y2="420" stroke="#B4541A" stroke-width="1.4"/>
+          <path d="M132 420 L162 386 L192 420 Z" fill="none" stroke="#B4541A" stroke-width="1.2"/>
+          <line x1="192" y1="420" x2="254" y2="420" stroke="#B4541A" stroke-width="1.6"/>
+          <line x1="254" y1="420" x2="410" y2="420" stroke="#B4541A" stroke-width="3"/>
+          <line x1="346" y1="420" x2="346" y2="356" stroke="#B4541A" stroke-width="3"/>
+          <rect x="410" y="416" width="308" height="8" fill="#B4541A" opacity=".26"/>
+          <line x1="410" y1="420" x2="718" y2="420" stroke="#B4541A" stroke-width="2.4"/>
+          <rect x="342" y="46" width="8" height="310" fill="#B4541A" opacity=".26"/>
+          <line x1="346" y1="46" x2="346" y2="356" stroke="#B4541A" stroke-width="2.4"/>
+          <line x1="346" y1="446" x2="346" y2="614" stroke="#B4541A" stroke-width="1" stroke-dasharray="3 4"/>
+          <!-- arm breaks: each arm is 4 km -->
+          <g><rect x="552" y="400" width="16" height="40" fill="#FBFAF9"/><path d="M548 402 L556 438 M564 402 L572 438" stroke="#19238E" stroke-width="1.2"/></g>
+          <text class="s" x="560" y="456" text-anchor="middle">X ARM · 4 km</text>
+          <text class="s" x="620" y="398" text-anchor="middle">100 kW circulating</text>
+          <g><rect x="326" y="192" width="40" height="16" fill="#FBFAF9"/><path d="M328 188 L364 196 M328 204 L364 212" stroke="#19238E" stroke-width="1.2"/></g>
+          <text class="s" x="376" y="204">Y ARM · 4 km</text>
+          <!-- laser and input optics -->
+          <rect x="16" y="398" width="80" height="44" fill="url(#hMet)" stroke="#19238E" stroke-width="1.4"/>
+          <rect x="23" y="405" width="66" height="30" fill="#FBFAF9" stroke="#19238E"/>
+          <text x="56" y="424" text-anchor="middle">LASER</text>
+          <text class="s" x="56" y="460" text-anchor="middle">Nd:YAG · 1064 nm</text>
+          <rect x="-2.5" y="-9" width="5" height="18" fill="url(#hSil)" stroke="#19238E" transform="translate(132 420) rotate(-24)"/>
+          <rect x="-2.5" y="-9" width="5" height="18" fill="url(#hSil)" stroke="#19238E" transform="translate(192 420) rotate(24)"/>
+          <rect x="153" y="381" width="18" height="5" fill="url(#hSil)" stroke="#19238E"/>
+          <rect x="251" y="400" width="7" height="40" fill="url(#hSil)" stroke="#19238E" stroke-width="1.2"/>
+          <text class="s" x="218" y="412" text-anchor="middle">20 W</text>
+          <text class="s" x="296" y="412" text-anchor="middle">700 W</text>
+          <!-- beam splitter, test masses (40 kg fused silica) -->
+          <rect x="-4" y="-30" width="8" height="60" fill="url(#hSil)" stroke="#19238E" stroke-width="1.2" transform="translate(346 420) rotate(45)"/>
+          <rect x="404" y="397" width="12" height="46" fill="url(#hSil)" stroke="#19238E" stroke-width="1.4"/>
+          <g id="etmx"><rect x="712" y="397" width="12" height="46" fill="url(#hSil)" stroke="#19238E" stroke-width="1.4"/></g>
+          <rect x="323" y="350" width="46" height="12" fill="url(#hSil)" stroke="#19238E" stroke-width="1.4"/>
+          <g id="etmy"><rect x="323" y="40" width="46" height="12" fill="url(#hSil)" stroke="#19238E" stroke-width="1.4"/></g>
+          <!-- output port -->
+          <rect x="328" y="477" width="36" height="6" fill="url(#hSil)" stroke="#19238E" stroke-width="1.2"/>
+          <rect x="334" y="521" width="24" height="22" fill="#FBFAF9" stroke="#19238E" stroke-width="1.2"/>
+          <path d="M346 525 V539 M341 534 L346 539 L351 534" stroke="#19238E" fill="none"/>
+          <path d="M328 562 L364 562 L328 592 L364 592 Z" fill="none" stroke="#B4541A"/>
+          <g fill="url(#hSil)" stroke="#19238E"><rect x="322" y="559" width="10" height="5"/><rect x="360" y="559" width="10" height="5"/><rect x="322" y="590" width="10" height="5"/><rect x="360" y="590" width="10" height="5"/></g>
+          <circle cx="346" cy="622" r="15" fill="#B4541A" opacity="0" id="pd-glow"/>
+          <path d="M334 614 A12 12 0 0 0 358 614 Z" fill="url(#hMet)" stroke="#19238E" stroke-width="1.4"/>
+          <text x="414" y="484">SIGNAL-RECYCLING MIRROR</text>
+          <text x="414" y="536">OUTPUT FARADAY ISOLATOR</text>
+          <text x="414" y="580">OUTPUT MODE CLEANER</text>
+          <text x="414" y="626">PHOTODETECTORS</text><text class="s" x="414" y="641">the gravitational-wave readout</text>
+          <!-- the what-if squeezer -->
+          <rect x="40" y="504" width="210" height="82" fill="url(#hMet)" stroke="#19238E" stroke-width="1.4"/>
+          <rect x="47" y="511" width="196" height="68" fill="#FBFAF9" stroke="#19238E"/>
+          <text x="56" y="530">SQUEEZER · WHAT-IF</text>
+          <text class="s" x="56" y="547">OPO · PPKTP crystal</text>
+          <text class="s" x="56" y="562">532 nm pump</text>
+          <text class="s" x="56" y="575" id="sqz-set">dial: r = 1</text>
+          <path d="M200 534 L236 534 L200 566 L236 566 Z" fill="none" stroke="#545BA9"/>
+          <rect x="211" y="545" width="14" height="10" fill="url(#hMet)" stroke="#19238E"/>
+          <g fill="url(#hSil)" stroke="#19238E"><rect x="195" y="531" width="10" height="5"/><rect x="231" y="531" width="10" height="5"/><rect x="195" y="563" width="10" height="5"/><rect x="231" y="563" width="10" height="5"/></g>
+          <path d="M150 558 H194" stroke="#B4541A" stroke-dasharray="3 2"/>
+          <g id="sqz-ell" transform="translate(282 562)"><line x1="-20" y1="0" x2="20" y2="0" stroke="#A1A4CE"/><line x1="0" y1="-18" x2="0" y2="18" stroke="#A1A4CE"/><ellipse rx="10" ry="10" fill="rgba(25,35,142,.1)" stroke="#19238E" stroke-width="1.3"/></g>
+          <path d="M243 532 H330" stroke="#19238E" stroke-width="1.3" stroke-dasharray="5 3" marker-end="url(#arw)"/>
+          <!-- a ring of free test particles: how a passing wave stretches space -->
+          <g id="ring" transform="translate(590 200)">
+            <line x1="-100" y1="0" x2="100" y2="0" stroke="#A1A4CE"/><line x1="0" y1="-96" x2="0" y2="96" stroke="#A1A4CE"/>
+            <circle r="70" fill="none" stroke="#A1A4CE" stroke-dasharray="3 3"/>
+            <g id="ring-pts"></g>
+            <text class="s" x="104" y="4">x</text><text class="s" x="4" y="-100">y</text>
+          </g>
+          <text class="s" x="590" y="318" text-anchor="middle">free test particles under a wave passing overhead</text>
+          <text class="s" x="590" y="333" text-anchor="middle">(+ polarisation, enlarged hugely)</text>
+          <!-- callouts -->
+          <g class="co" data-part="opt-1" tabindex="-1"><line x1="56" y1="384" x2="56" y2="398"/><circle cx="56" cy="374" r="10"/><text x="56" y="374">1</text></g>
+          <g class="co" data-part="opt-2" tabindex="-1"><line x1="153" y1="358" x2="153" y2="374"/><circle cx="153" cy="348" r="10"/><text x="153" y="348">2</text></g>
+          <g class="co" data-part="opt-3" tabindex="-1"><line x1="254" y1="384" x2="254" y2="400"/><circle cx="254" cy="374" r="10"/><text x="254" y="374">3</text></g>
+          <g class="co" data-part="opt-4" tabindex="-1"><line x1="302" y1="368" x2="338" y2="410"/><circle cx="296" cy="360" r="10"/><text x="296" y="360">4</text></g>
+          <g class="co" data-part="opt-5" tabindex="-1"><line x1="304" y1="332" x2="324" y2="350"/><circle cx="296" cy="324" r="10"/><text x="296" y="324">5</text><line x1="418" y1="382" x2="414" y2="397"/><circle cx="418" cy="372" r="10"/><text x="418" y="372">5</text></g>
+          <g class="co" data-part="opt-6" tabindex="-1"><line x1="490" y1="388" x2="490" y2="406"/><circle cx="490" cy="378" r="10"/><text x="490" y="378">6</text></g>
+          <g class="co" data-part="opt-7" tabindex="-1"><line x1="718" y1="458" x2="718" y2="443"/><circle cx="718" cy="468" r="10"/><text x="718" y="468">7</text><line x1="386" y1="46" x2="369" y2="46"/><circle cx="396" cy="46" r="10"/><text x="396" y="46">7</text></g>
+          <g class="co" data-part="opt-8" tabindex="-1"><line x1="310" y1="260" x2="332" y2="260"/><circle cx="300" cy="260" r="10"/><text x="300" y="260">8</text></g>
+          <g class="co" data-part="opt-9" tabindex="-1"><line x1="304" y1="458" x2="327" y2="438"/><circle cx="296" cy="466" r="10"/><text x="296" y="466">9</text></g>
+          <g class="co" data-part="opt-10" tabindex="-1"><line x1="386" y1="480" x2="364" y2="480"/><circle cx="396" cy="480" r="10"/><text x="396" y="480">10</text></g>
+          <g class="co" data-part="opt-11" tabindex="-1"><line x1="386" y1="532" x2="358" y2="532"/><circle cx="396" cy="532" r="10"/><text x="396" y="532">11</text></g>
+          <g class="co" data-part="opt-12" tabindex="-1"><line x1="386" y1="576" x2="370" y2="576"/><circle cx="396" cy="576" r="10"/><text x="396" y="576">12</text></g>
+          <g class="co" data-part="opt-13" tabindex="-1"><line x1="386" y1="622" x2="360" y2="619"/><circle cx="396" cy="622" r="10"/><text x="396" y="622">13</text></g>
+          <g class="co" data-part="opt-14" tabindex="-1"><line x1="44" y1="494" x2="52" y2="504"/><circle cx="38" cy="486" r="10"/><text x="38" y="486">14</text></g>
+          <g class="co" data-part="opt-15" tabindex="-1"><line x1="518" y1="128" x2="540" y2="150"/><circle cx="510" cy="120" r="10"/><text x="510" y="120">15</text></g>
+        </svg></div>
+        <ol class="key" aria-label="Key to Plate II">
+          <li><button type="button" data-k="opt-1"><b>1</b><span><em>Laser.</em> Nd:YAG, 1064 nm infrared; 20 W went into the interferometer in O1.</span></button></li>
+          <li><button type="button" data-k="opt-2"><b>2</b><span><em>Input mode cleaner,</em> a triangular ring cavity of three mirrors that smooths the beam's shape.</span></button></li>
+          <li><button type="button" data-k="opt-3"><b>3</b><span><em>Power-recycling mirror.</em> Returns light to the interferometer: 20 W becomes 700 W on the beam splitter.</span></button></li>
+          <li><button type="button" data-k="opt-4"><b>4</b><span><em>Beam splitter.</em> Sends half the light down each arm and recombines what comes back.</span></button></li>
+          <li><button type="button" data-k="opt-5"><b>5</b><span><em>Input test masses</em> ITMX and ITMY, the near mirror of each arm cavity.</span></button></li>
+          <li><button type="button" data-k="opt-6"><b>6</b><span><em>Fabry-Perot arm cavity.</em> 4 km between the two test masses; light bounces until about 100 kW circulates.</span></button></li>
+          <li><button type="button" data-k="opt-7"><b>7</b><span><em>End test masses</em> ETMX and ETMY: 40 kg fused-silica mirrors, 34 cm across and 20 cm thick, each on a quadruple pendulum (Plate III). A wave moves them by about 10<sup>&minus;18</sup> m.</span></button></li>
+          <li><button type="button" data-k="opt-8"><b>8</b><span><em>Beam tube.</em> 1.2 m across, held below 1 &micro;Pa.</span></button></li>
+          <li><button type="button" data-k="opt-9"><b>9</b><span><em>Vacuum chambers.</em> Round BSC chambers hold the core optics, square HAM chambers the input and output optics, all on active seismic isolation.</span></button></li>
+          <li><button type="button" data-k="opt-10"><b>10</b><span><em>Signal-recycling mirror.</em> Shapes which frequencies the detector hears best.</span></button></li>
+          <li><button type="button" data-k="opt-11"><b>11</b><span><em>Output Faraday isolator,</em> a one-way valve for light. It is also where squeezed vacuum is injected.</span></button></li>
+          <li><button type="button" data-k="opt-12"><b>12</b><span><em>Output mode cleaner,</em> a bow-tie cavity that passes only the signal's beam shape.</span></button></li>
+          <li><button type="button" data-k="opt-13"><b>13</b><span><em>Photodetectors.</em> The output port is held nearly dark; the wave's signal is the light that leaks out.</span></button></li>
+          <li><button type="button" data-k="opt-14"><b>14</b><span><em>Squeezer (what-if).</em> An optical parametric oscillator, a PPKTP crystal pumped by 532 nm light, makes squeezed vacuum. LIGO added one for O3 (2019) and a 300 m filter cavity for O4; on 14 Sep 2015 there was none. Its ellipse here follows your dial.</span></button></li>
+          <li><button type="button" data-k="opt-15"><b>15</b><span><em>How it hears.</em> A wave passing overhead stretches space one way while squeezing it the other, so one arm grows as the other shrinks: &Delta;L = h &middot; L, about 4 &times; 10<sup>&minus;18</sup> m for GW150914.</span></button></li>
+        </ol>
+      </figure>
+
+      <figure class="plate p3">
+        <figcaption>Plate III · ETMX on its quadruple pendulum <span>· side view, beam from the left · not to scale</span></figcaption>
+        <div class="pv"><svg class="eng" id="quad" viewBox="0 0 400 660" role="img" aria-label="Engraved side view of an Advanced LIGO quadruple pendulum: a frame on a seismic isolation platform, a top mass hung from blade springs, an upper intermediate mass, a fused-silica penultimate mass, four fused-silica fibres and the 40 kg test mass mirror struck by the laser beam, with the paler reaction chain hanging behind it.">
+          <rect x="60" y="614" width="300" height="18" fill="url(#hMet)" stroke="#19238E" stroke-width="1.2"/>
+          <rect x="40" y="632" width="340" height="16" fill="url(#hGnd)"/>
+          <rect x="90" y="40" width="240" height="14" fill="url(#hMet)" stroke="#19238E" stroke-width="1.2"/>
+          <rect x="90" y="54" width="10" height="440" fill="url(#hMet)" stroke="#19238E"/>
+          <rect x="90" y="550" width="10" height="64" fill="url(#hMet)" stroke="#19238E"/>
+          <rect x="320" y="54" width="10" height="560" fill="url(#hMet)" stroke="#19238E"/>
+          <!-- reaction chain (behind, pale) -->
+          <g stroke="#A1A4CE">
+            <path d="M232 54 V100 M248 54 V100 M228 126 V194 M252 126 V194 M232 216 V284 M248 216 V284 M228 354 V492 M252 354 V492" stroke-width=".8"/>
+            <rect x="210" y="100" width="60" height="26" fill="url(#hRea)"/>
+            <rect x="216" y="194" width="48" height="22" fill="url(#hRea)"/>
+            <rect x="222" y="284" width="36" height="70" fill="url(#hRea)"/>
+            <rect x="224" y="492" width="32" height="64" fill="url(#hRea)"/>
+          </g>
+          <!-- main chain -->
+          <path d="M146 56 L170 60 L146 64 Z M194 56 L170 60 L194 64 Z" fill="#19238E"/>
+          <path d="M162 60 V96 M178 60 V96 M156 126 V190 M184 126 V190 M160 214 V280 M180 214 V280" stroke="#19238E" stroke-width=".8"/>
+          <rect x="138" y="96" width="64" height="30" fill="url(#hMet)" stroke="#19238E" stroke-width="1.2"/>
+          <rect x="144" y="190" width="52" height="24" fill="url(#hMet)" stroke="#19238E" stroke-width="1.2"/>
+          <path d="M140 98 L156 102 L140 106 Z M200 98 L184 102 L200 106 Z M146 192 L160 196 L146 200 Z M194 192 L180 196 L194 200 Z" fill="#FBFAF9" stroke="#19238E" stroke-width=".8"/>
+          <rect x="148" y="280" width="44" height="76" fill="url(#hSil)" stroke="#19238E" stroke-width="1.2"/>
+          <line id="fib-a" x1="152" y1="352" x2="152" y2="488" stroke="#19238E" stroke-width=".6"/>
+          <line id="fib-b" x1="188" y1="352" x2="188" y2="488" stroke="#19238E" stroke-width=".6"/>
+          <rect x="0" y="516" width="148" height="12" fill="#B4541A" opacity=".26" id="q-band"/>
+          <line x1="0" y1="522" x2="148" y2="522" stroke="#B4541A" stroke-width="2.4" id="q-beam"/>
+          <g id="tm-swing">
+            <rect x="148" y="484" width="44" height="76" fill="url(#hSil)" stroke="#19238E" stroke-width="1.6"/>
+            <line x1="148" y1="484" x2="148" y2="560" stroke="#19238E" stroke-width="3"/>
+            <path d="M144 486 H152 M188 486 H196" stroke="#19238E" stroke-width="2"/>
+          </g>
+          <path d="M148 572 V580 M192 572 V580 M148 576 H192" stroke="#19238E" stroke-width=".8"/>
+          <text class="s" x="170" y="594" text-anchor="middle">20 cm</text>
+                    <text class="s" x="170" y="608" text-anchor="middle">34 cm across</text>
+          <text class="s" x="24" y="512">from ITMX</text>
+          <text class="h" x="20" y="24">ETMX · QUADRUPLE PENDULUM</text>
+          <!-- callouts -->
+          <g class="co" data-part="q-1" tabindex="-1"><line x1="60" y1="111" x2="138" y2="111"/><circle cx="50" cy="111" r="10"/><text x="50" y="111">1</text></g>
+          <g class="co" data-part="q-2" tabindex="-1"><line x1="60" y1="202" x2="144" y2="202"/><circle cx="50" cy="202" r="10"/><text x="50" y="202">2</text></g>
+          <g class="co" data-part="q-3" tabindex="-1"><line x1="60" y1="318" x2="148" y2="318"/><circle cx="50" cy="318" r="10"/><text x="50" y="318">3</text></g>
+          <g class="co" data-part="q-4" tabindex="-1"><line x1="60" y1="420" x2="152" y2="420"/><circle cx="50" cy="420" r="10"/><text x="50" y="420">4</text></g>
+          <g class="co" data-part="q-5" tabindex="-1"><line x1="60" y1="468" x2="150" y2="496"/><circle cx="50" cy="466" r="10"/><text x="50" y="466">5</text></g>
+          <g class="co" data-part="q-6" tabindex="-1"><line x1="356" y1="300" x2="258" y2="318"/><circle cx="366" cy="298" r="10"/><text x="366" y="298">6</text></g>
+          <g class="co" data-part="q-7" tabindex="-1"><line x1="50" y1="542" x2="60" y2="524"/><circle cx="46" cy="552" r="10"/><text x="46" y="552">7</text></g>
+          <g class="co" data-part="q-8" tabindex="-1"><line x1="356" y1="94" x2="330" y2="80"/><circle cx="366" cy="100" r="10"/><text x="366" y="100">8</text></g>
+          <g class="co" data-part="q-9" tabindex="-1"><line x1="374" y1="620" x2="360" y2="622"/><circle cx="382" cy="614" r="10"/><text x="382" y="614">9</text></g>
+        </svg></div>
+        <ol class="key" aria-label="Key to Plate III">
+          <li><button type="button" data-k="q-1"><b>1</b><span><em>Top mass,</em> hung on wires from cantilever blade springs.</span></button></li>
+          <li><button type="button" data-k="q-2"><b>2</b><span><em>Upper intermediate mass.</em> Each stage filters out more ground motion.</span></button></li>
+          <li><button type="button" data-k="q-3"><b>3</b><span><em>Penultimate mass,</em> 40 kg of fused silica.</span></button></li>
+          <li><button type="button" data-k="q-4"><b>4</b><span><em>Four fused-silica fibres,</em> about 0.4 mm thick, welded on: glass keeps thermal noise low.</span></button></li>
+          <li><button type="button" data-k="q-5"><b>5</b><span><em>Test mass (the mirror),</em> 40 kg fused silica, 34 cm across, 20 cm thick, with its reflective coating facing the beam. It swings while you play.</span></button></li>
+          <li><button type="button" data-k="q-6"><b>6</b><span><em>Reaction chain,</em> a second pendulum hanging just behind, used to steer the mirror without touching it.</span></button></li>
+          <li><button type="button" data-k="q-7"><b>7</b><span><em>The arm beam,</em> arriving from the input test mass 4 km away.</span></button></li>
+          <li><button type="button" data-k="q-8"><b>8</b><span><em>Suspension frame.</em></span></button></li>
+          <li><button type="button" data-k="q-9"><b>9</b><span><em>Active seismic-isolation platform.</em> Together the stages cut ground motion by more than ten orders of magnitude above 10 Hz.</span></button></li>
+        </ol>
+      </figure>
+    </div>
+  </section>
+
+  <section class="sec" id="made" aria-labelledby="h-made">
+    <div class="ink-bar"><h2 id="h-made">How it was made</h2><span>open a drawer</span></div>
+    <div class="drawers">
+      <details class="drawer"><summary>What the quantum engine did</summary><div class="body">
+      <p>Atlas <code>blur-core-v1</code> amplitude-encodes the 257 &times; 257 spectrogram grid into a statevector on a Gray-coded register, so neighbouring grid points differ by one bit. Each axis is padded to 512, which makes 9 + 9 = 18 qubits; the engine reports "Recovered 18-qubit grid from measurement" for every job. An R<sub>x</sub> rotation is applied to each qubit, with one strength for the 9 time qubits and another for the 9 frequency qubits, at <code>reach = 0</code> (local). The exact output probabilities (no shots) are read back and rescaled to the input's maximum.</p>
+      <p>Six jobs: five ratios on <code>s_time &times; s_freq = 0.25</code> (r = 1/4, 1/2, 1, 2, 4) and an isotropic control with a single scalar strength 0.5, which matched r = 1 to the last digit. The blocky stripes along the more strongly blurred axis are the Gray-coded register showing through, not anything in the gravitational wave.</p>
+      <p>Because the control matched r = 1 exactly, the ISO position on the squeezer dial plays r = 1's audio and grid; its own job ID and widths are listed in Jobs and credits.</p>
+      </div></details>
+      <details class="drawer"><summary>Why 18 qubits and not 24</summary><div class="body">
+      <p>We aimed for the engine's 24-qubit ceiling and measured each limit before stepping down:</p>
+      <div class="tbl"><table>
+        <tr><th>Grid</th><th>Qubits</th><th>What happened</th></tr>
+        <tr><td>4096 &times; 4096</td><td>24</td><td>47.7 MB request rejected with HTTP 413: the API caps bodies at 1 MiB (free probe)</td></tr>
+        <tr><td>2048 &times; 2048</td><td>22</td><td>12 MB body, over the same cap (size measured, not sent)</td></tr>
+        <tr><td>640 &times; 640</td><td>20</td><td>Body fit, the circuit ran, then 2 jobs failed: the ~8 MB result exceeded Atlas's internal 2 MB payload limit (TMPRL1103). 2 credits lost, ledgered.</td></tr>
+        <tr><td>257 &times; 257</td><td>18</td><td>Completed. A 2-D grid needs at least 513 &times; 513 values for 20 qubits, whose result cannot fit.</td></tr>
+      </table></div>
+      </div></details>
+      <details class="drawer"><summary>Data, sound and the notebook</summary><div class="body">
+      <ul>
+        <li><b>Data:</b> GW150914 strain, LIGO Hanford (H1) and Livingston (L1), 32 s at 4096 Hz, from the Gravitational Wave Open Science Center (gwosc.org), CC BY 4.0. Whitened, bandpassed 20 to 500 Hz, and turned into a Gaussian-window STFT (&sigma; = 12 ms) from &minus;300 to +100 ms around merger; H1 and L1 power averaged after a 6.9 ms shift.</li>
+        <li><b>Widths:</b> RMS widths of time profiles at 90 to 220 Hz and of frequency profiles at &minus;90 to &minus;20 ms, around one ridge track taken from the original, after removing each profile's median. The cut readouts on this page use the same rule at the cut you choose.</li>
+        <li><b>Sound:</b> Griffin-Lim resynthesis (Griffin &amp; Lim, 1984) of each grid from &minus;160 to +100 ms, 8&times; slower and 4&times; higher. Every version gets the same noise gate (the original's 95th percentile), the same starting phase and one shared gain.</li>
+        <li><b>Notebook:</b> <a href="notebook.html">read it here</a>. <code>squeezed_chirp.ipynb</code> is the brief's deliverable: the whole workflow, from GWOSC to the Atlas API calls to these WAVs and the credit ledger, with ipywidgets sliders. It replays from cache with <code>MOTH_FREEZE=1</code>.</li>
+        <li><b>Count-in:</b> the three beeps before each round are synthesised interface tones, not data.</li>
+        <li><b>Your scores</b> stay in this browser (local storage) and go nowhere else.</li>
+      </ul>
+      <p>This research has made use of data obtained from the Gravitational Wave Open Science Center (gwosc.org), a service of the LIGO Scientific Collaboration, the Virgo Collaboration, and KAGRA.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="sec" id="science" aria-labelledby="h-sci">
+    <div class="ink-bar"><h2 id="h-sci">The science</h2><span>open a drawer</span></div>
+    <div class="drawers">
+      <details class="drawer"><summary>How LIGO really squeezes light</summary><div class="body">
+      <p>A laser's quantum noise has two parts, or quadratures, whose uncertainties trade against each other. In a gravitational-wave detector, phase-quadrature noise is shot noise and dominates at high frequency; amplitude-quadrature noise pushes the mirrors around (radiation pressure) and dominates at low frequency.</p>
+      <p>Squeezed light makes one quadrature quieter by making the other louder. An optical parametric oscillator (a PPKTP crystal pumped with 532 nm light) makes squeezed vacuum, which enters the detector through the output port by way of the output Faraday isolator. LIGO first ran with squeezed light through a whole observing run in O3 (2019), gaining up to 3 dB above 50 Hz (Tse et al., <i>Phys. Rev. Lett.</i> 123, 231107, 2019). GW150914 was recorded in 2015, before that. That is why the squeezer in the game is labelled &ldquo;what-if&rdquo;.</p>
+      <p>For O4 each detector gained a 300 m filter cavity that rotates the squeezing with frequency, so high frequencies get quieter shot noise and low frequencies quieter radiation pressure. Ganapathy et al. (<i>Phys. Rev. X</i> 13, 041021, 2023) report detector noise cut by up to 4.0 dB at Hanford and 5.8 dB at Livingston, a 15 to 18 % longer range, and up to 65 % more detections expected.</p>
+      <p>Here the "squeeze" is only an analogy: two blur strengths with a fixed product, one per axis of a spectrogram. The game's lesson (you cannot sharpen both axes at once; put the blur where it hurts you least) mirrors the logic of frequency-dependent squeezing, but nothing here simulates light.</p>
+      </div></details>
+      <details class="drawer"><summary>The night of 14 September 2015</summary><div class="body">
+      <p>At 09:50:45 UTC (04:50 in Livingston, 02:50 in Hanford) both LIGO detectors recorded GW150914. It reached Livingston first and Hanford 6.9 ms later. A low-latency search for generic transients reported it within three minutes. The detectors were still in engineering mode: the first observing run, O1, formally began four days later, on 18 September.</p>
+      <p>Published estimates (Abbott et al., <i>Phys. Rev. Lett.</i> 116, 061102, 2016): black holes of 36 and 29 solar masses merged into one of 62; about 3.0 solar masses (3.0 M&#9737;c&sup2;) left as gravitational waves, with a peak power of about 3.6 &times; 10<sup>56</sup> erg/s (200 M&#9737;c&sup2; per second); luminosity distance about 410 Mpc (redshift 0.09, roughly 1.3 billion light years); peak strain 1.0 &times; 10<sup>&minus;21</sup>; the signal swept from 35 to 250 Hz; network SNR 24; false-alarm rate below 1 per 203 000 years (more than 5.1&sigma;). The later GWTC-1 catalogue values on GWOSC are 35.6 and 30.6 merging to 63.1 solar masses, 3.1 M&#9737;c&sup2; radiated, at about 440 Mpc.</p>
+      <p>The control-room clock in the game is GPS time converted to UTC (GPS &minus; 17 s in 2015) and then to Central Daylight Time. It runs 8&times; slow, with the audio.</p>
+      </div></details>
+      <details class="drawer"><summary>The real detector, part by part</summary><div class="body">
+      <p>Each LIGO site is an L of two 4 km arms at right angles. Livingston has a corner station (laser, beam splitter, input optics, control room) and an end station at the end of each arm. The beams travel in 1.2 m stainless-steel tubes held below 1 &micro;Pa, under arched concrete covers, through a working loblolly-pine forest. The steel tube wall is only about 3 mm thick, ringed with stiffeners about every metre, and the slab under it was levelled so precisely that the beam stays centred although the Earth curves away by nearly a metre over 4 km. At Livingston the X arm runs on a bearing of 252.3&deg; and the Y arm on 162.3&deg; (GWOSC detector constants).</p>
+      <p>In O1 a 20 W Nd:YAG laser at 1064 nm passed an input mode cleaner and a power-recycling mirror, which built it to 700 W on the beam splitter; each arm is a Fabry-Perot cavity between an input and an end test mass that stored about 100 kW. The test masses are 40 kg fused-silica mirrors, 34 cm across, each the last stage of a quadruple pendulum on an active seismic-isolation platform. A signal-recycling mirror shapes the response, and the gravitational-wave signal leaves through the dark port, past the output Faraday isolator and the output mode cleaner, to photodetectors.</p>
+      <p>The three plates are original drawings made from these published facts, not traced from photographs. Plate I is projected in the page from the true geometry (two 4 km arms at 90&deg;, seen from about 1.7 km beyond the corner); the covers are drawn several times too wide so they show, the buildings are simplified, and the logged stands are placed for illustration. Plate II is a plan with the arms broken and the recycling folds (PR2, PR3, SR2, SR3) drawn straight. Plate III is a side view of the quadruple pendulum, not to scale. Tap any number to find its part.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="sec" id="claims" aria-labelledby="h-claims">
+    <div class="ink-bar"><h2 id="h-claims">What this does not claim</h2><span>honesty notes</span></div>
+    <div class="prose">
+      <p class="honesty">This is an analogy to squeezing, not squeezed light. The quantum circuit ran on Atlas's classical statevector simulator, not on quantum hardware. The fixed product is a product of rotation strengths: the measured width product is lowest at r = 1 (114.6 ms&middot;Hz) and rises at both ends, unlike an ideal squeezed state. A classical Gaussian blur shows the same qualitative trade, so nothing here is a quantum advantage, and nothing improves gravitational-wave detection. Whitening, filtering, the spectrogram, the width measurements and the audio are all classical. The game's scores are classical too.</p>
+      <p class="honesty">The game is fiction around real data: you play an imagined operator, and real alerts come from software. The source view is an illustration: point-lens bending of a made-up star field around shadows sized by the published masses, with the orbit following a Newtonian chirp f &prop; (t<sub>c</sub> &minus; t)<sup>&minus;3/8</sup> fitted to the measured ridge between &minus;89 and &minus;21 ms; sizes and separations are not to scale, there is no accretion disc, and the ring-down is a drawn relaxation. The end test masses in the live strip and on Plates II and III, and the ring of test particles, move with the real ridge power of your setting at each moment, times the phase of the fitted chirp: the size of the motion is enlarged about 10<sup>15</sup> times, and the swing is drawn, not measured.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="credits" aria-labelledby="h-credits">
+    <div class="ink-bar"><h2 id="h-credits">Jobs and credits</h2><span id="jobs-sum"></span></div>
+    <div class="tbl"><table class="jobs" aria-label="Every paid Atlas job behind this page">
+      <thead><tr><th>Setting</th><th>Strength</th><th>Status</th><th>Job ID</th><th>Result</th></tr></thead>
+      <tbody id="jobs-b"></tbody>
+    </table></div>
+    <div class="cols">
+      <dl class="facts">
+        <dt>Engine</dt><dd>Atlas <code>blur-core-v1</code> (Quantum Blur Core), 1 credit per run, statevector simulator. It has no QPU mode.</dd>
+        <dt>Qubits</dt><dd>18 per job: the 257 &times; 257 grid is padded to a 512 &times; 512 register, 9 + 9 qubits; the engine reports "Recovered 18-qubit grid from measurement" for every job.</dd>
+        <dt>Params</dt><dd><code>strength = [s_time, s_freq]</code> with <code>s_time &times; s_freq = 0.25</code> at r = 1/4, 1/2, 1, 2, 4, plus an isotropic control with scalar <code>strength = 0.5</code>; <code>reach = 0</code>, <code>style = "x"</code>, <code>max_qubits = 24</code>, no <code>shots</code> (exact probabilities).</dd>
+        <dt>Credits</dt><dd>8 of the 12-credit cap ledgered: 6 completed jobs and 2 failed ones.</dd>
+        <dt>Replay</dt><dd>This page replays the cached outputs and never calls the Atlas API. The notebook replays from cache with <code>MOTH_FREEZE=1</code>.</dd>
+      </dl>
+      <ul class="credits">
+        <li><b>Data:</b> GW150914 strain, LIGO Hanford (H1) and Livingston (L1), from the Gravitational Wave Open Science Center (gwosc.org), CC BY 4.0, changed by whitening, filtering, the spectrogram, quantum blurring and resynthesis.</li>
+        <li><b>Papers:</b> Abbott et al., <i>Phys. Rev. Lett.</i> 116, 061102 (2016); Tse et al., <i>Phys. Rev. Lett.</i> 123, 231107 (2019); Ganapathy et al., <i>Phys. Rev. X</i> 13, 041021 (2023); Griffin &amp; Lim, <i>IEEE Trans. ASSP</i> 32, 236 (1984); Wootton, FDG '20 (2020), the Quantum Blur method.</li>
+        <li><b>Engine:</b> Moth Quantum Atlas <code>blur-core-v1</code>, built on the <a href="https://github.com/qiskit-community/QuantumBlur" rel="noopener">QuantumBlur</a> approach.</li>
+        <li><b>Drawings and sprites:</b> the plates, the lensed black holes and the badges are original drawings in the shared palette, made from published facts; no photograph was embedded, traced or copied. The full list is in the project's CREDITS.md.</li>
+      </ul>
+    </div>
+  </section>
+  <!--NAV-->
+  <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page. Not affiliated with LIGO.</p>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const META = /*META*/{};
+const GRIDS = /*GRIDS*/{};
+</script>
+<script>
+// ---- pure logic (no DOM): unit-tested by tests/test_page.js ----
+const RATIO_KEYS = ['r0p25', 'r0p5', 'r1', 'r2', 'r4'];
+const RATIO_LABEL = {original: 'Original', r0p25: 'r = 1/4', r0p5: 'r = 1/2', r1: 'r = 1', r2: 'r = 2', r4: 'r = 4', iso: 'isotropic control'};
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+function decodeGrid(b64) {
+  const bin = atob(b64), n = bin.length >> 1, out = new Uint16Array(n);
+  for (let i = 0; i < n; i++) out[i] = bin.charCodeAt(2 * i) | (bin.charCodeAt(2 * i + 1) << 8);
+  return out;
+}
+const timeOf = (i, M) => M.t0 + i * M.dt;                       // s, frame centre
+const freqOf = (j, M) => M.f0 + j * M.df;                       // Hz, bin centre
+const cellOfTime = (t, M) => clamp(Math.round((t - M.t0) / M.dt), 0, M.nt - 1);
+const cellOfFreq = (f, M) => clamp(Math.round((f - M.f0) / M.df), 0, M.nf - 1);
+function profileT(g, j, M) { const p = new Float64Array(M.nt); for (let i = 0; i < M.nt; i++) p[i] = g[i * M.nf + j] / M.scale; return p; }
+function profileF(g, i, M) { const p = new Float64Array(M.nf); for (let j = 0; j < M.nf; j++) p[j] = g[i * M.nf + j] / M.scale; return p; }
+function median(a) {
+  const s = Float64Array.from(a).sort(), n = s.length;
+  return n % 2 ? s[(n - 1) / 2] : 0.5 * (s[n / 2 - 1] + s[n / 2]);
+}
+// RMS width (in cells) of a profile within +-half of centre, after removing the profile's median.
+// Same rule as chirp._moment_width in Python. Returns [width, peak above floor].
+function momentWidth(p, c, half) {
+  const lo = Math.max(0, c - half), hi = Math.min(p.length, c + half + 1), med = median(p);
+  let s = 0, sx = 0, mx = 0;
+  for (let k = lo; k < hi; k++) { const v = Math.max(p[k] - med, 0); s += v; sx += k * v; mx = Math.max(mx, v); }
+  if (s <= 0) return [NaN, 0];
+  const mu = sx / s; let v2 = 0;
+  for (let k = lo; k < hi; k++) { const v = Math.max(p[k] - med, 0); v2 += (k - mu) * (k - mu) * v; }
+  return [Math.sqrt(v2 / s), mx];
+}
+const argmax = p => { let b = 0; for (let k = 1; k < p.length; k++) if (p[k] > p[b]) b = k; return b; };
+// Width of the ridge at one cut: centred on the ORIGINAL profile's peak, for both versions.
+// Returns null when the cut misses the ridge (original peak below the grid's 95th percentile level).
+function cutWidths(orig, cur, half, minPeak) {
+  const c = argmax(orig);
+  if (orig[c] < minPeak) return null;
+  return {c, o: momentWidth(orig, c, half)[0], v: momentWidth(cur, c, half)[0]};
+}
+const audioTime = (frac, A) => A.t0 + clamp(frac, 0, 1) * (A.t1 - A.t0);   // source time (s) during playback
+// Page palette (paper + one ultramarine ink), mirrored from common/brand.css for canvas and SVG drawing.
+const PAL = {paper: '#FBFAF9', panel: '#FFFFFF', panel2: '#F0F0F4', rule: '#D3D3E6', ink: '#19238E', ink2: '#545BA9',
+             ink3: '#A1A4CE', tint2: '#D3D3E6', warn: '#B4541A', tint: 'rgba(25,35,142,.08)', veil: 'rgba(251,250,249,.85)'};
+const STOPS = [[251, 250, 249], [206, 209, 234], [138, 145, 207], [62, 73, 170], [25, 35, 142], [11, 16, 74]];
+function lut(x) {                                   // x in [0,1] -> paper .. pale ink .. ultramarine .. deep ink
+  x = clamp(x, 0, 1) * (STOPS.length - 1); const k = Math.min(STOPS.length - 2, Math.floor(x)), u = x - k;
+  return STOPS[k].map((c, n) => Math.round(c + (STOPS[k + 1][n] - c) * u));
+}
+// the monitors' "night" map: the ink screen glows paper where the power is (same palette, reversed)
+const NIGHT = [[25, 35, 142], [52, 62, 158], [84, 91, 169], [161, 164, 206], [211, 211, 230], [251, 250, 249]];
+function lutNight(x) {
+  x = clamp(x, 0, 1) * (NIGHT.length - 1); const k = Math.min(NIGHT.length - 2, Math.floor(x)), u = x - k;
+  return NIGHT[k].map((c, n) => Math.round(c + (NIGHT[k + 1][n] - c) * u));
+}
+function divLut(d) {                                // d in [-1,1]: gained -> ink, lost -> burnt orange, on paper
+  const a = Math.sqrt(clamp(Math.abs(d), 0, 1)), to = d >= 0 ? [25, 35, 142] : [180, 84, 26], base = [251, 250, 249];
+  return base.map((c, n) => Math.round(c + (to[n] - c) * a));
+}
+function formatToken(s) {
+  return `${s.v}_${s.mode[0]}_${s.zoom[0]}_f${Math.round(s.f)}_t${Math.round(s.t)}${s.ridge ? '_k' : ''}${s.view === 'data' ? '_d' : ''}`;
+}
+function parseToken(h) {
+  const m = String(h || '').replace(/^#/, '').match(/^(r0p25|r0p5|r1|r2|r4)_(b|o|c)_(c|f)_f(\d{1,3})_t(-?\d{1,3})(_k)?(_d)?$/);
+  if (!m) return null;
+  return {v: m[1], mode: {b: 'blurred', o: 'original', c: 'change'}[m[2]], zoom: m[3] === 'c' ? 'chirp' : 'full',
+          f: +m[4], t: +m[5], ridge: !!m[6], view: m[7] ? 'data' : 'scene'};
+}
+const pct = (v, o) => (v / o - 1) * 100;
+const sgn = x => (x >= 0 ? '+' : '−') + Math.abs(x).toFixed(1) + ' %';
+
+// ---- the chirp model behind the source view and the mirrors (fitted to the cached data) ----
+const TAU = 2 * Math.PI;
+// Newtonian chirp f = A (tc - t)^(-3/8), least squares in log f, fitted to the measured inspiral ridge [[t s, f Hz], ...]
+function fitChirp(pts) {
+  let best = null;
+  for (let k = 0; k <= 250; k++) {
+    const tc = -0.02 + k * 0.0002;
+    if (pts.some(q => tc - q[0] <= 1e-6)) continue;
+    const xs = pts.map(q => Math.log(q[1]) + 0.375 * Math.log(tc - q[0]));
+    const la = xs.reduce((a, b) => a + b, 0) / xs.length, err = xs.reduce((a, x) => a + (x - la) * (x - la), 0);
+    if (!best || err < best.err) best = {A: Math.exp(la), tc, err};
+  }
+  return best;
+}
+const chirpTop = C => C.A * Math.pow(Math.max(C.tc, 5e-4), -0.375);           // GW frequency at merger (t = 0)
+const chirpF = (t, C) => t >= 0 ? chirpTop(C) : Math.min(chirpTop(C), C.A * Math.pow(Math.max(C.tc, 5e-4) - t, -0.375));
+function phaseTable(C, t0, t1, dt) {                   // GW phase (rad): trapezoid integral of 2 pi f
+  const n = Math.round((t1 - t0) / dt) + 1, ph = new Float64Array(n);
+  for (let k = 1; k < n; k++) ph[k] = ph[k - 1] + Math.PI * dt * (chirpF(t0 + (k - 1) * dt, C) + chirpF(t0 + k * dt, C));
+  return {t0, dt, ph};
+}
+function phaseAt(P, t) {
+  const x = clamp((t - P.t0) / P.dt, 0, P.ph.length - 1), k = Math.min(P.ph.length - 2, Math.floor(x));
+  return P.ph[k] + (P.ph[k + 1] - P.ph[k]) * (x - k);
+}
+function timeAtPhase(P, v) {                          // inverse of phaseAt (the phase only increases)
+  let lo = 0, hi = P.ph.length - 1;
+  if (v <= P.ph[0]) return P.t0;
+  if (v >= P.ph[hi]) return P.t0 + hi * P.dt;
+  while (hi - lo > 1) { const m = (lo + hi) >> 1; if (P.ph[m] <= v) lo = m; else hi = m; }
+  return P.t0 + (lo + (v - P.ph[lo]) / (P.ph[hi] - P.ph[lo])) * P.dt;
+}
+const separation = (f, fTop) => Math.pow(f / fTop, -2 / 3);  // Kepler: d ~ f_orb^(-2/3), 1 at merger
+function ridgePower(g, M, lo, hi) {                   // per time column: the strongest power in the lo..hi Hz band
+  const j0 = cellOfFreq(lo, M), j1 = cellOfFreq(hi, M), out = new Float64Array(M.nt);
+  for (let i = 0; i < M.nt; i++) { let m = 0; for (let j = j0; j <= j1; j++) m = Math.max(m, g[i * M.nf + j]); out[i] = m / M.scale; }
+  return out;
+}
+function loudness(rp, t, M, floor, top) {             // 0..1 amplitude above the noise floor at time t (s)
+  const x = clamp((t - M.t0) / M.dt, 0, M.nt - 1), k = Math.min(M.nt - 2, Math.floor(x)), v = rp[k] + (rp[k + 1] - rp[k]) * (x - k);
+  return Math.sqrt(clamp((v - floor) / (top - floor), 0, 1));
+}
+
+// ---- the game: every number comes from the cached outputs and their measured widths ----
+const DIAL = ['r0p25', 'r0p5', 'r1', 'r2', 'r4', 'iso'];
+const DIAL_LABEL = {r0p25: '1/4', r0p5: '1/2', r1: '1', r2: '2', r4: '4', iso: 'ISO'};
+const gridKey = k => (k === 'iso' ? 'r1' : k);         // the isotropic control's output equals r = 1's exactly (META.iso.maxdiff = 0)
+function versionOf(k, M) {                            // widths, strengths and job for one dial position
+  const v = M.versions.find(x => x.key === gridKey(k));
+  if (k !== 'iso') return v;
+  return Object.assign({}, v, {key: 'iso', tw: M.iso.tw, fw: M.iso.fw, job_id: M.iso.job_id, strength: [M.iso.strength, M.iso.strength], scalar: true});
+}
+// The game's target, the chirp's loudest moment (same rule as build_web.peak_of): time = power-weighted centre of the
+// columns within thr of the loudest column's broadband power; pitch = power-weighted centre frequency of the cells in
+// those columns at or above fthr x their column's maximum
+function peakOf(g, M, W) {
+  const I = [], J = [];
+  for (let i = 0; i < M.nt; i++) { const t = timeOf(i, M); if (t >= W.t[0] && t <= W.t[1]) I.push(i); }
+  for (let j = 0; j < M.nf; j++) { const f = freqOf(j, M); if (f >= W.f[0] && f <= W.f[1]) J.push(j); }
+  const col = I.map(i => J.reduce((a, j) => a + g[i * M.nf + j] / M.scale, 0)), cmax = Math.max(...col);
+  let s = 0, st = 0, w = 0, sf = 0;
+  I.forEach((i, q) => {
+    if (col[q] < W.thr * cmax) return;
+    s += col[q]; st += col[q] * timeOf(i, M);
+    let m = 0; for (const j of J) m = Math.max(m, g[i * M.nf + j] / M.scale);
+    for (const j of J) { const v = g[i * M.nf + j] / M.scale; if (v >= W.fthr * m) { w += v; sf += v * freqOf(j, M); } }
+  });
+  return {t: st / s, f: sf / w};
+}
+const TOL_WIDTHS = 2;                                  // tolerance = 2 x this output's measured width
+const sharpKept = (w, w0) => (w0 / w) * (w0 / w);       // (original width / this width)^2
+const smearOf = (w, w0) => Math.sqrt(Math.max(0, w * w - w0 * w0));   // the blur this setting added (quadrature)
+function axisScore(miss, w, w0) {
+  if (miss === null || miss === undefined || !isFinite(miss)) return 0;
+  const z = miss / (TOL_WIDTHS * w);
+  return Math.round(1000 * sharpKept(w, w0) * Math.exp(-0.5 * z * z));
+}
+function maxScores(v, o) {
+  const t = Math.round(1000 * sharpKept(v.tw, o.tw)), f = Math.round(1000 * sharpKept(v.fw, o.fw));
+  return {timing: t, pitch: f, total: t + f};
+}
+// missT in ms of real (source) time, missF in Hz; missT null = MERGER never pressed
+function scoreRound(key, v, o, missT, missF) {
+  const timing = axisScore(missT, v.tw, o.tw), pitch = axisScore(missF, v.fw, o.fw);
+  return {key, timing, pitch, total: timing + pitch, missT, missF, tolT: TOL_WIDTHS * v.tw, tolF: TOL_WIDTHS * v.fw,
+          caught: missT !== null && missT !== undefined && Math.abs(missT) <= TOL_WIDTHS * v.tw};
+}
+const ACH = [
+  {id: 'first', name: 'First catch', rule: 'Log MERGER inside the tolerance window.', test: r => r.caught},
+  {id: 'stopwatch', name: 'Stopwatch', rule: 'Timing 870+. Only the time-sharp settings (r = 1/4, 1/2) allow it.', test: r => r.timing >= 870},
+  {id: 'pitch', name: 'Perfect pitch', rule: 'Pitch 890+. Only the pitch-sharp settings (r = 2, 4) allow it.', test: r => r.pitch >= 890},
+  {id: 'heisenberg', name: "Heisenberg's choice", rule: 'Timing and pitch both 800+ in one round. Only a balanced squeeze allows it.', test: r => r.timing >= 800 && r.pitch >= 800},
+  {id: 'gold', name: 'Gold-plated', rule: 'Total 1500+ in one round.', test: r => r.total >= 1500},
+  {id: 'control', name: 'Control run', rule: 'Finish a round on the isotropic control.', test: r => r.key === 'iso'},
+  {id: 'sweep', name: 'Full sweep', rule: 'Finish a round at all five ratios.', test: (r, S) => RATIO_KEYS.every(k => S.best[k])}
+];
+function recordRound(S, r) {                           // updates S in place; returns the ids of newly unlocked achievements
+  const b = S.best[r.key];
+  if (!b || r.total > b.total) S.best[r.key] = {timing: r.timing, pitch: r.pitch, total: r.total};
+  S.rounds = (S.rounds || 0) + 1;
+  const fresh = ACH.filter(a => !S.ach[a.id] && a.test(r, S)).map(a => a.id);
+  fresh.forEach(id => S.ach[id] = true);
+  return fresh;
+}
+const freshState = () => ({best: {}, ach: {}, rounds: 0});
+// control-room clock: our t = 0 is GPS META.t_merger_gps; GPS - UTC = 17 s in 2015; Livingston is on CDT (UTC - 5 h)
+const GPS_EPOCH_MS = Date.UTC(1980, 0, 6), LEAP_2015 = 17;
+function dayClock(gps, offsetH) {
+  const ms = Math.round((gps - LEAP_2015) * 1000) + GPS_EPOCH_MS + offsetH * 3600000, d = ((ms % 86400000) + 86400000) % 86400000;
+  const h = Math.floor(d / 3600000), m = Math.floor(d / 60000) % 60, s = Math.floor(d / 1000) % 60, f = d % 1000;
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}.${String(f).padStart(3, '0')}`;
+}
+const clockCDT = (t, M) => dayClock(M.t_merger_gps + t, -5) + ' CDT';
+const clockUTC = (t, M) => dayClock(M.t_merger_gps + t, 0) + ' UTC';
+const gpsText = (t, M) => (M.t_merger_gps + t).toFixed(3);
+// dial geometry: five ratios symmetric about 12 o'clock, the isotropic control set apart at 5 o'clock
+const DIAL_ANG = [-100, -50, 0, 50, 100, 148];
+function nearestDetent(deg) { let b = 0; for (let k = 1; k < DIAL_ANG.length; k++) if (Math.abs(DIAL_ANG[k] - deg) < Math.abs(DIAL_ANG[b] - deg)) b = k; return b; }
+</script>
+<script>
+/*INKSPRITE*/
+const SPRITES = /*SPRITES*/{};
+</script>
+<script>
+// ======================================================================================================
+// ---- UI ----
+const M = META, V = {}; M.versions.forEach(v => V[v.key] = v);
+const G = {}; for (const k in GRIDS) G[k] = decodeGrid(GRIDS[k]);
+const O = V.original;
+const VD = {}; DIAL.forEach(k => VD[k] = versionOf(k, M));
+const PEAK = M.peak;
+const PEAK95 = (() => { const s = Float64Array.from(G.original).sort(); return s[Math.floor(0.95 * s.length)] / M.scale; })();
+const GMAX = G.original.reduce((m, x) => Math.max(m, x), 0) / M.scale;
+const DIFFMAX = Math.max(...RATIO_KEYS.map(k => { let m = 0; const a = G[k], b = G.original; for (let i = 0; i < a.length; i++) m = Math.max(m, Math.abs(a[i] - b[i])); return m; }));
+const VMAX = Math.sqrt(G.original.reduce((m, x) => Math.max(m, x), 0));
+const ZOOM = {chirp: {t: [-0.16, 0.06], f: [20, 340]},
+              full: {t: [M.t0 - M.dt / 2, timeOf(M.nt - 1, M) + M.dt / 2], f: [M.f0 - M.df / 2, freqOf(M.nf - 1, M) + M.df / 2]}};
+const st = {v: 'r1', mode: 'blurred', zoom: 'chirp', f: 150, t: -50, ridge: false, view: 'scene', playing: null};
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = id => document.getElementById(id);
+const SP = {}; for (const k in SPRITES) if (k[0] !== '_') SP[k] = InkSprite.make(SPRITES[k]);
+const CH = fitChirp(M.track_f.map(([i, j]) => [timeOf(i, M), freqOf(j, M)]));   // fitted to the measured inspiral ridge
+const FTOP = chirpTop(CH);
+const PTAB = phaseTable(CH, -0.4, 0.2, 0.00025);
+const RP = {}; ['original'].concat(RATIO_KEYS).forEach(k => RP[k] = ridgePower(G[k], M, 25, 350));
+const amp = (k, t) => loudness(RP[k], t, M, PEAK95, GMAX);
+let playT = null;
+
+// ---- per-viewer storage (scores stay in this browser) ----
+const STORE = 'wtnr10-nightshift-v1';
+let S = freshState();
+try { const raw = localStorage.getItem(STORE); if (raw) { const o = JSON.parse(raw); if (o && o.best && o.ach) S = Object.assign(freshState(), o); } } catch (e) {}
+function save() { try { localStorage.setItem(STORE, JSON.stringify(S)); } catch (e) {} }
+
+// ---- offscreen grid images ----
+const imgs = {};
+function gridImage(key, mode) {
+  const id = key + ':' + mode; if (imgs[id]) return imgs[id];
+  const c = document.createElement('canvas'); c.width = M.nt; c.height = M.nf;
+  const x = c.getContext('2d'), im = x.createImageData(M.nt, M.nf), g = G[mode === 'original' ? 'original' : key];
+  for (let i = 0; i < M.nt; i++) for (let j = 0; j < M.nf; j++) {
+    const v = g[i * M.nf + j], o = (M.nf - 1 - j) * M.nt + i;
+    const rgb = mode === 'change' ? divLut((v - G.original[i * M.nf + j]) / DIFFMAX) : mode === 'night' ? lutNight(Math.sqrt(v) / VMAX) : lut(Math.sqrt(v) / VMAX);
+    im.data[4 * o] = rgb[0]; im.data[4 * o + 1] = rgb[1]; im.data[4 * o + 2] = rgb[2]; im.data[4 * o + 3] = 255;
+  }
+  x.putImageData(im, 0, 0); return (imgs[id] = c);
+}
+// draw the part of a grid image that covers time t0..t1 (s) and freq f0..f1 (Hz) into a destination box
+function blitGrid(ctx, img, t0, t1, f0, f1, dx, dy, dw, dh) {
+  const tE0 = M.t0 - M.dt / 2, tE1 = tE0 + M.nt * M.dt, fE0 = M.f0 - M.df / 2, fE1 = fE0 + M.nf * M.df;
+  const a0 = Math.max(t0, tE0), a1 = Math.min(t1, tE1), b0 = Math.max(f0, fE0), b1 = Math.min(f1, fE1);
+  if (a1 <= a0 || b1 <= b0) return;
+  const sx = (a0 - tE0) / M.dt, sw = (a1 - a0) / M.dt, sy = (fE1 - b1) / M.df, sh = (b1 - b0) / M.df;
+  const X = t => dx + (t - t0) / (t1 - t0) * dw, Y = f => dy + (f1 - f) / (f1 - f0) * dh;
+  ctx.drawImage(img, sx, sy, sw, sh, X(a0), Y(b1), X(a1) - X(a0), Y(b0) - Y(b1));
+}
+function fitCanvas(c, maxD) {
+  const r = c.getBoundingClientRect(), d = clamp(window.devicePixelRatio || 1, 1, maxD || 2);
+  const w = Math.max(160, Math.round(r.width * d)), h = Math.max(100, Math.round(r.height * d));
+  if (c.width !== w || c.height !== h) { c.width = w; c.height = h; }
+  return d;
+}
+
+// ======================================================================================================
+// ---- the game state ----
+const game = {phase: 'idle', di: 2, press: null, pitch: 200, last: null, wipeArm: 0, dragging: false, count: 3, cTimer: null};
+const dialKey = () => DIAL[game.di];
+const curV = () => VD[dialKey()];
+
+// ---- monitor 1: the real spectrogram, scrolling in like a strip chart ----
+const specC = $('spec'), spx = specC.getContext('2d');
+let specBox = null;
+function specView() {
+  const ph = game.phase;
+  if (ph === 'count' || ph === 'listen' || ph === 'paused') { const span = 0.22, tn = playT === null ? M.audio.t0 : playT; return {t0: tn - 0.7 * span, t1: tn + 0.3 * span, f0: 20, f1: 340, live: true}; }
+  return {t0: -0.16, t1: 0.06, f0: 20, f1: 340, live: false};
+}
+function drawSpec() {
+  const d = fitCanvas(specC), W = specC.width, H = specC.height, x = spx, ph = game.phase;
+  const fs = Math.round((W / d < 420 ? 10 : 11) * d), mono = `500 ${fs}px "IBM Plex Mono", ui-monospace, monospace`;
+  const pad = {l: Math.round(40 * d), r: Math.round(10 * d), t: Math.round(10 * d), b: Math.round(24 * d)};
+  const PWs = W - pad.l - pad.r, PHs = H - pad.t - pad.b, vw = specView();
+  const X = t => pad.l + (t - vw.t0) / (vw.t1 - vw.t0) * PWs, Y = f => pad.t + (vw.f1 - f) / (vw.f1 - vw.f0) * PHs;
+  specBox = {pad, PWs, PHs, vw, d, X, Y};
+  x.setTransform(1, 0, 0, 1, 0, 0); x.fillStyle = PAL.ink; x.fillRect(0, 0, W, H);
+  x.font = mono; x.textBaseline = 'top';
+  // faint graticule
+  x.fillStyle = 'rgba(161,164,206,.22)';
+  for (let f = 50; f < vw.f1; f += 50) x.fillRect(pad.l, Math.round(Y(f)), PWs, 1);
+  for (let t = Math.ceil(vw.t0 / 0.05) * 0.05; t <= vw.t1 + 1e-9; t += 0.05) x.fillRect(Math.round(X(t)), pad.t, 1, PHs);
+  // the data: the blurred output for this setting (revealed up to the playhead while it plays)
+  if (ph !== 'idle') {
+    const tCut = vw.live ? (playT === null ? M.audio.t0 : playT) : vw.t1;
+    x.save(); x.beginPath(); x.rect(pad.l, pad.t, Math.max(0, Math.min(PWs, X(tCut) - pad.l)), PHs); x.clip();
+    x.imageSmoothingEnabled = true;
+    blitGrid(x, gridImage(gridKey(dialKey()), 'night'), vw.t0, vw.t1, vw.f0, vw.f1, pad.l, pad.t, PWs, PHs);
+    x.restore();
+  } else {
+    x.fillStyle = PAL.paper; x.textAlign = 'center';
+    x.font = `500 ${Math.round(fs * 1.5)}px "IBM Plex Mono", ui-monospace, monospace`;
+    x.fillText('STANDBY', pad.l + PWs / 2, pad.t + PHs / 2 - fs * 1.9);
+    x.font = mono; x.fillStyle = PAL.ink3;
+    x.fillText('set the squeezer, then press START RUN', pad.l + PWs / 2, pad.t + PHs / 2 + fs * 0.2);
+    x.fillText('the screen fills as the chirp plays', pad.l + PWs / 2, pad.t + PHs / 2 + fs * 1.6);
+  }
+  x.strokeStyle = PAL.ink3; x.lineWidth = 1; x.strokeRect(pad.l + .5, pad.t + .5, PWs - 1, PHs - 1);
+  // axes
+  x.fillStyle = PAL.ink3; x.textAlign = 'right'; x.textBaseline = 'middle';
+  for (let f = 50; f < vw.f1; f += 50) x.fillText(String(f), pad.l - 5 * d, Y(f));
+  x.textAlign = 'center'; x.textBaseline = 'top';
+  for (let t = Math.ceil(vw.t0 / 0.05) * 0.05; t <= vw.t1 + 1e-9; t += 0.05) { const ms = Math.round(t * 1000); x.fillText(ms > 0 ? '+' + ms : String(ms).replace('-', '−'), X(t), pad.t + PHs + 5 * d); }
+  x.save(); x.beginPath(); x.rect(pad.l, pad.t, PWs, PHs); x.clip();
+  const v = curV(), dash = n => x.setLineDash(n ? [n * d, n * d] : []);
+  // the truth, once the round is scored (and during a replay)
+  if (ph === 'scored' || ph === 'replay') {
+    const r = game.last, tolT = r ? r.tolT / 1000 : TOL_WIDTHS * v.tw / 1000;
+    x.fillStyle = 'rgba(251,250,249,.12)'; x.fillRect(X(PEAK.t - tolT), pad.t, X(PEAK.t + tolT) - X(PEAK.t - tolT), PHs);
+    x.strokeStyle = PAL.tint2; x.lineWidth = 1.5 * d; dash(4);
+    x.beginPath(); x.moveTo(X(PEAK.t), pad.t); x.lineTo(X(PEAK.t), pad.t + PHs); x.moveTo(pad.l, Y(PEAK.f)); x.lineTo(pad.l + PWs, Y(PEAK.f)); x.stroke(); dash(0);
+    x.beginPath(); x.arc(X(PEAK.t), Y(PEAK.f), 7 * d, 0, TAU); x.stroke();
+    const tl = `TRUE PEAK ${(PEAK.t * 1000).toFixed(1)} ms · ${PEAK.f.toFixed(1)} Hz`, tlw = x.measureText(tl).width + 12 * d;
+    x.fillStyle = PAL.ink; x.fillRect(X(PEAK.t) - 10 * d - tlw + 6 * d, Y(PEAK.f) + 6 * d, tlw, fs + 6 * d);
+    x.fillStyle = PAL.paper; x.textAlign = 'right'; x.textBaseline = 'top';
+    x.fillText(tl, X(PEAK.t) - 10 * d, Y(PEAK.f) + 9 * d); x.fillStyle = PAL.tint2;
+    x.textAlign = 'center'; x.fillText(`WINDOW ±${(tolT * 1000).toFixed(1)} ms`, X(PEAK.t), pad.t + 5 * d);
+  }
+  // your MERGER mark
+  if (game.press !== null && ph !== 'idle') {
+    x.strokeStyle = PAL.paper; x.lineWidth = 2 * d; x.beginPath(); x.moveTo(X(game.press), pad.t); x.lineTo(X(game.press), pad.t + PHs); x.stroke();
+    const right = X(game.press) < pad.l + PWs * 0.6, lab = `YOUR MERGER ${game.press >= 0 ? '+' : '−'}${Math.abs(game.press * 1000).toFixed(1)} ms`;
+    x.fillStyle = PAL.paper; x.textAlign = right ? 'left' : 'right'; x.textBaseline = 'top';
+    x.fillText(lab, X(game.press) + (right ? 6 : -6) * d, pad.t + (ph === 'scored' || ph === 'replay' ? 22 : 5) * d);
+  }
+  // your pitch line
+  if (ph === 'pitch' || ph === 'scored' || ph === 'replay') {
+    const y = Y(game.pitch);
+    x.strokeStyle = PAL.paper; x.lineWidth = 2 * d; x.beginPath(); x.moveTo(pad.l, y); x.lineTo(pad.l + PWs, y); x.stroke();
+    const lab = `YOUR PITCH ${Math.round(game.pitch)} Hz`, tw = x.measureText(lab).width + 14 * d;
+    x.fillStyle = PAL.paper; x.fillRect(pad.l + PWs - tw, y - fs - 8 * d, tw, fs + 6 * d);
+    x.fillStyle = PAL.ink; x.textAlign = 'right'; x.textBaseline = 'top'; x.fillText(lab, pad.l + PWs - 7 * d, y - fs - 5 * d);
+    if (ph === 'pitch') { x.fillStyle = PAL.paper; x.beginPath(); x.moveTo(pad.l + 2 * d, y - 8 * d); x.lineTo(pad.l + 14 * d, y); x.lineTo(pad.l + 2 * d, y + 8 * d); x.fill(); }
+  }
+  // the 3-2-1 count before the chirp
+  if (ph === 'count') {
+    x.fillStyle = PAL.paper; x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.font = `500 ${Math.round(Math.min(PHs * 0.42, 120 * d))}px "IBM Plex Mono", ui-monospace, monospace`;
+    x.fillText(String(game.count), pad.l + PWs / 2, pad.t + PHs / 2 - fs);
+    x.font = mono; x.fillStyle = PAL.ink3;
+    x.fillText('GET READY · LISTEN FOR THE LOUDEST MOMENT', pad.l + PWs / 2, pad.t + PHs * 0.82);
+  }
+  // the playhead
+  if (vw.live || ph === 'replay') {
+    const tp = playT === null ? M.audio.t0 : playT, xp = X(tp);
+    x.fillStyle = PAL.paper; x.fillRect(xp - d, pad.t, 2 * d, PHs);
+    x.textAlign = 'left'; x.textBaseline = 'top'; x.fillText('NOW', xp + 4 * d, pad.t + PHs - fs - 4 * d);
+  }
+  x.restore();
+  $('spec-ver').textContent = DIAL_LABEL[dialKey()] === 'ISO' ? 'isotropic control' : 'r = ' + DIAL_LABEL[dialKey()];
+  $('spec-state').textContent = {idle: 'standby', count: 'arming', listen: 'receiving', paused: 'paused', pitch: 'mark the pitch', scored: 'logged', replay: 'replay'}[ph];
+  specC.style.cursor = ph === 'pitch' ? 'ns-resize' : ph === 'listen' ? 'pointer' : 'default';
+}
+
+// ---- monitor 2: the source, two lensed black holes (illustration driven by the fitted chirp) ----
+const lensC = $('lens'), lnx = lensC.getContext('2d');
+const LZ = {n: 640, tex: null, buf: null, img: null, lut: null, lastT: null};
+function lensTexture() {
+  const n = LZ.n, t = new Float32Array(n * n), r = rng(150914);
+  for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
+    const x = i / n, y = j / n, u = (x * 0.8 + y * 0.6) - 0.62;
+    const lanes = 0.5 + 0.28 * Math.sin(23 * x + 7 * Math.sin(5 * y)) * Math.sin(17 * y + 3 * Math.cos(9 * x));
+    t[j * n + i] = 0.11 + 0.24 * Math.exp(-(u / 0.15) * (u / 0.15)) * lanes;
+  }
+  for (let k = 0; k < n * n / 300; k++) {
+    const sx = r() * n, sy = r() * n, a = Math.min(1.7, 0.32 / (Math.pow(r(), 0.85) + 0.09)), sg = 0.5 + 0.45 * Math.min(a, 1), R = Math.ceil(3 * sg);
+    const cx = Math.round(sx), cy = Math.round(sy);
+    for (let y = -R; y <= R; y++) for (let x = -R; x <= R; x++) {
+      const dx = cx + x - sx, dy = cy + y - sy, ii = ((cx + x) % n + n) % n, jj = ((cy + y) % n + n) % n;
+      t[jj * n + ii] += a * Math.exp(-(dx * dx + dy * dy) / (2 * sg * sg));
+    }
+  }
+  return t;
+}
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function lensLut() {                                  // brightness 0..1.4 -> night sky .. ink .. pale ink .. paper
+  const st = [[0, [17, 24, 104]], [0.12, [25, 35, 142]], [0.32, [70, 78, 164]], [0.55, [161, 164, 206]], [0.8, [211, 211, 230]], [1.05, [251, 250, 249]]];
+  const out = new Uint8ClampedArray(256 * 3);
+  for (let k = 0; k < 256; k++) {
+    const v = k / 255 * 1.4; let a = st[0], b = st[st.length - 1];
+    for (let q = 0; q < st.length - 1; q++) if (v >= st[q][0] && v <= st[q + 1][0]) { a = st[q]; b = st[q + 1]; break; }
+    const u = v >= b[0] ? 1 : (v - a[0]) / (b[0] - a[0] || 1);
+    for (let c = 0; c < 3; c++) out[3 * k + c] = Math.round(a[1][c] + (b[1][c] - a[1][c]) * clamp(u, 0, 1));
+  }
+  return out;
+}
+function lensesAt(T, iw, ih) {
+  const base = Math.min(iw, ih * 1.3), s1 = 0.058 * base, E1 = 2.0 * s1, cx = iw * 0.5, cy = ih * 0.5;
+  if (T < 0) {
+    const f = chirpF(T, CH), dT = s1 * (1 + 29 / 36) * 1.04, d = Math.min(dT * separation(f, FTOP), 0.4 * iw);
+    const th = phaseAt(PTAB, T) / 2, tilt = 0.55, rot = -0.3;
+    const pos = (r, sg) => { const ox = sg * r * Math.cos(th), oy = sg * r * Math.sin(th) * tilt; return [cx + ox * Math.cos(rot) - oy * Math.sin(rot), cy + ox * Math.sin(rot) + oy * Math.cos(rot)]; };
+    const a = pos(d * 29 / 65, 1), b = pos(d * 36 / 65, -1);
+    return [{x: a[0], y: a[1], s: s1, E: E1, m: 36, e: 0, ang: 0}, {x: b[0], y: b[1], s: s1 * 29 / 36, E: E1 * Math.sqrt(29 / 36), m: 29, e: 0, ang: 0}];
+  }
+  const thE = phaseAt(PTAB, 0) / 2, ang = Math.atan2(Math.sin(thE) * 0.55, Math.cos(thE)) - 0.3;
+  return [{x: cx, y: cy, s: s1 * 62 / 36, E: E1 * Math.sqrt(62 / 36), m: 62, e: 0.22 * Math.exp(-T / 0.004), ang}];
+}
+function drawLens(T) {
+  if (!LZ.tex) { LZ.tex = lensTexture(); LZ.lut = lensLut(); }
+  const d = fitCanvas(lensC), W = lensC.width, H = lensC.height;
+  const iw = clamp(Math.round(W / d), 200, 560), ih = Math.max(120, Math.round(iw * H / W));
+  if (!LZ.buf || LZ.buf.width !== iw || LZ.buf.height !== ih) { LZ.buf = document.createElement('canvas'); LZ.buf.width = iw; LZ.buf.height = ih; LZ.img = LZ.buf.getContext('2d').createImageData(iw, ih); }
+  const L = lensesAt(T, iw, ih), n = LZ.n, tex = LZ.tex, lu = LZ.lut, data = LZ.img.data, sc = n / Math.max(iw, ih) * 0.92;
+  const ox = n * 0.04, oy = n * 0.06;
+  for (let y = 0; y < ih; y++) for (let x = 0; x < iw; x++) {
+    let bx = x + 0.5, by = y + 0.5, ring = 0, dark = false;
+    for (let q = 0; q < L.length; q++) {
+      const l = L[q], dx = x + 0.5 - l.x, dy = y + 0.5 - l.y, r2 = dx * dx + dy * dy + 1e-6;
+      let rr = Math.sqrt(r2);
+      if (l.e) { const c = Math.cos(l.ang), s = Math.sin(l.ang), px = (dx * c + dy * s) / (1 + l.e), py = (-dx * s + dy * c) / (1 - l.e); rr = Math.sqrt(px * px + py * py); }
+      if (rr < l.s) { dark = true; break; }
+      const k = l.E * l.E / r2; bx -= k * dx; by -= k * dy;
+      const z = (rr - 1.05 * l.s) / (0.075 * l.s); ring += Math.exp(-z * z);
+    }
+    const o = 4 * (y * iw + x);
+    if (dark) { data[o] = 11; data[o + 1] = 16; data[o + 2] = 74; data[o + 3] = 255; continue; }
+    // bilinear sample of the wrapped star field
+    let u = bx * sc + ox, v = by * sc + oy; u = ((u % n) + n) % n; v = ((v % n) + n) % n;
+    const i0 = Math.floor(u), j0 = Math.floor(v), fu = u - i0, fv = v - j0, i1 = (i0 + 1) % n, j1 = (j0 + 1) % n;
+    const val = (tex[j0 * n + i0] * (1 - fu) + tex[j0 * n + i1] * fu) * (1 - fv) + (tex[j1 * n + i0] * (1 - fu) + tex[j1 * n + i1] * fu) * fv + 0.95 * ring;
+    const k = clamp(Math.round(val / 1.4 * 255), 0, 255) * 3;
+    data[o] = lu[k]; data[o + 1] = lu[k + 1]; data[o + 2] = lu[k + 2]; data[o + 3] = 255;
+  }
+  LZ.buf.getContext('2d').putImageData(LZ.img, 0, 0);
+  lnx.setTransform(1, 0, 0, 1, 0, 0); lnx.imageSmoothingEnabled = true; lnx.drawImage(LZ.buf, 0, 0, W, H);
+  // labels with hairline leaders
+  const k = W / iw, fs = Math.round(10.5 * d);
+  lnx.font = `500 ${fs}px "IBM Plex Mono", ui-monospace, monospace`; lnx.fillStyle = PAL.tint2; lnx.strokeStyle = PAL.ink3; lnx.lineWidth = d;
+  L.forEach((l, q) => {
+    const px = l.x * k, py = l.y * k, side = L.length === 1 ? 1 : (l.x < iw / 2 ? -1 : 1), up = L.length === 1 ? -1 : (q ? 1 : -1);
+    const ex = px + side * (l.s * k + 26 * d), ey = py + up * (l.s * k + 18 * d);
+    lnx.beginPath(); lnx.moveTo(px + side * l.s * k * 0.8, py + up * l.s * k * 0.6); lnx.lineTo(ex, ey); lnx.stroke();
+    lnx.textAlign = side < 0 ? 'right' : 'left'; lnx.textBaseline = 'middle';
+    lnx.fillText(l.m + ' SUNS', ex + side * 4 * d, ey);
+  });
+  LZ.lastT = T;
+  const ms = Math.round(T * 1000);
+  $('src-t').textContent = 't = ' + (ms >= 0 ? '+' : '−') + Math.abs(ms) + ' ms';
+  $('src-cap').innerHTML = T < 0 ? `<span>36 + 29 suns · GW frequency <b>${chirpF(T, CH).toFixed(0)} Hz</b> (fit)</span><span>separation &prop; f<sup>&minus;2/3</sup> · not to scale</span>` :
+    `<span><b>62 suns</b> · 3 suns of mass left as gravitational waves</span><span>ring-down drawn, not simulated</span>`;
+  if (scrubbable()) $('src-cap').insertAdjacentHTML('beforeend', '<span>drag to scrub</span>');
+}
+
+// ---- plates II and III and the live strip: mirrors move with the real ridge power x the fitted chirp's phase ----
+function strainNow(T) { const k = st.playing && RP[st.playing] ? st.playing : gridKey(dialKey()); const a = amp(k, T); return {a, h: a * Math.cos(phaseAt(PTAB, T))}; }
+const RING_N = 16;
+function buildRing() { $('ring-pts').innerHTML = Array.from({length: RING_N}, () => '<circle r="3.4" fill="#FBFAF9" stroke="#19238E" stroke-width="1.2"/>').join(''); drawRing(0); }
+function drawRing(h) {                                // a ring of free test particles under a + polarised wave
+  const pts = $('ring-pts').children, sx = 1 + 0.22 * h, sy = 1 - 0.22 * h;
+  for (let k = 0; k < pts.length; k++) { const a = TAU * k / pts.length; pts[k].setAttribute('cx', (70 * sx * Math.cos(a)).toFixed(2)); pts[k].setAttribute('cy', (70 * sy * Math.sin(a)).toFixed(2)); }
+}
+function buildTms() {                                 // the live strip under the source view: both end test masses
+  const g = (k, cx) => `<text x="${cx - 64}" y="55">${k}</text>` +
+    `<line id="tb-${k}" x1="${cx - 64}" y1="64" x2="${cx - 14}" y2="64" stroke="#B4541A" stroke-width="2.2"/>` +
+    `<path d="M${cx - 18} 6 H${cx + 18}" stroke="#A1A4CE" stroke-width="2"/><path d="M${cx - 7} 6 V12 M${cx + 7} 6 V12" stroke="#A1A4CE" stroke-width=".8"/>` +
+    `<rect x="${cx - 12}" y="12" width="24" height="20" fill="none" stroke="#A1A4CE"/>` +
+    `<line id="tf1-${k}" x1="${cx - 8}" y1="32" x2="${cx - 8}" y2="46" stroke="#D3D3E6" stroke-width=".7"/>` +
+    `<line id="tf2-${k}" x1="${cx + 8}" y1="32" x2="${cx + 8}" y2="46" stroke="#D3D3E6" stroke-width=".7"/>` +
+    `<g id="tm-${k}"><rect x="${cx - 14}" y="46" width="28" height="34" fill="#545BA9" stroke="#FBFAF9" stroke-width="1"/><line x1="${cx - 14}" y1="46" x2="${cx - 14}" y2="80" stroke="#FBFAF9" stroke-width="2.4"/></g>`;
+  $('tms').innerHTML = `<text class="b" x="10" y="22">END TEST MASSES</text><text x="10" y="40">live · enlarged ~10&#185;&#8309;&#215;</text>` +
+    `<text class="b" x="10" y="68" id="tms-read">at rest</text>` + g('ETMX', 306) + g('ETMY', 436);
+}
+function drawTms(s) {
+  const q = 6 * s.h;
+  [['ETMX', 306, q], ['ETMY', 436, -q]].forEach(([k, cx, d]) => {
+    $('tm-' + k).setAttribute('transform', `translate(${d.toFixed(2)} 0)`);
+    $('tf1-' + k).setAttribute('x2', (cx - 8 + d).toFixed(2)); $('tf2-' + k).setAttribute('x2', (cx + 8 + d).toFixed(2));
+    $('tb-' + k).setAttribute('x2', (cx - 14 + d).toFixed(2));
+  });
+  $('tms-read').textContent = s.a > 0.005 ? `${(s.a * 100).toFixed(0)} % of peak · X ${s.h >= 0 ? 'longer' : 'shorter'}` : 'at rest';
+}
+function drawOptics(T) {
+  const live = T !== null, s = live ? strainNow(T) : {a: 0, h: 0}, g = 7 * s.h, q = 5 * s.h;
+  $('etmx').setAttribute('transform', `translate(${g.toFixed(2)} 0)`);       // the X arm lengthens ...
+  $('etmy').setAttribute('transform', `translate(0 ${g.toFixed(2)})`);       // ... while the Y arm shortens
+  $('tm-swing').setAttribute('transform', `translate(${q.toFixed(2)} 0)`);
+  $('fib-a').setAttribute('x2', (152 + q).toFixed(2)); $('fib-b').setAttribute('x2', (188 + q).toFixed(2));
+  $('q-beam').setAttribute('x2', (148 + q).toFixed(2)); $('q-band').setAttribute('width', (148 + q).toFixed(2));
+  $('pd-glow').setAttribute('opacity', (0.85 * Math.abs(s.h)).toFixed(3));
+  $('h-read').textContent = live ? `SIGNAL NOW · ${(s.a * 100).toFixed(0)} % of peak` : 'SIGNAL NOW · at rest';
+  $('h-bar').setAttribute('width', (200 * s.a).toFixed(1));
+  drawRing(s.h); drawTms(s);
+}
+function ellipseFor(k) { const v = VD[k]; return [smearOf(v.tw, O.tw), smearOf(v.fw, O.fw)]; }
+function drawSqz() {
+  const [a, b] = ellipseFor(dialKey()), e = $('sqz-ell').querySelector('ellipse');
+  e.setAttribute('rx', (a * 3).toFixed(1)); e.setAttribute('ry', (b * 3).toFixed(1));
+  $('sqz-set').textContent = 'dial: ' + (dialKey() === 'iso' ? 'ISO control' : 'r = ' + DIAL_LABEL[dialKey()]);
+}
+
+// ---- plate I: the site, an oblique engraving computed from the layout (two 4 km arms at 90 degrees) ----
+// World frame in metres: x along the X arm, y along the Y arm, z up, the corner (vertex) at the origin.
+// The camera hangs above the outside of the L, about 1.7 km beyond the corner, looking down the diagonal
+// (from the north-north-east at LLO, where the X arm bears 252.3 deg and the Y arm 162.3 deg).
+function buildSite() {
+  const svg = $('site'), VW = 1000, hzY = 52;
+  const C = [-1200, -1200, 1350], TG = [2000, 2000, 0];
+  const sub = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]], dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  const crs = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  const nrm = a => { const l = Math.hypot(a[0], a[1], a[2]); return [a[0] / l, a[1] / l, a[2] / l]; };
+  const f = nrm(sub(TG, C)), r = nrm(crs(f, [0, 0, 1])), u = crs(r, f);
+  const raw = p => { const v = sub(p, C), z = dot(v, f); return [dot(v, r) / z, dot(v, u) / z, z]; };
+  const xs = [[4090, 0, 0], [0, 4090, 0]].map(p => raw(p)[0]);
+  const F = (VW - 70) / (Math.max(...xs) - Math.min(...xs)), ox = VW / 2;
+  const oy = hzY + F * raw([C[0] + f[0] * 1e7, C[1] + f[1] * 1e7, 0])[1];
+  const P = p => { const q = raw(p); return [ox + F * q[0], oy - F * q[1]]; };
+  const pt = p => P(p).map(v => v.toFixed(1)).join(' ');
+  const VH = Math.ceil(Math.max(P([-180, -40, 0])[1], P([-40, -180, 0])[1]) + 34);
+  svg.setAttribute('viewBox', `0 0 ${VW} ${VH}`);
+  const ground = (sx, sy) => {                           // back-project a screen point onto the ground plane
+    const xn = (sx - ox) / F, yn = (oy - sy) / F, dv = [f[0] + xn * r[0] + yn * u[0], f[1] + xn * r[1] + yn * u[1], f[2] + xn * r[2] + yn * u[2]];
+    if (dv[2] >= -1e-6) return null; const lam = -C[2] / dv[2]; return [C[0] + lam * dv[0], C[1] + lam * dv[1], lam * dot(dv, f)];
+  };
+  let o = '';
+  // sky: ruled lines that open up away from the horizon, as engravers do
+  let sky = '';
+  for (let y = hzY - 3, k = 0; y > 6; k++) { sky += `M${10 + (k % 3) * 6} ${y.toFixed(1)}H${VW - 10 - (k % 2) * 8}`; y -= 2.2 + k * 0.85; }
+  o += `<path d="${sky}" stroke="#D3D3E6" stroke-width=".7"/><line x1="0" y1="${hzY}" x2="${VW}" y2="${hzY}" stroke="#A1A4CE" stroke-width=".9"/>`;
+  // ground: cleared corridors, station pads and two logged stands; everything else is forest
+  const CUTS = [[1050, 1650, -560, -230], [700, 1250, 2350, 2900]];
+  const inCut = (x, y) => CUTS.some(c => x > c[0] && x < c[1] && y > c[2] && y < c[3]);
+  const cleared = (x, y) => (x > -60 && x < 4150 && Math.abs(y) < 58) || (y > -60 && y < 4150 && Math.abs(x) < 58) ||
+    (x > -330 && x < 140 && y > -330 && y < 140) || Math.hypot(x - 4035, y) < 135 || Math.hypot(x, y - 4035) < 135;
+  const edge = (x, y) => (Math.abs(y) < 80 && x > -60 && x < 4150) || (Math.abs(x) < 80 && y > -60 && y < 4150);
+  const dens = (x, y) => 0.8 + 0.2 * Math.sin(x / 310 + 2 * Math.sin(y / 430)) * Math.sin(y / 260 - x / 900);
+  const R = rng(4000), far = [], mid = [], near = [], nearL = [], stumps = [];
+  for (let y = hzY + 1.4; y < VH;) {
+    const g0 = ground(VW / 2, y), s0 = g0 ? F * 12 / g0[2] : 0.5;
+    const dy = Math.max(1.8, s0 * 0.5), dx = Math.max(2.2, s0 * 0.85);
+    for (let x = R() * dx; x < VW; x += dx) {
+      const sx = x + (R() - 0.5) * dx * 0.8, sy = y + (R() - 0.5) * dy * 0.7, g = ground(sx, sy);
+      if (!g || cleared(g[0], g[1])) continue;
+      const s = F * 12 / g[2], sj = s * (0.8 + 0.4 * R());                 // 12 m crowns, jittered between size classes
+      if (inCut(g[0], g[1])) { if (R() < 0.08 && s > 1) stumps.push(`M${sx.toFixed(1)} ${sy.toFixed(1)}h0`); continue; }
+      const p = (edge(g[0], g[1]) ? 1 : dens(g[0], g[1])) * Math.min(1, 0.1 + 0.62 * s);   // thins out toward the hazy horizon
+      if (R() > p) continue;
+      if (sj < 1.5) far.push(`M${sx.toFixed(1)} ${sy.toFixed(1)}h0`);
+      else if (sj < 3) { const rx = sj * 0.55; mid.push(`M${(sx - rx).toFixed(1)} ${sy.toFixed(1)}a${rx.toFixed(1)} ${(rx * 0.8).toFixed(1)} 0 0 1 ${(2 * rx).toFixed(1)} 0`); }
+      else { const rx = Math.min(sj, 9) * 0.62, ry = rx * 1.1; (R() < 0.3 ? nearL : near).push(`M${(sx - rx).toFixed(1)} ${sy.toFixed(1)}a${rx.toFixed(1)} ${ry.toFixed(1)} 0 0 1 ${(2 * rx).toFixed(1)} 0Z`); }   // crowns as domes, lit and shaded
+    }
+    y += dy;
+  }
+  o += `<path d="${far.join('')}" stroke="#545BA9" stroke-width=".9" stroke-linecap="round"/>`;
+  o += `<path d="${mid.join('')}" stroke="#545BA9" stroke-width=".85" fill="none" stroke-linecap="round"/>`;
+  o += `<path d="${near.join('')}" fill="#19238E" stroke="#FBFAF9" stroke-width=".7"/>`;
+  o += `<path d="${nearL.join('')}" fill="#545BA9" stroke="#FBFAF9" stroke-width=".7"/>`;
+  o += `<path d="${stumps.join('')}" stroke="#545BA9" stroke-width="1.3" stroke-linecap="round"/>`;
+  CUTS.forEach(c => { o += `<path d="M${pt([c[0], c[2], 0])}L${pt([c[1], c[2], 0])}L${pt([c[1], c[3], 0])}L${pt([c[0], c[3], 0])}Z" fill="none" stroke="#545BA9" stroke-width=".7" stroke-dasharray="3 3"/>`;
+    for (let k = 1; k < 4; k++) { const y = c[2] + (c[3] - c[2]) * k / 4; o += `<path d="M${pt([c[0] + 30, y, 0])}L${pt([c[1] - 30, y + 40, 0])}" stroke="#A1A4CE" stroke-width=".6"/>`; } });
+  // service roads beside each arm
+  const road = (a, b) => `<path d="M${pt(a)} L${pt(b)}" stroke="#545BA9" stroke-width="1.1" stroke-dasharray="6 3" fill="none"/>`;
+  o += road([140, -36, 0], [3920, -36, 0]) + road([-36, 140, 0], [-36, 3920, 0]);
+  // buildings: pale roofs, one lightly and one densely hatched wall (the walls that face the camera)
+  const box = (x0, x1, y0, y1, h) => {
+    const roof = [[x0, y0, h], [x1, y0, h], [x1, y1, h], [x0, y1, h]];
+    const wx = [[x0, y0, 0], [x0, y1, 0], [x0, y1, h], [x0, y0, h]], wy = [[x0, y0, 0], [x1, y0, 0], [x1, y0, h], [x0, y0, h]];
+    return `<path d="M${wx.map(pt).join('L')}Z" fill="url(#hMet)" stroke="#19238E" stroke-width=".9"/>` +
+           `<path d="M${wy.map(pt).join('L')}Z" fill="url(#hSil)" stroke="#19238E" stroke-width=".9"/>` +
+           `<path d="M${roof.map(pt).join('L')}Z" fill="#FBFAF9" stroke="#19238E" stroke-width="1"/>`;
+  };
+  // the arm covers: arched concrete over the beam tube (drawn about 6x too wide so they show at this scale)
+  const cover = (a0, a1, alongX) => {
+    const w = 14, h = 9, q = (a, b, z) => alongX ? [a, b, z] : [b, a, z];
+    const side = [q(a0, -w, 0), q(a1, -w, 0), q(a1, -w, h * 0.6), q(a0, -w, h * 0.6)];
+    const top = [q(a0, -w, h * 0.6), q(a1, -w, h * 0.6), q(a1, 0, h), q(a1, w, h * 0.6), q(a0, w, h * 0.6), q(a0, 0, h)];
+    let s = `<path d="M${side.map(pt).join('L')}Z" fill="url(#hMet)" stroke="#19238E" stroke-width=".7"/>` +
+            `<path d="M${top.map(pt).join('L')}Z" fill="#FBFAF9" stroke="#19238E" stroke-width=".9"/>` +
+            `<path d="M${pt(q(a0, 0, h))}L${pt(q(a1, 0, h))}" stroke="#A1A4CE" stroke-width=".6"/>`;
+    for (let x = a0 + 250; x < a1; x += 250) s += `<path d="M${pt(q(x, -w, h * 0.6))}L${pt(q(x, 0, h))}L${pt(q(x, w, h * 0.6))}" stroke="#A1A4CE" stroke-width=".55" fill="none"/>`;
+    return s;
+  };
+  o += box(-45, 45, 3985, 4085, 13) + box(3985, 4085, -45, 45, 13);                    // end stations (far, drawn first)
+  o += cover(110, 3985, false) + cover(110, 3985, true);
+  o += box(60, 112, -16, 16, 7) + box(-16, 16, 60, 112, 7);                            // beam-tube exits from the corner
+  o += box(-55, 62, -55, 62, 17);                                                       // the laser and vacuum hall
+  o += box(-185, -55, -30, 30, 9) + box(-30, 30, -185, -55, 8);                         // the two back wings (offices, labs)
+  // numbered callouts with leader lines, keyed to the list under the plate
+  const co = (n, p, dx, dy) => {
+    const [x, y] = P(p), cx = x + dx, cy = y + dy, a = Math.atan2(y - cy, x - cx), R0 = 16;
+    return `<g class="co" data-part="site-${n}" tabindex="-1"><line x1="${(cx + R0 * Math.cos(a)).toFixed(1)}" y1="${(cy + R0 * Math.sin(a)).toFixed(1)}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"/>` +
+           `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${R0}"/><text x="${cx.toFixed(1)}" y="${cy.toFixed(1)}">${n}</text></g>`;
+  };
+  const cc = CUTS[0], cc2 = CUTS[1];
+  o += co(1, [0, 0, 17], 120, 6) + co(2, [2200, 0, 9], 30, 56) + co(3, [0, 2200, 9], -30, 56) +
+       co(4, [4035, 0, 13], 16, -42) + co(5, [0, 4035, 13], -16, -42) + co(6, [900, -36, 0], 36, 46) +
+       co(7, [2500, 2200, 0], 0, -26) + co(8, [(cc[0] + cc[1]) / 2, (cc[2] + cc[3]) / 2, 0], 52, 30) + co(8, [(cc2[0] + cc2[1]) / 2, (cc2[2] + cc2[3]) / 2, 0], -40, -24);
+  o += `<text class="h halo" x="14" y="26">LIGO LIVINGSTON · L1 · LIVINGSTON PARISH, LOUISIANA</text>`;
+  svg.innerHTML = o;
+}
+
+// ---- the squeezer dial (SVG hardware) ----
+const dial = $('dial'), DC = [120, 128];
+function buildDial() {
+  const polar = (r, a) => [DC[0] + r * Math.sin(a * Math.PI / 180), DC[1] - r * Math.cos(a * Math.PI / 180)];
+  let o = `<text class="side" x="2" y="12">&#8592; TIME SHARP</text><text class="side" x="238" y="12" text-anchor="end">PITCH SHARP &#8594;</text>`;
+  // the scale arc and detent ticks
+  const [ax, ay] = polar(74, -112), [bx, by] = polar(74, 112);
+  o += `<path d="M${ax.toFixed(1)} ${ay.toFixed(1)} A74 74 0 1 1 ${bx.toFixed(1)} ${by.toFixed(1)}" fill="none" stroke="#A1A4CE" stroke-width="1"/>`;
+  for (let a = -110; a <= 110; a += 10) { const [x1, y1] = polar(74, a), [x2, y2] = polar(a % 50 === 0 ? 81 : 77, a); o += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#545BA9" stroke-width=".8"/>`; }
+  DIAL.forEach((k, i) => {
+    const a = DIAL_ANG[i], [lx, ly] = polar(k === 'iso' ? 96 : 95, a), [t1x, t1y] = polar(72, a), [t2x, t2y] = polar(86, a);
+    o += `<g class="det" data-i="${i}">` +
+         `<circle cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="15" fill="transparent"/>` +
+         `<line x1="${t1x.toFixed(1)}" y1="${t1y.toFixed(1)}" x2="${t2x.toFixed(1)}" y2="${t2y.toFixed(1)}" stroke="#19238E" stroke-width="2"/>` +
+         `<text x="${lx.toFixed(1)}" y="${(ly + 4.5).toFixed(1)}" text-anchor="middle">${DIAL_LABEL[k]}</text></g>`;
+  });
+  // knob: knurled skirt, machined cap, pointer
+  let kn = `<circle cx="${DC[0]}" cy="${DC[1]}" r="60" fill="#FBFAF9" stroke="#19238E" stroke-width="1.6"/>`;
+  for (let a = 0; a < 360; a += 7.5) { const [x1, y1] = polar(51, a), [x2, y2] = polar(60, a); kn += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#19238E" stroke-width="1"/>`; }
+  kn += `<circle cx="${DC[0]}" cy="${DC[1]}" r="46" fill="#FFFFFF" stroke="#19238E" stroke-width="1.2"/>` +
+        `<circle cx="${DC[0]}" cy="${DC[1]}" r="38" fill="none" stroke="#D3D3E6"/><circle cx="${DC[0]}" cy="${DC[1]}" r="29" fill="none" stroke="#D3D3E6"/>` +
+        `<line x1="${DC[0]}" y1="${DC[1] - 12}" x2="${DC[0]}" y2="${DC[1] - 44}" stroke="#19238E" stroke-width="6" stroke-linecap="round"/>` +
+        `<circle cx="${DC[0]}" cy="${DC[1] - 54}" r="3.2" fill="#19238E"/>` +
+        `<circle cx="${DC[0]}" cy="${DC[1]}" r="5" fill="#FBFAF9" stroke="#19238E" stroke-width="1.2"/><line x1="${DC[0] - 3.5}" y1="${DC[1]}" x2="${DC[0] + 3.5}" y2="${DC[1]}" stroke="#19238E"/>`;
+  o += `<g id="knob">${kn}</g>`;
+  const [cx1, cy1] = polar(102, 148);
+  o += `<text x="${(cx1 + 1).toFixed(1)}" y="${(cy1 + 17).toFixed(1)}" text-anchor="middle" class="side">CONTROL</text>`;
+  dial.innerHTML = o;
+  dial.querySelectorAll('.det').forEach(g => g.addEventListener('click', e => { e.stopPropagation(); setDial(+g.dataset.i); }));
+}
+const dialLocked = () => ['count', 'listen', 'paused', 'pitch', 'replay'].includes(game.phase);
+let knobA = DIAL_ANG[game.di], knobRaf = null;
+function animateKnob() {
+  const target = DIAL_ANG[game.di];
+  knobA = reduce ? target : knobA + (target - knobA) * 0.3;
+  if (Math.abs(target - knobA) < 0.3) knobA = target;
+  $('knob').setAttribute('transform', `rotate(${knobA.toFixed(2)} ${DC[0]} ${DC[1]})`);
+  knobRaf = knobA !== target ? requestAnimationFrame(animateKnob) : null;
+}
+function setDial(i) {
+  if (dialLocked()) { toast('The squeezer is locked during a run'); return; }
+  i = clamp(i, 0, DIAL.length - 1);
+  const changed = i !== game.di;
+  if (changed && st.playing) { stopAll(null); st.playing = null; onEnd = null; playT = null; }
+  game.di = i; st.v = gridKey(dialKey()); if (st.mode === 'original') st.mode = 'blurred';
+  if (game.phase === 'scored' && changed) toIdle();
+  if (!knobRaf) knobRaf = requestAnimationFrame(animateKnob);
+  updateAll(); refresh();
+}
+// the other way round: a ratio picked in the data room (slider, panel, chart point) turns the dial between rounds
+function followData() {
+  if (dialLocked() || gridKey(dialKey()) === st.v) return;
+  const i = DIAL.indexOf(st.v); if (i < 0) return;
+  game.di = i; if (game.phase === 'scored') toIdle();
+  if (!knobRaf) knobRaf = requestAnimationFrame(animateKnob);
+  updateAll();
+}
+let dialDrag = false;
+function dialAngleOf(e) {
+  const p = dial.createSVGPoint(); p.x = e.clientX; p.y = e.clientY;
+  const q = p.matrixTransform(dial.getScreenCTM().inverse());
+  return Math.atan2(q.x - DC[0], DC[1] - q.y) * 180 / Math.PI;
+}
+dial.addEventListener('pointerdown', e => { if (e.target.closest('.det')) return; if (dialLocked()) { toast('The squeezer is locked during a run'); return; } dialDrag = true; try { dial.setPointerCapture(e.pointerId); } catch (_) {} const i = nearestDetent(dialAngleOf(e)); if (i === game.di) toast(`Squeezer at ${DIAL_LABEL[dialKey()] === 'ISO' ? 'the ISO control' : 'r = ' + DIAL_LABEL[dialKey()]}: drag the knob round, or tap another ratio`); setDial(i); });
+dial.addEventListener('pointermove', e => { if (dialDrag) { const i = nearestDetent(dialAngleOf(e)); if (i !== game.di) setDial(i); } });
+dial.addEventListener('pointerup', () => dialDrag = false); dial.addEventListener('pointercancel', () => dialDrag = false);
+dial.addEventListener('keydown', e => {
+  const step = {ArrowLeft: -1, ArrowDown: -1, ArrowRight: 1, ArrowUp: 1}[e.key];
+  if (step) { e.preventDefault(); setDial(game.di + step); }
+  else if (e.key === 'Home') { e.preventDefault(); setDial(0); } else if (e.key === 'End') { e.preventDefault(); setDial(DIAL.length - 1); }
+});
+
+// ---- rack readouts ----
+function drawEllipse() {
+  const s = $('ellip'), cx = 116, cy = 66, k = 7.2;
+  let o = `<line x1="${cx - 70}" y1="${cy}" x2="${cx + 70}" y2="${cy}" stroke="#A1A4CE"/><line x1="${cx}" y1="${cy - 54}" x2="${cx}" y2="${cy + 54}" stroke="#A1A4CE"/>`;
+  RATIO_KEYS.forEach(q => { if (q === gridKey(dialKey())) return; const [a, b] = ellipseFor(q); o += `<ellipse cx="${cx}" cy="${cy}" rx="${(a * k).toFixed(1)}" ry="${(b * k).toFixed(1)}" fill="none" stroke="#A1A4CE" stroke-dasharray="2 3"/>`; });
+  const [a, b] = ellipseFor(dialKey());
+  o += `<ellipse cx="${cx}" cy="${cy}" rx="${(a * k).toFixed(1)}" ry="${(b * k).toFixed(1)}" fill="rgba(25,35,142,.12)" stroke="#19238E" stroke-width="1.8"/>`;
+  o += `<text x="${cx + 74}" y="${cy - 3}">time</text><text x="${cx + 74}" y="${cy + 10}">+${a.toFixed(1)} ms</text>`;
+  o += `<text x="${cx + 8}" y="${cy - 46}">pitch +${b.toFixed(1)} Hz</text>`;
+  o += `<text x="2" y="11">SQUEEZE ELLIPSE</text><text x="2" y="${cy + 64}">blur added · area ${(a * b).toFixed(1)} ms&#183;Hz</text>`;
+  s.innerHTML = o;
+}
+function drawRack() {
+  const k = dialKey(), v = curV(), mx = maxScores(v, O);
+  const kt = sharpKept(v.tw, O.tw), kf = sharpKept(v.fw, O.fw);
+  $('m-t').textContent = `${(kt * 100).toFixed(0)} % · max ${mx.timing}`;
+  $('m-f').textContent = `${(kf * 100).toFixed(0)} % · max ${mx.pitch}`;
+  $('mb-t').style.width = (kt * 100).toFixed(1) + '%'; $('mb-f').style.width = (kf * 100).toFixed(1) + '%';
+  $('setcap').innerHTML = `the most it allows · timing <b>${mx.timing}</b> · pitch <b>${mx.pitch}</b>`;
+  $('setline').innerHTML = k === 'iso' ? `ISO control <span>· scalar strength ${M.iso.strength} on all 18 qubits</span>` :
+    `r = ${DIAL_LABEL[k]} <span>· s_time ${v.strength[0].toFixed(2)} · s_freq ${v.strength[1].toFixed(2)}</span>`;
+  $('jobl').innerHTML = `job <b>${v.job_id}</b> · blur-core-v1 · 18 qubits · Atlas statevector simulator · widths ${v.tw.toFixed(2)} ms × ${v.fw.toFixed(2)} Hz (original ${O.tw.toFixed(2)} × ${O.fw.toFixed(2)})` +
+    (k === 'iso' ? ` · output identical to r = 1 (max difference ${M.iso.maxdiff}), so it plays r = 1's audio` : '');
+  dial.setAttribute('aria-valuenow', String(game.di));
+  dial.setAttribute('aria-valuetext', k === 'iso' ? 'isotropic control, identical to r = 1' : `${RATIO_LABEL[k]}: timing max ${mx.timing}, pitch max ${mx.pitch}`);
+  dial.setAttribute('aria-disabled', String(dialLocked()));
+  $('dial-lock').textContent = dialLocked() ? 'locked' : 'what-if';
+  drawEllipse(); drawSqz(); markJobs();
+}
+
+// ---- the operator deck ----
+const PROMPT = {
+  idle: 'Set the squeezer, then START RUN. After 3, 2, 1 the chirp plays: listen for its loudest moment.',
+  count: 'Get ready. The chirp starts after the count.',
+  listen: 'Hit MERGER! at the loudest moment: the button, the screen, or the space bar.',
+  paused: 'Paused. Resume when you are ready.',
+  pitch: 'Now drag the line on the screen (or use ▲ ▼) to the pitch of that loudest moment, then lock it.',
+  scored: 'Logged. Replay it, or turn the dial for the next round.',
+  replay: 'Replaying with the true peak shown.'
+};
+function drawDeck() {
+  const ph = game.phase;
+  $('phase-name').textContent = {idle: 'ready', count: 'get ready', listen: 'listening', paused: 'paused', pitch: 'pitch', scored: 'logged', replay: 'replay'}[ph];
+  $('prompt').textContent = PROMPT[ph];
+  $('btns-idle').hidden = ph !== 'idle';
+  $('btns-run').hidden = !(ph === 'count' || ph === 'listen' || ph === 'paused');
+  $('pause').hidden = ph === 'count';
+  $('btns-pitch').hidden = ph !== 'pitch';
+  $('btns-done').hidden = !(ph === 'scored' || ph === 'replay');
+  $('pause').innerHTML = ph === 'paused' ? '&#9654; Resume' : '&#10074;&#10074; Pause';
+  $('replay').innerHTML = ph === 'replay' ? '&#9632; Stop replay' : '&#9654; Replay';
+  const m = $('merger');
+  m.disabled = ph !== 'listen' || game.press !== null;
+  m.classList.toggle('logged', game.press !== null && (ph === 'listen' || ph === 'paused' || ph === 'pitch'));
+  m.classList.toggle('count', ph === 'count');
+  $('merger-sub').textContent = game.press !== null && ph !== 'idle' ? `logged at ${(game.press * 1000).toFixed(1)} ms` :
+    ph === 'listen' ? 'press at the peak' : ph === 'count' ? 'get ready · ' + game.count : ph === 'idle' ? 'arms when you listen' : '';
+  $('lamp-run').classList.toggle('on', ph === 'listen' || ph === 'replay');
+  $('lamp-cand').classList.toggle('hot', ph === 'scored' && !!(game.last && game.last.caught));
+  $('lamp-cand').classList.toggle('on', false);
+}
+
+// ---- the shift log ----
+function drawScore() {
+  const r = game.phase === 'scored' || game.phase === 'replay' ? game.last : null, k = dialKey(), mx = maxScores(curV(), O);
+  $('s-t').textContent = r ? r.timing : '–'; $('s-f').textContent = r ? r.pitch : '–'; $('s-all').textContent = r ? r.total : '–';
+  $('s-tm').textContent = `max here ${mx.timing}`; $('s-fm').textContent = `max here ${mx.pitch}`;
+  const b = S.best[k]; $('s-best').textContent = b ? `best here ${b.total}` : `max here ${mx.total}`;
+  $('rounds').textContent = `${S.rounds || 0} round${S.rounds === 1 ? '' : 's'}`;
+  $('bests').innerHTML = DIAL.map(q => {
+    const m = maxScores(VD[q], O), bb = S.best[q];
+    return `<li class="${q === k ? 'cur' : ''}"><span>${q === 'iso' ? 'ISO' : 'r ' + DIAL_LABEL[q]}</span><span class="bb"><i style="width:${bb ? (bb.total / 20).toFixed(1) : 0}%"></i><s style="left:${(m.total / 20).toFixed(1)}%"></s></span><b>${bb ? bb.total : '–'}</b></li>`;
+  }).join('');
+  $('ach').innerHTML = ACH.map(a => `<li class="${S.ach[a.id] ? 'got' : ''}"><b>${a.name}</b><span>${a.rule}</span></li>`).join('');
+  $('ach-n').textContent = `${ACH.filter(a => S.ach[a.id]).length} / ${ACH.length}`;
+}
+
+// ---- the event-candidate alert ----
+function drawAlert() {
+  const el = $('alert'), r = game.last;
+  if (!r || !(game.phase === 'scored' || game.phase === 'replay')) { el.hidden = true; return; }
+  const v = VD[r.key], tP = game.press, sgnms = x => (x >= 0 ? '+' : '−') + Math.abs(x).toFixed(1);
+  const badge = SP.bh_final ? InkSprite.toDataURL(SP[r.caught ? 'bh_final' : 'bh_pair'], 0, 2) : '';
+  el.innerHTML =
+    `<img class="badge" alt="" src="${badge}">` +
+    `<div><h3 class="${r.caught ? '' : 'miss'}">${r.caught ? 'Event candidate · your catch' : (tP === null ? 'No merger logged' : 'Below threshold · outside the window')}</h3><dl>` +
+    (tP !== null ? `<dt>Logged</dt><dd>${clockUTC(tP, M)} · GPS ${gpsText(tP, M)}</dd>` : `<dt>Logged</dt><dd>nothing: press MERGER! while it plays</dd>`) +
+    `<dt>Merger</dt><dd>${tP === null ? '–' : sgnms(tP * 1000) + ' ms'} · true peak ${sgnms(PEAK.t * 1000)} ms · ${r.missT === null ? 'no press' : Math.abs(r.missT).toFixed(1) + ' ms ' + (r.missT < 0 ? 'early' : 'late')} · window ±${r.tolT.toFixed(1)} ms</dd>` +
+    `<dt>Pitch</dt><dd>${Math.round(game.pitch)} Hz · true ${PEAK.f.toFixed(1)} Hz · ${Math.abs(r.missF).toFixed(1)} Hz ${r.missF < 0 ? 'low' : 'high'} · window ±${r.tolF.toFixed(1)} Hz</dd>` +
+    `<dt>Squeezer</dt><dd>${r.key === 'iso' ? 'isotropic control' : RATIO_LABEL[r.key]} · job ${v.job_id.slice(0, 8)}</dd>` +
+    `<dt>Score</dt><dd>timing ${r.timing} · pitch ${r.pitch} · total <b>${r.total}</b></dd></dl></div>` +
+    `<div class="pub"><h3>Published · GW150914</h3><dl>` +
+    `<dt>When</dt><dd>14 Sep 2015, 09:50:45 UTC; L1 first, H1 6.9 ms later</dd>` +
+    `<dt>Masses</dt><dd>36 + 29 &#8594; 62 suns</dd>` +
+    `<dt>Radiated</dt><dd>3.0 M&#9737;c&sup2; as gravitational waves</dd>` +
+    `<dt>Distance</dt><dd>~410 Mpc (z = 0.09)</dd>` +
+    `<dt>Signal</dt><dd>35 to 250 Hz · peak strain 1.0 &times; 10<sup>&minus;21</sup> · SNR 24</dd></dl></div>` +
+    `<p>Published values: Abbott et al., Phys. Rev. Lett. 116, 061102 (2016). Yours: a game score from real measured widths, not a detection statistic. The real first alert came from a low-latency search within three minutes; no one pressed a button.</p>`;
+  el.hidden = false;
+}
+
+function drawClock(T) {
+  $('clock').textContent = clockCDT(T, M);
+  $('gps').textContent = 'GPS ' + gpsText(T, M);
+}
+function updateAll() {
+  drawRack(); drawDeck(); drawScore(); drawAlert(); drawSpec();
+  const T = playT !== null ? playT : scrubT !== null && scrubbable() ? scrubT : (game.phase === 'idle' ? M.audio.t0 : M.audio.t1);
+  if (LZ.lastT !== T || !LZ.buf) drawLens(T);
+  drawOptics(playT !== null ? playT : scrubT !== null && scrubbable() ? scrubT : null); drawClock(T);
+  syncStop();
+}
+// the data room's Stop works whenever something can be stopped (a WAV, a run, a replay) and is disabled otherwise
+function syncStop() { const s = $('stop'); if (s) s.disabled = !(st.playing || ['count', 'listen', 'paused', 'replay'].includes(game.phase)); }
+
+// ======================================================================================================
+// ---- audio: real <audio> elements, nothing plays until a button is pressed ----
+const players = {};
+let onEnd = null;
+function player(k) {
+  if (!players[k]) {
+    const a = document.createElement('audio'); a.src = V[k].audio; a.preload = 'auto'; a.hidden = true;
+    a.addEventListener('ended', () => ended(k));
+    document.body.appendChild(a); players[k] = a;
+  }
+  return players[k];
+}
+function stopAll(except) {
+  for (const k in players) if (k !== except) { players[k].pause(); try { players[k].currentTime = 0; } catch (e) {} }
+  document.querySelectorAll('.play').forEach(r => { if (r.dataset.key !== except) { setPb(r.querySelector('.pb'), false); r.querySelector('.pr i').style.width = '0'; } });
+}
+function play(k, done, blocked) {
+  stopAll(k); const a = player(k); st.playing = k; onEnd = done || null;
+  try { a.currentTime = 0; } catch (e) {}
+  const p = a.play(); if (p && p.catch) p.catch(() => { toast(blocked || 'Your browser blocked audio: press again'); });
+  wake(); syncStop();
+}
+function ended(k) {
+  if (st.playing !== k) return;
+  st.playing = null; const f = onEnd; onEnd = null;
+  document.querySelectorAll('.play').forEach(r => { setPb(r.querySelector('.pb'), false); r.querySelector('.pr i').style.width = '0'; });
+  if (f) f(); else { playT = null; draw(); updateAll(); }
+}
+
+// ---- the round ----
+function toIdle() { game.phase = 'idle'; game.press = null; game.last = null; playT = null; scrubT = null; }
+const BEAT_MS = 550;                                   // the 3-2-1 count before the chirp
+// count-in beeps: three short synthesised tones (UI sound, not data), scheduled by the START click itself
+let beepCtx = null, beeps = [];
+function countIn() {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+    if (!beepCtx) beepCtx = new AC();
+    if (beepCtx.state === 'suspended') beepCtx.resume();
+    const t0 = beepCtx.currentTime + 0.02;
+    beeps = [0, 1, 2].map(k => {
+      const o = beepCtx.createOscillator(), g = beepCtx.createGain(), t = t0 + k * BEAT_MS / 1000;
+      o.type = 'sine'; o.frequency.value = 660;
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.12, t + 0.01); g.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+      o.connect(g); g.connect(beepCtx.destination); o.start(t); o.stop(t + 0.14); return o;
+    });
+  } catch (e) {}
+}
+function stopBeeps() { beeps.forEach(o => { try { o.stop(); } catch (e) {} }); beeps = []; }
+function bringIntoView() {                             // keep the screen and the MERGER button in view together
+  const sp = document.querySelector('.mon.spec').getBoundingClientRect(), mg = $('merger').getBoundingClientRect();
+  if (sp.top >= -2 && mg.bottom <= innerHeight + 2) return;
+  const y = Math.max(0, scrollY + sp.top - 8);
+  try { window.scrollTo({top: y, behavior: reduce ? 'auto' : 'smooth'}); } catch (e) { window.scrollTo(0, y); }
+}
+function startRun() {
+  if (!(game.phase === 'idle' || game.phase === 'scored')) return;
+  if (st.playing) { stopAll(null); st.playing = null; onEnd = null; }
+  game.phase = 'count'; game.count = 3; game.press = null; game.last = null; game.pitch = 200; playT = M.audio.t0;
+  const k = gridKey(dialKey()), a = player(k);
+  // unlock this audio element inside the click (some phones only let a gesture start sound): muted, then rewound
+  try {
+    a.muted = true; const p = a.play();
+    if (p && p.then) p.then(() => { if (game.phase === 'count') { a.pause(); try { a.currentTime = 0; } catch (e) {} } a.muted = false; }, () => { a.muted = false; });
+    else a.muted = false;
+  } catch (e) { a.muted = false; }
+  countIn(); updateAll(); bringIntoView();
+  const t0 = performance.now();
+  clearInterval(game.cTimer);
+  game.cTimer = setInterval(() => {
+    if (game.phase !== 'count') { clearInterval(game.cTimer); return; }
+    const n = 3 - Math.floor((performance.now() - t0) / BEAT_MS);
+    if (n <= 0) { clearInterval(game.cTimer); go(); return; }
+    if (n !== game.count) { game.count = n; drawDeck(); drawSpec(); }
+  }, 30);
+  function go() {
+    a.muted = false; game.phase = 'listen'; playT = M.audio.t0; updateAll();
+    play(k, () => { if (game.phase === 'listen' || game.phase === 'paused') { game.phase = 'pitch'; playT = null; updateAll(); try { specC.focus({preventScroll: true}); } catch (e) {} } });
+  }
+}
+function pressMerger() {
+  if (game.phase !== 'listen' || game.press !== null) return;
+  const a = players[gridKey(dialKey())];
+  game.press = a && a.duration ? audioTime(a.currentTime / a.duration, M.audio) : (playT === null ? M.audio.t0 : playT);
+  drawDeck(); drawSpec();
+}
+function togglePause() {
+  const a = players[gridKey(dialKey())]; if (!a) return;
+  if (game.phase === 'listen') { a.pause(); game.phase = 'paused'; }
+  else if (game.phase === 'paused') { const p = a.play(); if (p && p.catch) p.catch(() => {}); game.phase = 'listen'; wake(); }
+  updateAll();
+}
+function abortRun() { clearInterval(game.cTimer); stopBeeps(); stopAll(null); st.playing = null; onEnd = null; toIdle(); updateAll(); }
+function lockPitch() {
+  if (game.phase !== 'pitch') return;
+  const k = dialKey(), v = curV();
+  const missT = game.press === null ? null : (game.press - PEAK.t) * 1000, missF = game.pitch - PEAK.f;
+  const r = scoreRound(k, v, O, missT, missF);
+  game.last = r; game.phase = 'scored';
+  const fresh = recordRound(S, r); save();
+  updateAll();
+  try { $('alert').scrollIntoView({block: 'nearest', behavior: reduce ? 'auto' : 'smooth'}); } catch (e) {}
+  if (fresh.length) toast('Unlocked: ' + fresh.map(id => ACH.find(a => a.id === id).name).join(', '));
+  else toast(r.caught ? `Candidate logged · ${r.total} points` : `Logged · ${r.total} points`);
+}
+function replay() {
+  if (game.phase === 'replay') { stopAll(null); st.playing = null; onEnd = null; game.phase = 'scored'; playT = null; updateAll(); return; }
+  if (game.phase !== 'scored') return;
+  game.phase = 'replay'; playT = M.audio.t0; updateAll();
+  play(gridKey(dialKey()), () => { if (game.phase === 'replay') { game.phase = 'scored'; playT = null; updateAll(); } });
+}
+function nudgePitch(df) { if (game.phase !== 'pitch') return; game.pitch = clamp(game.pitch + df, 20, 340); drawSpec(); }
+function wipe() {
+  const now = performance.now();
+  if (now - game.wipeArm > 3500) { game.wipeArm = now; $('wipe').textContent = 'Press again to wipe'; setTimeout(() => { $('wipe').textContent = 'Reset scores'; }, 3500); return; }
+  game.wipeArm = 0; S = freshState(); save(); $('wipe').textContent = 'Reset scores';
+  if (game.phase === 'scored') toIdle();
+  updateAll(); toast('Scores and achievements wiped');
+}
+$('start').addEventListener('click', startRun);
+$('merger').addEventListener('click', pressMerger);
+$('pause').addEventListener('click', togglePause);
+$('abort').addEventListener('click', abortRun);
+$('lock').addEventListener('click', lockPitch);
+$('p-up').addEventListener('click', () => nudgePitch(2));
+$('p-dn').addEventListener('click', () => nudgePitch(-2));
+$('replay').addEventListener('click', replay);
+$('next').addEventListener('click', () => { if (game.phase === 'replay') { stopAll(null); st.playing = null; onEnd = null; } toIdle(); updateAll(); });
+$('wipe').addEventListener('click', wipe);
+// the screen: tap to log MERGER while listening; drag to set the pitch line
+const specF = e => { const r = specC.getBoundingClientRect(), b = specBox; if (!b) return game.pitch; const y = (e.clientY - r.top) / r.height * specC.height; return clamp(b.vw.f1 - (y - b.pad.t) / b.PHs * (b.vw.f1 - b.vw.f0), 20, 340); };
+specC.addEventListener('pointerdown', e => {
+  if (game.phase === 'listen') { pressMerger(); return; }
+  if (game.phase !== 'pitch') return;
+  game.dragging = true; try { specC.setPointerCapture(e.pointerId); } catch (_) {} game.pitch = specF(e); drawSpec();
+});
+specC.addEventListener('pointermove', e => { if (game.dragging && game.phase === 'pitch') { game.pitch = specF(e); drawSpec(); } });
+specC.addEventListener('click', () => { if (game.phase === 'idle') toast('Press START RUN: the screen fills as the chirp plays'); else if (game.phase === 'scored') toast('Replay this round, or turn the dial for the next'); });
+// between rounds, scrub the source view (and the mirrors) through the real chirp's time axis
+const scrubbable = () => game.phase === 'idle' || game.phase === 'scored';
+let scrubT = null, scrubbing = false;
+function scrubTo(T) {
+  scrubT = clamp(T, M.audio.t0, 0.06); drawLens(scrubT); drawOptics(scrubT); drawClock(scrubT);
+}
+const lensT = e => { const r = lensC.getBoundingClientRect(); return M.audio.t0 + clamp((e.clientX - r.left) / r.width, 0, 1) * (0.06 - M.audio.t0); };
+lensC.addEventListener('pointerdown', e => { if (!scrubbable()) return; scrubbing = true; try { lensC.setPointerCapture(e.pointerId); } catch (_) {} scrubTo(lensT(e)); });
+lensC.addEventListener('pointermove', e => { if (scrubbing) scrubTo(lensT(e)); });
+lensC.addEventListener('pointerup', () => scrubbing = false); lensC.addEventListener('pointercancel', () => scrubbing = false);
+lensC.addEventListener('keydown', e => {
+  const k = {ArrowLeft: -1, ArrowRight: 1}[e.key]; if (!k || !scrubbable()) return; e.preventDefault();
+  scrubTo((scrubT === null ? M.audio.t0 : scrubT) + k * (e.shiftKey ? 0.02 : 0.004));
+});
+specC.addEventListener('pointerup', () => game.dragging = false); specC.addEventListener('pointercancel', () => game.dragging = false);
+specC.addEventListener('keydown', e => {
+  if (game.phase === 'pitch') {
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') { e.preventDefault(); nudgePitch((e.key === 'ArrowUp' ? 1 : -1) * (e.shiftKey ? 10 : 1)); }
+    else if (e.key === 'Enter') { e.preventDefault(); lockPitch(); }
+  } else if (game.phase === 'listen' && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); pressMerger(); }
+});
+document.addEventListener('keydown', e => {
+  if (game.phase !== 'listen' || e.repeat) return;
+  const t = e.target, tag = t && t.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'BUTTON' || tag === 'SUMMARY' || (t && t.closest && t.closest('[role="button"],[role="slider"]'))) return;
+  if (e.key === ' ' || e.key === 'm' || e.key === 'M') { e.preventDefault(); pressMerger(); }
+});
+
+// ---- one animation loop while sound plays ----
+let rafId = null;
+function wake() { if (rafId === null) rafId = requestAnimationFrame(frame); }
+function frame() {
+  rafId = null;
+  const k = st.playing, a = k && players[k];
+  if (a) {
+    const frac = a.duration ? a.currentTime / a.duration : 0;
+    playT = audioTime(frac, M.audio);
+    const pr = document.querySelector(`.play[data-key="${k}"] .pr i`); if (pr) pr.style.width = (100 * frac) + '%';
+    drawSpec(); drawLens(playT); drawOptics(playT); drawClock(playT); draw();
+    if (!a.paused) wake();
+  }
+}
+
+// ======================================================================================================
+// ---- the data room: the previous instrument (cuts, profiles, the trade chart, free listening) ----
+const cv = $('cv'), ctx = cv.getContext('2d');
+const W = cv.width, H = cv.height, P = {l: 92, r: 18, t: 60, b: 86}, PW = W - P.l - P.r, PH = H - P.t - P.b;
+const small = () => cv.clientWidth > 0 && cv.clientWidth < 560;
+const view = () => ZOOM[st.zoom];
+const xOf = t => P.l + (t - view().t[0]) / (view().t[1] - view().t[0]) * PW;
+const yOf = f => P.t + (view().f[1] - f) / (view().f[1] - view().f[0]) * PH;
+function draw() {
+  const z = view();
+  ctx.fillStyle = PAL.panel; ctx.fillRect(0, 0, W, H);
+  ctx.imageSmoothingEnabled = false;
+  const tEdge = M.t0 - M.dt / 2, fTop = freqOf(M.nf - 1, M) + M.df / 2;
+  ctx.drawImage(gridImage(st.v, st.mode), (z.t[0] - tEdge) / M.dt, (fTop - z.f[1]) / M.df, (z.t[1] - z.t[0]) / M.dt,
+                (z.f[1] - z.f[0]) / M.df, P.l, P.t, PW, PH);
+  ctx.strokeStyle = PAL.ink; ctx.lineWidth = 1; ctx.strokeRect(P.l + .5, P.t + .5, PW - 1, PH - 1);
+  const fz = small() ? 30 : 19;
+  ctx.fillStyle = PAL.ink; ctx.font = `500 ${fz}px "IBM Plex Mono", monospace`;
+  const tStep = st.zoom === 'chirp' ? 0.05 : 0.1, fStep = st.zoom === 'chirp' ? 50 : 100;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  for (let t = Math.ceil(z.t[0] / tStep) * tStep; t <= z.t[1] + 1e-9; t += tStep) {
+    const x = xOf(t); ctx.fillRect(x, P.t + PH, 1, 7); ctx.fillText(Math.round(t * 1000), x, P.t + PH + 11);
+  }
+  ctx.fillStyle = PAL.ink2; ctx.fillText('ms from merger', P.l + PW / 2, P.t + PH + 16 + fz); ctx.fillStyle = PAL.ink;
+  ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  for (let f = Math.ceil(z.f[0] / fStep) * fStep; f <= z.f[1]; f += fStep) { const y = yOf(f); ctx.fillRect(P.l - 7, y, 7, 1); ctx.fillText(f, P.l - 11, y); }
+  ctx.save(); ctx.fillStyle = PAL.ink2; ctx.translate(fz, P.t + PH / 2); ctx.rotate(-Math.PI / 2); ctx.textAlign = 'center'; ctx.fillText('Hz', 0, 0); ctx.restore();
+  ctx.save(); ctx.beginPath(); ctx.rect(P.l, P.t, PW, PH); ctx.clip();
+  if (st.ridge) {
+    ctx.fillStyle = PAL.paper; ctx.strokeStyle = PAL.ink; ctx.lineWidth = 1.2;
+    for (const [i, j] of M.track_t.concat(M.track_f)) { ctx.beginPath(); ctx.arc(xOf(timeOf(i, M)), yOf(freqOf(j, M)), 3, 0, 2 * Math.PI); ctx.fill(); ctx.stroke(); }
+  }
+  const cx = xOf(st.t / 1000), cy = yOf(st.f);
+  const cross = () => { ctx.beginPath(); ctx.moveTo(P.l, cy); ctx.lineTo(P.l + PW, cy); ctx.moveTo(cx, P.t); ctx.lineTo(cx, P.t + PH); ctx.stroke(); };
+  ctx.lineWidth = 5; ctx.strokeStyle = PAL.veil; cross();
+  ctx.setLineDash([10, 8]); ctx.lineWidth = 2; ctx.strokeStyle = PAL.ink; cross(); ctx.setLineDash([]);
+  ctx.fillStyle = PAL.paper; ctx.strokeStyle = PAL.ink; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(cx, cy, 7, 0, 2 * Math.PI); ctx.fill(); ctx.stroke();
+  if (playT !== null && st.playing) { const x = xOf(playT); ctx.fillStyle = PAL.paper; ctx.fillRect(x - 3.5, P.t, 7, PH); ctx.fillStyle = PAL.ink; ctx.fillRect(x - 1.5, P.t, 3, PH); }
+  ctx.restore();
+}
+function drawProfile(id, xs, a, b, sel, xr, half, unit) {
+  const c = $(id), x = c.getContext('2d'), w = c.width, h = c.height;
+  const fz = c.clientWidth > 0 && c.clientWidth < 420 ? 27 : 19, L = 14, R = 14, T = 12, B = Math.round(fz * 2.7);
+  x.fillStyle = PAL.panel; x.fillRect(0, 0, w, h);
+  const inR = k => xs[k] >= xr[0] && xs[k] <= xr[1];
+  let mx = 1e-9; for (let k = 0; k < xs.length; k++) if (inR(k)) mx = Math.max(mx, a[k], b[k]);
+  const X = v => L + (v - xr[0]) / (xr[1] - xr[0]) * (w - L - R), Y = v => T + (1 - v / mx) * (h - T - B);
+  if (sel) { x.fillStyle = PAL.tint; x.fillRect(X(xs[Math.max(0, sel.c - half)]), T, X(xs[Math.min(xs.length - 1, sel.c + half)]) - X(xs[Math.max(0, sel.c - half)]), h - T - B); }
+  x.strokeStyle = PAL.ink; x.lineWidth = 1; x.beginPath(); x.moveTo(L, h - B + .5); x.lineTo(w - R, h - B + .5); x.stroke();
+  x.fillStyle = PAL.ink; x.font = `500 ${fz}px "IBM Plex Mono", monospace`; x.textAlign = 'center'; x.textBaseline = 'top';
+  const span = xr[1] - xr[0], step = span > 300 ? 100 : span > 150 ? 50 : 20;
+  for (let v = Math.ceil(xr[0] / step) * step; v <= xr[1]; v += step) { if (X(v) < L + 18 || X(v) > w - R - 40) continue; x.fillRect(X(v), h - B, 1, 5); x.fillText(v, X(v), h - B + 8); }
+  x.textAlign = 'right'; x.fillStyle = PAL.ink2; x.fillText(unit, w - R, h - B + 10 + fz);
+  const line = (p, col, lw) => { x.strokeStyle = col; x.lineWidth = lw; x.beginPath(); let s = false;
+    for (let k = 0; k < xs.length; k++) { if (!inR(k)) continue; const px = X(xs[k]), py = Y(p[k]); s ? x.lineTo(px, py) : x.moveTo(px, py); s = true; } x.stroke(); };
+  line(a, PAL.ink3, 2.5); line(b, PAL.ink, 2.5);
+}
+function profiles() {
+  const z = view(), j = cellOfFreq(st.f, M), i = cellOfTime(st.t / 1000, M);
+  const tms = Array.from({length: M.nt}, (_, k) => timeOf(k, M) * 1000), fhz = Array.from({length: M.nf}, (_, k) => freqOf(k, M));
+  const oT = profileT(G.original, j, M), vT = profileT(G[st.v], j, M), oF = profileF(G.original, i, M), vF = profileF(G[st.v], i, M);
+  const sT = cutWidths(oT, vT, M.half_t, PEAK95 * 2), sF = cutWidths(oF, vF, M.half_f, PEAK95 * 2);
+  drawProfile('pt', tms, oT, vT, sT, [z.t[0] * 1000, z.t[1] * 1000], M.half_t, 'ms');
+  drawProfile('pf', fhz, oF, vF, sF, z.f, M.half_f, 'Hz');
+  $('c-f').textContent = freqOf(j, M).toFixed(0) + ' Hz';
+  $('c-t').textContent = (timeOf(i, M) * 1000).toFixed(0) + ' ms';
+  const lab = RATIO_LABEL[st.v];
+  document.querySelectorAll('.lgv').forEach(n => n.textContent = st.mode === 'original' ? lab + ' (selected)' : lab);
+  const say = (s, unit, k) => s ? `RMS width at this cut: original <b>${(s.o * k).toFixed(2)} ${unit}</b> &rarr; ${lab} <b>${(s.v * k).toFixed(2)} ${unit}</b> <em>${sgn(pct(s.v, s.o))}</em>` :
+    'This cut misses the ridge: move it onto the bright track.';
+  $('cw-t').innerHTML = say(sT, 'ms', M.dt * 1000);
+  $('cw-f').innerHTML = say(sF, 'Hz', M.df);
+}
+function readouts() {
+  const v = V[st.v];
+  $('w-t').textContent = v.tw.toFixed(2) + ' ms';
+  $('w-f').textContent = v.fw.toFixed(2) + ' Hz';
+  $('w-td').textContent = sgn(pct(v.tw, O.tw)) + ' vs original ' + O.tw.toFixed(2);
+  $('w-fd').textContent = sgn(pct(v.fw, O.fw)) + ' vs original ' + O.fw.toFixed(2);
+  $('b-t').style.width = clamp(pct(v.tw, O.tw) / 20 * 100, 0, 100) + '%';
+  $('b-f').style.width = clamp(pct(v.fw, O.fw) / 20 * 100, 0, 100) + '%';
+  const s = v.strength;
+  $('r-val').textContent = `${RATIO_LABEL[st.v]} · [${s[0].toFixed(2)}, ${s[1].toFixed(2)}]`;
+  $('r-params').textContent = `strength [s_time ${s[0]}, s_freq ${s[1]}] · reach 0 · style x · max_qubits 24`;
+  $('r-job').textContent = v.job_id;
+  $('r-says').textContent = `engine: "${v.engine_says}"`;
+  $('r-iso').innerHTML = st.v === 'r1' ?
+    `<b>scalar strength ${M.iso.strength}</b> (job ${M.iso.job_id.slice(0, 8)}) gives the same grid: max difference ${M.iso.maxdiff}` :
+    `isotropic scalar 0.5 matches r = 1 exactly; select r = 1 to see it`;
+  $('tag').innerHTML = st.mode === 'original' ? 'original<br><span>real LIGO data · classical STFT · power, square-root scale</span>' :
+    st.mode === 'change' ? `${RATIO_LABEL[st.v]} minus original<br><span><i class="sw g"></i>ink = power gained &middot; <i class="sw l"></i>orange = power lost</span>` :
+    `${RATIO_LABEL[st.v]}<br><span>s_time ${s[0].toFixed(2)} · s_freq ${s[1].toFixed(2)} · power, square-root scale</span>`;
+  ellipse();
+  document.querySelectorAll('.play').forEach(p => p.classList.toggle('cur', p.dataset.key === (st.mode === 'original' ? 'original' : st.v)));
+  document.querySelectorAll('#ticks button').forEach((b, k) => b.setAttribute('aria-pressed', String(RATIO_KEYS[k] === st.v)));
+  const sl = $('ratio'); sl.value = RATIO_KEYS.indexOf(st.v);
+  sl.setAttribute('aria-valuetext', `${RATIO_LABEL[st.v]}: time strength ${s[0]}, frequency strength ${s[1]}`);
+  document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === st.mode)));
+  document.querySelectorAll('[data-zoom]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.zoom === st.zoom)));
+  $('ridge').setAttribute('aria-pressed', String(st.ridge));
+  $('ridge').textContent = st.ridge ? 'Hide measured ridge' : 'Show measured ridge';
+  trade(); panels(); ratioCharts();
+}
+function refresh() { readouts(); draw(); profiles(); }
+function ellipse() {          // width changes drawn x4 so a 3 % change is visible; labelled on the glyph
+  const v = V[st.v], s = $('ell'), R = 30, c = 60, X4 = 4;
+  const rx = R * (1 + X4 * (v.tw / O.tw - 1)), ry = R * (1 + X4 * (v.fw / O.fw - 1));
+  s.innerHTML = `<circle cx="${c}" cy="${c}" r="${R}" fill="none" stroke="${PAL.ink2}" stroke-dasharray="3 3"/>` +
+    `<ellipse cx="${c}" cy="${c}" rx="${rx.toFixed(2)}" ry="${ry.toFixed(2)}" fill="${PAL.tint}" stroke="${PAL.ink}" stroke-width="2"/>` +
+    `<text x="${c}" y="118" text-anchor="middle">time</text><text transform="translate(7 ${c}) rotate(-90)" text-anchor="middle">pitch</text>` +
+    `<text x="${c}" y="7" text-anchor="middle">changes x4</text>`;
+}
+
+// ---- the project's hero figure (hero.png = out/panels.png), drawn live: the six real grids side by side ----
+const PANEL_KEYS = ['original'].concat(RATIO_KEYS), PANEL_WIN = {t: [-0.15, 0.06], f: [20, 320]};
+function buildPanels() {
+  $('six').innerHTML = PANEL_KEYS.map(k => `<button type="button" class="pan" data-k="${k}" aria-pressed="false" aria-label="Load ${k === 'original' ? 'the original' : RATIO_LABEL[k]} in the data room">` +
+    `<span>${k === 'original' ? 'original' : RATIO_LABEL[k]}</span><span class="pw">${V[k].tw.toFixed(2)} ms · ${V[k].fw.toFixed(2)} Hz</span><canvas width="300" height="270"></canvas></button>`).join('');
+  $('six').querySelectorAll('.pan').forEach(b => b.addEventListener('click', () => { if (b.dataset.k === 'original') { st.mode = 'original'; refresh(); } else select(b.dataset.k); }));
+}
+function panels() {
+  const W0 = PANEL_WIN;
+  $('six').querySelectorAll('.pan').forEach(b => {
+    const k = b.dataset.k, c = b.querySelector('canvas'), x = c.getContext('2d'), w = c.width, h = c.height;
+    b.setAttribute('aria-pressed', String(k === 'original' ? st.mode === 'original' : st.mode !== 'original' && k === st.v));
+    const pd = {l: 46, r: 8, t: 8, b: 32}, pw = w - pd.l - pd.r, ph = h - pd.t - pd.b;
+    const X = t => pd.l + (t - W0.t[0]) / (W0.t[1] - W0.t[0]) * pw, Y = f => pd.t + (W0.f[1] - f) / (W0.f[1] - W0.f[0]) * ph;
+    x.fillStyle = PAL.panel; x.fillRect(0, 0, w, h);
+    x.imageSmoothingEnabled = true;
+    blitGrid(x, gridImage(k, k === 'original' ? 'original' : 'blurred'), W0.t[0], W0.t[1], W0.f[0], W0.f[1], pd.l, pd.t, pw, ph);
+    x.strokeStyle = PAL.ink; x.lineWidth = 1; x.strokeRect(pd.l + .5, pd.t + .5, pw - 1, ph - 1);
+    x.fillStyle = PAL.ink2; x.font = '500 17px "IBM Plex Mono", monospace';
+    x.textAlign = 'center'; x.textBaseline = 'top';
+    [-100, -50, 0, 50].forEach(ms => { const px = X(ms / 1000); x.fillRect(px, pd.t + ph, 1, 5); x.fillText(String(ms).replace('-', '−'), px, pd.t + ph + 7); });
+    x.textAlign = 'right'; x.textBaseline = 'middle';
+    [100, 200, 300].forEach(f => { const py = Y(f); x.fillRect(pd.l - 5, py, 5, 1); x.fillText(String(f), pd.l - 8, py); });
+  });
+}
+
+// ---- the project's out/widths_vs_ratio.png, drawn live: each measured ridge width against the squeeze ratio ----
+function ratioCharts() {
+  const vs = RATIO_KEYS.map(k => V[k]), lab = RATIO_KEYS.map(k => DIAL_LABEL[k]);
+  [['wr-t', 'tw', 'ctw', 'ridge time-width (ms)', 'ms'], ['wr-f', 'fw', 'cfw', 'ridge freq-width (Hz)', 'Hz']].forEach(([id, q, cq, title, unit]) => {
+    const s = $(id), w = 400, h = 270, cw = s.clientWidth, fs = cw > 0 && cw < 330 ? 17 : cw > 470 ? 10.5 : 12.5;
+    const FT = `font-size="${fs}" font-family="IBM Plex Mono, monospace"`, FX = `font-size="${(cw > 0 && cw < 330 ? 0.8 : 1) * fs}" font-family="IBM Plex Mono, monospace"`;
+    const L = Math.round(fs * 4.4), R = 12, T = 10, B = Math.round(fs * 3.4);
+    const all = vs.map(v => v[q]).concat(vs.map(v => v[cq]), [O[q]]), lo = Math.min(...all), hi = Math.max(...all), m = (hi - lo) * 0.1;
+    const yr = [lo - m, hi + m], step = [0.1, 0.2, 0.25, 0.5, 1].find(d => (yr[1] - yr[0]) / d <= 6) || 1, dec = step === 0.25 ? 2 : step < 1 ? 1 : 0;
+    const X = i => L + 22 + i * (w - L - R - 44) / 4, Y = v => T + (yr[1] - v) / (yr[1] - yr[0]) * (h - T - B);
+    let o = `<rect x="${L}" y="${T}" width="${w - L - R}" height="${h - T - B}" fill="none" stroke="${PAL.ink}"/>`;
+    for (let v = Math.ceil(yr[0] / step) * step; v <= yr[1] + 1e-9; v += step)
+      o += `<line x1="${L - 5}" x2="${L}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="${PAL.ink}"/><text x="${L - 8}" y="${(Y(v) + fs * 0.35).toFixed(1)}" fill="${PAL.ink2}" ${FT} text-anchor="end">${v.toFixed(dec)}</text>`;
+    lab.forEach((t, i) => o += `<text x="${X(i).toFixed(1)}" y="${h - B + fs + 6}" fill="${PAL.ink2}" ${FT} text-anchor="middle">${t}</text>`);
+    o += `<text x="${(L + w - R) / 2 - 8}" y="${h - 6}" fill="${PAL.ink2}" ${FX} text-anchor="middle">squeeze ratio r = s_time / s_freq</text>`;
+    o += `<text transform="translate(${fs + 1} ${T + (h - T - B) / 2}) rotate(-90)" fill="${PAL.ink2}" ${FT} text-anchor="middle">${title}</text>`;
+    // the original's width (dotted), labelled at whichever end of the chart leaves it room
+    const gap = i => Math.min(Math.abs(vs[i][q] - O[q]), Math.abs(vs[i][cq] - O[q])), right = gap(4) >= gap(0);
+    o += `<line x1="${L}" x2="${w - R}" y1="${Y(O[q]).toFixed(1)}" y2="${Y(O[q]).toFixed(1)}" stroke="${PAL.ink2}" stroke-width="1.2" stroke-dasharray="1.5 3"/>`;
+    o += `<text x="${right ? w - R - 6 : L + 6}" y="${(Y(O[q]) - 6).toFixed(1)}" fill="${PAL.ink2}" ${FT} text-anchor="${right ? 'end' : 'start'}">original ${O[q].toFixed(2)}</text>`;
+    // the classical Gaussian-blur reference (dashed, squares), then the engine's outputs (ink, selectable)
+    o += `<path d="${vs.map((v, i) => (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(v[cq]).toFixed(1)).join('')}" fill="none" stroke="${PAL.ink2}" stroke-width="1.5" stroke-dasharray="6 5"/>`;
+    vs.forEach((v, i) => o += `<rect x="${(X(i) - 3.5).toFixed(1)}" y="${(Y(v[cq]) - 3.5).toFixed(1)}" width="7" height="7" fill="${PAL.panel}" stroke="${PAL.ink2}" stroke-width="1.5"/>`);
+    o += `<path d="${vs.map((v, i) => (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(v[q]).toFixed(1)).join('')}" fill="none" stroke="${PAL.ink}" stroke-width="2"/>`;
+    vs.forEach((v, i) => {
+      const k = RATIO_KEYS[i], on = st.mode !== 'original' && k === st.v;
+      o += `<g class="pt" role="button" tabindex="0" data-k="${k}" aria-label="Select ${RATIO_LABEL[k]}: ${v[q].toFixed(2)} ${unit}" aria-pressed="${on}">` +
+        `<circle class="ring" cx="${X(i).toFixed(1)}" cy="${Y(v[q]).toFixed(1)}" r="${on ? 11 : 9}" fill="${on ? PAL.tint : 'transparent'}" stroke="${on ? PAL.ink : 'transparent'}" stroke-width="2"/>` +
+        `<circle cx="${X(i).toFixed(1)}" cy="${Y(v[q]).toFixed(1)}" r="5" fill="${PAL.ink}"/></g>`;
+    });
+    s.innerHTML = o;
+    s.querySelectorAll('.pt').forEach(g => {
+      const go = () => { select(g.dataset.k); const n = document.querySelector(`#${id} .pt[data-k="${g.dataset.k}"]`); if (n) n.focus({preventScroll: true}); };
+      g.addEventListener('click', go);
+      g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+    });
+  });
+}
+
+// ---- every paid job behind the page (Jobs and credits); a row's setting button turns the dial to that job ----
+function buildJobs() {
+  const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  let o = DIAL.map(k => {
+    const v = VD[k], run = k === 'iso' ? M.iso.run_s : v.run_s, name = k === 'iso' ? 'isotropic control' : RATIO_LABEL[k];
+    return `<tr data-k="${k}"><td><button type="button" class="jb" data-k="${k}" aria-label="Turn the squeezer to ${k === 'iso' ? 'the isotropic control' : name}">${name}</button></td>` +
+      `<td>${k === 'iso' ? 'scalar ' + M.iso.strength : `[${v.strength[0]}, ${v.strength[1]}]`}</td><td>completed${run ? ` · ${run} s` : ''}</td>` +
+      `<td class="id">${v.job_id}</td><td>ridge ${v.tw.toFixed(2)} ms × ${v.fw.toFixed(2)} Hz</td></tr>`;
+  }).join('');
+  o += (M.failed || []).map(f => `<tr class="fail"><td>${f.grid.join(' × ')} test, ${f.qubits} qubits</td><td>scalar ${f.strength}</td><td>failed</td>` +
+    `<td class="id">${f.job_id}</td><td class="why">${esc(f.error)} (result over Atlas's 2 MB payload limit)</td></tr>`).join('');
+  $('jobs-b').innerHTML = o;
+  const nf = (M.failed || []).length;
+  $('jobs-sum').textContent = `${DIAL.length} completed · ${nf} failed · ${DIAL.length + nf} credits`;
+  $('jobs-b').querySelectorAll('.jb').forEach(b => b.addEventListener('click', () => {
+    if (dialLocked()) { toast('The squeezer is locked during a run'); return; }
+    setDial(DIAL.indexOf(b.dataset.k));
+    toast(`${b.dataset.k === 'iso' ? 'Isotropic control' : RATIO_LABEL[b.dataset.k]}: set on the squeezer dial and in the data room`);
+  }));
+}
+function markJobs() { document.querySelectorAll('#jobs-b tr[data-k]').forEach(r => r.setAttribute('aria-current', String(r.dataset.k === dialKey()))); }
+
+function trade() {
+  const s = $('trade'), w = 560, h = 330, fs = s.clientWidth > 0 && s.clientWidth < 420 ? 24 : 14;
+  const L = Math.round(fs * 4.6), R = 16, T = fs + 8, B = Math.round(fs * 3.9), FT = `font-size="${fs}" font-family="IBM Plex Mono, monospace"`;
+  const vs = RATIO_KEYS.map(k => V[k]);
+  const xs = vs.map(v => v.tw).concat(vs.map(v => v.ctw), [O.tw]), ys = vs.map(v => v.fw).concat(vs.map(v => v.cfw), [O.fw]);
+  const xr = [Math.min(...xs) - 0.25, Math.max(...xs) + 0.25], yr = [Math.min(...ys) - 0.3, Math.max(...ys) + 0.3];
+  const X = v => L + (v - xr[0]) / (xr[1] - xr[0]) * (w - L - R), Y = v => T + (yr[1] - v) / (yr[1] - yr[0]) * (h - T - B);
+  let o = `<rect x="${L}" y="${T}" width="${w - L - R}" height="${h - T - B}" fill="none" stroke="${PAL.ink}"/>`;
+  for (let v = Math.ceil(xr[0] * 2) / 2; v <= xr[1]; v += 0.5) o += `<text x="${X(v)}" y="${h - B + fs + 6}" fill="${PAL.ink2}" ${FT} text-anchor="middle">${v.toFixed(1)}</text>`;
+  for (let v = Math.ceil(yr[0] * 2) / 2; v <= yr[1]; v += 0.5) o += `<text x="${L - 8}" y="${Y(v) + fs * 0.35}" fill="${PAL.ink2}" ${FT} text-anchor="end">${v.toFixed(1)}</text>`;
+  o += `<text x="${L + (w - L - R) / 2}" y="${h - 8}" fill="${PAL.ink2}" ${FT} text-anchor="middle">ridge time-width (ms)</text>`;
+  o += `<text transform="translate(${fs + 2} ${T + (h - T - B) / 2}) rotate(-90)" fill="${PAL.ink2}" ${FT} text-anchor="middle">freq-width (Hz)</text>`;
+  const P1 = V.r1.tw * V.r1.fw; let hp = '';
+  for (let k = 0; k <= 60; k++) { const x = xr[0] + (xr[1] - xr[0]) * k / 60, y = P1 / x; if (y >= yr[0] && y <= yr[1]) hp += (hp ? 'L' : 'M') + X(x).toFixed(1) + ' ' + Y(y).toFixed(1); }
+  o += `<path d="${hp}" fill="none" stroke="${PAL.ink3}" stroke-width="1.5" stroke-dasharray="2 4"/>`;
+  o += `<path d="${vs.map((v, k) => (k ? 'L' : 'M') + X(v.ctw).toFixed(1) + ' ' + Y(v.cfw).toFixed(1)).join('')}" fill="none" stroke="${PAL.ink2}" stroke-width="1.5" stroke-dasharray="6 5"/>`;
+  vs.forEach(v => o += `<rect x="${X(v.ctw) - 3.5}" y="${Y(v.cfw) - 3.5}" width="7" height="7" fill="${PAL.panel}" stroke="${PAL.ink2}" stroke-width="1.5"/>`);
+  o += `<path d="${vs.map((v, k) => (k ? 'L' : 'M') + X(v.tw).toFixed(1) + ' ' + Y(v.fw).toFixed(1)).join('')}" fill="none" stroke="${PAL.ink}" stroke-width="2"/>`;
+  o += `<circle cx="${X(O.tw)}" cy="${Y(O.fw)}" r="6" fill="${PAL.paper}" stroke="${PAL.ink}" stroke-width="2"/><text x="${X(O.tw) + 10}" y="${Y(O.fw) + fs * 0.35}" fill="${PAL.ink}" ${FT}>original</text>`;
+  vs.forEach((v, k) => {
+    const on = RATIO_KEYS[k] === st.v;
+    o += `<g class="pt" role="button" tabindex="0" data-k="${RATIO_KEYS[k]}" aria-label="Select ${RATIO_LABEL[RATIO_KEYS[k]]}" aria-pressed="${on}">` +
+      `<circle cx="${X(v.tw)}" cy="${Y(v.fw)}" r="${fs + 4}" fill="transparent"/>` +      // hit area that reaches the label above
+      `<circle class="ring" cx="${X(v.tw)}" cy="${Y(v.fw)}" r="${on ? 11 : 8}" fill="${on ? PAL.tint : 'transparent'}" stroke="${on ? PAL.ink : 'transparent'}" stroke-width="2"/>` +
+      `<circle cx="${X(v.tw)}" cy="${Y(v.fw)}" r="5" fill="${PAL.ink}"/>` +
+      `<text x="${k < vs.length - 1 ? X(v.tw) + 9 : X(v.tw)}" y="${Y(v.fw) - (k < vs.length - 1 ? 9 : fs)}" fill="${on ? PAL.ink : PAL.ink2}" font-weight="${on ? 600 : 400}" ${FT} text-anchor="${k < vs.length - 1 ? 'start' : 'middle'}">${RATIO_LABEL[RATIO_KEYS[k]].replace('r = ', '')}</text></g>`;
+  });
+  s.innerHTML = o;
+  s.querySelectorAll('.pt').forEach(g => {
+    const go = () => { select(g.dataset.k); const n = document.querySelector(`#trade .pt[data-k="${g.dataset.k}"]`); if (n) n.focus(); };
+    g.addEventListener('click', go);
+    g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+  });
+}
+function select(k) { st.v = k; if (st.mode === 'original') st.mode = 'blurred'; followData(); refresh(); }
+const ticks = $('ticks');
+RATIO_KEYS.forEach(k => { const b = document.createElement('button'); b.type = 'button'; b.textContent = RATIO_LABEL[k].replace('r = ', ''); b.setAttribute('aria-label', 'Select ' + RATIO_LABEL[k]); b.addEventListener('click', () => select(k)); ticks.appendChild(b); });
+$('ratio').addEventListener('input', e => select(RATIO_KEYS[+e.target.value]));
+document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => { st.mode = b.dataset.mode; refresh(); }));
+document.querySelectorAll('[data-zoom]').forEach(b => b.addEventListener('click', () => {
+  st.zoom = b.dataset.zoom; const z = view(); st.t = clamp(st.t, z.t[0] * 1000, z.t[1] * 1000); st.f = clamp(st.f, z.f[0], z.f[1]); refresh(); }));
+$('ridge').addEventListener('click', () => { st.ridge = !st.ridge; refresh(); });
+function pick(e) {
+  const r = cv.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * W, y = (e.clientY - r.top) / r.height * H, z = view();
+  st.t = clamp(z.t[0] + (x - P.l) / PW * (z.t[1] - z.t[0]), z.t[0], z.t[1]) * 1000;
+  st.f = clamp(z.f[1] - (y - P.t) / PH * (z.f[1] - z.f[0]), z.f[0], z.f[1]);
+  draw(); profiles();
+}
+let down = false;
+cv.addEventListener('pointerdown', e => { down = true; try { cv.setPointerCapture(e.pointerId); } catch (_) {} pick(e); });
+cv.addEventListener('pointermove', e => { if (down) pick(e); });
+cv.addEventListener('pointerup', () => down = false); cv.addEventListener('pointercancel', () => down = false);
+cv.addEventListener('keydown', e => {
+  const k = e.shiftKey ? 5 : 1, z = view();
+  const m = {ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1]}[e.key];
+  if (!m) return; e.preventDefault();
+  st.t = clamp(st.t + m[0] * k * M.dt * 1000, z.t[0] * 1000, z.t[1] * 1000);
+  st.f = clamp(st.f + m[1] * k * M.df, z.f[0], z.f[1]); draw(); profiles();
+});
+// the two profiles are handles too: click or drag along the time profile to move the time cut, along the
+// frequency profile to move the frequency cut (same axis mapping as drawProfile)
+function profPick(id, e) {
+  const c = $(id), r = c.getBoundingClientRect(), z = view(), w = c.width, L = 14, R = 14;
+  const u = clamp(((e.clientX - r.left) / r.width * w - L) / (w - L - R), 0, 1);
+  if (id === 'pt') st.t = (z.t[0] + u * (z.t[1] - z.t[0])) * 1000; else st.f = z.f[0] + u * (z.f[1] - z.f[0]);
+  draw(); profiles();
+}
+['pt', 'pf'].forEach(id => {
+  const c = $(id); let on = false;
+  c.tabIndex = 0; c.style.cursor = 'ew-resize'; c.style.touchAction = 'pan-y';
+  c.addEventListener('pointerdown', e => { on = true; try { c.setPointerCapture(e.pointerId); } catch (_) {} profPick(id, e); });
+  c.addEventListener('pointermove', e => { if (on) profPick(id, e); });
+  c.addEventListener('pointerup', () => on = false); c.addEventListener('pointercancel', () => on = false);
+  c.addEventListener('keydown', e => {
+    const d = {ArrowLeft: -1, ArrowRight: 1}[e.key]; if (!d) return; e.preventDefault();
+    const z = view(), k = (e.shiftKey ? 5 : 1) * d;
+    if (id === 'pt') st.t = clamp(st.t + k * M.dt * 1000, z.t[0] * 1000, z.t[1] * 1000); else st.f = clamp(st.f + k * M.df, z.f[0], z.f[1]);
+    draw(); profiles();
+  });
+});
+// free listening in the data room: one play/pause pill per version, plus Stop
+const plays = $('plays');
+['original'].concat(RATIO_KEYS).forEach(k => {
+  const v = V[k], row = document.createElement('div'); row.className = 'play'; row.dataset.key = k;
+  row.innerHTML = `<button type="button" class="pb" data-key="${k}" aria-pressed="false" aria-label="Play ${RATIO_LABEL[k]}"><span class="ic">&#9654;</span></button>` +
+    `<div class="nm"><span>${RATIO_LABEL[k]}${k === 'original' ? ' (real data)' : ''}</span><div class="pr"><i></i></div></div>` +
+    `<span class="wx">${v.tw.toFixed(2)} ms · ${v.fw.toFixed(2)} Hz</span>`;
+  row.querySelector('button').addEventListener('click', () => togglePill(k));
+  plays.appendChild(row);
+});
+function setPb(b, on) { b.setAttribute('aria-pressed', String(on)); b.querySelector('.ic').innerHTML = on ? '&#10074;&#10074;' : '&#9654;'; b.setAttribute('aria-label', (on ? 'Pause ' : 'Play ') + RATIO_LABEL[b.dataset.key]); }
+function togglePill(k) {
+  const a = player(k), b = document.querySelector(`.pb[data-key="${k}"]`);
+  if (st.playing === k && !a.paused) { a.pause(); setPb(b, false); return; }
+  if (st.playing === k && a.paused) { const p = a.play(); if (p && p.catch) p.catch(() => {}); setPb(b, true); wake(); return; }
+  // a night-shift round that is making sound gives way to the data room
+  if (game.phase === 'replay') { stopAll(null); st.playing = null; onEnd = null; game.phase = 'scored'; playT = null; }
+  else if (['count', 'listen', 'paused'].includes(game.phase)) { clearInterval(game.cTimer); stopBeeps(); stopAll(null); st.playing = null; onEnd = null; toIdle(); toast('Night-shift run stopped: playing ' + RATIO_LABEL[k] + ' in the data room'); }
+  if (k === 'original') st.mode = 'original'; else { st.v = k; if (st.mode === 'original') st.mode = 'blurred'; followData(); }
+  if (st.zoom === 'full') st.zoom = 'chirp';
+  refresh(); updateAll();
+  play(k, () => { playT = null; draw(); updateAll(); }, 'Your browser blocked audio: press play again');
+  setPb(b, true);
+}
+$('stop').addEventListener('click', () => {
+  if (game.phase === 'replay') { replay(); return; }
+  if (['count', 'listen', 'paused'].includes(game.phase)) { abortRun(); return; }
+  stopAll(null); st.playing = null; onEnd = null; playT = null; draw(); updateAll();
+});
+
+// ---- views ----
+// ---- places on the page: the night shift on top, the data room below it
+function goTo(id, smooth) {
+  const el = $(id); if (!el) return;
+  try { el.scrollIntoView({block: 'start', behavior: smooth && !reduce ? 'smooth' : 'auto'}); } catch (e) { el.scrollIntoView(); }
+}
+$('to-data').addEventListener('click', () => goTo('data', true));
+$('to-game').addEventListener('click', () => goTo('console', true));
+
+// ---- share ----
+const toast = msg => { const t = $('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 2200); };
+$('share').addEventListener('click', async () => {
+  history.replaceState(null, '', '#' + formatToken(Object.assign({}, st, {view: 'data'})));   // the link opens on the data room
+  try { await navigator.clipboard.writeText(location.href); toast('Link copied'); } catch (e) { toast('Copy failed: the link is in your address bar'); }
+});
+
+// ---- plate keys: tap a number (in the key or on the plate) to find the part ----
+let keyOn = null;
+function setKey(k, on) {
+  document.querySelectorAll(`.key button[data-k="${k}"]`).forEach(b => b.setAttribute('aria-pressed', String(on)));
+  document.querySelectorAll(`.co[data-part="${k}"]`).forEach(g => g.classList.toggle('hl', on));
+}
+function pickKey(k) { if (keyOn && keyOn !== k) setKey(keyOn, false); const on = keyOn !== k; setKey(k, on); keyOn = on ? k : null; }
+document.querySelectorAll('.key button').forEach(b => { b.setAttribute('aria-pressed', 'false'); b.addEventListener('click', () => pickKey(b.dataset.k)); });
+$('plates').addEventListener('click', e => {
+  const g = e.target.closest && e.target.closest('.co'); if (!g) return;
+  pickKey(g.dataset.part);
+  const b = document.querySelector(`.key button[data-k="${g.dataset.part}"]`);
+  if (b && keyOn) try { b.scrollIntoView({block: 'nearest', behavior: reduce ? 'auto' : 'smooth'}); } catch (_) {}
+});
+
+// ---- start ----
+$('peak-t').textContent = (PEAK.t * 1000).toFixed(1); $('peak-f').textContent = PEAK.f.toFixed(1);
+$('caps-line').textContent = DIAL.slice(0, 5).map(k => { const m = maxScores(VD[k], O); return `r = ${DIAL_LABEL[k]}: timing up to ${m.timing}, pitch up to ${m.pitch}`; }).join('; ');
+if (SP.bh_pair) $('gname-img').src = InkSprite.toDataURL(SP.bh_pair, 0, 1);
+buildDial(); buildSite(); buildRing(); buildTms(); buildPanels(); buildJobs(); $('knob').setAttribute('transform', `rotate(${DIAL_ANG[game.di]} ${DC[0]} ${DC[1]})`);
+const fromHash = parseToken(location.hash);
+if (fromHash) { Object.assign(st, fromHash, {view: 'scene'}); const z = view(); st.t = clamp(st.t, z.t[0] * 1000, z.t[1] * 1000); st.f = clamp(st.f, z.f[0], z.f[1]); game.di = DIAL.indexOf(st.v); }
+updateAll(); refresh();
+if (fromHash && fromHash.view === 'data') goTo('data', false);
+let rz = null; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { LZ.lastT = null; updateAll(); refresh(); }, 120); });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { LZ.lastT = null; updateAll(); refresh(); });
+</script>

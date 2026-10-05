@@ -1,0 +1,26 @@
+[
+ {
+  "pond": "alt22",
+  "job_id": "8ece2a2c-4035-4d0c-950c-5174a228b2d4",
+  "edge": [
+   0,
+   21
+  ],
+  "layer": 1,
+  "engine_estimate": -1.3154,
+  "exact_replay": -1.3482,
+  "sigma_beyond_1": 7.1
+ },
+ {
+  "pond": "sync22",
+  "job_id": "85baf230-d490-48fe-9825-86ea5f1015b6",
+  "edge": [
+   0,
+   21
+  ],
+  "layer": 1,
+  "engine_estimate": 1.3369,
+  "exact_replay": 1.4418,
+  "sigma_beyond_1": 7.6
+ }
+]

@@ -1,0 +1,23 @@
+{
+ "ok": true,
+ "steps": [
+  "load: scene first, 3584 qubits and 30 jobs match piece.json, no sound; Challenge 09 brand bar; 6 titled sections below the loom; The data chart visible with 12 points, legend and live note; 3 honesty notes; 12 grid jobs listed",
+  "graphs render: woven cloth canvas 745x776 with 1150 sampled colours and ink on 13621 of 21609 samples; chart 584x427 px with 4 series, 12 job points, axes, diagonal and 6 legend icons",
+  "sound on: AudioContext running, clack played",
+  "weave: paused at pick 22, finished 168 picks: 118 red stitches, 28 pixels slipped, Ada sighs (logical 0.04058837890625 vs p 0.005)",
+  "sound off: no sources started while weaving",
+  "dial: 3 notches x 2 profiles: every job ID matches PARAMS.md and exists in the cache; the cloth redrew (6 distinct cloths); red stitches {\"loom0.001\":26,\"loom0.005\":118,\"loom0.01\":204,\"thread0.001\":5,\"thread0.005\":25,\"thread0.01\":50}",
+  "inspect: click picked block (10, 5), ArrowRight moved to (11, 5)",
+  "controls: after correction, Z-readout codewords, seed 2, moth re-woven 48 x 36",
+  "scene/data: live chart copy with 12 job points and the marker beside the dial; The data chart stays visible; weave paused when leaving the scene",
+  "drawers: 3 drawers open; ladder IDs match PARAMS.md; all 16 job IDs in the page exist in the cache",
+  "copy WIF: 182305 chars, 336 ends, cites the job",
+  "own image: mascot.png woven in the browser at 48 and 24 wide, then back to the moth",
+  "share link: #thread_p0.01_s2_fixed_measured_w48 restores profile, p, seed, view, codewords and width (same cloth)",
+  "nav: brand bar -> hub, prev 08, next 10, hub, all 22 pieces listed",
+  "reduced motion: Weave finishes at once and shows the verdict",
+  "375 px: no horizontal scroll, nav visible",
+  "clipboard blocked: Copy link and Copy WIF each show their own text, selected, with a label that names it",
+  "no page errors"
+ ]
+}

@@ -1,0 +1,502 @@
+<title>FLAVOUR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+/*BRAND*/
+/* Layout: a short header, then the scene is the hero: an ink-engraved plate of real neutrino sources (a reactor,
+   a Fermilab-style beamline, a cosmic-ray shower, the Sun), the journey along a real baseline, and a
+   Super-Kamiokande-style water-Cherenkov detector with its event display. Below the plate, titled sections hold
+   the earlier page's words and graphs: How to play, The data (the curves and meters, always drawn), the demos,
+   the plugin, How it was made, The science, What this does not claim, Jobs and credits.
+   Brief-page look: paper, one ink, square panels, pill buttons, hairlines, solid-ink bars. */
+.wrap{max-width:78rem;margin-inline:auto}
+.head{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:1rem 2.5rem;align-items:start;padding-block:1.3rem .9rem}
+.head-l,.head-r{display:grid;gap:.8rem;min-width:0}
+.kicker{font:500 .74rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+h1{font-size:clamp(2rem,3.9vw,3.3rem);line-height:1;letter-spacing:-.02em}
+.sub{font-size:1rem;color:var(--ink-2);max-width:58ch}
+.proof span{line-height:1.3}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.6rem 1.4rem;counter-reset:s;margin:0 0 1rem;padding:0;list-style:none}
+.steps li{display:grid;grid-template-columns:1.6rem minmax(0,1fr);gap:.5rem;align-items:start;font-size:.88rem;line-height:1.4;color:var(--ink-2)}
+.steps li b{color:var(--ink);font-weight:500}
+.steps li::before{counter-increment:s;content:counter(s);font:500 .76rem/1.6 var(--mono);color:var(--on-ink);background:var(--ink);border-radius:99px;width:1.5rem;height:1.5rem;display:grid;place-items:center}
+.ink-bar{flex-wrap:wrap;gap:.3rem 1rem}
+.shop{position:relative;display:grid;background:var(--panel);border:1px solid var(--ink);min-width:0}
+.shop-body{display:grid;gap:.9rem;padding:1rem;min-width:0}
+.toprow{display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;align-items:center;justify-content:space-between}
+.grp{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;min-width:0}
+.view[hidden]{display:none}
+.view{display:grid;gap:.75rem;min-width:0}
+.scenewrap{position:relative;border:1px solid var(--rule);background:var(--paper);overflow:hidden;touch-action:pan-y;min-width:0}
+#scene{display:block;width:100%;height:auto;user-select:none;-webkit-user-select:none}
+#scene:focus{outline:none}
+#scene:focus-visible{outline:2px solid var(--ink);outline-offset:-3px}
+#scene text{font-family:var(--mono)}
+#scene .art *{vector-effect:non-scaling-stroke}
+#scene [data-site],#scene [data-pick]{cursor:pointer}
+#scene.on-road{cursor:ew-resize}
+#scene.on-det{cursor:pointer}
+/* plate motion: only while a note sounds (class live), or a brief flash when a ring lands; none with reduced motion */
+#scene.live .flow{animation:flow 1s linear infinite}
+#scene.live .pulse{animation:pulse 1.33s linear infinite}
+#scene.live .hitflash{animation:hit 1.33s linear infinite}
+#scene.live .core{animation:glow 1.6s ease-in-out infinite}
+#scene .flash{animation:flash 1.2s ease-out}
+@keyframes flow{to{stroke-dashoffset:-8.8}}
+@keyframes pulse{from{stroke-dashoffset:5}to{stroke-dashoffset:-100}}
+@keyframes hit{0%,84%{opacity:0}90%{opacity:.9}100%{opacity:0}}
+@keyframes glow{50%{opacity:.8}}
+@keyframes flash{0%{opacity:0}10%{opacity:1}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){#scene *{animation:none!important}}
+#start .btn,.btn.jump{padding:.62rem 1.05rem;font-size:.88rem}
+#start[hidden]{display:none}
+.under{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.25rem 1rem;font:400 .74rem/1.5 var(--mono);color:var(--ink-2);margin:0}
+.under b{color:var(--ink);font-weight:500}
+.tags{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem}
+.tag3{display:grid;grid-template-columns:40px minmax(0,1fr);gap:.15rem .6rem;align-items:center;border:1px solid var(--rule);padding:.5rem .6rem;background:var(--panel);min-width:0}
+.tag3 img{grid-row:span 2;width:40px;height:28px;image-rendering:pixelated}
+.tag3 .nm{font:500 .9rem/1.2 var(--mono);color:var(--ink);display:flex;justify-content:space-between;gap:.4rem;min-width:0;width:100%}
+.tag3 .nm span:last-child{font-variant-numeric:tabular-nums}
+.tag3 .ds{font:400 .66rem/1.3 var(--mono);color:var(--ink-2);letter-spacing:.04em;text-transform:uppercase;display:flex;gap:.4rem;align-items:center}
+.tag3 .ds svg{flex:none}
+.tag3 .bar{grid-column:1/-1;height:5px;background:var(--panel-2);overflow:hidden}
+.tag3 .bar i{display:block;height:100%;width:0;background:var(--ink)}
+.tastelog{display:grid;gap:.2rem;border:1px dashed var(--ink-3);padding:.55rem .7rem;font:400 .74rem/1.5 var(--mono);color:var(--ink-2)}
+.tastelog b{color:var(--ink);font-weight:500}
+.plate-key{font:400 .72rem/1.45 var(--mono);color:var(--ink-2);border-top:1px solid var(--rule);padding-top:.6rem}
+.plate-key summary{cursor:pointer;font:500 .66rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);padding:.2rem 0}
+.plate-key summary b{font-weight:500;color:var(--ink-2);text-transform:none;letter-spacing:.02em}
+.pk-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem 1.6rem;padding-top:.6rem}
+.plate-key h4{font:500 .64rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin:0 0 .35rem}
+.plate-key ol{list-style:none;margin:0;padding:0;display:grid;gap:.22rem}
+.plate-key li{display:grid;grid-template-columns:1.25rem minmax(0,1fr);gap:.4rem;align-items:start}
+.plate-key li i{font-style:normal;display:grid;place-items:center;width:1.1rem;height:1.1rem;border:1px solid var(--ink);border-radius:99px;font:600 .58rem/1 var(--mono);color:var(--ink);background:var(--paper)}
+.plate-key .note{grid-column:1/-1;font-size:.66rem;color:var(--ink-3)}
+.pun{font:400 .66rem/1.45 var(--mono);color:var(--ink-3);margin:0}
+.rackwrap{display:grid;gap:.45rem}
+.rack{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:4px;user-select:none;touch-action:none}
+.rack button{display:grid;justify-items:center;align-content:end;gap:3px;padding:.45rem 0 .35rem;border:1px solid var(--rule);background:var(--panel);cursor:pointer;border-radius:0;min-width:0}
+.rack button img{width:24px;height:36px;image-rendering:pixelated;transition:transform .08s;pointer-events:none}
+.rack button span{font:500 .62rem/1 var(--mono);color:var(--ink-2);pointer-events:none}
+.rack button kbd{font:400 .58rem/1 var(--mono);color:var(--ink-3);pointer-events:none}
+.rack button:hover{background:var(--tint);border-color:var(--ink)}
+.rack button.on{background:var(--ink);border-color:var(--ink)}
+.rack button.on span,.rack button.on kbd{color:var(--on-ink)}
+.rack button.on img{transform:translateY(-3px)}
+.rack button:focus-visible{outline:2px solid var(--ink);outline-offset:-4px}
+.kitchens{display:grid;gap:.5rem;border-top:1px solid var(--rule);padding-top:.9rem}
+.kitchens.idle .chipset{opacity:.55}
+.chipnote{font:400 .7rem/1.4 var(--mono);color:var(--warn);margin:0}
+.chipnote[hidden]{display:none}
+.chipset{display:grid;grid-template-columns:repeat(auto-fill,minmax(10.2rem,1fr));gap:.4rem}
+.kbtn{display:grid;grid-template-columns:32px minmax(0,1fr);gap:.1rem .55rem;align-items:center;text-align:left;border:1px solid var(--rule);background:var(--panel);color:var(--ink);padding:.35rem .5rem;cursor:pointer;border-radius:0;min-width:0}
+.kbtn img{grid-row:span 2;width:32px;height:32px;image-rendering:pixelated;background:var(--paper)}
+.kbtn b{font:500 .74rem/1.15 var(--mono);overflow-wrap:anywhere}
+.kbtn small{font:400 .62rem/1.2 var(--mono);color:var(--ink-2);display:flex;flex-wrap:wrap;gap:.15rem .4rem;align-items:center}
+.pips{display:inline-flex;gap:2px}
+.pips i{display:inline-block;width:6px;height:6px;border:1px solid currentColor}
+.pips i.f{background:currentColor}
+.kbtn:hover{border-color:var(--ink);background:var(--tint)}
+.kbtn.hw{border-color:var(--ink)}
+.kbtn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+.kbtn[aria-pressed="true"] small{color:var(--on-ink)}
+.knobs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.7rem 1rem;border-top:1px solid var(--rule);padding-top:.9rem}
+.knob{display:grid;gap:.3rem;min-width:0}
+.knob .row{display:flex;justify-content:space-between;gap:.3rem;flex-wrap:nowrap}
+.knob output{font:500 .72rem/1.2 var(--mono);color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.row.split{justify-content:space-between}
+.controls{border-top:1px solid var(--rule);padding-top:.9rem}
+.recipe{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.2rem .9rem;font:400 .74rem/1.5 var(--mono);color:var(--ink-2);margin:0;border:1px dashed var(--ink);background:var(--paper);padding:.8rem .9rem;position:relative}
+.recipe::before{content:"Readout";grid-column:1/-1;font:500 .66rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink);border-bottom:1px dashed var(--ink-3);padding-bottom:.45rem;margin-bottom:.25rem}
+.recipe dd{margin:0}
+.recipe b{color:var(--ink);font-weight:500;overflow-wrap:anywhere}
+.tag{display:inline-block;font:500 .62rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:.28rem .45rem;border-radius:99px;border:1px solid var(--rule);color:var(--ink-2);background:var(--panel)}
+.tag.hw{border-color:var(--ink);background:var(--ink);color:var(--on-ink)}
+/* data view */
+.plotwrap{position:relative;border:1px solid var(--rule);overflow:hidden;background:var(--panel);touch-action:pan-y}
+#plot{display:block;width:100%;height:clamp(240px,31vw,370px);cursor:ew-resize;touch-action:pan-y}
+#plot:focus-visible{outline:2px solid var(--ink);outline-offset:-3px}
+.legend{font:400 .74rem/1.6 var(--mono);color:var(--ink-2)}
+.legend i{display:inline-block;width:.8rem;height:3px;vertical-align:middle;margin-inline:.1rem .3rem}
+.meters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem}
+.meter{display:grid;gap:.35rem;background:var(--panel);border:1px solid var(--rule);padding:.55rem .65rem;min-width:0}
+.meter .top{display:flex;justify-content:space-between;align-items:baseline;gap:.4rem}
+.meter .nm{font:500 .8rem/1 var(--mono)}
+.meter .val{font:500 .9rem/1 var(--mono);font-variant-numeric:tabular-nums}
+.meter .bar{height:6px;background:var(--panel-2);overflow:hidden}
+.meter .bar i{display:block;height:100%;width:0;background:currentColor}
+.meter canvas{display:block;width:100%;height:38px;border-top:1px solid var(--rule)}
+.meter canvas{cursor:pointer}.meter canvas:hover,.meter canvas.on{background:var(--tint)}.meter canvas:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.seg .e-only{display:inline-block;padding:.55rem .95rem;font:500 .76rem/1 var(--mono);letter-spacing:.04em;color:var(--ink)}
+.f-e{color:var(--warn)}.f-mu{color:var(--ink)}.f-tau{color:var(--good)}
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:var(--ink);color:var(--on-ink);font:500 .85rem/1.3 var(--mono);text-align:center;padding:.8rem 1.1rem;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:5;max-width:calc(100vw - 32px)}
+.toast.on{opacity:1}
+.section{margin-top:3rem;display:grid;gap:1rem}
+.section h2{font-size:clamp(1.7rem,3.2vw,2.4rem);line-height:1.05}
+.section .sub{max-width:70ch}
+.section .sub code{font-family:var(--mono);font-size:.85em}
+.demos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+.demo{display:grid;gap:.7rem;align-content:start;background:var(--panel);border:1px solid var(--rule);padding:1rem;min-width:0}
+.demo h3{font-size:1.35rem;display:flex;align-items:center;gap:.6rem}
+.demo h3 img{width:40px;height:28px;image-rendering:pixelated}
+.demo p{color:var(--ink-2);font-size:.9rem}
+.demo audio{display:none}
+.player{display:grid;gap:.55rem;border-top:1px solid var(--rule);padding-top:.75rem}
+.player .row{gap:.45rem}
+.player .btn{padding:.62rem 1.05rem;font-size:.86rem}
+.player .time{margin-left:auto;font:500 .74rem/1 var(--mono);color:var(--ink);font-variant-numeric:tabular-nums}
+.cues{display:flex;flex-wrap:wrap;gap:.3rem}
+.cues button{border:1px solid var(--rule);background:var(--panel);color:var(--ink-2);padding:.35rem .55rem;border-radius:999px;cursor:pointer;font:500 .66rem/1 var(--mono);letter-spacing:.03em}
+.cues button:hover{border-color:var(--ink);color:var(--ink)}
+.cues button.now{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+.plug{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1rem}
+.plug .card{background:var(--panel);border:1px solid var(--rule);padding:1rem;display:grid;gap:.6rem;align-content:start;min-width:0}
+.plug table,.map{width:100%;border-collapse:collapse;font-size:.85rem}
+.plug td,.plug th,.map td,.map th{text-align:left;padding:.4rem;border-bottom:1px solid var(--rule);vertical-align:top}
+.plug th,.map th{font:500 .68rem/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);border-bottom-color:var(--ink)}
+.plug td:first-child,.map td:first-child{font:500 .74rem/1.4 var(--mono);color:var(--ink)}
+.plug code,.body code{font-family:var(--mono);font-size:.85em;color:var(--ink)}
+.more{margin-top:3rem}
+.more .ink-bar{margin-bottom:.25rem}
+.jobs{width:100%;border-collapse:collapse;font:400 .72rem/1.4 var(--mono);color:var(--ink)}
+.jobs td,.jobs th{text-align:left;padding:.3rem .4rem;border-bottom:1px solid var(--rule)}
+.jobs th{font-weight:500;color:var(--ink-2);text-transform:uppercase;letter-spacing:.06em;border-bottom-color:var(--ink)}
+.tblwrap{overflow-x:auto;max-width:100%}
+/* the titled sections below the plate */
+.toc{display:flex;flex-wrap:wrap;gap:.4rem .45rem;align-items:center;margin-top:2.2rem;border-top:1px solid var(--rule);padding-top:1rem}
+.toc .label{margin-right:.4rem}
+.toc a{border:1px solid var(--rule);border-radius:999px;padding:.45rem .7rem;font:500 .7rem/1 var(--mono);letter-spacing:.04em;color:var(--ink);text-decoration:none;background:var(--panel)}
+.toc a:hover,.toc a:focus-visible{border-color:var(--ink);background:var(--tint)}
+.section{scroll-margin-top:1rem}
+.steps.steps3{grid-template-columns:repeat(3,minmax(0,1fr));margin:0}
+.steps a,.sub a,.body a{color:var(--ink);text-underline-offset:3px}
+.keyhelp{font:400 .76rem/1.55 var(--mono);color:var(--ink-2);max-width:96ch;margin:0}
+.fig{margin:0;display:grid;gap:.6rem;min-width:0}
+.claims{display:grid;gap:.8rem;max-width:80ch}
+.credits-h{font-size:1.35rem;margin-top:.8rem}
+.credits{display:grid;gap:.7rem;color:var(--ink-2);font-size:.9rem;max-width:96ch}
+.credits code{font-family:var(--mono);font-size:.85em;color:var(--ink)}
+.jobs .jb{border:1px solid var(--rule);background:var(--panel);color:var(--ink);font:500 .7rem/1 var(--mono);padding:.32rem .55rem;border-radius:999px;cursor:pointer;white-space:nowrap}
+.jobs .jb:hover{border-color:var(--ink);background:var(--tint)}
+.jobs .jb[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+@media (max-width:980px){.head{grid-template-columns:minmax(0,1fr);align-items:start}.steps,.steps.steps3{grid-template-columns:repeat(2,minmax(0,1fr))}.demos,.plug{grid-template-columns:minmax(0,1fr)}.knobs{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:640px){.pk-grid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:560px){.lead{display:flex;flex-direction:column}.head{display:contents}.head-l{order:1;padding-block:1.3rem 1rem}.shop{order:2}.head-r{order:3;padding-top:1.4rem}.steps{order:4;margin-top:1.2rem}.kbtn b{font-size:.66rem}.steps{grid-template-columns:minmax(0,1fr)}.knobs{grid-template-columns:repeat(2,minmax(0,1fr))}.shop-body{padding:.7rem}.tags,.meters{gap:.35rem}.tag3{grid-template-columns:minmax(0,1fr);padding:.4rem;justify-items:start}.tag3 .ds{font-size:.6rem}.tag3 img{grid-row:auto}.tag3 .ds .fl{display:none}.hint-wide{display:none}.meter{padding:.45rem}.chipset{grid-template-columns:repeat(2,minmax(0,1fr))}.kbtn{grid-template-columns:32px minmax(0,1fr);padding:.3rem .4rem}.rack{gap:2px}.rack kbd{display:none}.wtnr-bar{font-size:.66rem;letter-spacing:.08em}h1{font-size:2rem}.toprow{gap:.5rem}.steps.steps3{grid-template-columns:minmax(0,1fr);order:0;margin-top:0}.toc a{padding:.5rem .6rem}.seg button{padding:.5rem .7rem}#src-seg button,#e-seg button,#e-seg .e-only{padding:.5rem .42rem;font-size:.7rem;letter-spacing:.02em}}
+</style>
+
+<div class="wrap">
+  <nav class="wtnr-bar"><a href="https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa">What the Noise Remembers</a><span class="count"><b>Challenge 07</b> &middot; Hide</span></nav>
+
+  <div class="lead">
+  <div class="head">
+    <div class="head-l">
+      <p class="kicker">Challenge 07 &middot; Make a VST or AU &middot; Neutrino flavour synth</p>
+      <h1>Send a neutrino through the Earth. Hear which flavour arrives.</h1>
+    </div>
+    <div class="head-r">
+      <p class="sub">A neutrino is born one flavour and arrives as a mix of three, set by distance over energy. Pick a real source, drag the neutrino along its real baseline, and watch it light a water-Cherenkov detector. The muon-neutrino curves went onto qubits and came back from a real IBM chip, 12 IBM noise models and a noiseless simulator; the synth plays what came back.</p>
+      <div class="proof" id="proof"></div>
+    </div>
+  </div>
+  <ol class="steps" aria-label="You control">
+    <li><span><b>Pick</b> a source: a nuclear reactor, an accelerator beam, cosmic rays in the atmosphere, or the Sun.</span></li>
+    <li><span><b>Drag</b> the neutrino along its real baseline (or arrow keys). The flavour bands follow the curves.</span></li>
+    <li><span><b>Detect</b>: click the tank or play a key. One neutrino interacts and lights a ring; the synth plays the mix.</span></li>
+    <li><span><b>Swap chips</b> and slide Mix from exact to measured to hear each machine's noise.</span></li>
+  </ol>
+
+  <section class="shop" id="synth" aria-label="FLAVOUR, the neutrino flavour synth">
+    <div class="ink-bar"><span>FLAVOUR &middot; browser synth</span><span id="bar-state">Silent</span></div>
+    <div class="shop-body">
+      <div class="toprow">
+        <div class="grp"><span class="label">Source</span><div class="seg" id="src-seg" role="group" aria-label="Neutrino source"></div></div>
+        <div class="grp"><span class="label">Energy</span><div class="seg" id="e-seg" role="group" aria-label="Neutrino energy"></div></div>
+      </div>
+      <div class="toprow">
+        <div class="grp" id="start"><button type="button" class="btn" id="start-btn">Start the synth (sound on)</button><span class="label">Nothing plays until you play a note</span></div>
+        <a class="btn ghost jump" href="#data">The data: curves and meters &darr;</a>
+      </div>
+
+      <div class="view" id="view-scene">
+        <div class="scenewrap" id="scenewrap">
+          <svg id="scene" xmlns="http://www.w3.org/2000/svg" tabindex="0" role="group" aria-label="Scientific plate: the source, the journey and the detector. Drag along the journey, or use the arrow keys, to set the distance. Click the detector, or press Enter, to detect one neutrino."></svg>
+        </div>
+        <p class="under"><span id="le-line"></span><span id="sum-line"></span></p>
+        <div class="tags" id="tags"></div>
+        <div class="tastelog" id="tastelog" aria-live="polite"></div>
+        <div class="plate-key" id="plate-key"></div>
+      </div>
+
+
+      <div class="rackwrap">
+        <div class="row split"><span class="label">Keys &middot; each one detects a neutrino and plays the mix</span><span class="label hint-wide">computer keys A to ; &middot; Z / X octave</span></div>
+        <div class="rack" id="keys" role="group" aria-label="Keyboard: ten notes, A minor pentatonic"></div>
+      </div>
+
+      <div class="kitchens" id="kitchens">
+        <div class="row split"><span class="label">Chip &middot; the machine that wrote the <span style="text-transform:none">&nu;<sub>&mu;</sub></span> curves onto qubits and read them back</span><span class="label">&#9632; = noise (rms vs exact)</span></div>
+        <p class="chipnote" id="chipnote" hidden></p>
+        <div class="chipset" id="chip-seg" role="group" aria-label="Chip"></div>
+      </div>
+
+      <div class="knobs" id="knobs"></div>
+
+      <div class="row controls">
+        <span class="label">Model</span>
+        <div class="seg" role="group" aria-label="Model">
+          <button type="button" data-model="3" aria-pressed="true">3 flavours</button>
+          <button type="button" data-model="2" aria-pressed="false">2 flavours</button>
+        </div>
+        <button type="button" class="btn" id="drone" aria-pressed="false">Hold a drone</button>
+        <button type="button" class="btn ghost" id="panel">Detect &times;100</button>
+        <button type="button" class="btn ghost" id="panic">Stop all sound</button>
+        <button type="button" class="btn ghost" id="share">Copy link to this sound</button>
+      </div>
+      <p class="honesty">The oscillation physics is classical. qpixl-v1 only encodes the muon-neutrino curves into qubits and measures them back. Chips named fake_* are noise models of IBM chips, run on a simulator; only ibm_fez is real hardware. Reactors and the Sun make electron-flavoured neutrinos, which no chip measured, so for them the page uses classical curves and says so. Each detection is a classical dice roll weighted by the curve at your spot. The rings are drawn with Super-K's geometry and the textbook Cherenkov angle to show how a water tank tells the flavours apart; they are an illustration, not a detector simulation.</p>
+      <dl class="recipe" id="readout"></dl>
+      <p class="pun">Why &ldquo;flavour&rdquo;? It is what physicists call the three neutrino types. An earlier version of this page served them as gelato, and the plugin's editor still wears those names: KITCHEN = chip, RECIPE = mix, MENU = model, JOURNEY = L/E.</p>
+    </div>
+  </section>
+  </div>
+
+  <nav class="toc" aria-label="On this page"><span class="label">On this page</span><a href="#play">How to play</a><a href="#data">The data</a><a href="#demos-sec">Hear it in use</a><a href="#plug-sec">The plugin</a><a href="#made">How it was made</a><a href="#science">The science</a><a href="#claims">What this does not claim</a><a href="#jobs-sec">Jobs and credits</a></nav>
+
+  <section class="section" id="play" aria-labelledby="play-h">
+    <div class="ink-bar"><span>How to play</span><span>Keys &middot; curves &middot; chips</span></div>
+    <h2 id="play-h">Play the particle that changes identity mid-flight.</h2>
+    <p class="sub">A muon neutrino turns into electron and tau neutrinos as it travels. We wrote its flavour curves onto qubits and read them back on a real IBM chip, 12 IBM noise models and a noiseless simulator. This synth plays what came back.</p>
+    <ol class="steps steps3">
+      <li><span><b>Play</b> the keys (or your computer keys A&ndash;K), or hold a drone.</span></li>
+      <li><span><b>Fly</b>: drag across <a href="#data">the curves</a> to set L/E, the distance travelled per unit of energy. Each flavour's loudness is its probability there.</span></li>
+      <li><span><b>Switch</b> CHIP and MIX to hear what each machine's noise did to the curves.</span></li>
+    </ol>
+    <p class="keyhelp">On a computer keyboard: A S D F G H J K L ; play the ten tubes, Z and X shift the octave. On the plate, the arrow keys move your neutrino (Shift for big steps, Home and End for the ends of the baseline) and Enter detects one; on the curves in The data, the arrow keys move it too.</p>
+    <details class="drawer"><summary>The plate, decoded</summary><div class="body">
+      <table class="map">
+        <tr><th>On the plate</th><th>In physics</th><th>Driven by</th></tr>
+        <tr><td>Source</td><td>Where the neutrino is born, which fixes its flavour and energy E. A reactor core (&nu;&#772;<sub>e</sub>, about 4 MeV), an accelerator beamline (&nu;<sub>&mu;</sub>, 0.6 GeV like T2K's off-axis beam or 2 GeV like NOvA's), cosmic-ray showers in the air (&nu;<sub>&mu;</sub>, sub-GeV or multi-GeV) or the Sun's core (&nu;<sub>e</sub>; 10 MeV, the <sup>8</sup>B neutrinos Super-K sees).</td><td>your choice</td></tr>
+        <tr><td>Journey</td><td>The distance L, on a log scale, with real baselines: Daya Bay's far hall 1.65 km, JUNO 52.5 km, KamLAND about 180 km; T2K 295 km, MINOS 735 km, NOvA 810 km, DUNE 1,300 km; air showers from about 15 km (straight down) to 12,757 km (straight up through the Earth), with the zenith angle your distance implies drawn through the Earth in Fig. 1; the Sun 1 AU. For the beam the header also gives how far below ground the straight path dips.</td><td>your drag (or arrow keys)</td></tr>
+        <tr><td>Flavour bands</td><td>P(&nu;&rarr;&nu;<sub>e</sub>), P(&nu;&rarr;&nu;<sub>&mu;</sub>), P(&nu;&rarr;&nu;<sub>&tau;</sub>) at every L along the way, stacked. For the beam and the atmosphere these are the measured curves of the chosen chip, mixed with the exact ones by Mix. For the reactor and the Sun they are classical (see below).</td><td>job data / classical</td></tr>
+        <tr><td>Dashed line in the bands</td><td>&Sigma;P = 1. Exact physics always adds up to 1; each measured value was read out separately, so a chip's curves over- or under-fill it.</td><td>job data</td></tr>
+        <tr><td>A detection</td><td>One neutrino interacting as one flavour: a classical dice roll weighted by the bands at your L.</td><td>job data / classical</td></tr>
+        <tr><td>The rings</td><td>How a water-Cherenkov tank tells flavours apart. A muon travels metres in a straight line and paints a filled ring with a sharp outer edge; an electron starts a shower that scatters, so its ring is fuzzy. Light leaves at about 42&deg; to the track. A tau decays at once into several particles: several overlapping rings. A few-MeV positron or electron lights only a few dozen tubes.</td><td>illustration (Super-K geometry)</td></tr>
+        <tr><td>No ring</td><td>Below threshold: a neutrino needs about 110 MeV to make a muon and about 3.5 GeV to make a tau. Reactor and solar &nu;<sub>&mu;</sub>, &nu;<sub>&tau;</sub> and low-energy &nu;<sub>&tau;</sub> are seen only as missing events. (Strictly, solar &nu;<sub>&mu;</sub> and &nu;<sub>&tau;</sub> can still scatter off electrons, about six times less often than &nu;<sub>e</sub>; this page counts them as missing.)</td><td>the source energy</td></tr>
+        <tr><td>Chip</td><td>The machine that wrote the &nu;<sub>&mu;</sub> curves onto qubits and read them back: ibm_fez (real IBM hardware), aer (a noiseless simulator) or a fake_* noise model. Its noise squares show its rms error against the exact curves.</td><td>job data</td></tr>
+      </table>
+    </div></details>
+  </section>
+
+  <section class="section" id="data" aria-labelledby="data-h">
+    <div class="ink-bar"><span>The data</span><span>Measured curves &middot; drawn live</span></div>
+    <h2 id="data-h">The curves you are playing</h2>
+    <p class="sub">Drawn from the job results bundled into this page, and tied to every control above: chip, mix, model, source and your neutrino's L/E. Drag across the curves (or focus them and use the arrow keys) to move the neutrino; the plate follows.</p>
+    <figure class="fig">
+      <div class="plotwrap"><canvas id="plot" tabindex="0" aria-label="Flavour probability curves against L/E. Drag or use the arrow keys to set L/E."></canvas></div>
+      <figcaption class="legend" id="plot-legend"><i style="background:var(--warn)"></i>&nu;<sub>e</sub> <i style="background:var(--ink)"></i>&nu;<sub>&mu;</sub> <i style="background:var(--good)"></i>&nu;<sub>&tau;</sub> &middot; Lines: exact classical curves. Dots: the values measured back through qpixl on the chosen chip. Dashed marker: your L/E. Solid markers: notes in flight.<br>Lines and dots are for a neutrino born as a muon neutrino. With the reactor or the Sun selected they fade, and the thick dashed lines are that source's classical electron-flavour curves, which no chip measured. The pale strip on the axis is the selected source's real range of L/E; the T2K and NOvA ticks mark those beams' peak L/E.</figcaption>
+    </figure>
+    <div class="row split"><span class="label" id="le-read">L/E</span><span class="label" id="sum-read">&Sigma; P</span></div>
+    <figure class="fig">
+      <div class="meters" id="meters"></div>
+      <figcaption class="legend">Each flavour at your L/E: its probability (the number and the bar), which is its oscillator's loudness, and one cycle of the waveform that oscillator plays there, cut from the curve itself. Smooth curves give soft waves; measurement noise gives jagged ones. Click a waveform (or focus it and press Enter) to hear that oscillator alone for about a second, at a fixed level so its shape is audible.</figcaption>
+    </figure>
+  </section>
+
+  <section class="section" id="demos-sec" aria-labelledby="demos-h">
+    <div class="ink-bar"><span>Audio examples</span><span>3 renders &middot; classical DSP</span></div>
+    <h2 id="demos-h">Hear it in use</h2>
+    <p class="sub">Three demos rendered by the Python replica of the plugin's engine (<code>synth.py</code>) from the same measured curves. Each one starts only when you press play, and pause or stop ends it. All three play the muon-neutrino curves the chips measured; the reactor and the Sun are on the synth above only.</p>
+    <div class="demos" id="demos"></div>
+  </section>
+
+  <section class="section" id="plug-sec" aria-labelledby="plug-h">
+    <div class="ink-bar"><span>Plugin</span><span>JUCE 8 &middot; VST3 &middot; AU &middot; Standalone</span></div>
+    <h2 id="plug-h">The plugin</h2>
+    <div class="plug">
+      <div class="card">
+        <p><b>FLAVOUR</b> is a JUCE 8 instrument plugin (VST3 on macOS and Windows, AU on macOS, plus a standalone app). The measured curves ship inside it as BinaryData, so it needs no network and makes no quantum calls at play time. It plays the muon-neutrino curves; the reactor and Sun sources are page-only.</p>
+        <p class="honesty">The binaries come from the included GitHub Actions workflow (CMake + JUCE 8.0.8, checked with pluginval and auval). No plugin binary was built here, because this machine has no desktop C++ toolchain. Here, the plugin sources only type-check against the JUCE 8.0.8 headers, and the engine code, compiled into a test program, matches the browser and Python versions sample for sample. Until that workflow runs, the browser synth on this page and the Python replica are the playable versions.</p>
+      </div>
+      <div class="card">
+        <table>
+          <tr><th>Knob (editor label)</th><th>What it does</th></tr>
+          <tr><td>L/E (JOURNEY)</td><td>Distance over energy, 20 to 50,000 km/GeV (log). Picks the point on the curves. On this page the source sets E and your drag sets L.</td></tr>
+          <tr><td>CHIP (KITCHEN)</td><td>Which machine's measured curves you hear: ibm_fez, aer or one of 12 noise models.</td></tr>
+          <tr><td>MIX (RECIPE)</td><td>0 = exact classical curves, 1 = the chip's measured curves.</td></tr>
+          <tr><td>MODEL (MENU)</td><td>3 flavours (e, mu, tau) or the 2-flavour approximation (e, mu).</td></tr>
+          <tr><td>FLIGHT (CONVEYOR)</td><td>Each note flies outward in L/E while held, in decades per second.</td></tr>
+          <tr><td>ATTACK / RELEASE / GAIN</td><td>Envelope and level. The editor calls them SCOOP-IN, MELT, VOLUME.</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="made" aria-labelledby="made-h">
+    <div class="ink-bar"><span>How it was made</span><span>Engine &middot; sound</span></div>
+    <h2 id="made-h">How it was made</h2>
+    <div class="drawers">
+    <details class="drawer"><summary>What the quantum engine did</summary><div class="body">
+      <p>Four curves (2-flavour P(&mu;&rarr;e), and 3-flavour P(&mu;&rarr;e), P(&mu;&rarr;&mu;), P(&mu;&rarr;&tau;)) are computed classically on a log-spaced L/E axis, each divided by its own maximum, and joined into one array. Atlas <code>qpixl-v1</code> writes every number as a rotation angle on a data qubit, addressed by the states of neighbouring address qubits (Interwoven QPIXL), then measures and decodes them. We multiply the decoded values back by each curve's maximum. Nothing else is done to them.</p>
+      <p id="engine-detail"></p>
+      <p>Look at the ibm_fez dots: the errors come in short blocks of neighbouring points that sit too high or too low together. Neighbouring errors correlate at 0.88 on ibm_fez but only 0.06 on the noiseless simulator, and the error jumps where each 4-value block starts are about twice the jumps inside a block. That fits each block sharing one data qubit, whose own miscalibration shifts all its values at once. It's the chip's layout showing through the curve, and you can hear it as steps in the waveform. On the plate the same blocks show as steps in the flavour bands as you drag.</p>
+      <p>Every job, with where it ran, its size, its rms error against the exact curves and its Atlas job id, is listed under <a href="#jobs-sec">Jobs and credits</a>.</p>
+    </div></details>
+    <details class="drawer"><summary>How the sound is made</summary><div class="body">
+      <p>Three wavetable oscillators per note: &nu;<sub>e</sub> a fifth above the key you play, &nu;<sub>&mu;</sub> on it, &nu;<sub>&tau;</sub> an octave below. Each oscillator's loudness is that flavour's probability at the current L/E. The keys are an A minor pentatonic, so any two sound fine together.</p>
+      <p>Each oscillator's waveform is the curve itself: half a decade of the flavour's curve around the current L/E, mirrored into one cycle. Smooth physics gives soft, rounded waves. Measurement noise shows up as jagged edges, which you hear as brighter, buzzier harmonics. MIX crossfades the exact curves into the measured ones, so you can hear exactly what each machine added. With the Sun selected the curves are flat (fully averaged), so the three oscillators become pure sine tones.</p>
+    </div></details>
+    </div>
+  </section>
+
+  <section class="section" id="science" aria-labelledby="science-h">
+    <div class="ink-bar"><span>The science</span><span>Physics &middot; sources</span></div>
+    <h2 id="science-h">The science</h2>
+    <div class="drawers">
+    <details class="drawer" open><summary>Why a neutrino is a qubit you can't hold</summary><div class="body">
+      <p>A neutrino is made in one flavour (here a muon neutrino) but travels as a mix of three mass states. Each mass state picks up phase at its own rate, so the mix drifts and the flavour you would detect changes with distance L over energy E. (The reactor and the Sun on the plate make electron-flavoured ones instead; see the next drawer.)</p>
+      <p>With two flavours this is exactly a qubit. The mixing angle &theta; is a fixed change of basis, travel is a phase rotation by &Delta;m&sup2;L/2E between the two mass states, and detection measures in the flavour basis. That gives P(&nu;<sub>&mu;</sub>&rarr;&nu;<sub>e</sub>) = sin&sup2;2&theta; &middot; sin&sup2;(1.267 &Delta;m&sup2;[eV&sup2;] L[km] / E[GeV]), the same form as a Rabi oscillation. Three flavours make it a qutrit, set by the 3&times;3 PMNS matrix.</p>
+      <p>The curves use the NuFIT 6.0 global-fit best values (normal ordering, the &ldquo;IC19 without SK atmospheric data&rdquo; column of Table 1): sin&sup2;&theta;<sub>12</sub> = 0.307, sin&sup2;&theta;<sub>23</sub> = 0.561, sin&sup2;&theta;<sub>13</sub> = 0.02195, &delta;<sub>CP</sub> = 177&deg;, &Delta;m&sup2;<sub>21</sub> = 7.49&times;10<sup>&minus;5</sup> eV&sup2;, &Delta;m&sup2;<sub>31</sub> = 2.534&times;10<sup>&minus;3</sup> eV&sup2;. Interference terms are averaged over a 5% spread in L/E, as a detector's energy resolution would. Vacuum only: matter effects are left out.</p>
+    </div></details>
+    <details class="drawer"><summary>Reactor and Sun: why their curves are classical</summary><div class="body">
+      <p>Every chip measured the same four curves, all for a neutrino born as a muon neutrino. A reactor makes electron antineutrinos and the Sun makes electron neutrinos, and their survival curve cannot be worked out from the muon-born ones. So for these two sources the bands and the dice use curves computed classically by the same code (<code>physics.py</code>, NuFIT 6.0, vacuum), and the Chip and Mix controls do nothing.</p>
+      <p>One bridge does exist. CPT symmetry makes P(&nu;&#772;<sub>e</sub>&rarr;&nu;&#772;<sub>&mu;</sub>) equal to P(&nu;<sub>&mu;</sub>&rarr;&nu;<sub>e</sub>), which the chips did measure, so with the reactor selected the readout puts the classical number next to the chosen chip's measured one at the same L/E.</p>
+      <p>The Sun is 1 AU away, so at solar energies L/E is about 10<sup>10</sup> km/GeV, far past the right-hand end of the curves. There the oscillations average out completely and the page uses that average, &Sigma;<sub>i</sub>|U<sub>ei</sub>|&sup2;|U<sub>&alpha;i</sub>|&sup2;, which gives 55% &nu;<sub>e</sub>. The real Sun delivers fewer: for the <sup>8</sup>B neutrinos that Super-K sees, SNO measured about a third arriving as &nu;<sub>e</sub>, because the Sun's own dense matter converts them on the way out (the MSW effect). This page leaves matter effects out, so the Sun card shows the vacuum number and names the gap.</p>
+    </div></details>
+    </div>
+  </section>
+
+  <section class="section" id="claims" aria-labelledby="claims-h">
+    <div class="ink-bar"><span>Honesty</span><span>Physics &middot; engine &middot; limits</span></div>
+    <h2 id="claims-h">What this does not claim</h2>
+    <div class="claims">
+      <p class="honesty">The oscillation physics is computed classically. qpixl-v1 only encodes the curves into qubits and measures them back. Chips named fake_* are noise models of IBM chips, run on a simulator. Only ibm_fez is real hardware.</p>
+      <p class="honesty">No neutrino is simulated on a quantum computer here. The physics is closed-form classical maths, and the quantum step is a data round trip: encode the curves into qubits, measure them, decode. The differences you hear between chips are qubit and readout noise (real on ibm_fez, modelled on fake_*), not neutrino physics. No quantum advantage is claimed.</p>
+      <p class="honesty">The two-flavour curve is the standard leading-order approximation, not a separate measurement. The &ldquo;&Sigma; P&rdquo; readout should be 1 for the exact 3-flavour curves; on measured curves it drifts because each value was measured independently. The demo audio comes from the Python replica of the plugin engine, not from a compiled plugin.</p>
+      <p class="honesty">The curves are vacuum oscillations: matter effects are ignored, so they are not a prediction for T2K, NOvA, DUNE or the Sun, and the baselines are distances only. The detector drawn is Super-Kamiokande, T2K's far detector; MINOS, NOvA and DUNE use other kinds of detector, and Daya Bay, JUNO and KamLAND use liquid scintillator.</p>
+    </div>
+    <details class="drawer"><summary>What the plate shows, and what it doesn't</summary><div class="body">
+      <p>Everything on the plate that looks like a number comes from the curves on this page: the flavour bands and their &Sigma;P, the percentages at your neutrino, which flavour each detection draws, the noise squares on each chip, and where each held note has travelled to. For the beam and the atmosphere those are measured job outputs; for the reactor and the Sun they are classical and labelled so.</p>
+      <p>The drawings are original ink engravings made from published descriptions of the real objects (see Credits); no photograph is traced or embedded. They are not to scale, and the beamline's slope is drawn steeper than the real 3.3&deg;. The event display places light with Super-K's real inner-detector size (33.8 m by 36.2 m) and the 42&deg; Cherenkov angle, but the hit pattern is a simple sketch: charged-current events only, no neutral currents, no detector response, a few random dark hits. The wall carries about one dot for every four real tubes; low-energy events light about six tubes per MeV, as Super-K's do. Beam neutrinos enter from the left, and other directions are chosen so the ring faces the cut-away; for the atmosphere the zenith angle follows your distance.</p>
+    </div></details>
+  </section>
+
+  <section class="section" id="jobs-sec" aria-labelledby="jobs-h">
+    <div class="ink-bar"><span>Jobs and credits</span><span id="jobs-count">Atlas jobs &middot; sources</span></div>
+    <h2 id="jobs-h">Jobs and credits</h2>
+    <p class="sub">Every completed Atlas job behind the curves: the machine it ran on, how many values it carried, its rms error against the exact curves, and its Atlas job id. Click a machine to hear it on the synth.</p>
+    <div class="tblwrap"><table class="jobs" id="jobs"></table></div>
+    <h3 class="credits-h">Credits</h3>
+    <div class="credits">
+      <p>NuFIT 6.0: I. Esteban, M. C. Gonzalez-Garcia, M. Maltoni, I. Martinez-Soler, J. P. Pinheiro, T. Schwetz, &ldquo;NuFit-6.0: updated global analysis of three-flavor neutrino oscillations&rdquo;, JHEP 12 (2024) 216, arXiv:2410.05380.</p>
+      <p>QPIXL: M. G. Amankwah, D. Camps, E. W. Bethel, R. Van Beeumen, T. Perciano, &ldquo;Quantum pixel representations and compression for N-dimensional images&rdquo;, Scientific Reports 12 (2022), doi:10.1038/s41598-022-11024-y.</p>
+      <p>Drawn from: the Super-Kamiokande collaboration's detector description (www-sk.icrr.u-tokyo.ac.jp); P. Adamson et al., &ldquo;The NuMI Neutrino Beam&rdquo;, Nucl. Instrum. Meth. A 806 (2016) 279, arXiv:1507.06690; the T2K beamline as summarised in its flux paper (arXiv:1211.0469); published descriptions of pressurized-water reactors and their containments (US NRC training manuals); ESA's &ldquo;Anatomy of our Sun&rdquo;; the reactor antineutrino yield as reviewed by LLNL (OSTI 2473630); the Daya Bay, JUNO and KamLAND baselines as published. SNO's one third: Q. R. Ahmad et al. (SNO), Phys. Rev. Lett. 89 (2002) 011301. Super-K's tau appearance: K. Abe et al., Phys. Rev. Lett. 110 (2013) 181802. All drawings are original; see CREDITS.md for the full list.</p>
+      <p>Moth Quantum Atlas (qpixl-v1). JUCE 8 (plugin framework). pluginval by Tracktion (validation). Small pixel icons (photomultiplier tubes, ring displays, chips) drawn for this piece in the shared ink palette (<code>make_sprites.py</code>).</p>
+    </div>
+  </section>
+  <!--NAV-->
+  <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+// ---- pure synth logic: identical maths to synth.py and plugin/Source/FlavourEngine.h (muon-born curves) ----
+const D = /*DATA*/{};
+const ER = /*EROW*/{};   // classical electron-flavour rows (reactor antineutrinos; the Sun's vacuum average), never on a chip
+const DEMOS = /*DEMOS*/[];
+const NWIN = 64, WIN = 0.5, MAXH = 63, MULT = [1.5, 1.0, 0.5], FL = ['e', 'mu', 'tau'];
+const U0 = Math.log10(D.le_min), U1 = Math.log10(D.le_max);
+const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+const COS = Float64Array.from({ length: 2 * NWIN }, (_, k) => Math.cos(2 * Math.PI * k / (2 * NWIN)));
+const SIN = Float64Array.from({ length: 2 * NWIN }, (_, k) => Math.sin(2 * Math.PI * k / (2 * NWIN)));
+function interp(arr, u) {
+  const n = arr.length, x = (clamp(u, U0, U1) - U0) / (U1 - U0) * (n - 1);
+  const i = Math.min(Math.floor(x), n - 2), t = x - i;
+  return arr[i] * (1 - t) + arr[i + 1] * t;
+}
+function mixed(st, ci, u) {
+  return (1 - st.mix) * interp(D.exact.P[ci], u) + st.mix * interp(D.machines[st.chip].P[ci], u);
+}
+// where the neutrino is born: flavour, energy choices (GeV) and the real range of distances L (km)
+const SRC = [
+  { id: 'reactor', label: 'Reactor', nu: 'e', anti: true, es: [{ e: 0.004, label: '4 MeV', note: 'typical detected reactor antineutrino' }], l0: 0.3, l1: 200,
+    what: 'a pressurized-water reactor core', born: 'ν̄e' },
+  { id: 'accel', label: 'Accelerator', nu: 'mu', es: [{ e: 0.6, label: '0.6 GeV', note: 'T2K-like off-axis beam' }, { e: 2, label: '2 GeV', note: 'NOvA-like off-axis beam' }], l0: 12, l1: 1300,
+    what: 'an accelerator neutrino beam', born: 'νμ' },
+  { id: 'atmo', label: 'Atmosphere', nu: 'mu', es: [{ e: 0.3, label: '0.3 GeV', note: 'sub-GeV atmospheric' }, { e: 5, label: '5 GeV', note: 'multi-GeV atmospheric' }], l0: 15, l1: 12757,
+    what: 'cosmic-ray showers in the air', born: 'νμ' },
+  { id: 'sun', label: 'Sun', nu: 'e', es: [{ e: 0.01, label: '10 MeV', note: '8B solar neutrinos' }], l0: 1.471e8, l1: 1.521e8, fixed: 1.496e8,
+    what: "the Sun's core", born: 'νe' },
+];
+const TAU_GEV = 3.5, MU_GEV = 0.11;   // roughly the energy a neutrino needs to make a tau / a muon
+const srcIdx = st => (st.src == null ? 1 : st.src);
+const eIdx = (i, ei) => Math.min(Math.max(0, ei | 0), SRC[i].es.length - 1);
+const eOf = st => SRC[srcIdx(st)].es[eIdx(srcIdx(st), st.ei)].e;
+function rangeL(i, ei) { const s = SRC[i], e = s.es[eIdx(i, ei)].e; return s.fixed ? [s.fixed, s.fixed] : [Math.max(s.l0, D.le_min * e), Math.min(s.l1, D.le_max * e)]; }
+function srcRange(i, ei) { const s = SRC[i]; if (s.fixed) return [U1, U1]; const e = s.es[eIdx(i, ei)].e, r = rangeL(i, ei); return [Math.log10(r[0] / e), Math.log10(r[1] / e)]; }
+function flavourCurve(st, f, u) {
+  const s = st.src == null ? null : SRC[st.src];
+  if (s && s.nu === 'e') return s.fixed ? ER.sun[f] : interp(ER.P[f], u);   // classical: no chip ever measured these
+  if (st.model === 3) return mixed(st, f + 1, u);
+  if (f === 0) return mixed(st, 0, u);
+  if (f === 1) return 1 - mixed(st, 0, u);
+  return 0;
+}
+function level(st, f, u) { return clamp(flavourCurve(st, f, u), 0, 1); }
+// one mirrored cycle (128 samples), peak-normalised, plus its harmonics as PeriodicWave coefficients
+function waveFor(st, f, u) {
+  const s = new Float64Array(NWIN);
+  let mean = 0;
+  for (let j = 0; j < NWIN; j++) { s[j] = flavourCurve(st, f, u + (j / (NWIN - 1) - 0.5) * WIN); mean += s[j]; }
+  mean /= NWIN;
+  const cyc = new Float64Array(2 * NWIN);
+  let peak = 0;
+  for (let j = 0; j < NWIN; j++) { const w = s[j] - mean; cyc[j] = w; cyc[2 * NWIN - 1 - j] = w; peak = Math.max(peak, Math.abs(w)); }
+  const real = new Float32Array(MAXH + 1), imag = new Float32Array(MAXH + 1);
+  if (peak < 1e-9) {           // flat window: unit sine
+    imag[1] = 1;
+    for (let t = 0; t < 2 * NWIN; t++) cyc[t] = Math.sin(2 * Math.PI * (t + 0.5) / (2 * NWIN));
+    return { cyc, real, imag };
+  }
+  const N = 2 * NWIN;
+  for (let h = 1; h <= MAXH; h++) {
+    let a = 0, b = 0;
+    for (let t = 0; t < N; t++) { const k = (h * t) & (N - 1); a += cyc[t] * COS[k]; b -= cyc[t] * SIN[k]; }
+    real[h] = (2 / N) * a / peak;      // x(t) = sum real cos + imag sin
+    imag[h] = -(2 / N) * b / peak;
+  }
+  for (let t = 0; t < N; t++) cyc[t] /= peak;
+  return { cyc, real, imag };
+}
+const leOf = u => Math.pow(10, u), uOf = le => Math.log10(le);
+// the first muon-neutrino source (and energy) whose road reaches this L/E
+function srcFor(u) {
+  for (let i = 0; i < SRC.length; i++) { if (SRC[i].nu !== 'mu') continue; for (let k = 0; k < SRC[i].es.length; k++) { const r = srcRange(i, k); if (u >= r[0] - 1e-9 && u <= r[1] + 1e-9) return [i, k]; } }
+  return null;
+}
+function encodeToken(st) {
+  const i = srcIdx(st);
+  return [D.machines[st.chip].id, Math.round(leOf(st.u)), Math.round(st.mix * 100), st.model, Math.round(st.flight * 100), SRC[i].id, eIdx(i, st.ei)].join('~');
+}
+const LEGACY = { beam: ['accel', 0], sky: ['atmo', 0], free: ['atmo', 1] };   // links from the gelateria version
+function decodeToken(tok) {
+  const p = String(tok || '').replace(/^#/, '').split('~');
+  if (p.length < 5 || p.length > 7) return null;
+  const chip = D.machines.findIndex(m => m.id === p[0]);
+  const le = +p[1], mix = +p[2] / 100, model = +p[3], flight = +p[4] / 100;
+  if (chip < 0 || !(le > 0) || !(model === 2 || model === 3) || !isFinite(mix) || !isFinite(flight)) return null;
+  const u = clamp(uOf(le), U0, U1);
+  let src, ei = 0;
+  if (p.length >= 6) {
+    const lg = LEGACY[p[5]], id = lg ? lg[0] : p[5];
+    src = SRC.findIndex(s => s.id === id); if (src < 0) return null;
+    ei = lg ? lg[1] : (p.length === 7 ? +p[6] : 0);
+    if (!(ei >= 0 && ei < SRC[src].es.length && Math.floor(ei) === ei)) return null;
+  } else { const f = srcFor(u); if (!f) return null; src = f[0]; ei = f[1]; }
+  const r = srcRange(src, ei);
+  return { chip, src, ei, u: clamp(u, r[0], r[1]), mix: clamp(mix, 0, 1), model, flight: clamp(flight, 0, 0.5) };
+}
+</script>
+<script>/*INKSPRITE*/</script>
+<script>
+/*SCENE*/
+</script>

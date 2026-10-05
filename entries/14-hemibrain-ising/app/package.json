@@ -1,0 +1,12 @@
+{
+  "name": "fly-brain-ising",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Moth Hack 2026 bonus piece: serves the Fly Brain Metro page and proxies Atlas graph-v1 calls server-side. No dependencies.",
+  "main": "server.js",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node ../tests/test_logic.js"
+  }
+}

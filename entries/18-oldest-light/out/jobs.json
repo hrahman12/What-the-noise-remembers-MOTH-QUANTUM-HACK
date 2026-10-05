@@ -1,0 +1,206 @@
+[
+ {
+  "name": "wide_s0.5",
+  "grid": "wide",
+  "strength": 0.5,
+  "shape": [
+   257,
+   513
+  ],
+  "qubits": 19,
+  "reach": 0,
+  "style": "x",
+  "max_qubits": 24,
+  "status": "failed",
+  "job_id": "89f0fcee-3faf-458a-82cf-af8f174ec435",
+  "error": "blur-core-v1 89f0fcee-3faf-458a-82cf-af8f174ec435 failed: {\"$schema\": \"https://api.mothquantum.com/schemas/JobStatusOutputBody.json\", \"job_id\": \"89f0fcee-3faf-458a-82cf-af8f174ec435\", \"engine_id\": \"blur-core-v1\", \"status\": \"failed\", \"progress\": {\"detail\": \"Recovered 19-qubit grid from measurement\", \"step\": \"done\"}, \"error\": {\"message\": \"[TMPRL1103] Attempted to upload payloads with size that exceeded the error limit.\", \"retryable\": true, \"type\": \"internal_error\"}, \"warnings\": [], \"submitted_at\": \"2026-10-05T05:37:14Z\", \"updated_at\": \"2026-10-05T05:37:18Z\"}",
+  "engine_status": {
+   "status": "failed",
+   "progress": {
+    "detail": "Recovered 19-qubit grid from measurement",
+    "step": "done"
+   },
+   "error": {
+    "message": "[TMPRL1103] Attempted to upload payloads with size that exceeded the error limit.",
+    "retryable": true,
+    "type": "internal_error"
+   },
+   "submitted_at": "2026-10-05T05:37:14Z",
+   "updated_at": "2026-10-05T05:37:47Z"
+  }
+ },
+ {
+  "name": "sq_s0.25",
+  "grid": "sq",
+  "strength": 0.25,
+  "shape": [
+   257,
+   257
+  ],
+  "qubits": 18,
+  "reach": 0,
+  "style": "x",
+  "max_qubits": 24,
+  "status": "completed",
+  "job_id": "ff75e0b7-bab6-4cc3-b791-ac4f9d24572d",
+  "seconds": 16.9,
+  "out_min": 74.98466781430581,
+  "out_max": 997.9469538823548,
+  "out_mean": 519.7824507624786,
+  "engine_status": {
+   "status": "completed",
+   "progress": {
+    "detail": "Recovered 18-qubit grid from measurement",
+    "step": "done"
+   },
+   "error": null,
+   "submitted_at": "2026-10-05T05:39:08Z",
+   "updated_at": "2026-10-05T05:39:22Z"
+  }
+ },
+ {
+  "name": "sq_s0.5",
+  "grid": "sq",
+  "strength": 0.5,
+  "shape": [
+   257,
+   257
+  ],
+  "qubits": 18,
+  "reach": 0,
+  "style": "x",
+  "max_qubits": 24,
+  "status": "completed",
+  "job_id": "a59bf7d4-258b-43ad-9982-0125c9ae6872",
+  "seconds": 17.6,
+  "out_min": 97.43370732160912,
+  "out_max": 986.8322346512207,
+  "out_mean": 534.6141426206049,
+  "engine_status": {
+   "status": "completed",
+   "progress": {
+    "detail": "Recovered 18-qubit grid from measurement",
+    "step": "done"
+   },
+   "error": null,
+   "submitted_at": "2026-10-05T05:38:07Z",
+   "updated_at": "2026-10-05T05:38:19Z"
+  }
+ },
+ {
+  "name": "sq_s1",
+  "grid": "sq",
+  "strength": 1.0,
+  "shape": [
+   257,
+   257
+  ],
+  "qubits": 18,
+  "reach": 0,
+  "style": "x",
+  "max_qubits": 24,
+  "status": "completed",
+  "job_id": "af742a15-9f88-4498-855c-6e80129d53ca",
+  "seconds": 13.8,
+  "out_min": 124.41076433907288,
+  "out_max": 993.3108883932102,
+  "out_mean": 564.7513275642109,
+  "engine_status": {
+   "status": "completed",
+   "progress": {
+    "detail": "Recovered 18-qubit grid from measurement",
+    "step": "done"
+   },
+   "error": null,
+   "submitted_at": "2026-10-05T05:39:33Z",
+   "updated_at": "2026-10-05T05:39:43Z"
+  }
+ },
+ {
+  "name": "sq_s0.1",
+  "grid": "sq",
+  "strength": 0.1,
+  "shape": [
+   257,
+   257
+  ],
+  "qubits": 18,
+  "reach": 0,
+  "style": "x",
+  "max_qubits": 24,
+  "status": "completed",
+  "job_id": "22c0d516-8879-4f61-ae09-dd09eb7bc07b",
+  "seconds": 18.5,
+  "out_min": 50.221847579687456,
+  "out_max": 997.863969423753,
+  "out_mean": 512.2191378166514,
+  "engine_status": {
+   "status": "completed",
+   "progress": {
+    "detail": "Recovered 18-qubit grid from measurement",
+    "step": "done"
+   },
+   "error": null,
+   "submitted_at": "2026-10-05T05:40:19Z",
+   "updated_at": "2026-10-05T05:40:31Z"
+  }
+ },
+ {
+  "name": "sq_s0.375",
+  "grid": "sq",
+  "strength": 0.375,
+  "shape": [
+   257,
+   257
+  ],
+  "qubits": 18,
+  "reach": 0,
+  "style": "x",
+  "max_qubits": 24,
+  "status": "completed",
+  "job_id": "6e16e69e-0a69-4344-ac82-fb1f3e9068e2",
+  "seconds": 17.6,
+  "out_min": 87.72293228218915,
+  "out_max": 995.8034402100152,
+  "out_mean": 527.6079874168717,
+  "engine_status": {
+   "status": "completed",
+   "progress": {
+    "detail": "Recovered 18-qubit grid from measurement",
+    "step": "done"
+   },
+   "error": null,
+   "submitted_at": "2026-10-05T05:40:46Z",
+   "updated_at": "2026-10-05T05:41:00Z"
+  }
+ },
+ {
+  "name": "sq_s0.75",
+  "grid": "sq",
+  "strength": 0.75,
+  "shape": [
+   257,
+   257
+  ],
+  "qubits": 18,
+  "reach": 0,
+  "style": "x",
+  "max_qubits": 24,
+  "status": "completed",
+  "job_id": "06bc5198-da3c-4722-93c1-e0642b39693e",
+  "seconds": 16.3,
+  "out_min": 136.69547253702288,
+  "out_max": 991.9507623087866,
+  "out_mean": 547.6934353335636,
+  "engine_status": {
+   "status": "completed",
+   "progress": {
+    "detail": "Recovered 18-qubit grid from measurement",
+    "step": "done"
+   },
+   "error": null,
+   "submitted_at": "2026-10-05T05:41:11Z",
+   "updated_at": "2026-10-05T05:41:24Z"
+  }
+ }
+]

@@ -1,0 +1,29 @@
+{
+ "64": {
+  "status": "completed",
+  "job_id": "97400f96-2c85-410a-b20f-2e8452eee025",
+  "seconds": 75.8,
+  "n_logical": 64,
+  "mean_logical_error_rate": 0.0430145263671875,
+  "syndromes_detected": 21078,
+  "shots": 1024
+ },
+ "128": {
+  "status": "completed",
+  "job_id": "1dd2fd92-a57a-4dba-9918-bca80117cb0f",
+  "seconds": 474.7,
+  "n_logical": 128,
+  "mean_logical_error_rate": 0.04344940185546875,
+  "syndromes_detected": 41522,
+  "shots": 1024
+ },
+ "256": {
+  "status": "completed",
+  "job_id": "0833a836-e2f0-4b45-a4b9-c42ad31140e4",
+  "seconds": 3.2,
+  "n_logical": 256,
+  "mean_logical_error_rate": 0.042842864990234375,
+  "syndromes_detected": 82736,
+  "shots": 1024
+ }
+}

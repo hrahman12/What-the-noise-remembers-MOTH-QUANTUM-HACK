@@ -1,0 +1,1001 @@
+<title>Coda Reservoir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+/*BRAND*/
+/* Layout: the click timeline is the hero; source / whale / variation sit above it, transport below.
+   Look: paper ground, one ultramarine ink, square panels, pill controls, hairline rules (common/brand.css). */
+.wrap{max-width:76rem;margin-inline:auto}
+.hero{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);grid-template-areas:"stage top" "stage rest";grid-template-rows:auto 1fr;gap:1.1rem clamp(1.25rem,3vw,2.5rem);align-items:start;padding-block:2rem 1rem}
+.stage{grid-area:stage;display:grid;gap:.85rem;background:var(--panel);border:1px solid var(--ink);padding:clamp(.75rem,2vw,1.1rem);min-width:0}
+.ctl{display:grid;gap:.5rem}
+.crow{display:grid;grid-template-columns:5.6rem minmax(0,1fr);gap:.5rem .75rem;align-items:center}
+.crow[hidden]{display:none}
+.crow .seg{justify-self:start}
+.hint{font:400 .74rem/1.45 var(--mono);color:var(--ink-2);margin:0}
+.tl-wrap{position:relative;border:1px solid var(--rule);background:var(--paper);overflow:hidden}
+canvas{display:block;width:100%}
+#tl{height:300px;touch-action:pan-y;cursor:grab}
+#tl:active{cursor:grabbing}
+#hist{height:190px;cursor:pointer;touch-action:pan-y}
+.transport{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.btn.play{min-width:7.5rem;justify-content:center}
+.btn svg{width:13px;height:13px;fill:currentColor;flex:none}
+.clock{font:500 .8rem/1 var(--mono);font-variant-numeric:tabular-nums;color:var(--ink-2);margin-left:auto;white-space:nowrap}
+.clock b{color:var(--ink);font-weight:500}
+.pos{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.75rem;align-items:center}
+.now{font:400 .78rem/1.5 var(--mono);color:var(--ink-2);min-height:1.2rem;overflow-wrap:anywhere;border-top:1px solid var(--rule);padding-top:.5rem}
+.now b{color:var(--ink);font-weight:500}
+.stats{display:flex;flex-wrap:wrap;gap:.35rem 1.1rem;font:400 .74rem/1.4 var(--mono);color:var(--ink-2)}
+.stats b{color:var(--ink);font-weight:500}
+.legend{display:flex;flex-wrap:wrap;gap:.4rem 1rem;font:500 .7rem/1 var(--mono);color:var(--ink-2);letter-spacing:.04em}
+.legend i{display:inline-block;width:.8rem;height:.55rem;margin-right:.35rem;vertical-align:middle;background:var(--ink)}
+.legend i.corpus{background:var(--ink-3)}
+.legend i.outline{background:transparent;border:1px solid var(--ink)}
+.copy{display:grid;gap:1.1rem;min-width:0;align-content:start}
+.copy.top{grid-area:top}.copy.rest{grid-area:rest}
+.kicker{font:500 .74rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+h1{font-size:clamp(2.3rem,4.8vw,4.1rem);line-height:.98;letter-spacing:-.025em}
+.sub{font-size:1.06rem;color:var(--ink-2);max-width:46ch}
+.steps{display:grid;gap:.6rem;counter-reset:s;margin:0;padding:0;list-style:none}
+.steps li{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:.6rem;align-items:baseline;font-size:.95rem}
+.steps li::before{counter-increment:s;content:counter(s);font:500 .8rem/1.6 var(--mono);color:var(--on-ink);background:var(--ink);border-radius:999px;width:1.6rem;height:1.6rem;display:grid;place-items:center}
+.steps b{font-weight:500}
+.panel{display:grid;gap:.9rem;background:var(--panel);border:1px solid var(--rule);padding:1.1rem 1.2rem}
+.row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.readout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.25rem .9rem;font:400 .78rem/1.5 var(--mono);color:var(--ink-2);margin:0}
+.readout dd{margin:0}
+.readout b{color:var(--ink);font-weight:500;overflow-wrap:anywhere}
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:var(--ink);color:var(--on-ink);font:500 .85rem/1.35 var(--mono);padding:.7rem 1.1rem;border-radius:1.4rem;text-align:center;width:max-content;opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100vw - 32px)}
+.toast.on{opacity:1}
+/* the submitted WAV, playable here */
+.deliv{margin-top:2rem}
+.deliv .ink-bar{flex-wrap:wrap;gap:.4rem 1rem}
+.deliv-body{display:grid;gap:.85rem;background:var(--panel);border:1px solid var(--ink);border-top:0;padding:clamp(.75rem,2vw,1.1rem)}
+#wavstrip{height:76px;cursor:pointer;touch-action:pan-y}
+.deliv-body p{color:var(--ink-2);max-width:76ch}
+.sec>details.drawer:first-of-type{border-top:0}
+table.m{border-collapse:collapse;font:400 .76rem/1.4 var(--mono);width:100%;color:var(--ink-2)}
+table.m th,table.m td{border-bottom:1px solid var(--rule);padding:.4rem .5rem;text-align:right;white-space:nowrap}
+table.m th:first-child,table.m td:first-child{text-align:left;white-space:normal}
+table.m th{color:var(--ink);font-weight:500;white-space:normal;vertical-align:bottom;border-bottom-color:var(--ink)}
+table.m td:first-child{min-width:13rem}
+table.m tr.q td{color:var(--ink)}
+table.m tr.q td:first-child{font-weight:500}
+.scroll{overflow-x:auto;max-width:100%}
+code{font-family:var(--mono);font-size:.9em;color:var(--ink)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+[hidden]{display:none!important}
+/* the scene: a pixel-art sea, drawn at a low "art" resolution and scaled by a whole number (crisp, no smoothing) */
+.viewbar{display:flex;flex-wrap:wrap;gap:.5rem .9rem;align-items:center;justify-content:space-between}
+.viewbar .hint{flex:1 1 14rem}
+.sea{border:1px solid var(--ink);background:var(--rule)}
+#scene{aspect-ratio:16/9;image-rendering:pixelated;image-rendering:crisp-edges;touch-action:manipulation}
+#scene.hand{cursor:pointer}
+#scene:focus-visible{outline-offset:-4px}
+.key{display:grid;gap:.6rem;border-top:1px solid var(--rule);padding-top:.7rem}
+.key ul{list-style:none;margin:0;padding:0;display:grid;gap:.5rem;font:400 .76rem/1.45 var(--mono);color:var(--ink-2)}
+.key li{display:grid;grid-template-columns:5.5rem minmax(0,1fr);gap:.75rem;align-items:center}
+.key li b{color:var(--ink);font-weight:500}
+.key .ic{display:flex;justify-content:center;align-items:center;min-height:2rem;background:var(--rule);padding:.25rem 0}
+.key img{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
+.key .honesty{font-size:.78rem}
+.jump{flex:none;font:500 .7rem/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink);text-decoration:none;border:1px solid var(--ink);border-radius:999px;padding:.55rem .9rem;white-space:nowrap}
+.jump:hover{background:var(--tint)}
+.toc{font:400 .76rem/1.7 var(--mono);color:var(--ink-2)}
+.toc a{color:var(--ink);text-underline-offset:3px}
+/* titled sections below the scene: one solid ink bar each, like the brief pages */
+.sec{margin-top:2.5rem}
+.sec .ink-bar{flex-wrap:wrap;gap:.4rem 1rem}
+.ink-bar h2{font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;margin:0}
+.sec-body{display:grid;gap:1rem;padding:1.3rem 0 .4rem;color:var(--ink-2);max-width:72ch}
+.sec-body.wide{max-width:none}
+.sec-body.wide>p{max-width:76ch}
+.sec-body h3,.fig h3{font:400 1.3rem/1.2 var(--display);color:var(--ink)}
+.sec .steps li{color:var(--ink)}
+.keys{font:400 .78rem/1.6 var(--mono);color:var(--ink-2);border-top:1px solid var(--rule);padding-top:.8rem}
+.keys b{color:var(--ink);font-weight:500}
+.databody{display:grid;gap:1.4rem;background:var(--panel);border:1px solid var(--ink);border-top:0;padding:clamp(.75rem,2vw,1.1rem);min-width:0}
+.dtrans{display:flex;flex-wrap:wrap;gap:.6rem 1rem;align-items:center}
+.dtrack{font:400 .78rem/1.4 var(--mono);color:var(--ink-2);min-width:0;flex:1 1 14rem;overflow-wrap:anywhere}
+.dtrack b{color:var(--ink);font-weight:500}
+.fig{margin:0;display:grid;gap:.7rem;min-width:0;border-top:1px solid var(--rule);padding-top:1.2rem}
+.fig>p{color:var(--ink-2);max-width:76ch}
+.fig figcaption{font-size:.88rem;color:var(--ink-2);max-width:76ch}
+table.m td.wrap{white-space:normal;text-align:left;min-width:15rem}
+table.m th.l{text-align:left}
+table.m.jobs td:first-child{min-width:11rem}
+table.m code{font-size:.95em}
+.btn.sm{padding:.45rem .85rem;font-size:.78rem}
+.credits{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.55rem 1.1rem;margin:0;max-width:80ch}
+.credits dt{font:500 .7rem/1.75 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
+.credits dd{margin:0;color:var(--ink-2);overflow-wrap:anywhere}
+@media (max-width:960px){.hero{grid-template-columns:minmax(0,1fr);grid-template-areas:"top" "stage" "rest";grid-template-rows:auto}}
+@media (max-width:520px){#scene{aspect-ratio:4/5}.credits{grid-template-columns:minmax(0,1fr);gap:.2rem}.credits dd{margin-bottom:.6rem}.viewbar{align-items:flex-start}.key li{grid-template-columns:4.2rem minmax(0,1fr);gap:.6rem}.viewbar .hint{flex-basis:100%}#tl{height:260px}.crow{grid-template-columns:minmax(0,1fr);gap:.35rem}.clock{margin-left:0}.crow .seg{border-radius:20px}.crow .seg button{padding:.5rem .5rem;font-size:.7rem;letter-spacing:0}.wtnr-bar{font-size:.66rem;letter-spacing:.08em}}
+
+/* phone: wide tables scroll inside their own box */
+.scroll{position:relative}
+#metrics{display:block;position:relative;width:auto!important;min-width:0!important;max-width:100%!important;overflow-x:auto;-webkit-overflow-scrolling:touch}
+</style>
+
+<div class="wrap">
+  <nav class="wtnr-bar"><a href="https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa">What the Noise Remembers</a><span class="count">Challenge <b>02</b></span></nav>
+
+  <div class="hero">
+    <div class="stage" id="stage">
+      <div class="viewbar">
+        <p class="hint" id="tip">Tap a whale to hear only its codas. Tap the boat for the submitted track, or open water to play or pause.</p>
+        <a class="jump" href="#data">Timeline and histogram ↓</a>
+      </div>
+
+      <div class="sea" id="v-scene">
+        <canvas id="scene" tabindex="0" aria-label="The sea. Four sperm whales stand for caller labels 1 to 4, a small pod for the other callers, and a dotted whale for the 12-qubit reservoir. At each real click time the caller's head lights and a ring goes out; a bubble shows the coda's token and rhythm. Tap a whale to hear only its codas; tap open water, or press Space, to play or pause. Arrow keys skip 5 seconds, keys 1 to 4 pick a whale, A all whales, R the reservoir, H the submitted track."></canvas>
+      </div>
+      <div class="now" id="now" aria-live="off">Press play or tap a whale. Nothing sounds until you do.</div>
+
+      <div class="transport">
+        <button type="button" class="btn play" id="play" aria-label="Play"><svg viewBox="0 0 14 14" aria-hidden="true"><path id="play-ico" d="M2 1l11 6-11 6z"/></svg><span id="play-txt">Play</span></button>
+        <button type="button" class="btn ghost" id="restart">Back to start</button>
+        <div class="seg" role="group" aria-label="Playback speed">
+          <button type="button" data-speed="1" aria-pressed="true">1×</button>
+          <button type="button" data-speed="0.5" aria-pressed="false">½× slow</button>
+        </div>
+        <span class="clock" id="clock"><b>0.0 s</b> / 0.0 s</span>
+      </div>
+      <div class="pos"><label class="label" for="seek">Position</label><input type="range" id="seek" min="0" max="100" step="0.1" value="0"></div>
+
+      <div class="ctl">
+        <div class="crow"><span class="label" id="l-src">Listen to</span>
+        <div class="seg" role="group" aria-labelledby="l-src">
+          <button type="button" data-mode="real" aria-pressed="false">Real codas</button>
+          <button type="button" data-mode="res" aria-pressed="false">Reservoir</button>
+          <button type="button" data-mode="handoff" aria-pressed="true">Real → reservoir</button>
+        </div></div>
+        <div class="crow" id="row-whale" hidden><span class="label" id="l-whale">Whale</span>
+        <div class="seg" role="group" aria-labelledby="l-whale">
+          <button type="button" data-whale="all" aria-pressed="true">All</button>
+          <button type="button" data-whale="1" aria-pressed="false">1</button>
+          <button type="button" data-whale="2" aria-pressed="false">2</button>
+          <button type="button" data-whale="3" aria-pressed="false">3</button>
+          <button type="button" data-whale="4" aria-pressed="false">4</button>
+        </div></div>
+        <div class="crow" id="row-var" hidden><span class="label" id="l-var">Variation</span>
+        <div class="seg" role="group" aria-labelledby="l-var" id="g-var"></div></div>
+        <div class="crow" id="row-take" hidden><span class="label" id="l-take">Take</span>
+        <div class="seg" role="group" aria-labelledby="l-take">
+          <button type="button" data-take="1" aria-pressed="true">1 · seed 1</button>
+          <button type="button" data-take="2" aria-pressed="false">2 · seed 2</button>
+        </div></div>
+        <p class="hint" id="hint"></p>
+      </div>
+
+      <div class="key" id="k-scene">
+        <ul>
+          <li><span class="ic"><img id="ic-whale" alt=""></span><span><b>A real caller.</b> At each recorded click its head lights and a ring goes out. Whale numbers are caller labels within a recording.</span></li>
+          <li><span class="ic"><img id="ic-res" alt=""></span><span><b>The reservoir</b>, drawn as 12 dots for its 12 qubits. It speaks the tokens a qrc-gen-v2 job returned, played from each token's prototype rhythm.</span></li>
+          <li><span class="ic"><img id="ic-bub" alt=""></span><span><b>A coda bubble:</b> the token, and its clicks spaced as they are timed. Dots fill as the clicks sound.</span></li>
+        </ul>
+        <p class="honesty">Ring, light and bubble timings are this track's real click times. Swimming, the boat, the squid and the flicker of the reservoir's 12 dots are decoration: the dots are not measured qubit states.</p>
+      </div>
+    </div>
+
+    <div class="copy top">
+      <p class="kicker">Challenge 02 · Make it audible</p>
+      <h1>Hear a 12‑qubit reservoir click like a sperm whale.</h1>
+      <p class="sub">A quantum reservoir learned the rhythms of 3,840 real codas recorded off Dominica. Play the whales, then let the reservoir carry on.</p>
+      <p class="honesty"><b>No meaning is claimed; codas are treated as rhythm tokens.</b> Every reservoir sequence here is a real Atlas job, run on a simulator.</p>
+    </div>
+    <div class="copy rest">
+      <div class="proof" id="proof"></div>
+      <p class="toc">On this page: <a href="#how-to-play">How to play</a> · <a href="#data">The data</a> · <a href="#deliv">The submitted audio</a> · <a href="#made">How it was made</a> · <a href="#science">The science</a> · <a href="#claims">What this does not claim</a> · <a href="#jobs">Jobs and credits</a></p>
+
+      <div class="panel">
+        <dl class="readout">
+          <dt>Track</dt><dd><b id="r-track">–</b></dd>
+          <dt>Engine</dt><dd><b id="r-engine">–</b></dd>
+          <dt>Job</dt><dd><b id="r-job">–</b></dd>
+          <dt>Params</dt><dd><b id="r-params">–</b></dd>
+          <dt>Qubits</dt><dd><b id="r-qubits">–</b></dd>
+          <dt>Ran on</dt><dd><b id="r-where">–</b></dd>
+        </dl>
+        <div class="row">
+          <button type="button" class="btn ghost" id="share">Copy link to this moment</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="sec" id="how-to-play" aria-labelledby="h-how">
+    <div class="ink-bar"><h2 id="h-how">How to play</h2><span>You are in control</span></div>
+    <div class="sec-body">
+      <ol class="steps">
+        <li><span><b>Pick</b> real codas, the reservoir, or the handoff between them. Or tap a whale in the sea.</span></li>
+        <li><span><b>Choose</b> a whale for real codas, or a variation level and take for the reservoir. Each reservoir take is its own engine job.</span></li>
+        <li><span><b>Play</b>, pause and scrub. Clicks light up on the timeline as they sound. In the sea, every click lights its whale's head and sends out a ring; the timeline and token histogram are in <a href="#data">The data</a>, just below.</span></li>
+      </ol>
+      <p class="keys"><b>Keys.</b> Space plays or pauses, arrow keys skip 5 seconds. On the sea: keys 1 to 4 pick a whale, A all whales, R the reservoir, H the submitted track; a tap on open water plays or pauses. <b>Copy link to this moment</b> saves the track and the second you are on.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="data" aria-labelledby="h-data">
+    <div class="ink-bar"><h2 id="h-data">The data</h2><span>Moves with the instrument</span></div>
+    <div class="databody">
+      <div class="dtrans">
+        <button type="button" class="btn play" id="play2"><svg viewBox="0 0 14 14" aria-hidden="true"><path id="play2-ico" d="M2 1l11 6-11 6z"/></svg><span id="play2-txt">Play</span></button>
+        <p class="dtrack"><span class="label">Track</span> <b id="d-track">–</b></p>
+        <span class="clock" id="clock2"><b>0.0 s</b> / 0.0 s</span>
+      </div>
+
+      <figure class="fig" aria-labelledby="h-tl">
+        <h3 id="h-tl">Click timeline</h3>
+        <div class="tl-wrap"><canvas id="tl" tabindex="0" aria-label="Click timeline. Each lane is a whale, the bottom lane is the quantum reservoir. Ticks are clicks; bright ticks have sounded. Space plays or pauses, arrow keys skip 5 seconds. Drag to scrub, tap to jump to a moment." aria-describedby="cap-tl"></canvas></div>
+        <div class="now" id="now2" aria-hidden="true">Press play. Nothing sounds until you do.</div>
+        <figcaption id="cap-tl">Click timeline. Each lane is a whale, the bottom lane is the quantum reservoir. Ticks are clicks; bright ticks have sounded. Space plays or pauses, arrow keys skip 5 seconds. Drag to scrub, tap to jump to a moment. In the submitted track a dashed line marks where the reservoir takes over.</figcaption>
+      </figure>
+
+      <figure class="fig" aria-labelledby="h-hist">
+        <h3 id="h-hist">Token histogram</h3>
+        <div class="tl-wrap"><canvas id="hist" tabindex="0" aria-label="Histogram of rhythm tokens: the real corpus above the line, this track so far below it. Tap a bar, or use the left and right arrow keys, to read a token." aria-describedby="hist-pick"></canvas></div>
+        <div class="legend"><span><i class="corpus"></i>Real corpus · 3,840 codas</span><span><i id="lg-track"></i><span id="lg-track-txt">This track, so far</span></span><span><i class="outline"></i>whole track</span><span>bar height = √ share</span></div>
+        <p class="hint" id="hist-pick" aria-live="polite">Tap a bar, or focus the chart and use the arrow keys, to read its token.</p>
+        <div class="stats" id="stats"></div>
+        <figcaption>Histogram of rhythm tokens: the real corpus above the line, this track so far below it. Tokens run from the commonest in the real corpus on the left; the outline below the line is the whole track, the filled bar is what has played so far.</figcaption>
+      </figure>
+
+      <figure class="fig" aria-labelledby="h-num">
+        <h3 id="h-num">Does it sound like whales? The numbers</h3>
+        <p>Each reservoir sequence is compared with the real corpus and with two classical baselines that need no quantum computer at all: drawing tokens independently at their real frequencies, and a first-order Markov chain fitted to the corpus (each averaged over 200 draws of the same length). Lower distance is closer to the real token mix.</p>
+        <div class="scroll"><table class="m" id="metrics"></table></div>
+        <p class="honesty">On these numbers the classical Markov chain is closer to the real data than every reservoir take, and it never produces a pair the whales did not. We say so plainly: no claim is made that the reservoir models codas better. Each reservoir row is also a single 160-token sample.</p>
+      </figure>
+    </div>
+  </section>
+
+  <section class="deliv sec" id="deliv" aria-labelledby="deliv-h">
+    <div class="ink-bar"><h2 id="deliv-h">The submitted audio</h2><span>coda_reservoir.wav</span></div>
+    <div class="deliv-body">
+      <div class="transport">
+        <button type="button" class="btn play" id="wav-play"><svg viewBox="0 0 14 14" aria-hidden="true"><path id="wav-ico" d="M2 1l11 6-11 6z"/></svg><span id="wav-txt">Play the WAV</span></button>
+        <button type="button" class="btn ghost" id="wav-stop">Stop</button>
+        <span class="clock" id="wav-clock"><b>0.0 s</b> / 0.0 s</span>
+      </div>
+      <div class="tl-wrap"><canvas id="wavstrip" aria-hidden="true"></canvas></div>
+      <div class="pos"><label class="label" for="wav-seek">Position</label><input type="range" id="wav-seek" min="0" max="84" step="0.1" value="0"></div>
+      <audio id="wav" preload="none" src="audio/coda_reservoir.mp3"></audio>
+      <p>The challenge deliverable, rendered offline (classically) with the same synthetic click as the instrument above, and served here as an MP3 copy of the WAV. It is the "Real → reservoir" track: the strip shows every click in it, real callers on the upper row and the reservoir's continuation on the lower one. Click the strip to jump.</p>
+      <p id="d-wav"></p>
+    </div>
+  </section>
+
+  <section class="sec" id="made" aria-labelledby="h-made">
+    <div class="ink-bar"><h2 id="h-made">How it was made</h2><span>Open a drawer</span></div>
+    <details class="drawer"><summary>What the quantum reservoir did</summary><div class="body">
+      <p><b>Training (qrc-train-v2, 1 job).</b> The whole corpus, in recording order, went in as one 3,840-token sequence. The reservoir is 12 qubits, the engine's maximum (13 is rejected by its schema). Each token drives one reservoir step with 10 random gates mixed in; <code>mixing 0.7</code> sets how much each step replaces the reservoir's memory, and each step is measured with 3,000 shots. A readout from the measurements to the 30 tokens (the returned model holds a 4,096 × 30 weight matrix; 4,096 = 2<sup>12</sup>, the number of 12-qubit outcomes) is trained for 100 epochs to predict the next token. Training windows are 16 tokens long (the first 4 are washout), and 12.5% of the candidate windows were sampled. Parameter meanings are from the engine's own schema.</p>
+      <p><b>Generation (qrc-gen-v2, one job per setting).</b> Each job loads the same trained model by reference (the training job's <code>state</code> output, passed by its asset ID, never chained from another generation), warms the reservoir up, then samples tokens one at a time. <i>Variation</i> is the sampling temperature: low repeats the likeliest token, high spreads toward every token. Warm-up is the whole vocabulary (the engine default) or, for the handoff, the 31 real codas you hear first. Levels 0.25 to 4 have two takes (random_seed 1 and 2); 16 and 64 have one. Every take is its own job.</p>
+      <p><b>What we found.</b> With the seed fixed, the variation setting changes far less than you might expect. Levels 0.25 and 0.5 gave identical sequences for both seeds; 1 departs from them only after 155 codas (seed 1) or 93 (seed 2); 2 and 4 share their first 64 codas for seed 1 and are identical for seed 2. The seed mattered more than the temperature in this range. That is why we added 16 and 64, where the readout's preferences finally flatten: at 64 all 30 tokens appear and only 11% of codas repeat the previous type. Every sequence from the default warm-up opens the same way (<code>25</code>, then <code>16</code> or <code>25</code>).</p>
+      <p>Every job ran on Atlas's server-side Qiskit Aer simulator. These engines have no hardware mode.</p>
+      <p id="d-loss"></p>
+    </div></details>
+    <details class="drawer"><summary>How the sound is made (classical)</summary><div class="body">
+      <p>No recordings are used. Every click is the same synthetic broadband pulse, deliberately kept low (half its energy lies below about 2.7 kHz) so it carries on small speakers. That is the "pitched down" step. It changes only the click's colour: click timing is never stretched at 1×.</p>
+      <p><b>Real codas</b> play their recorded inter-click intervals at the recorded times. Silences longer than 2.5 s are shortened to 2.5 s, and each caller label is panned to its own place in stereo. <b>Reservoir codas</b> have only a token, so each is played from that token's prototype: the mean normalised rhythm times the token's median length. The silence before each generated coda is drawn, classically, from the real silences (0.3 to 2.5 s). The reservoir has no whale identity, so it sits in the centre.</p>
+      <p>The ½× button halves the playback speed for listening. It stretches timing and is labelled as such.</p>
+    </div></details>
+  </section>
+
+  <section class="sec" id="science" aria-labelledby="h-science">
+    <div class="ink-bar"><h2 id="h-science">The science</h2><span>Codas as rhythm tokens</span></div>
+    <div class="sec-body">
+      <h3>Why sperm-whale codas?</h3>
+      <p>Sperm whales exchange <i>codas</i>: short, patterned bursts of clicks. The data here are 3,840 codas from the Dominica Sperm Whale Project, published with Sharma et al., <i>Contextual and combinatorial structure in sperm whale vocalisations</i>, Nature Communications 15, 3617 (2024). Each row gives a coda's number of clicks, the gaps between its clicks (inter-click intervals), which caller made it, and when. Callers are labelled 1, 2, 3 and so on within each recording, so "whale 2" is a label, not one animal across the corpus.</p>
+      <p>We turn every coda into a token: its click count plus a rhythm letter. The letter is our own k-means cluster of the coda's inter-click intervals divided by its total length, fitted per click count. That gives <b id="d-vocab">30</b> tokens. The 5-click codas split cleanly into a slow pattern (two long gaps, then three short ones: <code>5A</code>) and a fast even one (<code>5B</code>). These are not the paper's rhythm types: they are a simple, reproducible stand-in.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="claims" aria-labelledby="h-claims">
+    <div class="ink-bar"><h2 id="h-claims">What this does not claim</h2><span>Honesty</span></div>
+    <div class="sec-body">
+      <p class="honesty">No meaning is claimed; codas are treated as rhythm tokens. Nothing here translates, decodes or speaks whale. The reservoir learned which token tends to follow which; it knows nothing about why. The reservoir ran on a classical simulator of a quantum circuit, not quantum hardware, and we claim no quantum advantage. Tokenisation, timing, click synthesis, stereo placement and every statistic are classical.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="jobs" aria-labelledby="h-jobs">
+    <div class="ink-bar"><h2 id="h-jobs">Jobs and credits</h2><span id="jobs-n">Atlas jobs</span></div>
+    <div class="sec-body wide">
+      <p>Every reservoir sequence on this page is the cached output of one of these Atlas jobs, all run on the server-side Qiskit Aer simulator. <b>Listen</b> loads that job's track into the instrument above and plays it.</p>
+      <div class="scroll"><table class="m jobs" id="jobs-t"></table></div>
+      <dl class="credits">
+        <dt>Data</dt><dd>Sperm-whale coda dialogues, Pratyusha Sharma, Zenodo, <a href="https://doi.org/10.5281/zenodo.10817697">doi:10.5281/zenodo.10817697</a>, licensed CC BY 4.0. Recorded by The Dominica Sperm Whale Project (Eastern Caribbean 1 clan, animal-borne DTag recordings). The CSV is unchanged; our tokens are derived from it.</dd>
+        <dt>Paper</dt><dd>Sharma, Gero, Payne, Gruber, Rus, Torralba and Andreas, <i>Contextual and combinatorial structure in sperm whale vocalisations</i>, Nature Communications 15, 3617 (2024), <a href="https://doi.org/10.1038/s41467-024-47221-8">doi:10.1038/s41467-024-47221-8</a>.</dd>
+        <dt>Engines</dt><dd>Moth Quantum Atlas: qrc-train-v2 and qrc-gen-v2 (quantum reservoir computing) on a server-side Qiskit Aer simulator. <span id="jobs-spend"></span></dd>
+        <dt>Sound</dt><dd>No recordings are used. Every click is synthesised by our own code; tokenising, timing, click synthesis and every statistic are classical.</dd>
+      </dl>
+    </div>
+  </section>
+  <!--NAV-->
+  <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const D = /*DATA*/{};
+const CLICK_B64 = /*CLICK*/"";
+const IR_B64 = /*IR*/"";
+const IR_GAIN = /*IRGAIN*/0.22;
+// the cast: pixel art from web/sprites.json and the shared helper common/inksprite.js, both inlined at build time
+const SPRITES = /*SPRITES*/{};
+/*INKSPRITE*/
+
+// ---------- pure logic (unit-tested with node) ----------
+const LANES = [1, 2, 3, 4, 5, 0];                 // display order: whales 1-4, other whales, reservoir
+const LANE_NAME = {1: 'Whale 1', 2: 'Whale 2', 3: 'Whale 3', 4: 'Whale 4', 5: 'Others', 0: 'Reservoir'};
+const PAN = {1: -0.6, 2: 0.6, 3: -0.25, 4: 0.25, 5: 0, 0: 0};
+function trackId(s) {
+  if (s.mode === 'handoff') return 'handoff';
+  if (s.mode === 'real') return s.whale === 'all' ? 'real_all' : 'real_w' + s.whale;
+  return 'var_' + s.variation + (s.take === 2 ? '_s2' : '');
+}
+function resolve(s, tracks) {                     // take 2 exists for variation 0.25-4 only: fall back to take 1
+  const r = Object.assign({}, s);
+  if (r.mode === 'res' && !tracks[trackId(r)]) r.take = 1;
+  return r;
+}
+function clickOffsets(ev) {                       // ev = [t, tok, lane, codaIdx(-1 = prototype), pan?]
+  const ici = ev[3] >= 0 ? D.icis[ev[3]].map(x => x / 10000)
+                         : D.vocab[ev[1]].r.map(x => x * D.vocab[ev[1]].d);
+  const out = [0]; let acc = 0;
+  for (const x of ici) { acc += x; out.push(acc); }
+  return out;
+}
+function flatten(track) {                         // -> clicks sorted by time: [t, evIndex, k]
+  const clicks = [];
+  track.ev.forEach((ev, i) => clickOffsets(ev).forEach((o, k) => clicks.push([ev[0] + o, i, k])));
+  clicks.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  return clicks;
+}
+function codaEnd(ev) { const o = clickOffsets(ev); return ev[0] + o[o.length - 1]; }
+function lowerBound(arr, t, key) { let lo = 0, hi = arr.length; while (lo < hi) { const m = (lo + hi) >> 1; if (key(arr[m]) < t) lo = m + 1; else hi = m; } return lo; }
+function tvd(p, q) { let s = 0; for (let i = 0; i < p.length; i++) s += Math.abs(p[i] - q[i]); return s / 2; }
+function seqStats(toks, nv, pairSet) {            // toks: token indices in order
+  const c = new Array(nv).fill(0); toks.forEach(t => c[t]++);
+  const n = toks.length, share = c.map(x => n ? x / n : 0);
+  let rep = 0, unseen = 0;
+  for (let i = 1; i < n; i++) { if (toks[i] === toks[i - 1]) rep++; if (!pairSet.has(toks[i - 1] * 64 + toks[i])) unseen++; }
+  return {n, counts: c, share, repeat: n > 1 ? rep / (n - 1) : 0, unseen: n > 1 ? unseen / (n - 1) : 0, distinct: c.filter(x => x).length};
+}
+function encodeHash(s, pos) {
+  const p = 't' + pos.toFixed(1);
+  if (s.mode === 'handoff') return 'handoff-' + p;
+  if (s.mode === 'real') return 'real-' + (s.whale === 'all' ? 'all' : 'w' + s.whale) + '-' + p;
+  return 'res-v' + s.variation + '-k' + (s.take || 1) + '-' + p;
+}
+function decodeHash(h) {
+  let m = /^#?(handoff)-t([0-9.]+)$/.exec(h || '');
+  if (m) return {s: {mode: 'handoff', whale: 'all', variation: 1, take: 1}, pos: +m[2]};
+  m = /^#?real-(all|w[1-4])-t([0-9.]+)$/.exec(h || '');
+  if (m) return {s: {mode: 'real', whale: m[1] === 'all' ? 'all' : m[1].slice(1), variation: 1, take: 1}, pos: +m[2]};
+  m = /^#?res-v([0-9.]+)-k([12])-t([0-9.]+)$/.exec(h || '');
+  if (m) return {s: {mode: 'res', whale: 'all', variation: +m[1], take: +m[2]}, pos: +m[3]};
+  return null;
+}
+if (typeof module !== 'undefined') { module.exports = {trackId, resolve, clickOffsets, flatten, lowerBound, tvd, seqStats, encodeHash, decodeHash, codaEnd, setData: d => { Object.assign(D, d); }}; }
+
+// ---------- page ----------
+if (typeof document !== 'undefined') (function () {
+  const $ = id => document.getElementById(id);
+  const NV = D.vocab.length;
+  const PAIRS = new Set(D.pairs.map(([a, b]) => a * 64 + b));
+  const CORPUS = D.vocab.map(v => v.c / D.total);
+  const ORDER = D.vocab.map((v, i) => i).sort((a, b) => D.vocab[b].c - D.vocab[a].c);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const st = {mode: 'handoff', whale: 'all', variation: 1, take: 1, speed: 1, playing: false, pos: 0, anchorCtx: 0, anchorPos: 0};
+  let T = null, clicks = [], next = 0, raf = null, timer = null, live = [];
+  let actx = null, master = null, clickBuf = null, panners = {};
+  const wav = $('wav'), wavStrip = $('wavstrip');
+
+  // proof chips and static copy, all from the job data
+  const gens = Object.values(D.jobs).filter(j => j.engine === 'qrc-gen-v2');
+  $('proof').innerHTML = `<span class="hot"><b>12</b> qubits · engine max</span><span><b>${gens.length + 1}</b> real Atlas jobs</span><span><b>3,840</b> real codas</span><span><b>${NV}</b> rhythm tokens</span><span>Qiskit Aer <b>simulator</b></span>`;
+  $('d-vocab').textContent = NV;
+  if (D.loss) $('d-loss').textContent = D.loss;
+  if (D.wav) $('d-wav').textContent = D.wav;
+
+  // variation buttons from the jobs that exist
+  const VARS = D.variations;
+  $('g-var').innerHTML = VARS.map(v => `<button type="button" data-var="${v}" aria-pressed="${v === 1}">${v}</button>`).join('');
+
+  // metrics table
+  $('metrics').innerHTML = '<tr><th>Sequence</th><th>tokens</th><th>distance to real mix</th><th>same-type repeats</th><th>pairs unseen in real data</th></tr>' +
+    D.metrics.map(m => `<tr class="${m.quantum ? 'q' : ''}"><td>${m.label}</td><td>${m.n}</td><td>${m.tvd.toFixed(3)}</td><td>${(100 * m.repeat).toFixed(0)}%</td><td>${(100 * m.unseen).toFixed(1)}%</td></tr>`).join('');
+
+  // jobs table: the training job, then every generation job in picker order, each wired to its track
+  const JOBROWS = [];
+  D.variations.forEach(v => [1, 2].forEach(k => { const s = {mode: 'res', whale: 'all', variation: v, take: k}, id = trackId(s); if (D.tracks[id] && D.tracks[id].job) JOBROWS.push({id, s}); }));
+  JOBROWS.push({id: 'handoff', s: {mode: 'handoff', whale: 'all', variation: 1, take: 1}});
+  const TJ = D.jobs.train;
+  $('jobs-t').innerHTML = '<tr><th class="l">What it made</th><th class="l">Engine</th><th class="l">Settings</th><th class="l">Job ID</th><th><span class="sr">Listen</span></th></tr>' +
+    `<tr class="q"><td>The trained model every take reuses</td><td>${TJ.engine}</td><td class="wrap">${TJ.params || ''}</td><td><code>${TJ.job_id}</code></td><td></td></tr>` +
+    JOBROWS.map(({id}) => { const t = D.tracks[id], j = D.jobs[t.job];
+      return `<tr><td>${t.label}</td><td>${j.engine}</td><td class="wrap">${t.params}</td><td><code>${j.job_id}</code></td><td><button type="button" class="btn ghost sm" data-listen="${id}">Listen</button></td></tr>`; }).join('');
+  $('jobs-n').textContent = (JOBROWS.length + 1) + ' Atlas jobs';
+  if (D.spend) $('jobs-spend').textContent = D.spend;
+
+  // ---- audio ----
+  function b64ToFloat(b64) {
+    const bin = atob(b64), n = bin.length >> 1, out = new Float32Array(n);
+    for (let i = 0; i < n; i++) { let v = bin.charCodeAt(2 * i) | (bin.charCodeAt(2 * i + 1) << 8); if (v >= 32768) v -= 65536; out[i] = v / 32768; }
+    return out;
+  }
+  function resample(x, from, to) {                // linear resampling for the reverb impulse
+    if (from === to) return x;
+    const n = Math.round(x.length * to / from), y = new Float32Array(n);
+    for (let i = 0; i < n; i++) { const t = i * from / to, k = Math.floor(t), f = t - k; y[i] = (x[k] || 0) * (1 - f) + (x[k + 1] || 0) * f; }
+    return y;
+  }
+  function ensureAudio() {
+    if (actx) return;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    try { actx = new AC({sampleRate: 44100}); } catch (e) { actx = new AC(); }
+    const c = b64ToFloat(CLICK_B64);
+    clickBuf = actx.createBuffer(1, c.length, 44100); clickBuf.copyToChannel(c, 0);   // source nodes resample themselves
+    master = actx.createGain(); master.gain.value = 0.55;
+    const lim = actx.createDynamicsCompressor(); lim.threshold.value = -3; lim.ratio.value = 12;
+    master.connect(lim); lim.connect(actx.destination);
+    try {                                          // reverb is decoration: if it fails, play dry
+      const sr = actx.sampleRate, ir = resample(b64ToFloat(IR_B64), 44100, sr), irBuf = actx.createBuffer(2, ir.length, sr);
+      irBuf.copyToChannel(ir, 0); irBuf.copyToChannel(ir, 1);
+      const conv = actx.createConvolver(); conv.normalize = false; conv.buffer = irBuf;
+      const wet = actx.createGain(); wet.gain.value = IR_GAIN * 44100 / sr;
+      master.connect(conv); conv.connect(wet); wet.connect(lim);
+    } catch (e) {}
+    for (const l of LANES) {
+      if (actx.createStereoPanner) { const p = actx.createStereoPanner(); p.pan.value = PAN[l]; p.connect(master); panners[l] = p; }
+      else panners[l] = master;
+    }
+  }
+  const now = () => st.playing ? st.anchorPos + (actx.currentTime - st.anchorCtx) * st.speed : st.pos;
+  function schedule() {
+    const horizon = now() + 0.3 * st.speed;
+    while (next < clicks.length && clicks[next][0] < horizon) {
+      const [t, ei] = clicks[next];
+      const when = st.anchorCtx + (t - st.anchorPos) / st.speed;
+      if (when >= actx.currentTime - 0.005) {
+        const src = actx.createBufferSource(); src.buffer = clickBuf;
+        src.connect(panners[T.ev[ei][2]]); src.start(Math.max(when, actx.currentTime));
+        live.push(src); src.onended = () => { const k = live.indexOf(src); if (k >= 0) live.splice(k, 1); };
+      }
+      next++;
+    }
+    if (now() >= T.dur) { pause(); st.pos = T.dur; toast(T.id === 'handoff' ? 'End of the submitted track' : 'End of track'); draw(); }
+  }
+  function silence() { live.forEach(s => { try { s.stop(); } catch (e) {} }); live = []; }
+  async function play() {
+    if (wav && !wav.paused) wav.pause();          // one sound at a time: the WAV player yields to the instrument
+    ensureAudio();
+    if (actx.state === 'suspended') await actx.resume();
+    if (st.pos >= T.dur - 0.05) st.pos = 0;
+    st.anchorCtx = actx.currentTime + 0.06; st.anchorPos = st.pos; st.playing = true;
+    next = lowerBound(clicks, st.pos, c => c[0]);
+    schedule(); timer = setInterval(schedule, 40); loop(); ui();
+  }
+  function pause() {
+    if (!st.playing) return;
+    st.pos = Math.min(now(), T.dur); st.playing = false;
+    clearInterval(timer); timer = null; silence(); cancelAnimationFrame(raf); raf = null; ui(); draw(); kickIdle();
+  }
+  function seek(t) {
+    const was = st.playing; if (was) pause();
+    st.pos = Math.max(0, Math.min(T.dur, t)); draw();
+    if (was) play();
+  }
+  function loop() { draw(); if (st.playing) raf = requestAnimationFrame(loop); }
+
+  // ---- track selection ----
+  function load() {
+    const id = trackId(st); T = D.tracks[id]; T.id = id;
+    if (!T._clicks) { T._clicks = flatten(T); T._starts = T.ev.map(e => e[0]); T._lanes = new Set(T.ev.map(e => e[2])); }
+    clicks = T._clicks;
+    $('seek').max = T.dur.toFixed(1);
+    const j = T.job ? D.jobs[T.job] : null;
+    $('r-track').textContent = T.label;
+    $('r-engine').textContent = j ? 'qrc-gen-v2, model from qrc-train-v2' : 'none: recorded data (classical playback)';
+    $('r-job').textContent = j ? j.job_id + (T.id === 'handoff' ? ' (after 31 real codas)' : '') : '–';
+    $('r-params').textContent = j ? T.params : 'real inter-click intervals; silences > 2.5 s shortened';
+    $('r-qubits').textContent = j ? '12 reservoir qubits (num_qubits, engine max)' : '–';
+    $('r-where').textContent = j ? 'Atlas, Qiskit Aer simulator (server side)' : 'your browser';
+    $('d-track').textContent = T.label;
+    $('lg-track').style.background = T.kind === 'real' ? COL.ink2 : COL.ink;
+    $('lg-track-txt').textContent = (T.kind === 'real' ? 'This real track' : T.kind === 'mix' ? 'This track (real, then reservoir)' : 'This reservoir track') + ', so far';
+    ui();
+  }
+  function select(patch) {
+    const was = st.playing; if (was) pause();
+    Object.assign(st, resolve(Object.assign({}, st, patch), D.tracks));
+    st.pos = 0; load(); draw();
+    if (was) play();
+  }
+  function press(sel, attr, val) { document.querySelectorAll(sel).forEach(b => b.setAttribute('aria-pressed', String(b.dataset[attr] === String(val)))); }
+  function ui() {
+    press('[data-mode]', 'mode', st.mode); press('[data-whale]', 'whale', st.whale); press('[data-var]', 'var', st.variation); press('[data-take]', 'take', st.take); press('[data-speed]', 'speed', st.speed);
+    $('row-whale').hidden = st.mode !== 'real';
+    $('row-var').hidden = $('row-take').hidden = st.mode !== 'res';
+    $('hint').textContent = st.mode === 'real' ? 'Whale numbers are caller labels within each recording of the dataset, not individual animals across recordings.'
+      : st.mode === 'res' ? (T && T.note ? T.note + ' ' : '') + 'Each variation and take is its own qrc-gen-v2 job from the same trained model.'
+      : 'The submitted WAV: 31 real codas from six labelled callers, then the reservoir continues from them.';
+    document.querySelectorAll('[data-take]').forEach(b => { b.disabled = st.mode === 'res' && !D.tracks['var_' + st.variation + (b.dataset.take === '2' ? '_s2' : '')]; });
+    $('play-txt').textContent = $('play2-txt').textContent = st.playing ? 'Pause' : 'Play';
+    $('play').setAttribute('aria-label', st.playing ? 'Pause' : 'Play');
+    $('play-ico').setAttribute('d', st.playing ? 'M2 1h4v12H2zM8 1h4v12H8z' : 'M2 1l11 6-11 6z');
+    $('play2-ico').setAttribute('d', st.playing ? 'M2 1h4v12H2zM8 1h4v12H8z' : 'M2 1l11 6-11 6z');
+  }
+
+  // ---- drawing ----
+  const tl = $('tl'), hc = $('hist'), g = tl.getContext('2d'), h = hc.getContext('2d');
+  // paper/ink palette, read from the brand tokens (fallbacks are the same values)
+  const css = getComputedStyle(document.documentElement), tok = (n, f) => (css.getPropertyValue(n) || '').trim() || f;
+  const COL = {ink: tok('--ink', '#19238E'), ink2: tok('--ink-2', '#545BA9'), ink3: tok('--ink-3', '#A1A4CE'), rule: tok('--rule', '#D3D3E6')};
+  const inkA = a => 'rgba(25,35,142,' + a + ')';
+  function fit(c) { const r = c.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2); const w = Math.round(r.width * dpr), hh = Math.round(r.height * dpr); if (c.width !== w || c.height !== hh) { c.width = w; c.height = hh; } return dpr; }
+  function draw() {
+    if (!T) return;
+    const t = now();
+    drawScene(t); drawTimeline(t); drawHist(t);           // the sea on top, the timeline and histogram in The data
+    // readouts (the stage and The data share one clock and one "now" line)
+    $('clock').innerHTML = $('clock2').innerHTML = `<b>${t.toFixed(1)} s</b> / ${T.dur.toFixed(1)} s`;
+    if (document.activeElement !== $('seek')) $('seek').value = t.toFixed(1);
+    let cur = null;
+    for (let i = lowerBound(T._starts, t - 4, v => v); i < T.ev.length && T.ev[i][0] <= t; i++) if (codaEnd(T.ev[i]) + 0.4 >= t) cur = T.ev[i];
+    if (cur) { const v = D.vocab[cur[1]]; $('now').innerHTML = $('now2').innerHTML = `Now: <b>${v.t}</b> · ${v.n} click${v.n > 1 ? 's' : ''} · ${LANE_NAME[cur[2]]}${cur[3] < 0 ? ' · played from the token prototype' : ' · recorded intervals'}`; }
+    else if (st.playing) $('now').textContent = $('now2').textContent = '…';
+  }
+  function tlGeom(W) { const narrow = W < 420, x0 = narrow ? 64 : 74, x1 = W - 8; return {narrow, x0, x1, span: narrow ? 8 : 12, head: x0 + (x1 - x0) * 0.72}; }
+  function drawTimeline(t) {
+    const dpr = fit(tl), W = tl.width / dpr, H = tl.height / dpr;
+    if (W < 10) return;
+    g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+    const {narrow, x0, x1, span, head} = tlGeom(W);
+    const px = s => head + (s - t) / span * (x1 - x0);
+    const laneH = (H - 26) / LANES.length, ly = l => 6 + laneH * (LANES.indexOf(l) + 0.5);
+    g.font = (narrow ? '500 9px' : '500 10px') + ' "IBM Plex Mono", monospace'; g.textBaseline = 'middle';
+    // the reservoir lane sits on a faint ink band so it reads apart from the whales
+    { const y = ly(0); g.fillStyle = inkA(.045); g.fillRect(0, y - laneH / 2, W, laneH); }
+    LANES.forEach(l => { const y = ly(l); g.fillStyle = l === 0 ? COL.ink : COL.ink2; g.fillText(LANE_NAME[l].toUpperCase(), 8, y);
+      g.strokeStyle = COL.rule; g.lineWidth = 1; g.beginPath(); g.moveTo(x0, y + .5); g.lineTo(x1, y + .5); g.stroke(); });
+    g.fillStyle = COL.rule; g.fillRect(x0 - 4, 4, 1, H - 26);
+    // seconds grid
+    g.textAlign = 'center';
+    for (let s = Math.max(0, Math.ceil(t - span)); s <= t + span; s++) { const x = px(s); if (x < x0 || x > x1) continue; g.fillStyle = COL.rule; g.globalAlpha = .7; g.fillRect(Math.round(x), 4, 1, H - 26); g.globalAlpha = 1; g.fillStyle = COL.ink2; if (s % 2 === 0) g.fillText(s + ' s', x, H - 10); }
+    g.globalAlpha = 1; g.textAlign = 'left';
+    // handoff marker
+    if (T.split != null) { const x = px(T.split); if (x > x0 && x < x1) { g.strokeStyle = COL.ink; g.setLineDash([4, 4]); g.beginPath(); g.moveTo(x, 4); g.lineTo(x, H - 22); g.stroke(); g.setLineDash([]); g.fillStyle = COL.ink; g.fillText(' RESERVOIR TAKES OVER', x + 2, 12); } }
+    // codas in view
+    const tMin = t - span * 0.75 - 3, tMax = t + span * 0.3;
+    let i = lowerBound(T._starts, tMin, v => v);
+    for (; i < T.ev.length && T.ev[i][0] < tMax; i++) {
+      const ev = T.ev[i], offs = clickOffsets(ev), y = ly(ev[2]), gen = ev[2] === 0;
+      const a = px(ev[0]), b = px(ev[0] + offs[offs.length - 1]);
+      if (b < x0 - 4 || a > x1) continue;
+      const sounded = ev[0] < t;
+      const cx = Math.max(a - 4, x0), cw = Math.max(b - a + 8, 8);
+      g.fillStyle = gen ? inkA(.12) : inkA(.06);
+      g.beginPath(); g.roundRect ? g.roundRect(cx, y - 9, cw, 18, 9) : g.rect(cx, y - 9, cw, 18); g.fill();
+      if (gen) { g.strokeStyle = inkA(.45); g.lineWidth = 1; g.stroke(); }
+      for (const o of offs) {
+        const x = px(ev[0] + o); if (x < x0 || x > x1) continue;
+        const done = ev[0] + o < t, age = t - (ev[0] + o);
+        g.fillStyle = gen ? COL.ink : COL.ink2; g.globalAlpha = done ? 1 : .3;
+        const hot = done && age < 0.12 && !reduce.matches && st.playing;
+        g.fillRect(x - (hot ? 1.5 : .75), y - (hot ? 13 : 8), hot ? 3 : 1.5, hot ? 26 : 16);
+      }
+      g.globalAlpha = sounded ? 1 : .45; g.fillStyle = gen ? COL.ink : COL.ink2;
+      if (a > x0) g.fillText(D.vocab[ev[1]].t, a, y - 15);
+      g.globalAlpha = 1;
+    }
+    // playhead
+    g.fillStyle = COL.ink; g.fillRect(head - 1, 2, 2, H - 24);
+  }
+
+  // ---- the scene: a side-on sea with one sperm whale per caller lane, a far pod for the other callers, and the
+  //      reservoir as a whale built from 12 qubit dots. Drawn on a low-resolution "art" canvas in the shared ink
+  //      palette, then scaled up by a whole number with smoothing off, so every pixel stays square and crisp.
+  //      What is data: which callers are in the track, and every click time (head light, ring, bubble dots).
+  //      What is decoration: swimming, bobbing, the boat, the squid, and the pattern on the 12 dots. ----
+  const SP = {}; Object.keys(SPRITES).forEach(k => { if (SPRITES[k].frames) SP[k] = InkSprite.make(SPRITES[k]); });
+  const FONT = SPRITES.font, PAL = InkSprite.PALETTE;
+  const scn = $('scene'), sg = scn.getContext('2d'), art = document.createElement('canvas');
+  let ag = art.getContext('2d');
+  let U = 3, AW = 0, AH = 0, actors = [], squidAt = -99, inView = true;
+  const RING = 0.7, LIT = 0.09, PHASE = {1: 0, 2: 1.7, 3: 3.1, 4: 4.4, 5: 0.6, 0: 2.3};
+  //            lane: [x, y as fractions of the sea, facing +1 right / -1 left]
+  const LAYOUT = {
+    wide:   {1: [.38, .34, 1], 2: [.71, .28, -1], 3: [.20, .63, 1], 4: [.51, .63, -1], 5: [.90, .55, -1], 0: [.78, .83, -1], squid: [.035, .80]},
+    narrow: {1: [.36, .27, 1], 2: [.70, .42, -1], 3: [.32, .57, 1], 4: [.70, .72, -1], 5: [.80, .145, -1], 0: [.52, .895, -1], squid: [.04, .85]},
+  };
+  const wall = () => performance.now() / 1000;
+  const calm = () => reduce.matches;
+  function fitScene() {
+    const r = scn.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+    if (r.width < 10) return false;
+    U = Math.max(1, Math.round((r.width < 480 ? 2 : r.width < 880 ? 3 : 4) * dpr));
+    const dw = Math.round(r.width * dpr), dh = Math.round(r.height * dpr);
+    if (scn.width !== dw || scn.height !== dh) { scn.width = dw; scn.height = dh; }
+    AW = Math.floor(dw / U); AH = Math.floor(dh / U);
+    if (art.width !== AW || art.height !== AH) { art.width = AW; art.height = AH; }
+    return true;
+  }
+  const rect = (x, y, w, h, c) => { ag.fillStyle = PAL[c]; ag.fillRect(x, y, w, h); };
+  function put(name, f, x, y, flip) {            // top-left at whole art pixels; odd sizes get a half-pixel nudge
+    const sp = SP[name], w = sp.w, h = sp.h;
+    ag.save(); ag.translate(w & 1 ? .5 : 0, h & 1 ? .5 : 0);
+    InkSprite.draw(ag, sp, f, x + (w - (w & 1)) / 2, y + (h - (h & 1)) / 2, 1, {flipX: !!flip});
+    ag.restore();
+  }
+  const textW = s => s.length * (FONT.w + 1) - 1;
+  function text(s, x, y, c, ctx, k) {             // 3x5 pixel font from sprites.json, k device pixels per font pixel
+    ctx = ctx || ag; k = k || 1; ctx.fillStyle = PAL[c]; s = s.toUpperCase();
+    for (let i = 0; i < s.length; i++) {
+      const gi = FONT.chars.indexOf(s[i]); if (gi < 0) continue;
+      for (let j = 0; j < FONT.h; j++) for (let q = 0; q < FONT.w; q++) if (FONT.rows[j][gi * FONT.w + q] !== '.') ctx.fillRect(x + (i * (FONT.w + 1) + q) * k, y + j * k, k, k);
+    }
+  }
+  // a coda bubble: the token, then one dot per click spaced by its real timing; dots fill as clicks sound
+  function bubbleSize(label, n) { const big = n > 9, RW = big ? 32 : Math.max(12, n * 5), lw = textW(label); return {big, RW, lw, bw: 2 + lw + 3 + RW + 2, bh: 9}; }
+  function drawBubble(bx0, by0, label, offs, done, tx) {
+    const n = offs.length, tot = offs[n - 1] || 1, {big, RW, lw, bw, bh} = bubbleSize(label, n);
+    rect(bx0 + 1, by0, bw - 2, 1, 'K'); rect(bx0 + 1, by0 + bh - 1, bw - 2, 1, 'K'); rect(bx0, by0 + 1, 1, bh - 2, 'K'); rect(bx0 + bw - 1, by0 + 1, 1, bh - 2, 'K');
+    rect(bx0 + 1, by0 + 1, bw - 2, bh - 2, 'W');
+    tx = clamp(tx, bx0 + 2, bx0 + bw - 3);
+    rect(tx, by0 + bh - 1, 1, 1, 'W'); rect(tx - 1, by0 + bh, 1, 1, 'K'); rect(tx, by0 + bh, 1, 1, 'W'); rect(tx + 1, by0 + bh, 1, 1, 'K'); rect(tx, by0 + bh + 1, 1, 1, 'K');
+    text(label, bx0 + 2, by0 + 2, 'K');
+    const x0 = bx0 + 2 + lw + 3;
+    offs.forEach((o, k) => {
+      const xx = x0 + Math.round(o / tot * (RW - (big ? 1 : 2)));
+      if (big) rect(xx, by0 + 2, 1, 5, done(k) ? 'K' : 'L'); else rect(xx, by0 + 3, 2, 3, done(k) ? 'K' : 'L');
+    });
+  }
+  function arc(ox, oy, r, dir, c) {               // a forward-facing pixel arc: the sound of one click
+    ag.fillStyle = PAL[c];
+    const step = 0.8 / Math.max(r, 1);
+    for (let a = -0.95; a <= 0.95; a += step) ag.fillRect(ox + dir * Math.round(r * Math.cos(a)), oy + Math.round(r * Math.sin(a)), 1, 1);
+  }
+  const hash = n => { n = (n ^ 61) ^ (n >>> 16); n = n + (n << 3); n = n ^ (n >>> 4); n = Math.imul(n, 0x27d4eb2d); return (n ^ (n >>> 15)) >>> 0; };
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+  function drawScene(t) {
+    if (!fitScene()) return;
+    const w = wall(), still = calm(), surf = Math.max(9, Math.round(AH * .1));
+    const L = LAYOUT[AW / AH < 1.4 ? 'narrow' : 'wide'];
+    // sky, water, sun-shafts, drifting specks, the surface
+    rect(0, 0, AW, surf, 'W'); rect(0, surf, AW, AH - surf, 'T');
+    for (let k = 0; k < 22; k++) {
+      const hx = hash(k + 7), hy = hash(k + 101), drift = still ? 0 : w * (1.2 + (hx % 5) * .25);
+      const x = (hx % AW), y = surf + 2 + Math.floor((hy % 997) / 997 * (AH - surf - 3) + drift) % (AH - surf - 3);
+      rect(x, y, 1, 1, k % 3 ? 'L' : 'W');
+    }
+    const sway = still ? 0 : Math.floor(w * 4);
+    for (let x = 0; x < AW; x++) { const up = ((x + sway) % 12) < 6; rect(x, surf - (up ? 1 : 0), 1, 1, 'B'); if (up) rect(x, surf, 1, 1, 'B'); }
+    for (let k = 0; k * 23 < AW; k++) rect((k * 23 + (hash(k + 3) % 11) + (sway >> 2)) % AW, surf + 2 + (k % 3), 3 + (k % 2) * 2, 1, 'W');   // glints under the surface
+
+    // what the track says right now: rings, lit heads, bubbles, the last click per lane (all real click times)
+    const rings = [], lastClick = {}, bubble = {};
+    let anyLit = false;
+    for (let i = lowerBound(T._starts, t - 3.6, v => v); i < T.ev.length && T.ev[i][0] <= t; i++) {
+      const ev = T.ev[i], offs = clickOffsets(ev), l = ev[2], end = ev[0] + offs[offs.length - 1];
+      if (t <= end + 0.8) bubble[l] = {ev, offs};
+      offs.forEach((o, k) => {
+        const c = ev[0] + o; if (c > t) return;
+        if (t - c < RING) rings.push([l, t - c]);
+        if (t - c < LIT) anyLit = true;
+        if (!lastClick[l] || c >= lastClick[l].c) lastClick[l] = {c, i, k};
+      });
+    }
+    const litNow = l => lastClick[l] && t - lastClick[l].c < LIT;
+
+    // the research boat and its hydrophone (it blinks whenever any click sounds)
+    const bob = still ? 0 : Math.round(Math.sin(w * 1.4));
+    const bx = Math.max(2, Math.round(AW * .03)), by = surf - 10 + bob;
+    const hx = bx + SPRITES.boat.winch[0], hy = surf + Math.round((AH - surf) * .26);
+    put('boat', 0, bx, by); rect(hx, by + SPRITES.boat.winch[1] + 1, 1, hy - by - SPRITES.boat.winch[1] - 1, 'B');
+    put(anyLit ? 'phoneLit' : 'phone', 0, hx - 1, hy);
+    actors = [{kind: 'boat', x: bx, y: by, w: SP.boat.w, h: SP.boat.h}];
+
+    // the squid: tap it and it inks and jets away (decoration)
+    { const age = w - squidAt, base = L.squid; let sx = Math.round(base[0] * AW), sy = Math.round(base[1] * AH);
+      if (age < 1.4) {
+        const r = Math.round(2 + age * 9), c = age < .5 ? 'K' : age < .9 ? 'B' : 'L';
+        for (let k = 0; k < 5; k++) { const a = k * 1.3 + 0.4, cx = sx + 4 + Math.round(Math.cos(a) * r * .6), cy = sy + 6 + Math.round(Math.sin(a) * r * .5); for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) if (dx * dx + dy * dy <= 5) rect(cx + dx, cy + dy, 1, 1, c); }
+      }
+      if (still ? age > 3 : age > 4.5) {
+        const back = still ? 0 : Math.max(0, Math.round((5.5 - age) * 14));
+        put('squid', still ? 0 : InkSprite.frameAt(SP.squid, w), sx, sy + back);
+        actors.push({kind: 'squid', x: sx, y: sy, w: SP.squid.w, h: SP.squid.h});
+      } else if (!still && age < 1.4) put('squid', 1, sx + Math.round(age * 26), sy - Math.round(age * 30));
+    }
+
+    // the cast, back to front
+    const place = l => { const p = L[l]; return [Math.round(p[0] * AW), Math.round(p[1] * AH), p[2]]; };
+    const on = l => T._lanes.has(l);
+    const labels = [], bubbles = [];
+    // other callers: a small far pod
+    { const [cx, cy, face] = place(5), act = on(5), lit = act && litNow(5);
+      const pods = [[0, 0], [-11, 6], [5, 9]];
+      pods.forEach(([dx, dy], k) => {
+        const f = still ? 0 : InkSprite.frameAt(SP.pod, w + k * .7), b = still ? 0 : Math.round(Math.sin(w * .9 + k * 2));
+        put(act ? (lit && k === 0 ? 'podLit' : 'pod') : 'podGhost', f, cx - 9 + dx, cy - 3 + dy + b, face < 0);
+      });
+      const nose = [face > 0 ? cx - 9 + 17 : cx - 9, cy - 3 + 3];
+      actors.push({kind: 'whale', lane: 5, x: cx - 22, y: cy - 4, w: 34, h: 18, nose, face, act});
+      labels.push([act ? 'OTHER CALLERS' : 'OTHERS', cx, cy + 15, act ? 'K' : 'B', 0]);
+    }
+    for (const l of [3, 4, 1, 2]) {
+      const [cx, cy, face] = place(l), act = on(l), sp = SP.whale;
+      const b = still ? 0 : Math.round(Math.sin(w * .8 + PHASE[l]));
+      const x = cx - (sp.w >> 1), y = cy - (sp.h >> 1) + b;
+      const f = still ? 0 : InkSprite.frameAt(sp, w + PHASE[l]);
+      put(act ? (litNow(l) ? 'whaleLit' : 'whale') : 'whaleGhost', f, x, y, face < 0);
+      const nose = [face > 0 ? x + SPRITES.whale.nose[0] + 1 : x + sp.w - 2 - SPRITES.whale.nose[0], y + SPRITES.whale.nose[1]];
+      actors.push({kind: 'whale', lane: l, x, y, w: sp.w, h: sp.h, nose, face, act});
+      labels.push(['WHALE ' + l, cx, y + sp.h, act ? 'K' : 'B', 0]);
+    }
+    // the reservoir: asleep when it is not in this track, listening before the handoff, awake when it speaks
+    { const [cx, cy, face] = place(0), sp = SP.qwhale, act = on(0);
+      const awake = act && (T.split == null || t >= T.split);
+      const lit = awake && litNow(0);
+      const b = still ? 0 : Math.round(Math.sin(w * .7 + PHASE[0]));
+      const x = cx - (sp.w >> 1) - (lit ? face : 0), y = cy - (sp.h >> 1) + b;
+      const f = still ? 0 : InkSprite.frameAt(sp, w + PHASE[0]);
+      put(awake ? 'qwhaleLit' : 'qwhale', f, x, y, face < 0);
+      const lc = lastClick[0], pattern = lc ? hash(lc.i * 64 + lc.k + 1) : 0;
+      SPRITES.qwhale.sites.forEach(([qx, qy], k) => {
+        const px = face > 0 ? x + qx - 1 : x + sp.w - 1 - qx - 1;
+        put(!awake ? 'qoff' : (lc && t - lc.c < 0.6 && (pattern >> k) & 1) ? 'q1' : 'q0', 0, px, y + qy - 1);
+      });
+      const nose = [face > 0 ? x + SPRITES.qwhale.nose[0] + 1 : x + sp.w - 2 - SPRITES.qwhale.nose[0], y + SPRITES.qwhale.nose[1]];
+      actors.push({kind: 'whale', lane: 0, x, y, w: sp.w, h: sp.h, nose, face, act});
+      if (!awake) put('zz', 0, face > 0 ? x + sp.w - 6 : x + 2, y - 4 - ((still ? 0 : Math.floor(w * 1.5)) % 2));
+      if (awake && T.split != null && t - T.split < 2.5) put('bang', 0, face > 0 ? x + sp.w - 4 : x + 4, y - 7);
+      labels.push(['RESERVOIR (12 QUBITS)', cx, y + sp.h, act ? 'K' : 'B', 0]);
+      if (!act) labels.push(['NOT IN THIS TRACK', cx, y + sp.h, 'B', 1]);
+      else if (!awake) { const heard = lowerBound(T._starts, t + 1e-9, v => v); labels.push(['WARM-UP: ' + Math.min(heard, T.real_n) + ' OF ' + T.real_n + ' REAL CODAS', cx, y + sp.h, 'B', 1]); }
+    }
+
+    // rings: one forward arc per click, growing and fading through the ink tones
+    for (const [l, age] of rings) {
+      const a = actors.find(o => o.lane === l); if (!a) continue;
+      if (still) { if (age < LIT * 2) arc(a.nose[0], a.nose[1], 3, a.face, 'K'); continue; }
+      arc(a.nose[0], a.nose[1], Math.round(2 + age * 36), a.face, age < .14 ? 'K' : age < .34 ? 'B' : 'L');
+    }
+    // labels under each caller
+    for (const l of [5, 3, 4, 1, 2, 0]) {
+      const bb = bubble[l], a = actors.find(o => o.lane === l); if (!bb || !a) continue;
+      const label = D.vocab[bb.ev[1]].t, {bw, bh} = bubbleSize(label, bb.offs.length);
+      const hxh = a.lane === 5 ? a.nose[0] : a.face > 0 ? a.x + a.w - 9 : a.x + 8;
+      const bx0 = clamp(a.face > 0 ? hxh - 6 : hxh - bw + 6, 1, AW - bw - 1), by0 = Math.max(surf + 2, a.y + 1 - bh - 3);
+      drawBubble(bx0, by0, label, bb.offs, k => bb.ev[0] + bb.offs[k] <= t, hxh);
+    }
+    // the handoff moment, at the real split time of the submitted track
+    if (T.split != null && t >= T.split && t - T.split < 3.5) {
+      const s = 'THE RESERVOIR TAKES OVER', tw = textW(s), x = Math.round((AW - tw) / 2), y = surf + 3;
+      rect(x - 3, y - 2, tw + 6, 9, 'K'); text(s, x, y, 'W');
+    }
+    // blit at a whole-number scale, smoothing off
+    sg.setTransform(1, 0, 0, 1, 0, 0); sg.imageSmoothingEnabled = false;
+    sg.fillStyle = PAL.T; sg.fillRect(0, 0, scn.width, scn.height);
+    sg.drawImage(art, 0, 0, AW * U, AH * U);
+    // labels sit on top at a finer pixel scale, so they read as captions rather than characters
+    const TU = U >= 3 ? Math.round(U * 2 / 3) : U, lh = 7 * TU;
+    for (const [s, cx, y, c, line] of labels) {
+      const tw = textW(s) * TU, x = clamp(Math.round(cx * U - tw / 2), TU, scn.width - tw - TU);
+      text(s, x, Math.min(y * U + line * lh, scn.height - 6 * TU), c, sg, TU);
+    }
+  }
+  // hit-testing on the art grid: tap a whale to hear only its codas
+  function actorAt(e) {
+    const r = scn.getBoundingClientRect(), ax = (e.clientX - r.left) * (scn.width / r.width) / U, ay = (e.clientY - r.top) * (scn.height / r.height) / U;
+    for (let k = actors.length - 1; k >= 0; k--) { const a = actors[k]; if (ax >= a.x - 2 && ax <= a.x + a.w + 2 && ay >= a.y - 3 && ay <= a.y + a.h + 6) return a; }
+    return null;
+  }
+  const listen = () => { if (!st.playing) play(); };   // a tap on a caller is a request to hear it
+  function actOn(a) {
+    if (!a) { st.playing ? pause() : play(); return; }   // open water: play or pause, like Space on the sea
+    if (a.kind === 'squid') { squidAt = wall(); toast('Inked! Sperm whales hunt squid; codas are social calls.'); kickIdle(); if (calm()) { draw(); setTimeout(draw, 3100); } return; }
+    if (a.kind === 'boat') { select({mode: 'handoff'}); toast('The submitted track: real codas, then the reservoir'); listen(); return; }
+    if (a.lane === 0) { select({mode: 'res'}); toast('The reservoir: variation ' + st.variation + ', take ' + st.take); listen(); return; }
+    if (a.lane === 5) { select({mode: 'real', whale: 'all'}); toast('All real callers'); listen(); return; }
+    const k = String(a.lane), back = st.mode === 'real' && st.whale === k;
+    select({mode: 'real', whale: back ? 'all' : k}); toast(back ? 'All real callers' : 'Caller label ' + k + ' only'); listen();
+  }
+  scn.addEventListener('click', e => actOn(actorAt(e)));
+  scn.addEventListener('pointermove', e => scn.classList.toggle('hand', !!actorAt(e)));
+  scn.addEventListener('keydown', e => {
+    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); st.playing ? pause() : play(); }
+    else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); seek(now() + (e.key === 'ArrowRight' ? 5 : -5)); }
+    else if (/^[1-4]$/.test(e.key)) actOn(actors.find(a => a.lane === +e.key));
+    else if (/^[aA]$/.test(e.key)) actOn(actors.find(a => a.lane === 5));
+    else if (/^[rR]$/.test(e.key)) actOn(actors.find(a => a.lane === 0));
+    else if (/^[hH]$/.test(e.key)) actOn(actors.find(a => a.kind === 'boat'));
+  });
+  // a gentle idle loop (about 12 frames a second) only while the sea is on screen, paused, and motion is allowed
+  let idleRaf = null, idleLast = 0;
+  function idle(ts) {
+    idleRaf = null;
+    if (st.playing || !inView || document.hidden || calm()) return;
+    if (ts - idleLast > 80) { idleLast = ts; drawScene(now()); }
+    idleRaf = requestAnimationFrame(idle);
+  }
+  function kickIdle() { if (!idleRaf && !st.playing) idleRaf = requestAnimationFrame(idle); }
+  if ('IntersectionObserver' in window) new IntersectionObserver(es => { inView = es[0].isIntersecting; if (inView) kickIdle(); }).observe(scn);
+  // key icons, drawn from the same sprites
+  function icon(id, w, h, paint) {               // draw a key icon on its own little art canvas, shown at 1x or 2x
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    const keep = ag; ag = c.getContext('2d'); try { paint(); } finally { ag = keep; }
+    const im = $(id); im.src = c.toDataURL('image/png'); im.dataset.w = w; im.dataset.h = h;
+  }
+  function sizeIcons() { const k = innerWidth < 520 ? 1 : 2; document.querySelectorAll('.key img').forEach(im => { im.style.width = im.dataset.w * k + 'px'; im.style.height = im.dataset.h * k + 'px'; }); }
+  try {
+    icon('ic-whale', SP.whale.w, SP.whale.h, () => put('whaleLit', 0, 0, 0));
+    icon('ic-res', SP.qwhale.w, SP.qwhale.h, () => { put('qwhaleLit', 0, 0, 0); SPRITES.qwhale.sites.forEach(([qx, qy], k) => put((0x5a3 >> k) & 1 ? 'q1' : 'q0', 0, qx - 1, qy - 1)); });
+    const i5 = D.vocab.findIndex(v => v.t === '5A'), o5 = clickOffsets([0, i5, 0, -1]), b5 = bubbleSize('5A', o5.length);
+    icon('ic-bub', b5.bw + 1, b5.bh + 2, () => drawBubble(0, 0, '5A', o5, k => k < 3, 5));
+    sizeIcons(); addEventListener('resize', sizeIcons);
+  } catch (e) {}
+
+  let histKey = '', histPick = -1;                       // histPick: the bar being read (index into ORDER), -1 none
+  function drawHist(t) {
+    const k = lowerBound(T._starts, t, v => v);          // codas whose first click has sounded
+    const key = T.id + ':' + k + ':' + hc.clientWidth + ':' + histPick;
+    if (key === histKey) return; histKey = key;
+    const s = seqStats(T.ev.slice(0, k).map(e => e[1]), NV, PAIRS);
+    const full = T._full || (T._full = seqStats(T.ev.map(e => e[1]), NV, PAIRS));
+    const dpr = fit(hc), W = hc.width / dpr, H = hc.height / dpr;
+    h.setTransform(dpr, 0, 0, dpr, 0, 0); h.clearRect(0, 0, W, H);
+    const pad = 8, mid = H * 0.44, bw = (W - 2 * pad) / NV, top = mid - 10, bot = H - mid - 34;
+    h.font = '500 9px "IBM Plex Mono", monospace'; h.textAlign = 'center'; h.textBaseline = 'top';
+    const col = T.kind === 'real' ? COL.ink2 : COL.ink;
+    ORDER.forEach((vi, j) => {
+      const x = pad + j * bw, w = Math.max(bw - 2, 1);
+      const up = Math.sqrt(CORPUS[vi]) * top; h.fillStyle = COL.ink3; h.globalAlpha = 1; h.fillRect(x + 1, mid - up, w, up);
+      const dn = Math.sqrt(full.share[vi]) * bot; h.strokeStyle = col; h.lineWidth = 1; if (dn > 0) h.strokeRect(x + 1.5, mid + 1.5, w - 1, dn - 1);
+      const sf = Math.sqrt(s.share[vi]) * bot; h.fillStyle = col; h.fillRect(x + 1, mid + 1, w, sf);
+      if (j === histPick) { h.strokeStyle = COL.ink; h.lineWidth = 1; h.setLineDash([2, 2]); h.strokeRect(x + .5, 2.5, bw - 1, H - 5); h.setLineDash([]); }
+      if (bw >= 9 || j < 8 || j === histPick) { h.save(); h.translate(x + bw / 2, H - 30); h.rotate(-Math.PI / 2); h.textAlign = 'right'; h.textBaseline = 'middle'; h.fillStyle = COL.ink2; h.globalAlpha = 1; h.fillText(D.vocab[vi].t, 0, 0); h.restore(); }
+    });
+    h.fillStyle = COL.ink; h.fillRect(pad, Math.round(mid), W - 2 * pad, 1);
+    h.globalAlpha = 1; h.textAlign = 'left'; h.fillStyle = COL.ink2; h.textBaseline = 'top';
+    h.textAlign = 'right'; h.fillText('REAL CORPUS ↑', W - pad, 2); h.textBaseline = 'bottom'; h.fillText('THIS TRACK ↓', W - pad, H - 2);
+    const R = D.realStats;
+    $('stats').innerHTML = s.n ? `<span>codas played <b>${s.n}</b></span><span>distance to real mix <b>${tvd(s.share, CORPUS).toFixed(2)}</b></span><span>same-type repeats <b>${(100 * s.repeat).toFixed(0)}%</b> (real ${(100 * R.repeat).toFixed(0)}%)</span><span>pairs unseen in real data <b>${(100 * s.unseen).toFixed(1)}%</b></span><span>distinct tokens <b>${s.distinct}</b></span>`
+      : '<span>Stats fill in as codas play.</span>';
+    if (histPick >= 0) {
+      const vi = ORDER[histPick], v = D.vocab[vi], fmt = n => n.toLocaleString('en');
+      $('hist-pick').innerHTML = `Token <b>${v.t}</b> · ${v.n} click${v.n > 1 ? 's' : ''} · real corpus <b>${(100 * CORPUS[vi]).toFixed(1)}%</b> (${fmt(v.c)} of ${fmt(D.total)} codas) · this track so far <b>${s.counts[vi]}</b> of ${s.n} · whole track ${full.counts[vi]} of ${full.n} (${(100 * full.share[vi]).toFixed(1)}%)`;
+    } else $('hist-pick').textContent = 'Tap a bar, or focus the chart and use the arrow keys, to read its token.';
+  }
+  function histBarAt(e) { const r = hc.getBoundingClientRect(), bw = (r.width - 16) / NV, j = Math.floor((e.clientX - r.left - 8) / bw); return j >= 0 && j < NV ? j : -1; }
+  function pickBar(j) { histPick = j; histKey = ''; drawHist(now()); }
+  hc.addEventListener('pointerdown', e => { const j = histBarAt(e); pickBar(j === histPick ? -1 : j); });
+  hc.addEventListener('pointermove', e => { if (!e.buttons) return; const j = histBarAt(e); if (j >= 0 && j !== histPick) pickBar(j); });
+  hc.addEventListener('keydown', e => {
+    const k = e.key; if (!['ArrowLeft', 'ArrowRight', 'Home', 'End', 'Escape'].includes(k)) return; e.preventDefault();
+    pickBar(k === 'Escape' ? -1 : k === 'Home' ? 0 : k === 'End' ? NV - 1 : histPick < 0 ? 0 : clamp(histPick + (k === 'ArrowRight' ? 1 : -1), 0, NV - 1));
+  });
+
+  // ---- controls ----
+  const toast = msg => { const el = $('toast'); el.textContent = msg; el.classList.add('on'); clearTimeout(el._h); el._h = setTimeout(() => el.classList.remove('on'), 1800); };
+  $('play').addEventListener('click', () => st.playing ? pause() : play());
+  $('play2').addEventListener('click', () => st.playing ? pause() : play());   // The data's own Play: the same instrument
+  $('restart').addEventListener('click', () => seek(0));
+  // Listen (Jobs and credits): load that job's track into the instrument, bring the sea into view, and play it
+  document.querySelectorAll('[data-listen]').forEach(b => b.addEventListener('click', () => {
+    const r = JOBROWS.find(x => x.id === b.dataset.listen); if (!r) return;
+    select(r.s); toast(D.tracks[r.id].label);
+    try { $('stage').scrollIntoView({behavior: calm() ? 'auto' : 'smooth', block: 'start'}); } catch (e) {}
+    listen();
+  }));
+  document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => select({mode: b.dataset.mode})));
+  document.querySelectorAll('[data-whale]').forEach(b => b.addEventListener('click', () => select({whale: b.dataset.whale})));
+  document.querySelectorAll('[data-var]').forEach(b => b.addEventListener('click', () => select({variation: +b.dataset.var})));
+  document.querySelectorAll('[data-take]').forEach(b => b.addEventListener('click', () => select({take: +b.dataset.take})));
+  document.querySelectorAll('[data-speed]').forEach(b => b.addEventListener('click', () => { const was = st.playing; if (was) pause(); st.speed = +b.dataset.speed; ui(); if (was) play(); }));
+  $('seek').addEventListener('input', e => { if (st.playing) pause(); st.pos = +e.target.value; draw(); });
+  tl.addEventListener('keydown', e => {
+    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); st.playing ? pause() : play(); }
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); seek(now() + (e.key === 'ArrowRight' ? 5 : -5)); }
+  });
+  let drag = null;
+  tl.addEventListener('pointerdown', e => { drag = {x: e.clientX, t: now(), moved: false, edge: false}; try { tl.setPointerCapture(e.pointerId); } catch (err) {} });
+  tl.addEventListener('pointermove', e => {
+    if (!drag || (!drag.moved && Math.abs(e.clientX - drag.x) <= 3)) return;
+    drag.moved = true;                               // grab the tape: dragging left moves forward in time
+    const G = tlGeom(tl.getBoundingClientRect().width), want = drag.t - (e.clientX - drag.x) / (G.x1 - G.x0) * G.span;
+    if (st.playing) pause();
+    st.pos = Math.max(0, Math.min(T.dur, want)); draw();
+    if (!drag.edge && (want < -0.5 || want > T.dur + 0.5)) { drag.edge = true; toast(want < 0 ? 'Start of the track: drag left to move forward in time' : 'End of the track: drag right to go back'); }
+  });
+  tl.addEventListener('pointerup', e => {
+    if (drag && !drag.moved) {                       // a tap: jump to the moment under the pointer
+      const r = tl.getBoundingClientRect(), G = tlGeom(r.width), x = e.clientX - r.left;
+      if (x >= G.x0 - 4) seek(drag.t + (x - G.head) / (G.x1 - G.x0) * G.span);
+    }
+    drag = null;
+  });
+  tl.addEventListener('pointercancel', () => { drag = null; });
+  $('share').addEventListener('click', async () => {
+    history.replaceState(null, '', '#' + encodeHash(st, now()));
+    try { await navigator.clipboard.writeText(location.href); toast('Link copied'); } catch (e) { toast('Copy failed: the link is in your address bar'); }
+  });
+  // ---- the submitted WAV (its MP3 copy), played by an <audio> element (preload none: nothing loads until Play) ----
+  const H0 = D.tracks.handoff, H0C = flatten(H0), ws = wavStrip.getContext('2d');
+  let wavRaf = null;
+  const wavDur = () => (isFinite(wav.duration) && wav.duration > 0) ? wav.duration : (D.wavSeconds || H0.dur);
+  function wavUi() {
+    const on = !wav.paused, mid = !on && wav.currentTime > 0.05 && !wav.ended;
+    $('wav-txt').textContent = on ? 'Pause the WAV' : mid ? 'Resume the WAV' : 'Play the WAV';   // the visible label is the accessible name
+    $('wav-ico').setAttribute('d', on ? 'M2 1h4v12H2zM8 1h4v12H8z' : 'M2 1l11 6-11 6z');
+  }
+  function drawWav() {
+    const dpr = fit(wavStrip), W = wavStrip.width / dpr, Hh = wavStrip.height / dpr;
+    ws.setTransform(dpr, 0, 0, dpr, 0, 0); ws.clearRect(0, 0, W, Hh);
+    const dur = wavDur(), t = Math.min(wav.currentTime || 0, dur), pad = 8, x = s => pad + s / dur * (W - 2 * pad);
+    const rowR = [22, Hh / 2 + 4], rowG = [Hh / 2 + 10, Hh - 8];           // [top, bottom] of the real and reservoir rows
+    ws.fillStyle = inkA(.07); ws.fillRect(pad, 0, Math.max(0, x(t) - pad), Hh);
+    ws.fillStyle = COL.rule; ws.fillRect(pad, Math.round(Hh / 2 + 7), W - 2 * pad, 1);
+    for (const [ct, ei] of H0C) {
+      const gen = H0.ev[ei][2] === 0, r = gen ? rowG : rowR;
+      ws.fillStyle = gen ? COL.ink : COL.ink2; ws.globalAlpha = ct <= t ? 1 : .35;
+      ws.fillRect(Math.round(x(ct)), r[0], 1, r[1] - r[0]);
+    }
+    ws.globalAlpha = 1;
+    ws.font = '500 9px "IBM Plex Mono", monospace'; ws.textBaseline = 'top'; ws.textAlign = 'left';
+    ws.fillStyle = COL.ink2; ws.fillText(`REAL · ${H0.real_n} CODAS`, pad, 6);
+    if (H0.split != null) {
+      const xs = Math.round(x(H0.split)) + .5;
+      ws.strokeStyle = COL.ink; ws.lineWidth = 1; ws.setLineDash([3, 3]); ws.beginPath(); ws.moveTo(xs, 4); ws.lineTo(xs, Hh - 4); ws.stroke(); ws.setLineDash([]);
+      ws.fillStyle = COL.ink; ws.fillText(`RESERVOIR · ${H0.gen_n} CODAS`, xs + 5, 6);
+    }
+    ws.fillStyle = COL.ink; ws.fillRect(Math.round(x(t)) - 1, 18, 2, Hh - 18);            // playhead stays below the labels
+    $('wav-clock').innerHTML = `<b>${t.toFixed(1)} s</b> / ${dur.toFixed(1)} s`;
+    if (document.activeElement !== $('wav-seek')) $('wav-seek').value = t.toFixed(1);
+  }
+  function wavSeek(t) {
+    t = Math.max(0, Math.min(wavDur(), t));
+    const sk = wav.seekable; let ok = wav.readyState === 0;   // before loading, the browser keeps it as the start position
+    for (let i = 0; i < sk.length; i++) if (t >= sk.start(i) - 0.05 && t <= sk.end(i) + 0.05) ok = true;
+    try { wav.currentTime = t; } catch (e) {}
+    if (!ok) toast('This host cannot jump inside the audio file. Use Stop and Play, or the instrument above.');
+    drawWav();
+  }
+  function wavLoop() { drawWav(); wavRaf = wav.paused ? null : requestAnimationFrame(wavLoop); }
+  $('wav-play').addEventListener('click', () => {
+    if (!wav.paused) { wav.pause(); return; }
+    pause();                                         // the instrument yields to the WAV player
+    if (wav.ended) wav.currentTime = 0;
+    const p = wav.play(); if (p && p.catch) p.catch(() => toast('Could not start the audio file'));
+  });
+  $('wav-stop').addEventListener('click', () => { wav.pause(); try { wav.currentTime = 0; } catch (e) {} wavUi(); drawWav(); });
+  wav.addEventListener('play', () => { wavUi(); cancelAnimationFrame(wavRaf); wavLoop(); });
+  wav.addEventListener('pause', () => { wavUi(); drawWav(); });
+  wav.addEventListener('ended', () => { wavUi(); drawWav(); });
+  wav.addEventListener('loadedmetadata', () => { $('wav-seek').max = wavDur().toFixed(1); drawWav(); });
+  wav.addEventListener('seeked', () => { if (wav.paused) { wavUi(); drawWav(); } });
+  wav.addEventListener('error', () => toast('The audio file failed to load'));
+  $('wav-seek').addEventListener('input', e => wavSeek(+e.target.value));
+  wavStrip.addEventListener('pointerdown', e => {
+    const r = wavStrip.getBoundingClientRect(), f = Math.max(0, Math.min(1, (e.clientX - r.left - 8) / (r.width - 16)));
+    wavSeek(f * wavDur());
+  });
+  $('wav-seek').max = wavDur().toFixed(1);
+
+  addEventListener('resize', () => { histKey = ''; draw(); drawWav(); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); else kickIdle(); });
+
+  addEventListener('hashchange', () => {
+    const hs = decodeHash(location.hash); if (!hs || !D.tracks[trackId(resolve(hs.s, D.tracks))]) return;
+    select(hs.s); seek(Math.min(hs.pos, T.dur));
+  });
+  const fromHash = decodeHash(location.hash);
+  if (fromHash) { Object.assign(st, resolve(fromHash.s, D.tracks)); if (!D.tracks[trackId(st)]) Object.assign(st, {mode: 'handoff', whale: 'all', variation: 1, take: 1}); load(); st.pos = Math.min(fromHash.pos, T.dur); }
+  else load();
+  draw(); drawWav(); wavUi(); kickIdle();
+})();
+</script>

@@ -1,0 +1,1653 @@
+<title>The Quantum Nose Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+/*BRAND*/
+/* Layout: Plate I (an anatomical plate of the nose, with pixel-art odorant molecules) is the hero; the spectral
+   roll is one click away behind "Data". Plate II zooms to the receptor. Brand: paper ground, one ultramarine ink,
+   hairline rules, square panels, pill buttons. Sprites use the shared ink palette (common/SPRITES.md). */
+.wrap{max-width:78rem;margin-inline:auto}
+.hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:clamp(1.25rem,3vw,2.5rem);align-items:start;padding-block:2rem 1rem}
+.left{display:grid;gap:1rem;min-width:0}
+.stage{position:relative;overflow:hidden;border:1px solid var(--ink);background:var(--paper);display:grid}
+.stage-top{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:space-between;align-items:center;padding:.8rem .8rem .6rem}
+.molname{font:400 1.45rem/1.1 var(--display);letter-spacing:-.015em}
+.molname small{display:block;font:500 .7rem/1.5 var(--mono);color:var(--ink-2);letter-spacing:.08em;text-transform:uppercase}
+.molname .odour{display:block;margin-top:.3rem;font:400 .82rem/1.35 var(--body);color:var(--ink-2);letter-spacing:0;text-transform:none;max-width:34ch}
+.molname .odour b{font-weight:500;color:var(--ink)}
+.molname .nc{text-transform:none}
+.platebar{display:flex;flex-wrap:wrap;gap:.5rem 1rem;justify-content:space-between;align-items:center;padding:.45rem .8rem;border-top:1px solid var(--ink);border-bottom:1px solid var(--rule);background:var(--panel-2)}
+.platebar .label b{color:var(--ink);font-weight:500}
+.platebar .seg button{padding:.45rem .85rem}
+.view[hidden]{display:none}
+#v-key{border-top:1px solid var(--ink)}
+.keyhead{padding:.7rem .8rem 0}
+.fig-wrap{position:relative}
+.fig-wrap svg{display:block;width:100%;height:auto}
+#plate1{cursor:pointer}
+#figb,#figc{cursor:pointer}#figd{cursor:ns-resize}
+canvas.px{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;image-rendering:pixelated;image-rendering:crisp-edges}
+figure{margin:0}
+.cap{padding:.55rem .8rem .2rem;font-size:.84rem;line-height:1.45;color:var(--ink-2)}
+.lp-read{margin:0;padding:.55rem .8rem .1rem;border-top:1px solid var(--rule);font:400 .78rem/1.5 var(--mono);color:var(--ink-2);min-height:2.6em;font-variant-numeric:tabular-nums}
+.lp-read b{color:var(--ink);font-weight:500}
+#lp-ring{fill:none;stroke:var(--ink);stroke-width:1;stroke-dasharray:3 3}
+.fire{stroke:var(--ink)!important;stroke-width:3!important}
+.scorehead{display:flex;justify-content:space-between;align-items:flex-end;gap:.75rem}
+canvas.sniffer{width:102px;height:90px;cursor:pointer;image-rendering:pixelated;image-rendering:crisp-edges;flex:none}
+.cap b{color:var(--ink);font-weight:500}
+/* plate typography (SVG) */
+.pl-t{font-family:var(--mono);font-size:10.5px;fill:var(--ink-2);letter-spacing:.06em}
+.pl-lb{font-family:var(--body);font-size:12.5px;fill:var(--ink)}
+.co circle{fill:var(--panel);stroke:var(--ink);stroke-width:1}
+.co text{font-family:var(--mono);font-weight:500;font-size:12px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.co line{stroke:var(--ink);stroke-width:.75}
+.co .dot{fill:var(--ink);stroke:none}
+.co.hl circle{fill:var(--ink)} .co.hl text{fill:var(--on-ink)}
+.s-hl{stroke:var(--ink)!important;stroke-width:2.6!important}
+#d-comb .rung.on{stroke:var(--ink);stroke-width:5}
+.flow{fill:none;stroke:var(--ink-2);stroke-width:1.15;stroke-dasharray:5 4}
+.flow.on{animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-18}}
+ol.key{columns:2;column-gap:1.6rem;margin:0;padding:.55rem .8rem .8rem;list-style:none;font:400 .74rem/1.4 var(--mono);color:var(--ink)}
+ol.key li{break-inside:avoid;display:grid;grid-template-columns:1.6rem minmax(0,1fr);gap:.25rem;padding:.14rem .2rem;border-radius:2px;cursor:default}
+ol.key li:hover,ol.key li:focus{background:var(--tint);outline:none}
+ol.key li>b{font-weight:500}
+ol.key li i{display:block;color:var(--ink-2);font-size:.92em}
+.canvas-wrap{position:relative;padding:.5rem .5rem 0}
+canvas.roll{display:block;width:100%;height:auto;touch-action:none;cursor:pointer;border:1px solid var(--rule)}
+#cv2{touch-action:pan-y}
+#shift2{display:block;margin-top:.35rem}
+.controls{display:grid;gap:.65rem;padding:.8rem;border-top:1px solid var(--ink);background:var(--panel-2)}
+.ctl-row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.ctl-row .label{min-width:4.6rem}
+.play{min-width:7.2rem;justify-content:center}
+.clock{font:500 .8rem/1 var(--mono);font-variant-numeric:tabular-nums;color:var(--ink-2)}
+.scrub{flex:1 1 8rem;min-width:6rem;width:auto}
+.iso button{min-width:6.5rem}
+.legend{display:flex;flex-wrap:wrap;gap:.35rem 1rem;padding:.45rem .8rem .5rem;font:400 .72rem/1.4 var(--mono);color:var(--ink-2)}
+.legend i{display:inline-block;width:1.4rem;height:.45rem;vertical-align:middle;margin-right:.35rem}
+.shift{font:500 .78rem/1.5 var(--mono);color:var(--ink-2);font-variant-numeric:tabular-nums}
+.wavbtn{min-width:12.5rem;justify-content:center}
+.wavname{font:400 .74rem/1.4 var(--mono);color:var(--ink-2);overflow-wrap:anywhere;min-width:0;flex:1 1 14rem}
+.wavname b{color:var(--ink);font-weight:500}
+.shift b{color:var(--ink);font-weight:500}
+.copy{display:grid;gap:1.05rem;min-width:0}
+.kicker{font:500 .74rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+h1{font-size:clamp(2.2rem,4.2vw,3.6rem);line-height:1;font-weight:400}
+h2{font-size:clamp(1.7rem,3vw,2.4rem);line-height:1.05;font-weight:400}
+.sub{font-size:1.02rem;color:var(--ink-2);max-width:46ch}
+.contested{display:grid;gap:.35rem;border:1px solid var(--ink);padding:.85rem 1rem;background:var(--tint)}
+.contested b{font:500 .74rem/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+.contested p{font-size:.94rem;color:var(--ink)}
+.steps{display:grid;gap:.55rem;counter-reset:s;margin:0;padding:0;list-style:none}
+.steps li{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:.6rem;align-items:baseline;font-size:.95rem}
+.steps li::before{counter-increment:s;content:counter(s);font:500 .78rem/1.6 var(--mono);color:var(--on-ink);background:var(--ink);border-radius:999px;width:1.6rem;height:1.6rem;display:grid;place-items:center}
+.mascot{display:flex;gap:.8rem;align-items:center;font:400 .74rem/1.4 var(--mono);color:var(--ink-2)}
+.mascot img{width:102px;height:90px;image-rendering:pixelated;image-rendering:crisp-edges;flex:none}
+.panel{display:grid;gap:.9rem;background:var(--panel);border:1px solid var(--rule);padding:1rem 1.1rem}
+.row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.readout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.25rem .9rem;font:400 .78rem/1.5 var(--mono);color:var(--ink-2);margin:0}
+.readout dd{margin:0}
+.readout b{color:var(--ink);font-weight:500;overflow-wrap:anywhere}
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:var(--ink);color:var(--on-ink);font:500 .85rem/1.3 var(--mono);padding:.8rem 1.1rem;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:min(92vw,40rem);text-align:center;z-index:5}
+.toast.on{opacity:1}
+/* plate II */
+.plate2{margin-top:2.5rem;border:1px solid var(--ink);background:var(--paper)}
+.p2-grid{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,.92fr) minmax(0,1.25fr)}
+.fig{display:grid;align-content:start;border-right:1px solid var(--rule);min-width:0}
+.fig:last-child{border-right:0}
+.fighead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.35rem .6rem;padding:.75rem .9rem .45rem;font:500 .7rem/1.3 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
+.fighead span:last-child{color:var(--ink-2)}
+.hyp{display:inline-block;background:var(--ink);color:var(--on-ink);padding:.3rem .55rem;letter-spacing:.14em}
+.fig figcaption{padding:.5rem .9rem 1rem;font-size:.86rem;line-height:1.5;color:var(--ink-2);display:grid;gap:.5rem}
+.fig figcaption b{color:var(--ink);font-weight:500}
+.verdicts{font:400 .74rem/1.5 var(--mono);color:var(--ink-2);border-top:1px solid var(--rule);padding-top:.5rem}
+.verdicts b{font-weight:500;color:var(--ink)}
+.gaprow{display:flex;flex-wrap:wrap;gap:.3rem .6rem;align-items:center;padding:.2rem .9rem .1rem;font:500 .72rem/1.3 var(--mono);letter-spacing:.06em;color:var(--ink-2)}
+.gaprow input{flex:1 1 9rem;min-width:8rem;width:auto}
+.gaprow output{font-variant-numeric:tabular-nums;color:var(--ink);min-width:4.6rem;text-align:right}
+.dread{font:400 .78rem/1.5 var(--mono);color:var(--ink);padding:.2rem .9rem 0;min-height:3em}
+.atoms{display:flex;flex-wrap:wrap;gap:.4rem 1.3rem;align-items:center;padding:.7rem .9rem;border-top:1px solid var(--rule);font:400 .74rem/1.4 var(--mono);color:var(--ink-2)}
+.atoms span{display:inline-flex;align-items:center;gap:.45rem}
+.atoms img{image-rendering:pixelated;flex:none}
+/* blind test */
+.test{margin-top:2.5rem;border:1px solid var(--ink);background:var(--panel)}
+.test-in{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(1rem,3vw,2rem);padding:clamp(1rem,3vw,1.75rem)}
+.test .lead{color:var(--ink-2);max-width:56ch}
+.ab{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.sample{display:grid;gap:.5rem;border:1px solid var(--rule);padding:.85rem;background:var(--panel-2)}
+.sample-top{display:flex;justify-content:space-between;align-items:flex-end;gap:.5rem}
+.sample .tag{font:400 2.2rem/1 var(--display)}
+canvas.vial{width:72px;height:112px;cursor:pointer;image-rendering:pixelated;image-rendering:crisp-edges}
+.sample.right{border:2px solid var(--good);padding:calc(.85rem - 1px)}
+.sample.wrong{border:2px solid var(--warn);padding:calc(.85rem - 1px)}
+.sample .verdict{font:500 .72rem/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);min-height:1.2em}
+.btn.pick{justify-content:center}
+.score{display:grid;gap:.6rem;align-content:start}
+.big{font:300 clamp(2.8rem,6vw,4.4rem)/1 var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.big small{font-size:.4em;color:var(--ink-2)}
+.dots{display:flex;flex-wrap:wrap;gap:4px;min-height:12px}
+.dots i{width:10px;height:10px;border-radius:50%;background:var(--rule)}
+.dots i.ok{background:var(--good)}
+.dots i.no{background:var(--warn)}
+.check{display:flex;gap:.5rem;align-items:center;font-size:.92rem;cursor:pointer}
+.check input{accent-color:var(--ink);width:1.05rem;height:1.05rem}
+.note{font-size:.88rem;color:var(--ink-2)}
+/* tour */
+.tour{margin-top:2.5rem;border:1px solid var(--ink);background:var(--panel)}
+.tour-in{display:grid;gap:.9rem;padding:clamp(1rem,3vw,1.5rem)}
+.tour audio{width:100%}
+.chips{display:flex;flex-wrap:wrap;gap:.45rem}
+.chips button{border:1px solid var(--rule);background:var(--panel);color:var(--ink);border-radius:999px;padding:.45rem .8rem;font:500 .72rem/1 var(--mono);letter-spacing:.04em;cursor:pointer}
+.chips button:hover{background:var(--tint)}
+.chips button[aria-current="true"]{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
+/* evidence */
+.evidence{margin-top:2.5rem;display:grid;grid-template-columns:1fr 1fr;gap:clamp(1rem,3vw,2.5rem)}
+.evidence h3{font:500 .76rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;padding:.6rem .8rem;margin-bottom:.4rem;background:var(--ink);color:var(--on-ink)}
+.cite{font:400 .78rem/1.5 var(--mono);color:var(--ink-2)}
+/* on this page + the titled sections below the scene */
+.toc{margin-top:2rem;display:flex;flex-wrap:wrap;gap:.45rem .5rem;align-items:center}
+.toc .label{margin-right:.3rem}
+.toc a{border:1px solid var(--rule);background:var(--panel);color:var(--ink);border-radius:999px;padding:.45rem .8rem;font:500 .72rem/1 var(--mono);letter-spacing:.04em;text-decoration:none}
+.toc a:hover,.toc a:focus-visible{background:var(--tint);border-color:var(--ink)}
+.sec{margin-top:2.5rem;border:1px solid var(--ink);background:var(--panel);scroll-margin-top:1rem}
+.sec h2.sec-t{font:inherit;letter-spacing:inherit;color:inherit;margin:0}
+.sec-in{display:grid;grid-template-columns:minmax(0,1fr);gap:1.6rem;padding:clamp(1rem,3vw,1.6rem);min-width:0}
+.sec-in>*{min-width:0}
+.sec-lead{color:var(--ink-2);max-width:68ch}
+.sub-h{font:500 .74rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink);padding-bottom:.45rem;border-bottom:1px solid var(--ink);margin-bottom:.7rem}
+.cols2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(1rem,3vw,2.5rem)}
+ol.guide,ul.guide{margin:0;padding:0 0 0 1.2rem;display:grid;gap:.55rem;font-size:.93rem;color:var(--ink)}
+ol.guide li::marker,ul.guide li::marker{font:500 .78rem var(--mono);color:var(--ink-2)}
+kbd{font:500 .78rem/1 var(--mono);border:1px solid var(--ink-3);border-bottom-width:2px;border-radius:4px;padding:.1rem .35rem;background:var(--panel)}
+.code{font:400 .82em/1.4 var(--mono);color:var(--ink-2);overflow-wrap:anywhere}
+.graph{display:grid;gap:.4rem;border:1px solid var(--rule);background:var(--paper);min-width:0;scroll-margin-top:1rem}
+.graph-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:.35rem 1rem;padding:.8rem .8rem 0}
+.graph-head h3{font:400 1.3rem/1.2 var(--display);letter-spacing:-.01em}
+.graph-head .label b{color:var(--ink);font-weight:500}
+.graph .ctl-row{padding:0 .8rem}
+.graph .canvas-wrap{padding:.2rem .8rem 0}
+.graph .legend{padding:.2rem .8rem 0}
+.graph .cap{padding:.2rem .8rem .9rem;max-width:80ch}
+.graph .tablewrap{padding:0 .8rem}
+.jump{font:500 .72rem/1.3 var(--mono);letter-spacing:.04em;color:var(--link)}
+.gridwrap{overflow-x:auto;padding:.2rem .8rem 0;-webkit-overflow-scrolling:touch}
+#grid{display:block;width:100%;min-width:720px;height:auto;cursor:pointer;border:1px solid var(--rule);background:var(--paper)}
+.grid-read{margin:0;padding:0 .8rem;font:400 .78rem/1.5 var(--mono);color:var(--ink-2);min-height:1.5em}
+.grid-read b{color:var(--ink);font-weight:500}
+.sec .evidence{margin-top:0}
+.sec details.drawer .body{max-width:72ch}
+.claims{display:grid;gap:.8rem;max-width:76ch}
+table.jobs{width:100%;border-collapse:collapse;font:400 .78rem/1.4 var(--mono);font-variant-numeric:tabular-nums}
+table.jobs th,table.jobs td{text-align:left;padding:.4rem .5rem;border-bottom:1px solid var(--rule);vertical-align:top}
+table.jobs th{color:var(--ink-2);font-weight:500}
+table.jobs td.id{overflow-wrap:anywhere}
+table.jobs tr.cur td{background:var(--tint);color:var(--ink);font-weight:500}
+table.jobs button{border:1px solid var(--rule);background:var(--panel);color:var(--ink);border-radius:999px;padding:.3rem .6rem;font:500 .7rem/1 var(--mono);cursor:pointer}
+table.jobs button:hover{background:var(--tint)}
+.swipe{display:none}
+@media (max-width:760px){.swipe{display:block;padding:0 .8rem;font:500 .7rem/1.3 var(--mono);letter-spacing:.06em;color:var(--ink-2)}}
+@media (max-width:620px){
+  table.jobs thead{display:none}
+  table.jobs,table.jobs tbody,table.jobs td{display:block}
+  table.jobs tr{display:flex;flex-wrap:wrap;gap:.25rem .9rem;align-items:baseline;padding:.6rem .3rem;border-bottom:1px solid var(--rule)}
+  table.jobs td{border:0;padding:0}
+  table.jobs td[data-l]::before{content:attr(data-l) " ";color:var(--ink-2)}
+  table.jobs td.id,table.jobs td.outs{flex:1 1 100%}
+}
+ul.credits{margin:0;padding:0;list-style:none;display:grid;gap:.6rem;font-size:.88rem;color:var(--ink-2)}
+ul.credits b{color:var(--ink);font-weight:500}
+.more{margin-top:2.5rem}
+table.lines{width:100%;border-collapse:collapse;font:400 .78rem/1.4 var(--mono);font-variant-numeric:tabular-nums}
+table.lines th,table.lines td{text-align:left;padding:.35rem .4rem;border-bottom:1px solid var(--rule);vertical-align:top}
+table.lines th{color:var(--ink-2);font-weight:500}
+table.lines td.mv{color:var(--ink);font-weight:500;background:var(--tint)}
+.tablewrap{overflow-x:auto}
+@media (max-width:980px){.hero{display:flex;flex-direction:column;gap:1rem}.left,.copy{display:contents}
+  .kicker{order:1}.hero h1{order:2}.sub{order:3}.stage{order:4}.contested{order:5}.proof{order:6}.steps{order:7}.mascot{order:8}.panel{order:9}.test-in{grid-template-columns:minmax(0,1fr)}.evidence{grid-template-columns:minmax(0,1fr)}
+  .p2-grid{grid-template-columns:minmax(0,1fr)}.fig{border-right:0;border-bottom:1px solid var(--rule)}.fig:last-child{border-bottom:0}
+  .cols2{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:560px){ol.key{columns:1}
+  #figd .pl-t{font-size:13px}#figc .pl-t{font-size:12.5px}
+  .co circle:not(.dot){r:13px}.co text{font-size:15px}.pl-lb{font-size:14px}}
+@media (max-width:480px){.co circle:not(.dot){r:17px}.co text{font-size:19px}#plate1 .pl-t{font-size:17px}.ctl-row .label{min-width:100%}.iso button{min-width:0}.ab{grid-template-columns:1fr}.seg button{padding:.55rem .7rem}.ink-bar{flex-direction:column;align-items:flex-start;gap:.4rem}.wavbtn{min-width:0}.platebar .label{width:100%}}
+@media (prefers-reduced-motion:reduce){.flow.on{animation:none}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <pattern id="p-hatch" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="#FBFAF9"/><line x1="0" y1="0" x2="0" y2="5" stroke="#545BA9" stroke-width="1.1"/></pattern>
+    <pattern id="p-hatchH" width="4" height="3.2" patternUnits="userSpaceOnUse"><line x1="0" y1="1.6" x2="4" y2="1.6" stroke="#545BA9" stroke-width=".7"/></pattern>
+    <pattern id="p-stip" width="4.5" height="4.5" patternUnits="userSpaceOnUse"><circle cx="1.1" cy="1.1" r=".85" fill="#19238E"/><circle cx="3.4" cy="3.4" r=".85" fill="#19238E"/></pattern>
+    <pattern id="p-soft" width="9" height="9" patternUnits="userSpaceOnUse"><rect width="9" height="9" fill="#D3D3E6" fill-opacity=".42"/><circle cx="2" cy="2" r=".65" fill="#A1A4CE"/><circle cx="6.5" cy="6.5" r=".65" fill="#A1A4CE"/></pattern>
+    <pattern id="p-mucus" width="7" height="6" patternUnits="userSpaceOnUse"><rect width="7" height="6" fill="#D3D3E6" fill-opacity=".55"/><circle cx="1.5" cy="1.5" r=".7" fill="#A1A4CE"/><circle cx="5" cy="4.5" r=".9" fill="#FBFAF9"/></pattern>
+    <marker id="p-arr" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L8 4 L0 8 z" fill="#545BA9"/></marker>
+    <marker id="p-arrK" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L8 4 L0 8 z" fill="#19238E"/></marker>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <nav class="wtnr-bar"><a href="https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa">What the Noise Remembers</a><span class="count"><b>Challenge 02</b></span></nav>
+
+  <div class="hero">
+    <div class="left">
+    <section class="stage" aria-label="Plate I: the nose, and the spectral instrument">
+      <div class="stage-top" id="top-stage">
+        <div class="molname" id="molname" aria-live="polite">Acetophenone<small>C8H8O</small></div>
+        <div class="seg" role="group" aria-label="Molecule" id="g-mol"></div>
+      </div>
+      <div class="platebar">
+        <span class="label" id="viewcap"><b>Plate I</b> &middot; the nose in section</span>
+        <div class="seg" role="group" aria-label="View" id="g-view">
+          <button type="button" data-view="scene" aria-pressed="true">Scene</button>
+          <button type="button" data-view="data" aria-pressed="false">Data</button>
+        </div>
+      </div>
+
+      <div class="view" id="v-scene">
+        <figure>
+          <div class="fig-wrap">
+<svg id="plate1" viewBox="0 0 640 450" role="img" aria-labelledby="p1-t">
+<title id="p1-t">Plate I, figure a: sagittal section through the nose, showing the lateral wall of the nasal cavity with its three conchae, the olfactory epithelium at the roof, the cribriform plate and the olfactory bulb. Numbers refer to the key below.</title>
+<rect width="640" height="450" fill="#FBFAF9"/>
+<path d="M96 0 C92 34 92 66 100 88 C102 98 98 106 94 112 L56 222 C48 240 36 258 34 272 C32 286 44 294 58 294 C66 294 72 296 78 300 C84 318 84 340 82 356 C80 366 78 374 84 382 L84 440 L596 440 L596 290 C510 230 440 156 398 104 L394 116 C388 134 360 132 356 112 L186 112 L170 104 C154 80 144 36 138 0 Z" fill="url(#p-soft)"/>
+<path d="M138 0 C144 36 154 80 170 104 L186 112 L356 112 C360 132 388 134 394 116 L398 104 C440 156 510 230 596 290 L596 440 L84 440" fill="none" stroke="#19238E" stroke-width=".9"/>
+<path d="M100 0 L138 0 C144 36 154 80 170 104 L186 112 L186 120 L136 120 C118 120 106 124 100 132 L96 116 C100 108 104 100 104 90 C98 66 98 32 100 0 Z" fill="url(#p-hatch)" stroke="#19238E" stroke-width=".7"/>
+<path data-s="11" d="M96 114 L102 128 L66 214 L58 210 Z" fill="url(#p-hatch)" stroke="#19238E" stroke-width=".9"/>
+<path d="M310 112 L356 112 C360 132 388 134 394 116 L398 104 C440 156 510 230 596 290 L596 312 C540 290 486 248 446 224 C430 220 414 216 404 206 C398 196 396 176 390 160 C384 150 374 140 360 132 C344 124 326 121 310 120 Z" fill="url(#p-hatch)" stroke="#19238E" stroke-width=".7"/>
+<path d="M362 116 C364 128 386 130 390 116 C384 111 368 111 362 116 Z" fill="#A1A4CE" stroke="#19238E" stroke-width=".8"/>
+<ellipse cx="574" cy="364" rx="12" ry="20" fill="url(#p-hatch)" stroke="#19238E" stroke-width=".8"/>
+<path data-s="12" d="M108 40 C116 28 136 28 142 44 C146 62 140 84 124 90 C112 90 104 78 104 62 C104 52 104 46 108 40 Z" fill="#FBFAF9" stroke="#19238E" stroke-width="1.1"/>
+<path data-s="13" d="M406 146 C414 134 448 132 462 144 C474 156 474 186 462 200 C450 212 424 212 414 204 C404 194 400 160 406 146 Z" fill="#FBFAF9" stroke="#19238E" stroke-width="1.1"/>
+<path data-s="14" d="M60 295 C56 276 56 252 64 236 L98 136 C104 124 116 120 136 120 L310 120 C336 122 360 132 378 146 C392 158 398 176 400 196 C404 214 414 224 430 228 C470 232 506 244 526 268 C540 288 546 320 544 360 L542 440 L500 440 C498 420 496 404 492 392 L490 388 C486 370 474 344 456 326 C440 314 424 308 404 306 L92 306 C86 302 82 300 78 300 Z" fill="#FBFAF9" stroke="#19238E" stroke-width="1.2"/>
+<path data-s="16" d="M92 306 L404 306 L404 320 C350 322 200 322 100 322 C94 320 90 314 92 306 Z" fill="url(#p-hatch)" stroke="#19238E" stroke-width="1"/>
+<path d="M104 334 C200 330 330 330 404 334 C440 340 468 362 484 392 L494 440" fill="none" stroke="#545BA9" stroke-width=".8"/>
+<path data-s="17" d="M490 388 C480 366 460 340 436 328 C424 324 412 322 404 320" fill="none" stroke="#19238E" stroke-width="1"/>
+<path d="M86 322 C84 338 84 356 88 370 C92 375 98 374 99 368 C101 352 100 336 98 322 Z" fill="#FBFAF9" stroke="#19238E" stroke-width=".9"/>
+<g data-s="8">
+<rect x="186" y="112" width="124" height="8" fill="url(#p-hatch)" stroke="#19238E" stroke-width=".8"/>
+<path d="M191 113.5h2.4v5h-2.4z M200 113.5h2.4v5h-2.4z M209 113.5h2.4v5h-2.4z M218 113.5h2.4v5h-2.4z M227 113.5h2.4v5h-2.4z M236 113.5h2.4v5h-2.4z M245 113.5h2.4v5h-2.4z M254 113.5h2.4v5h-2.4z M263 113.5h2.4v5h-2.4z M272 113.5h2.4v5h-2.4z M281 113.5h2.4v5h-2.4z M290 113.5h2.4v5h-2.4z M299 113.5h2.4v5h-2.4z" fill="#FBFAF9"/>
+</g>
+<path data-s="7" d="M201.2 126v-16 M210.2 126v-17 M219.2 126v-17 M228.2 126v-18 M237.2 126v-18 M246.2 126v-18 M255.2 126v-18 M264.2 126v-17 M273.2 126v-16" fill="none" stroke="#19238E" stroke-width=".7"/>
+<path data-s="9" d="M192 107 C192 99 214 95 244 97 C268 98 282 102 284 106 C282 110 268 111 244 111 C214 111 194 111 192 107 Z" fill="#A1A4CE" stroke="#19238E" stroke-width="1"/>
+<path data-s="10" d="M282 103 C320 99 354 93 392 85 L393 91 C356 99 320 105 282 109 Z" fill="#A1A4CE" stroke="#19238E" stroke-width=".9"/>
+<g data-s="6">
+<path d="M186 120 L310 120 C330 121 350 128 366 138 L362 144 C346 136 328 129 310 128 L188 128 Z" fill="url(#p-stip)"/>
+<path d="M272 146 C286 137 322 135 356 141 L354 146 C322 141 290 142 276 150 Z" fill="url(#p-stip)"/>
+<path d="M186 120 L310 120" fill="none" stroke="#19238E" stroke-width="2.2"/>
+</g>
+<path data-s="3" d="M114 262 C118 248 140 240 180 240 C260 236 340 238 384 246 C400 250 410 256 410 266 C408 278 392 282 360 282 C290 286 200 286 150 282 C126 280 112 274 114 262 Z" fill="#D3D3E6" fill-opacity=".6" stroke="#19238E" stroke-width="1.2"/>
+<path data-s="4" d="M150 200 C150 184 166 174 196 172 C260 168 330 176 372 192 C394 200 406 208 406 218 C404 228 388 230 360 228 C300 226 230 226 186 224 C164 222 150 214 150 200 Z" fill="#D3D3E6" fill-opacity=".6" stroke="#19238E" stroke-width="1.2"/>
+<path data-s="5" d="M270 146 C282 136 322 134 356 140 C374 144 386 150 386 158 C384 166 372 168 352 166 C322 164 292 160 278 156 C268 153 266 150 270 146 Z" fill="#D3D3E6" fill-opacity=".6" stroke="#19238E" stroke-width="1.2"/>
+<g fill="none" stroke="#545BA9" stroke-width=".7">
+<path d="M126 276 C170 284 270 284 360 280 C392 278 406 271 409 262 M138 270 C190 276 280 276 360 273 C388 271 401 265 405 256 M160 264 C210 268 290 268 356 266"/>
+<path d="M158 214 C190 222 290 222 360 222 C386 222 400 218 404 210 M168 208 C200 214 290 215 360 215 C380 214 394 210 398 204 M186 202 C220 207 300 208 352 208"/>
+<path d="M280 160 C300 163 340 164 360 162 C374 161 382 158 384 154"/>
+</g>
+<path data-s="15" d="M438 262 C446 252 466 256 468 274 C470 292 458 302 446 296 C454 286 454 274 438 262 Z" fill="#D3D3E6" stroke="#19238E" stroke-width="1"/>
+<ellipse data-s="15" cx="442" cy="278" rx="3.6" ry="9" fill="#545BA9"/>
+<path d="M462 300 C466 320 470 338 472 356" fill="none" stroke="#545BA9" stroke-width=".8"/>
+<path data-s="2" d="M58 276 l8 -4 M58 284 l9 -3 M60 268 l8 -3 M62 291 l8 -2" fill="none" stroke="#19238E" stroke-width=".8"/>
+<path d="M96 0 C92 34 92 66 100 88 C102 98 98 106 94 112 L56 222 C48 240 36 258 34 272 C32 286 44 294 58 294 M78 300 C84 318 84 340 82 356 C80 366 78 374 84 382 L84 440" fill="none" stroke="#19238E" stroke-width="1.7"/>
+<path id="s1" class="flow" d="M62 296 C76 270 100 246 140 236 C200 230 300 232 410 234 C460 232 512 250 528 290 C536 330 534 380 532 436" marker-end="url(#p-arr)"/>
+<path id="s2" class="flow" d="M64 300 C96 296 150 294 250 294 C340 294 400 292 420 292 C470 300 510 324 518 360 L520 436" marker-end="url(#p-arr)"/>
+<path id="s3" class="flow" d="M58 290 C64 256 76 214 106 182 C130 158 166 146 200 142 C216 140 230 140 242 140" marker-end="url(#p-arr)"/>
+<g id="loupe" aria-hidden="true">
+<clipPath id="lp-clip"><circle cx="540" cy="92" r="65.4"/></clipPath>
+<circle id="lp-ring" cx="318" cy="147" r="34"/>
+<line x1="351.0" y1="138.8" x2="475.9" y2="107.8" stroke="#19238E" stroke-width=".8"/>
+<circle cx="540" cy="92" r="66" fill="#FBFAF9"/>
+<g clip-path="url(#lp-clip)">
+<rect x="470" y="128" width="140" height="40" fill="url(#p-mucus)"/>
+<path d="M472 129 C490 124 506 133 524 128 C542 123 558 132 576 127 C590 123 600 128 610 126" fill="none" stroke="#545BA9" stroke-width="1"/>
+</g>
+<circle cx="540" cy="92" r="66" fill="none" stroke="#19238E" stroke-width="1.4"/>
+<text class="pl-t" x="540" y="17" text-anchor="middle" style="fill:#19238E">DETAIL OF 6</text>
+</g>
+<g class="co" data-k="1"><line x1="68" y1="298" x2="40" y2="324"/><circle class="dot" cx="68" cy="298" r="1.8"/><circle cx="40" cy="324" r="10"/><text x="40" y="324">1</text></g>
+<g class="co" data-k="2"><line x1="64" y1="262" x2="18" y2="242"/><circle class="dot" cx="64" cy="262" r="1.8"/><circle cx="18" cy="242" r="10"/><text x="18" y="242">2</text></g>
+<g class="co" data-k="3"><circle cx="262" cy="262" r="10"/><text x="262" y="262">3</text></g>
+<g class="co" data-k="4"><circle cx="290" cy="198" r="10"/><text x="290" y="198">4</text></g>
+<g class="co" data-k="5"><circle cx="377" cy="158" r="10"/><text x="377" y="158">5</text></g>
+<g class="co" data-k="6"><line x1="196" y1="126" x2="128" y2="160"/><circle class="dot" cx="196" cy="126" r="1.8"/><circle cx="128" cy="160" r="10"/><text x="128" y="160">6</text></g>
+<g class="co" data-k="7"><line x1="228" y1="114" x2="214" y2="50"/><circle class="dot" cx="228" cy="114" r="1.8"/><circle cx="214" cy="50" r="10"/><text x="214" y="50">7</text></g>
+<g class="co" data-k="8"><line x1="190" y1="116" x2="178" y2="50"/><circle class="dot" cx="190" cy="116" r="1.8"/><circle cx="178" cy="50" r="10"/><text x="178" y="50">8</text></g>
+<g class="co" data-k="9"><line x1="254" y1="102" x2="254" y2="50"/><circle class="dot" cx="254" cy="102" r="1.8"/><circle cx="254" cy="50" r="10"/><text x="254" y="50">9</text></g>
+<g class="co" data-k="10"><line x1="340" y1="97" x2="340" y2="50"/><circle class="dot" cx="340" cy="97" r="1.8"/><circle cx="340" cy="50" r="10"/><text x="340" y="50">10</text></g>
+<g class="co" data-k="11"><line x1="80" y1="168" x2="30" y2="150"/><circle class="dot" cx="80" cy="168" r="1.8"/><circle cx="30" cy="150" r="10"/><text x="30" y="150">11</text></g>
+<g class="co" data-k="12"><circle cx="124" cy="60" r="10"/><text x="124" y="60">12</text></g>
+<g class="co" data-k="13"><circle cx="438" cy="172" r="10"/><text x="438" y="172">13</text></g>
+<g class="co" data-k="14"><line x1="500" y1="300" x2="618" y2="262"/><circle class="dot" cx="500" cy="300" r="1.8"/><circle cx="618" cy="262" r="10"/><text x="618" y="262">14</text></g>
+<g class="co" data-k="15"><line x1="446" y1="280" x2="618" y2="318"/><circle class="dot" cx="446" cy="280" r="1.8"/><circle cx="618" cy="318" r="10"/><text x="618" y="318">15</text></g>
+<g class="co" data-k="16"><line x1="250" y1="314" x2="250" y2="396"/><circle class="dot" cx="250" cy="314" r="1.8"/><circle cx="250" cy="396" r="10"/><text x="250" y="396">16</text></g>
+<g class="co" data-k="17"><line x1="464" y1="346" x2="430" y2="404"/><circle class="dot" cx="464" cy="346" r="1.8"/><circle cx="430" cy="404" r="10"/><text x="430" y="404">17</text></g>
+<g transform="translate(44 400)" class="pl-t"><path d="M0 14 V0 M-3 4 L0 0 L3 4 M0 14 H-14 M-10 11 L-14 14 L-10 17" fill="none" stroke="#545BA9" stroke-width="1"/><text x="4" y="6">sup.</text><text x="-30" y="28">ant.</text></g>
+</svg>
+            <canvas class="px" id="px1" aria-hidden="true"></canvas>
+            <canvas class="px" id="px1b" aria-hidden="true"></canvas>
+          </div>
+          <p class="lp-read" id="lp-read"></p>
+          <figcaption class="cap"><b>Fig. a</b> Lateral wall of the nasal cavity seen from the midline (septum removed), anterior to the left. Schematic, not to scale. Dashed lines: a sniff. Most of the air passes below the conchae; a small part reaches the olfactory cleft (6), where the pixel molecules land. <b>Click the plate</b> to sniff again, or a number to name the part. <b>Detail</b> (circle): one of them on the mucus, magnified roughly ten million times, so its atoms show; they wobble with the notes you hear. Region 6 is enlarged in Plate II, Fig. b.</figcaption>
+        </figure>
+
+      </div>
+
+      <div class="view" id="v-data" hidden>
+        <div class="canvas-wrap">
+          <canvas id="cv" class="roll" width="1200" height="760" tabindex="0" aria-label="Spectrum roll: time runs left to right, vibration frequency runs bottom to top. Click or drag to move the playhead; Space plays or pauses; left and right arrows scrub."></canvas>
+        </div>
+        <p class="legend" id="legend"></p>
+      </div>
+
+      <div class="controls">
+        <div class="ctl-row">
+          <button type="button" class="btn play" id="play" aria-label="Play the chord">Play</button>
+          <button type="button" class="btn ghost" id="restart" aria-label="Restart: play from 0 seconds">Restart</button>
+          <button type="button" class="btn ghost" id="sniff" title="Send a puff of the selected molecule up the nose, with a sniff sound">Sniff</button>
+          <span class="clock" id="clock">0.0 / 7.0 s</span>
+          <input type="range" class="scrub" id="scrub" min="0" max="7.2" step="0.05" value="0" aria-label="Playhead, seconds">
+        </div>
+        <div class="ctl-row">
+          <span class="label">Atoms</span>
+          <div class="seg iso" role="group" aria-label="Isotope" id="g-iso">
+            <button type="button" data-iso="H" aria-pressed="true">Hydrogen</button>
+            <button type="button" data-iso="D" aria-pressed="false">Deuterium</button>
+          </div>
+          <button type="button" class="btn ghost" id="swap" title="Shortcut: S" aria-keyshortcuts="S">Swap H &harr; D</button>
+        </div>
+        <div class="ctl-row">
+          <span class="label">Q-blur</span>
+          <div class="seg" role="group" aria-label="Quantum blur strength" id="g-str"></div>
+          <div class="seg" role="group" aria-label="Quantum blur reach" id="g-reach"></div>
+        </div>
+        <div class="ctl-row">
+          <span class="label">WAV file</span>
+          <button type="button" class="btn ghost wavbtn" id="wavbtn" aria-pressed="false">Play the WAV render</button>
+          <span class="wavname" id="wavname">-</span>
+          <audio id="wav" preload="none"></audio>
+        </div>
+        <p class="shift" id="shift" aria-live="polite"></p>
+      </div>
+      <div class="view" id="v-key">
+        <p class="keyhead label">Key to Plate I &middot; hover a name to find it</p>
+        <ol class="key" id="key" aria-label="Key to Plate I">
+          <li data-k="1" tabindex="0"><b>1</b><span>Naris (nostril)<i>naris</i></span></li>
+          <li data-k="2" tabindex="0"><b>2</b><span>Nasal vestibule, with hairs<i>vestibulum nasi</i></span></li>
+          <li data-k="3" tabindex="0"><b>3</b><span>Inferior nasal concha<i>concha nasalis inferior</i></span></li>
+          <li data-k="4" tabindex="0"><b>4</b><span>Middle nasal concha<i>concha nasalis media</i></span></li>
+          <li data-k="5" tabindex="0"><b>5</b><span>Superior nasal concha<i>concha nasalis superior</i></span></li>
+          <li data-k="6" tabindex="0"><b>6</b><span>Olfactory epithelium (stippled)<i>pars olfactoria tunicae mucosae nasi</i></span></li>
+          <li data-k="7" tabindex="0"><b>7</b><span>Olfactory nerve fibres, cranial nerve I<i>nervi olfactorii (fila olfactoria)</i></span></li>
+          <li data-k="8" tabindex="0"><b>8</b><span>Cribriform plate of the ethmoid bone<i>lamina cribrosa ossis ethmoidalis</i></span></li>
+          <li data-k="9" tabindex="0"><b>9</b><span>Olfactory bulb<i>bulbus olfactorius</i></span></li>
+          <li data-k="10" tabindex="0"><b>10</b><span>Olfactory tract<i>tractus olfactorius</i></span></li>
+          <li data-k="11" tabindex="0"><b>11</b><span>Nasal bone<i>os nasale</i></span></li>
+          <li data-k="12" tabindex="0"><b>12</b><span>Frontal sinus<i>sinus frontalis</i></span></li>
+          <li data-k="13" tabindex="0"><b>13</b><span>Sphenoid sinus<i>sinus sphenoidalis</i></span></li>
+          <li data-k="14" tabindex="0"><b>14</b><span>Nasopharynx<i>pars nasalis pharyngis</i></span></li>
+          <li data-k="15" tabindex="0"><b>15</b><span>Pharyngeal opening of the auditory tube<i>ostium pharyngeum tubae auditivae</i></span></li>
+          <li data-k="16" tabindex="0"><b>16</b><span>Hard palate<i>palatum durum</i></span></li>
+          <li data-k="17" tabindex="0"><b>17</b><span>Soft palate<i>palatum molle</i></span></li>
+        </ol>
+      </div>
+    </section>
+      <div class="panel">
+        <dl class="readout">
+          <dt>Engine</dt><dd><b id="r-engine">-</b></dd>
+          <dt>Setting</dt><dd><b id="r-set">-</b></dd>
+          <dt>Job</dt><dd><b id="r-job">-</b></dd>
+          <dt>Track</dt><dd><b id="r-track">-</b></dd>
+          <dt>Qubits</dt><dd><b id="r-qubits">-</b></dd>
+        </dl>
+        <div class="row">
+          <button type="button" class="btn ghost" id="share">Copy link to this view</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="copy">
+      <p class="kicker">Challenge 02 &middot; Make it audible</p>
+      <h1>Swap hydrogen for deuterium. Hear the molecule fall.</h1>
+      <p class="sub">A contested theory says your nose reads molecular vibrations. We slowed three odorants' vibrations 120 billion times into hearing range and ran them through a 20-qubit quantum blur. You get to smell by ear.</p>
+      <div class="contested" role="note">
+        <b>Unproven and contested</b>
+        <p>Nobody has shown that noses detect molecular vibrations. Experiments disagree, and hearing a shifted chord tells you nothing about smelling one.</p>
+      </div>
+      <div class="proof" id="proof"></div>
+      <ol class="steps">
+        <li><span><b>Pick</b> a molecule and press Play to hear its vibrational chord.</span></li>
+        <li><span><b>Swap</b> H for D while it sounds: the hydrogen lines slide down by about a fourth.</span></li>
+        <li><span><b>Blur</b> the chord through the quantum circuit, from a light smear to a global scramble.</span></li>
+        <li><span><b>Test</b> yourself blind: which sample is deuterated?</span></li>
+      </ol>
+      <p class="mascot"><img id="mascot" alt="Pixel mascot: a head in midline section sniffing an acetophenone molecule, with the conchae, the olfactory epithelium and the olfactory bulb" width="102" height="90"><span>Plate I is drawn as an anatomy plate; the odorants, atoms, neutrons and the tunnelling electron are pixel sprites in the same ink. The mascot sniffs when you do.</span></p>
+    </div>
+  </div>
+
+  <nav class="toc" aria-label="On this page"><span class="label">On this page</span><a href="#plate2">Plate II</a><a href="#test">Blind test</a><a href="#tour-sec">The tour</a><a href="#how">How to play</a><a href="#data">The data</a><a href="#science">The science</a><a href="#made">How it was made</a><a href="#claims">What this does not claim</a><a href="#jobs">Jobs and credits</a></nav>
+
+  <section class="plate2" id="plate2" aria-labelledby="p2-h">
+    <div class="ink-bar"><span id="p2-h">Plate II &middot; At the receptor: two theories</span><span id="p2-mol">acetophenone &middot; H</span></div>
+    <div class="p2-grid">
+      <figure class="fig" id="fig-b">
+        <div class="fighead"><span>Fig. b &middot; Olfactory epithelium</span><span>region 6, Plate I</span></div>
+        <div class="fig-wrap">
+<svg id="figb" viewBox="0 0 360 400" role="img" aria-labelledby="fb-t">
+<title id="fb-t">Figure b: the olfactory epithelium in schematic section, with the cribriform plate at the top, axon bundles, Bowman's gland, basal cells, olfactory receptor neurons and supporting cells, and cilia lying in the mucus above the air of the olfactory cleft.</title>
+<rect width="360" height="400" fill="#FBFAF9"/>
+<rect x="8" y="28" width="206" height="122" fill="url(#p-soft)"/>
+<path d="M8 8 H102 V28 H8 Z M126 8 H214 V28 H126 Z" fill="url(#p-hatch)" stroke="#19238E" stroke-width="1"/>
+<g fill="none" stroke="#19238E" stroke-width=".8">
+<path d="M50 199 L50 150 C50 104 106 74 110 28"/><path d="M111 199 L111 150 C111 104 113 74 113 28"/><path d="M172 199 L172 150 C172 104 120 74 116 28"/>
+<path d="M30 150 C32 112 102 80 108 28" stroke="#A1A4CE"/><path d="M90 150 C92 110 110 80 111 28" stroke="#A1A4CE"/><path d="M146 150 C144 110 118 80 115 28" stroke="#A1A4CE"/><path d="M196 150 C194 112 124 80 118 28" stroke="#A1A4CE"/>
+</g>
+<g stroke="#19238E" stroke-width=".8" fill="#D3D3E6"><circle cx="190" cy="100" r="7"/><circle cx="203" cy="94" r="7"/><circle cx="205" cy="108" r="7"/><circle cx="192" cy="114" r="7"/></g>
+<path d="M198 118 C200 140 210 150 211 170 L211 300" fill="none" stroke="#19238E" stroke-width="1"/>
+<line x1="8" y1="150" x2="214" y2="150" stroke="#19238E" stroke-width=".9"/>
+<g fill="#FBFAF9" stroke="#545BA9" stroke-width=".8">
+<path d="M10 152 H48 V296 Q29 305 10 296 Z"/><path d="M51 152 H89 V296 Q70 305 51 296 Z"/><path d="M92 152 H130 V296 Q111 305 92 296 Z"/><path d="M133 152 H171 V296 Q152 305 133 296 Z"/><path d="M174 152 H209 V296 Q191 305 174 296 Z"/>
+</g>
+<g fill="#A1A4CE" stroke="#545BA9" stroke-width=".6"><ellipse cx="29" cy="274" rx="5" ry="8"/><ellipse cx="70" cy="274" rx="5" ry="8"/><ellipse cx="96" cy="276" rx="4" ry="7"/><ellipse cx="152" cy="274" rx="5" ry="8"/><ellipse cx="191" cy="274" rx="5" ry="8"/></g>
+<g fill="#D3D3E6" stroke="#19238E" stroke-width=".8"><ellipse cx="31" cy="162" rx="9" ry="6"/><ellipse cx="74" cy="163" rx="9" ry="6"/><ellipse cx="152" cy="162" rx="9" ry="6"/><ellipse cx="192" cy="163" rx="9" ry="6"/></g>
+<g stroke="#19238E"><line x1="50" y1="224" x2="50" y2="297" stroke-width="1.6"/><line x1="111" y1="224" x2="111" y2="297" stroke-width="1.6"/><line x1="172" y1="224" x2="172" y2="297" stroke-width="1.6"/></g>
+<g fill="#FBFAF9" stroke="#19238E" stroke-width="1.1"><ellipse cx="50" cy="212" rx="9" ry="13"/><ellipse cx="111" cy="212" rx="9" ry="13"/><ellipse cx="172" cy="212" rx="9" ry="13"/></g>
+<g fill="#545BA9"><circle cx="50" cy="212" r="5"/><circle cx="111" cy="212" r="5"/><circle cx="172" cy="212" r="5"/></g>
+<rect x="8" y="302" width="206" height="40" fill="url(#p-mucus)"/>
+<line x1="8" y1="342" x2="214" y2="342" stroke="#A1A4CE" stroke-width=".9" stroke-dasharray="3 3"/>
+<g fill="#FBFAF9" stroke="#19238E" stroke-width="1.1"><circle cx="50" cy="301" r="4.5"/><circle cx="111" cy="301" r="4.5"/><circle cx="172" cy="301" r="4.5"/></g>
+<g fill="none" stroke="#19238E" stroke-width=".8" id="cilia">
+<path d="M50 305 c-6 8 -20 12 -34 11 M50 305 c-4 12 -14 20 -26 26 M50 305 c0 12 -2 24 -8 34 M50 305 c2 12 6 24 12 33 M50 305 c6 12 16 20 28 25 M50 305 c8 8 22 12 36 10"/>
+<path d="M111 305 c-6 8 -20 12 -34 11 M111 305 c-4 12 -14 20 -26 26 M111 305 c0 12 -2 24 -8 34 M111 305 c2 12 6 24 12 33 M111 305 c6 12 16 20 28 25 M111 305 c8 8 22 12 36 10"/>
+<path d="M172 305 c-6 8 -20 12 -34 11 M172 305 c-4 12 -14 20 -26 26 M172 305 c0 12 -2 24 -8 34 M172 305 c2 12 6 24 12 33 M172 305 c6 12 16 20 28 25"/>
+</g>
+<path id="fb-ax" d="M111 300 L111 150 C111 104 113 74 113 30" fill="none" stroke="none"/>
+<g fill="#545BA9"><circle cx="128" cy="324" r="1.7"/><circle cx="136" cy="328" r="1.7"/><circle cx="124" cy="331" r="1.7"/><circle cx="96" cy="320" r="1.7"/><circle cx="141" cy="317" r="1.7"/><circle cx="65" cy="324" r="1.7"/><circle cx="160" cy="322" r="1.7"/></g>
+<g stroke="#19238E" stroke-width=".6">
+<line x1="196" y1="18" x2="222" y2="18"/><line x1="114" y1="44" x2="222" y2="52"/><line x1="210" y1="104" x2="222" y2="104"/><line x1="201" y1="163" x2="222" y2="163"/><line x1="181" y1="212" x2="222" y2="212"/><line x1="200" y1="262" x2="222" y2="262"/><line x1="200" y1="316" x2="222" y2="316"/><line x1="205" y1="338" x2="222" y2="345"/><line x1="205" y1="374" x2="222" y2="374"/>
+</g>
+<g class="pl-lb">
+<text x="226" y="22">Cribriform plate</text>
+<text x="226" y="50">Axon bundles to</text><text x="226" y="65">the olfactory bulb</text>
+<text x="226" y="108">Bowman's gland</text>
+<text x="226" y="167">Basal cell</text>
+<text x="226" y="210">Olfactory receptor</text><text x="226" y="225">neuron</text>
+<text x="226" y="266">Supporting cell</text>
+<text x="226" y="313">Cilia carrying</text><text x="226" y="328">odorant receptors</text>
+<text x="226" y="349">Mucus</text>
+<text x="226" y="378">Air of the</text><text x="226" y="393">olfactory cleft</text>
+</g>
+</svg>
+          <canvas class="px" id="px2" aria-hidden="true"></canvas>
+        </div>
+        <figcaption>
+          <p>Odorants dissolve into the mucus and meet <b>odorant receptors</b> on the cilia of olfactory receptor neurons; each neuron sends its axon through the cribriform plate to the bulb. When the pixel odorant binds, a burst of spikes runs up the axon and the bulb on Plate I flashes (an illustration, not a recording). Humans have roughly 400 kinds of functional receptor. Both theories agree on all of this. They disagree on what the receptor reads. <b>Click the figure</b> to drop another odorant onto a cilium.</p>
+        </figcaption>
+      </figure>
+
+      <figure class="fig" id="fig-c">
+        <div class="fighead"><span>Fig. c &middot; Shape theory</span><span>lock and key</span></div>
+        <div class="fig-wrap">
+<svg id="figc" viewBox="0 0 360 300" role="img" aria-labelledby="fc-t">
+<title id="fc-t">Figure c: an odorant receptor, seven helices crossing the cilium membrane, with the odorant sitting in its binding pocket. The dashed outline is the molecule's shape, identical for the hydrogen and deuterium forms.</title>
+<rect width="360" height="300" fill="#FBFAF9"/>
+<g id="c-mem"></g>
+<g fill="none" stroke="#19238E" stroke-width="1.1">
+<path d="M78 150 C76 122 52 108 24 104"/><path d="M270 246 C272 270 300 278 336 276"/>
+<path d="M78 246 Q94 268 110 246"/><path d="M142 246 Q158 268 174 246"/><path d="M206 246 Q222 268 238 246"/>
+<path d="M110 150 Q118 150 142 184"/><path d="M174 196 Q190 176 206 184"/><path d="M238 150 Q254 128 270 150"/>
+</g>
+<g fill="#D3D3E6" stroke="#19238E" stroke-width="1.1"><rect x="66" y="150" width="24" height="96" rx="11"/><rect x="98" y="150" width="24" height="96" rx="11"/><rect x="130" y="184" width="24" height="62" rx="11"/><rect x="162" y="196" width="24" height="50" rx="11"/><rect x="194" y="184" width="24" height="62" rx="11"/><rect x="226" y="150" width="24" height="96" rx="11"/><rect x="258" y="150" width="24" height="96" rx="11"/></g>
+<g class="pl-t" text-anchor="middle"><text x="78" y="236">1</text><text x="110" y="236">2</text><text x="142" y="236">3</text><text x="174" y="236">4</text><text x="206" y="236">5</text><text x="238" y="236">6</text><text x="270" y="236">7</text></g>
+<text class="pl-t" x="10" y="20">OUTSIDE (MUCUS)</text>
+<text class="pl-t" x="10" y="292">INSIDE (CILIUM)</text>
+<text class="pl-t" x="350" y="292" text-anchor="end">receptor: 7 helices</text>
+<text class="pl-t" id="c-fit" x="350" y="20" text-anchor="end" style="fill:#19238E">same outline for H and D</text>
+</svg>
+          <canvas class="px" id="px3" aria-hidden="true"></canvas>
+        </div>
+        <figcaption>
+          <p>The mainstream view: an odorant sits in the receptor's binding pocket, and the receptor responds to its <b>size, shape and chemical groups</b>, like a key in a lock. Deuterium is a hydrogen with an extra neutron: same size, same shape, twice the mass. So swapping H for D should change the smell little or not at all. <b>Click the figure</b> to swap H and D: the atoms change, the dotted outline does not.</p>
+          <p class="verdicts"><b>Fits:</b> Keller &amp; Vosshall 2004 (people could not tell acetophenone from its d8 form); Block et al. 2015 (the musk receptor OR5AN1 responded alike to both forms).</p>
+        </figcaption>
+      </figure>
+
+      <figure class="fig" id="fig-d">
+        <div class="fighead"><span class="hyp">Hypothesis</span><span>Fig. d &middot; Vibration theory</span></div>
+        <div class="fig-wrap">
+<svg id="figd" viewBox="0 0 520 320" role="img" aria-labelledby="fd-t">
+<title id="fd-t">Figure d, hypothesis: inelastic electron tunnelling. An electron waits on a donor level; the acceptor level sits lower by a gap. It can only cross by giving one vibrational quantum to the odorant, so a receptor would respond when one of the molecule's vibrational energies matches its gap.</title>
+<rect width="520" height="320" fill="#FBFAF9"/>
+<text class="pl-t" x="12" y="22" style="fill:#19238E">inelastic electron tunnelling (Turin 1996)</text>
+<rect id="d-band" x="44" y="0" width="470" height="15" fill="#D3D3E6" fill-opacity=".75"/>
+<g class="pl-t" text-anchor="end"><text x="38" y="293">0</text><text x="38" y="243">100</text><text x="38" y="193">200</text><text x="38" y="143">300</text><text x="38" y="93">400</text></g>
+<g stroke="#A1A4CE" stroke-width=".7"><line x1="42" y1="290" x2="46" y2="290"/><line x1="42" y1="240" x2="46" y2="240"/><line x1="42" y1="190" x2="46" y2="190"/><line x1="42" y1="140" x2="46" y2="140"/><line x1="42" y1="90" x2="46" y2="90"/></g>
+<line x1="44" y1="296" x2="44" y2="80" stroke="#19238E" stroke-width="1" marker-end="url(#p-arrK)"/>
+<text class="pl-t" transform="translate(9 186) rotate(-90)" text-anchor="middle">energy, meV</text>
+<line x1="300" y1="290" x2="372" y2="290" stroke="#19238E" stroke-width="2.6"/>
+<text class="pl-t" x="336" y="307" text-anchor="middle">acceptor</text>
+<g id="d-don"><line x1="56" y1="0" x2="132" y2="0" stroke="#19238E" stroke-width="2.6"/><text class="pl-t" x="58" y="-9">donor</text></g>
+<path id="d-el" d="M134 100 H296" fill="none" stroke="#A1A4CE" stroke-width="1.1" stroke-dasharray="4 4"/>
+<path id="d-in" d="M134 100 C190 100 236 290 296 290" fill="none" stroke="#19238E" stroke-width="1.1" stroke-dasharray="5 4" marker-end="url(#p-arrK)"/>
+<g id="d-gap"><line x1="386" y1="100" x2="386" y2="290" stroke="#545BA9" stroke-width="1" marker-start="url(#p-arr)" marker-end="url(#p-arr)"/><text class="pl-t" x="392" y="200">&Delta;E</text></g>
+<line x1="420" y1="290" x2="420" y2="80" stroke="#A1A4CE" stroke-width="1"/>
+<text class="pl-t" x="420" y="58">odorant's</text><text class="pl-t" x="420" y="71">quanta, &#295;&omega;</text>
+<g id="d-comb"></g>
+<text class="pl-t" id="d-kick" x="378" y="124" text-anchor="end" style="fill:#19238E" opacity="0">+1 quantum &#295;&omega;</text>
+</svg>
+          <canvas class="px" id="px4" aria-hidden="true"></canvas>
+        </div>
+        <div class="gaprow"><label for="gap">Gap &Delta;E, hypothetical</label><input type="range" id="gap" min="60" max="420" step="1" value="372"><output id="gapv" for="gap">372 meV</output></div>
+        <p class="dread" id="d-read" aria-live="polite"></p>
+        <figcaption>
+          <p>Turin's proposal: an electron crosses the receptor only by handing <b>one vibrational quantum</b> of the odorant to its bonds, so the receptor would read a vibrational spectrum. Drag the gap (the slider, or drag up and down on the figure): when a rung of the odorant (the same lines you hear) sits in the shaded window, the electron tunnels. Deuterium lowers the C-H rungs by 1/1.362, so a receptor tuned to C-H would go quiet.</p>
+          <p class="verdicts"><b>Fits:</b> Franco et al. 2011 (fruit flies told isotopes apart); Gane et al. 2013 (people picked deuterated musk). <b>Status:</b> unproven and contested; Brookes et al. 2007 showed only that the physics could work.</p>
+        </figcaption>
+      </figure>
+    </div>
+    <p class="atoms" id="atomlegend"></p>
+  </section>
+
+  <section class="test" id="test" aria-labelledby="test-h">
+    <div class="ink-bar"><span>Blind test</span><span id="t-badge">2 samples &middot; 1 is deuterated</span></div>
+    <div class="test-in">
+    <div style="display:grid;gap:1rem;min-width:0">
+      <h2 id="test-h">Can you hear deuterium?</h2>
+      <p class="lead">Two samples of <b id="t-mol">acetophenone</b> (<span id="t-set">no blur</span>). One is normal, one is deuterated, in random order. Listen to both as often as you like, then pick the deuterated one. The test uses the molecule and blur chosen above.</p>
+      <p class="note">Each sample is a sniff bottle: click it to uncork it and listen. The plates stay still while you listen, so they cannot give it away.</p>
+      <label class="check"><input type="checkbox" id="disguise"> Disguise pitch: shift each sample up or down at random, so only the chord's shape gives it away</label>
+      <div class="ab">
+        <div class="sample" id="sA">
+          <div class="sample-top"><span class="tag">A</span><canvas class="vial" id="vialA" role="button" tabindex="0" aria-label="Uncork sample A and listen (press again to stop)" title="Uncork A"></canvas></div>
+          <button type="button" class="btn ghost" id="pA">Play A</button>
+          <button type="button" class="btn pick" id="cA">A is deuterated</button>
+          <span class="verdict" id="vA"></span>
+        </div>
+        <div class="sample" id="sB">
+          <div class="sample-top"><span class="tag">B</span><canvas class="vial" id="vialB" role="button" tabindex="0" aria-label="Uncork sample B and listen (press again to stop)" title="Uncork B"></canvas></div>
+          <button type="button" class="btn ghost" id="pB">Play B</button>
+          <button type="button" class="btn pick" id="cB">B is deuterated</button>
+          <span class="verdict" id="vB"></span>
+        </div>
+      </div>
+      <div class="row">
+        <button type="button" class="btn" id="next" disabled>Next pair</button>
+        <button type="button" class="btn ghost" id="treset">Reset score</button>
+      </div>
+    </div>
+    <div class="score" aria-live="polite">
+      <span class="label">Your score</span>
+      <div class="scorehead"><div class="big" id="tscore">0 <small>/ 0</small></div><canvas class="sniffer" id="sniffer" role="button" tabindex="0" aria-label="Make the nose sniff (a sniff sound; it does not hint at the answer)" title="Sniff"></canvas></div>
+      <div class="dots" id="tdots" aria-hidden="true"></div>
+      <p class="note" id="tp">Answer a few pairs. Guessing gets about half right.</p>
+      <p class="note">For comparison: in Gane et al. (2013), 11 volunteers picked deuterated musk (cyclopentadecanone) in 119 of 132 sniffing trials, while trained and naive subjects could not tell acetophenone from acetophenone-d8, in line with Keller &amp; Vosshall (2004). Your ear is solving an easier problem: we moved the vibrations into hearing range on purpose.</p>
+      <div class="row"><button type="button" class="btn ghost" id="tshare">Copy my score</button></div>
+    </div>
+    </div>
+  </section>
+
+  <section class="tour" id="tour-sec" aria-labelledby="tour-h">
+    <div class="ink-bar"><span id="tour-h">The tour, as audio</span><span>144 s &middot; rendered from the same notes</span></div>
+    <div class="tour-in">
+      <p class="note">The piece's WAV deliverable, compressed for the web: each molecule normal then deuterated, first unblurred, then through a strong local blur (strength 1, reach 0, job <span id="tour-j1">-</span>) and a global one (strength 0.5, reach 1, job <span id="tour-j2">-</span>). Press play; the chips jump to a pair.</p>
+      <audio id="tour" controls preload="none" src="audio/quantum_nose_demo.mp3"></audio>
+      <div class="chips" id="tour-chips" role="group" aria-label="Jump to a pair in the tour"></div>
+    </div>
+  </section>
+
+  <section class="sec" id="how" aria-labelledby="how-h">
+    <div class="ink-bar"><h2 class="sec-t" id="how-h">How to play</h2><span>you are in control &middot; nothing sounds until you press</span></div>
+    <div class="sec-in cols2">
+      <div>
+        <h3 class="sub-h">The instrument</h3>
+        <ol class="guide">
+          <li><b>Pick</b> a molecule: acetophenone (8 H), cyclopentadecanone / Exaltone (28 H) or muscone (30 H).</li>
+          <li><b>Play</b> its chord: the lines enter from the lowest to the highest frequency, then sustain.</li>
+          <li><b>Swap H &harr; D</b> while it sounds (button or the <kbd>S</kbd> key): the hydrogen lines glide down, live.</li>
+          <li><b>Blur</b> it: strength 0.25 / 0.5 / 1 &times; reach local / halfway / global, each one a real Atlas job. Click or drag the spectrum roll to scrub; arrows scrub, Space plays and pauses.</li>
+          <li><b>WAV file</b>: the instrument's "Play the WAV render" button plays the deliverable <span class="code">wav/&lt;setting&gt;/&lt;molecule&gt;_&lt;H|D&gt;.wav</span> for whatever molecule, isotope and blur is selected (a 48 kb/s mp3 of it); it toggles to "Stop", the playhead follows it, and changing the selection (even H &harr; D) while it plays jumps to the matching file at the same moment.</li>
+          <li><b>Test</b> yourself: two samples, one normal and one deuterated, in random order. Pick the deuterated one. The page keeps score and gives the binomial p-value against guessing. "Disguise pitch" randomly transposes each sample by up to &plusmn;25 % so only the chord's shape gives it away.</li>
+          <li>Open the <b>Evidence for / Evidence against</b> drawers; some load the relevant molecule or shade the relevant band on the instrument (the C-D stretch range; Block et al.'s 1,380-1,550 cm<sup>-1</sup> window).</li>
+          <li><b>Copy link to this view</b> or <b>Copy my score</b> to share.</li>
+          <li><b>The tour</b>: the demo WAV, as an audio player with chips that jump to each pair.</li>
+        </ol>
+      </div>
+      <div>
+        <h3 class="sub-h">On the plates</h3>
+        <ul class="guide">
+          <li><b>Pick</b> a molecule: watch it ride a sniff up to the olfactory epithelium and land in the detail circle, then press Play to hear its vibrational chord.</li>
+          <li><b>Swap</b> H for D while it sounds: a neutron flies into every hydrogen, the hydrogen lines slide down by about a fourth, and the heavier atoms wobble more slowly.</li>
+          <li><b>Sniff</b> (the button, or a click on Plate I) sends a puff of the selected molecule up the nose, with a sniff sound. Click a number on the plate to name the part, or hover a name in the key to find it.</li>
+          <li><b>Plate II</b>: click Fig. b to drop another odorant onto a cilium; click Fig. c to swap H and D; drag the gap in Fig. d (the slider, or drag up and down on the figure).</li>
+          <li><b>Test</b> yourself blind: which sniff bottle is deuterated?</li>
+          <li><b>Scene / Data</b>: the switch above Plate I shows the spectrum roll in its place. The same roll is always drawn in <a href="#data">The data</a>, below.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="data" aria-labelledby="data-h">
+    <div class="ink-bar"><h2 class="sec-t" id="data-h">The data</h2><span>2 graphs and a table, from the real note lists</span></div>
+    <div class="sec-in">
+      <figure class="graph" id="g-roll">
+        <div class="graph-head"><h3>Graph 1 &middot; The chord as a spectrum roll</h3><span class="label" id="roll-now">-</span></div>
+        <div class="ctl-row">
+          <button type="button" class="btn play" id="play2" aria-label="Play the chord">Play</button>
+          <button type="button" class="btn ghost" id="restart2" aria-label="Restart: play from 0 seconds">Restart</button>
+          <button type="button" class="btn ghost" id="swap2" title="Shortcut: S">Swap H &harr; D</button>
+          <span class="clock" id="clock2">0.0 / 7.0 s</span>
+          <a class="jump" href="#top-stage">change molecule or blur in the instrument &uarr;</a>
+        </div>
+        <div class="canvas-wrap">
+          <canvas id="cv2" class="roll" width="1200" height="760" tabindex="0" aria-label="Spectrum roll: time runs left to right, vibration frequency runs bottom to top. Click or drag to move the playhead; Space plays or pauses; left and right arrows scrub."></canvas>
+        </div>
+        <p class="legend" id="legend2"></p>
+        <figcaption class="cap"><b>Graph 1</b> Spectrum roll: time runs left to right, vibration frequency runs bottom to top. Click or drag to move the playhead; Space plays or pauses; left and right arrows scrub. Shaded bands mark the C-H stretch, C-D stretch and C=O stretch regions; the evidence drawers can shade another. Each bar is a line of the chord (input score) or a note of the blur-midi-v1 output for the setting chosen in the instrument; the dashed lines are the other isotope. <span class="shift" id="shift2"></span></figcaption>
+      </figure>
+
+      <figure class="graph" id="g-grid">
+        <div class="graph-head"><h3>Graph 2 &middot; Six vibrational chords, before and after a 20-qubit quantum blur</h3><span class="label">10 settings &times; 6 chords &middot; click a cell</span></div>
+        <p class="swipe">scroll sideways for all 10 settings &rarr;</p>
+        <div class="gridwrap"><canvas id="grid" width="2400" height="1152" tabindex="0" aria-label="Every chord before and after every blur, as piano rolls: rows are the six chords, columns the input score and the nine blur-midi-v1 settings. Click a cell, or use the arrow keys, to load it into the instrument."></canvas></div>
+        <p class="grid-read" id="grid-read" aria-live="polite"></p>
+        <figcaption class="cap"><b>Graph 2</b> Every chord before and after every blur, as piano rolls (the piece's figure, <span class="code">hero.png</span>, drawn live from the same note lists). Rows: each molecule, normal then deuterated. Columns: the input score (no quantum step), then blur-midi-v1 at strength 0.25, 0.5 and 1 for reach 0, 0.5 and 1. Each cell: time 0-7 s across, wavenumber 380-3,300 cm<sup>-1</sup> up (&times; 0.25 = Hz); darker = louder. The framed cell is what the instrument plays now; click any cell (or use the arrow keys) to load it.</figcaption>
+      </figure>
+
+      <figure class="graph" id="g-table">
+        <div class="graph-head"><h3>Table 1 &middot; Every vibrational line</h3><span class="label" id="lt-mol">-</span></div>
+        <div class="tablewrap"><table class="lines" id="ltable"></table></div>
+        <figcaption class="cap"><b>Table 1</b> The lines of the molecule chosen in the instrument: the textbook value for the normal molecule, the harmonic estimate for the deuterated one (shaded where the line moves a hydrogen), and the note each becomes at 1 cm<sup>-1</sup> = 0.25 Hz. How the numbers are made: <a href="#made">How it was made</a>.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="sec" id="science" aria-labelledby="sci-h">
+    <div class="ink-bar"><h2 class="sec-t" id="sci-h">The science</h2><span>evidence for and against the vibration theory</span></div>
+    <div class="sec-in">
+      <div class="evidence" aria-label="Evidence">
+      <div class="for">
+      <h3>Evidence for</h3>
+      <details class="drawer"><summary>Turin 1996: a spectroscope in the nose</summary><div class="body">
+      <p>Luca Turin proposed that olfactory receptors respond to an odorant's vibrations, read out by inelastic electron tunnelling: an electron crosses the receptor only if it can hand a vibrational quantum of the right energy to the molecule. He reported that acetophenone and acetophenone-d8 smell different.</p>
+      <p class="cite">L. Turin, "A spectroscopic mechanism for primary olfactory reception", Chemical Senses 21(6):773-791 (1996). doi:10.1093/chemse/21.6.773</p>
+      <div class="row"><button type="button" class="btn ghost" data-load="acetophenone">Load acetophenone</button><button type="button" class="btn ghost" data-fig="fig-d">See it drawn: Plate II, Fig. d</button></div>
+      </div></details>
+      <details class="drawer"><summary>Brookes et al. 2007: the physics could work</summary><div class="body">
+      <p>A simple but general model of phonon-assisted tunnelling, with parameters appropriate for biomolecules, found the proposed mechanism consistent with the underlying physics and with observed features of smell. This is a viability argument, not evidence that receptors do it.</p>
+      <p class="cite">J. C. Brookes, F. Hartoutsiou, A. P. Horsfield, A. M. Stoneham, "Could humans recognize odor by phonon assisted tunneling?", Physical Review Letters 98:038101 (2007). doi:10.1103/PhysRevLett.98.038101</p>
+      </div></details>
+      <details class="drawer"><summary>Franco et al. 2011: fruit flies tell isotopes apart</summary><div class="body">
+      <p>Drosophila distinguished normal from deuterated odorants and could be trained to avoid either one. Flies trained against a deuterated compound also avoided an unrelated molecule with a vibrational mode in the energy range of the carbon-deuterium stretch (Gane et al. later describe it as a nitrile). Shape alone does not explain that.</p>
+      <p class="cite">M. I. Franco, L. Turin, A. Mershin, E. M. C. Skoulakis, "Molecular vibration-sensing component in Drosophila melanogaster olfaction", PNAS 108(9):3797-3802 (2011). doi:10.1073/pnas.1012293108</p>
+      <div class="row"><button type="button" class="btn ghost" data-zone="cd">Show the C-D stretch range</button></div>
+      </div></details>
+      <details class="drawer"><summary>Gane et al. 2013: humans and deuterated musk</summary><div class="body">
+      <p>With GC-purified samples, volunteers picked catalytically deuterated cyclopentadecanone over sham-deuterated cyclopentadecanone in 119 of 132 trials, describing a "burnt" note. The authors suggest that many C-H groups (28 here, against acetophenone's 8) may be needed for the difference to be smelled.</p>
+      <p class="cite">S. Gane, D. Georganakis, K. Maniati, M. Vamvakias, N. Ragoussis, E. M. C. Skoulakis, L. Turin, "Molecular vibration-sensing component in human olfaction", PLOS ONE 8(1):e55780 (2013). doi:10.1371/journal.pone.0055780</p>
+      <div class="row"><button type="button" class="btn ghost" data-load="exaltone">Load cyclopentadecanone</button></div>
+      </div></details>
+      </div>
+      <div class="against">
+      <h3>Evidence against</h3>
+      <details class="drawer"><summary>Keller &amp; Vosshall 2004: no support in people</summary><div class="body">
+      <p>Psychophysical tests in humans of predictions made by the vibration theory, including whether acetophenone and acetophenone-d8 smell different, found no evidence to support it.</p>
+      <p class="cite">A. Keller, L. B. Vosshall, "A psychophysical test of the vibration theory of olfaction", Nature Neuroscience 7(4):337-338 (2004). doi:10.1038/nn1215</p>
+      <div class="row"><button type="button" class="btn ghost" data-load="acetophenone">Load acetophenone</button></div>
+      </div></details>
+      <details class="drawer"><summary>Gane et al. 2013: acetophenone stayed the same</summary><div class="body">
+      <p>The same paper that reported the musk result confirmed Keller &amp; Vosshall: neither naive nor trained subjects could tell GC-pure acetophenone from acetophenone-d8. It also notes that deuteration changes physical properties: the deuterated musk left the GC column about 1.2 minutes earlier, a sign of weaker dispersion forces.</p>
+      <p class="cite">Gane et al., PLOS ONE 8(1):e55780 (2013). doi:10.1371/journal.pone.0055780</p>
+      </div></details>
+      <details class="drawer"><summary>Block et al. 2015: the musk receptor does not care</summary><div class="body">
+      <p>The human musk receptor OR5AN1, expressed in cells, responded alike to normal and deuterated cyclopentadecanone and muscone; other human and mouse receptors also ignored deuteration. The authors note that muscone-d30 lacks the 1,380-1,550 cm<sup>-1</sup> bands claimed to matter for musk odour, and argue from theory that the proposed electron transfer could easily be suppressed by quantum effects of the molecule's other, non-odorant vibrations.</p>
+      <p class="cite">E. Block et al., "Implausibility of the vibrational theory of olfaction", PNAS 112(21):E2766-E2774 (2015). doi:10.1073/pnas.1503054112</p>
+      <div class="row"><button type="button" class="btn ghost" data-load="muscone" data-zone="musk">Load muscone and show 1,380-1,550 cm<sup>-1</sup></button></div>
+      </div></details>
+      <details class="drawer"><summary>The 2015 exchange: still unresolved</summary><div class="body">
+      <p>Turin and colleagues replied that the theory remains plausible; Block and colleagues answered that it is implausible. The two letters were published side by side. As far as we know, no decisive experiment has settled the question since.</p>
+      <p class="cite">L. Turin, S. Gane, D. Georganakis, K. Maniati, E. M. C. Skoulakis, "Plausibility of the vibrational theory of olfaction", PNAS 112(25):E3154 (2015). doi:10.1073/pnas.1508035112<br>E. Block, S. Jang, H. Matsunami, V. S. Batista, H. Zhuang, "Reply to Turin et al.: Vibrational theory of olfaction is implausible", PNAS 112(25):E3155 (2015). doi:10.1073/pnas.1508443112</p>
+      </div></details>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="made" aria-labelledby="made-h">
+    <div class="ink-bar"><h2 class="sec-t" id="made-h">How it was made</h2><span>from a vibration to a note to a quantum blur</span></div>
+    <div class="sec-in" style="gap:0">
+      <details class="drawer"><summary>How a vibration becomes a note</summary><div class="body">
+      <p>Each line is an approximate textbook infrared group frequency for the normal molecule, in wavenumbers (cm<sup>-1</sup>). One rule maps every line to sound: <b>1 cm<sup>-1</sup> = 0.25 Hz</b>, a slow-down of about 1.2 &times; 10<sup>11</sup>. Because the rule is a single multiplication, musical intervals are the true vibrational ratios.</p>
+      <p>Swapping hydrogen (mass 1) for deuterium (mass 2) changes the reduced mass of a C-H oscillator. For a harmonic bond the frequency falls by &radic;(&mu;<sub>CD</sub>/&mu;<sub>CH</sub>) = <b>1.362</b>, which is 5.35 semitones, a little more than a perfect fourth. We apply that factor to every line that moves a hydrogen and leave heavy-atom lines (C=O, ring C=C, C-C) where they are. Real deuterated spectra differ by a few percent, and modes mix; this is an idealised estimate, not a measurement.</p>
+      <p>For the quantum engine the chord is written as MIDI, with each MIDI note number standing for a 28 cm<sup>-1</sup> bin (7 Hz), so lines are rounded by up to 14 cm<sup>-1</sup>. Your browser plays every note as a pure sine tone. The <b>WAV file</b> button instead plays the deliverable rendered offline in Python with the same rule (<span class="cite">wav/&lt;setting&gt;/&lt;molecule&gt;_&lt;H|D&gt;.wav</span>, compressed here to a 48 kb/s mp3) for whatever molecule, isotope and blur you have selected, so every one of the 60 chord files can be heard and checked against the live synth. All of this, including the synthesis, is classical.</p>
+      <p class="cite">The line table is Table 1 in <a href="#g-table">The data</a>.</p>
+      </div></details>
+      <details class="drawer"><summary>What the quantum engine did</summary><div class="body">
+      <p>Atlas <b>blur-midi-v1</b> (Quantum Blur for MIDI) turns each MIDI track into a piano roll (pitch &times; time) and blurs it as a height map with a quantum circuit, then turns the result back into notes. All six chords (three molecules, normal and deuterated) went into one file, one track each, so every job blurs H and D versions with exactly the same setting.</p>
+      <p>Qubits: each track's roll is about 77-111 pitch rows (the chord's span plus the engine's 15% margin) by 6,720 time steps (1 tick per step). Quantum Blur stores a w &times; h grid in &lceil;log<sub>2</sub> w&rceil; + &lceil;log<sub>2</sub> h&rceil; qubits: 7 + 13 = <b>20 qubits</b>, the engine's maximum per pass. The engine does not report this number; we computed it from that rule.</p>
+      <p>Low <i>reach</i> mixes only neighbouring pitches and times, so lines smear into the bins next to them, a bit like a low-resolution spectrometer. Higher reach lets any pitch mix with any other: five of the six settings at reach 0.5 or 1 scatter a chord into dozens to thousands of notes across the range, while strength 1 at reach 1 leaves only a few dozen notes, many far from the original lines. In every job the deuterated chords stay below about 2,250 cm<sup>-1</sup> while the normal ones reach the C-H stretch region, so the blur never fully hides the swap. This is an audio effect and an analogy, nothing more. The circuits ran on Atlas's classical statevector simulator; blur-midi-v1 has no hardware mode.</p>
+      <p id="joblist" class="cite"></p>
+      </div></details>
+      <details class="drawer"><summary>How the plates and sprites work</summary><div class="body">
+      <p>Plate I is a schematic anatomical drawing (after standard anatomy atlases, not traced from any one source); its labels use the English and Latin anatomical names. The molecules are pixel sprites drawn from their real structures: acetophenone (8 H), cyclopentadecanone (15-carbon ring, 28 H) and muscone (3-methyl, 30 H), with hydrogen drawn light and deuterium dark. H and D are drawn the same size on purpose: deuterium only adds a neutron.</p>
+      <p>The mascot (a head in midline section, sniffing acetophenone) and the blind test's nose are drawn from the same sprite sheet; the hub icon is exported from it. The loupe on Plate I shows the odorant docked at the second landing spot at molecular scale.</p>
+      <p>While a chord plays, every atom's wobble is driven by the notes sounding at the playhead, from the same note lists you hear (input score or downloaded blur-midi-v1 output): C-H or C-D stretch notes shake the hydrogens along their bonds, bend notes shake them sideways, C=O notes move the oxygen, ring notes breathe the ring. The wobble is slowed about 10<sup>13</sup> times further than the sound, so a C-D bond visibly wobbles 1.36 times slower than a C-H bond. Rungs in Fig. d light up when their note sounds. The caption under Plate I names the loudest note sounding, from the same list. The sniff (and its sound, filtered noise), the docking, the neutrons that fly in when you swap H for D, the spikes in Fig. b, the flash of the bulb, the tunnelling electron and the kick it gives the odorant in Fig. d are illustrations, not measurements. Each hydrogen does gain exactly one neutron, and the molar masses shown are computed from the formulas.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <section class="sec" id="claims" aria-labelledby="claims-h">
+    <div class="ink-bar"><h2 class="sec-t" id="claims-h">What this does not claim</h2><span>honesty notes</span></div>
+    <div class="sec-in claims">
+      <p class="honesty">The vibration theory of olfaction is unproven and contested. This page does not test it, support it or refute it. The quantum circuit did not simulate electron tunnelling, an odorant receptor or a nose. Its blur is a sound effect applied to a chord. Being able to hear deuterium in a chord that we deliberately moved into hearing range says nothing about whether noses detect it. Band positions are approximate textbook values and the deuterated lines are harmonic estimates. The blind test scores you against chance; it is not a psychophysics experiment.</p>
+      <p class="honesty">Fig. d illustrates the hypothesis; the receptor gap is a slider, not a measured property of any receptor. The sniff, the docking, the neutrons, the spikes, the flash of the bulb and the tunnelling electron are illustrations, not measurements.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="jobs" aria-labelledby="jobs-h">
+    <div class="ink-bar"><h2 class="sec-t" id="jobs-h">Jobs and credits</h2><span id="jobs-sum">-</span></div>
+    <div class="sec-in">
+      <div>
+        <h3 class="sub-h">The Atlas jobs</h3>
+        <div class="tablewrap"><table class="jobs" id="jobtable"></table></div>
+        <p class="cite" style="margin-top:.6rem">Fixed in every job: qubits param 20 (the engine maximum), resolution 1 tick per piano-roll step. Notes out are counted from the downloaded MIDI files, in track order acetophenone H / D, cyclopentadecanone H / D, muscone H / D. Load sets the instrument to that blur.</p>
+      </div>
+      <div>
+        <h3 class="sub-h">Credits</h3>
+        <ul class="credits">
+          <li><b>Engine</b>: Moth Quantum Atlas, blur-midi-v1 (a unitary quantum blur for MIDI piano rolls), run on Atlas's statevector simulator.</li>
+          <li><b>Data</b>: no third-party data files. The vibrational chords are approximate, rounded textbook infrared group frequencies; the deuterated lines are our own harmonic estimates (C-H frequencies divided by 1.362).</li>
+          <li><b>Papers</b>: the eight papers in <a href="#science">The science</a>, each with its DOI.</li>
+          <li><b>Odour descriptions</b>: PubChem (acetophenone, CID 7410); The Good Scents Company (cyclopentadecanone); Wikipedia and the ACS Molecule of the Week (muscone). Molar masses are computed from the formulas.</li>
+          <li><b>Illustrations</b>: Plate I, Plate II and every pixel sprite are original drawings made for this page, schematic and not to scale; anatomical names follow Terminologia Anatomica (TA98).</li>
+          <li><b>Libraries</b>: mido, NumPy, Matplotlib, imageio-ffmpeg (Python 3.12); on the page, the Web Audio API, Canvas 2D and Google Fonts (Geist, IBM Plex Mono). No external scripts.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!--NAV-->
+  <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/*INKSPRITE*/
+</script>
+<script>
+const MOLS = /*MOLS*/{};
+const SETS = /*SETS*/[];
+const NOTES = /*NOTES*/{};
+const META = /*META*/{};
+const WAVS = /*WAVS*/{};
+const SPRITE_DATA = /*SPRITES*/{};
+const ORDER = ['acetophenone','exaltone','muscone'];
+const DUR = META.dur || 7.2, HZ_PER_BIN = META.hz_per_bin || 7, CM_PER_BIN = META.cm_per_bin || 28, HZ_PER_CM = 0.25;
+const MEV_PER_CM = 0.123984; // 1 cm^-1 = 0.124 meV
+
+// ---------- pure helpers (unit-tested with node) ----------
+function binHz(b){return b*HZ_PER_BIN;}
+function setKey(str,reach){return str==null?'clean':('s'+str+'_r'+reach);}
+function trackKey(mol,iso){return mol+'_'+iso;}
+function binomTail(k,n){ // one-sided P(X >= k), X ~ Bin(n, 1/2)
+  if(n<=0)return 1; let p=0, c=1; // c = C(n,i)
+  const lg=n*Math.log(2);
+  for(let i=0;i<=n;i++){ if(i>0)c=c*(n-i+1)/i; if(i>=k)p+=Math.exp(Math.log(c)-lg); }
+  return Math.min(1,p);
+}
+function fmtP(p){return p<0.001?p.toExponential(1):p.toFixed(3);}
+function semis(r){return 12*Math.log2(r);}
+function encodeView(v){return [v.mol,v.iso,v.set].concat(v.view==='data'?['data']:[]).join('~');}
+function decodeView(h){
+  const m=String(h||'').replace(/^#/,'').split('~');
+  if(m.length<3||!ORDER.includes(m[0])||!['H','D'].includes(m[1]))return null;
+  return {mol:m[0],iso:m[1],set:m[2],view:m[3]==='data'?'data':'scene'};
+}
+function availableSet(key){return SETS.some(s=>s.key===key);}
+function newTrial(rand){const r=rand||Math.random;return {dIsA:r()<0.5,mulA:Math.pow(1.25,2*r()-1),mulB:Math.pow(1.25,2*r()-1),answer:null};}
+function judge(trial,pickA){trial.answer=pickA?'A':'B';return pickA===trial.dIsA;}
+// 2D skeletal geometry of each odorant, in bond lengths. Atoms: {x,y,el:'C'|'O'|'H',par (bonded heavy atom, for H)}.
+// acetophenone C6H5-C(=O)-CH3 (8 H); cyclopentadecanone, a 15-carbon ring ketone (28 H); muscone = its 3-methyl (30 H).
+function molGeom(key){
+  const A=[],B=[];
+  const add=(x,y,el,cls)=>{A.push({x,y,el,cls});return A.length-1;};
+  const bond=(a,b,o,cls)=>B.push({a,b,o:o||1,cls});
+  const addH=(c,x,y,cls)=>{const i=add(x,y,'H',cls);A[i].par=c;bond(c,i,1,'XH');return i;};
+  if(key==='acetophenone'){
+    const r=[];for(let i=0;i<6;i++){const a=i*Math.PI/3;r.push(add(Math.cos(a),Math.sin(a),'C','ring'));}
+    for(let i=0;i<6;i++)bond(r[i],r[(i+1)%6],i%2?2:1,'ring');
+    const c7=add(2,0,'C','ring');bond(r[0],c7,1,'cc');
+    const o=add(2.5,-0.866,'O','co');bond(c7,o,2,'co');
+    const c8=add(2.5,0.866,'C','ring');bond(c7,c8,1,'cc');
+    for(let i=1;i<6;i++){const a=i*Math.PI/3;addH(r[i],1.78*Math.cos(a),1.78*Math.sin(a),'ar');}
+    for(const a of [-0.25,Math.PI/2.6,2.1])addH(c8,2.5+0.78*Math.cos(a),0.866+0.78*Math.sin(a),'me');
+  }else{
+    const n=15,R=1/(2*Math.sin(Math.PI/n)),rH=R+0.74,da=Math.PI/30,r=[];
+    for(let i=0;i<n;i++){const a=-Math.PI/2+i*2*Math.PI/n;r.push(add(R*Math.cos(a),R*Math.sin(a),'C','ring'));}
+    for(let i=0;i<n;i++)bond(r[i],r[(i+1)%n],1,'ring');
+    const o=add(0,-(R+1.05),'O','co');bond(r[0],o,2,'co');
+    for(let i=1;i<n;i++){const a=-Math.PI/2+i*2*Math.PI/n;
+      if(key==='muscone'&&i===2){
+        const m=add((R+1)*Math.cos(a-da),(R+1)*Math.sin(a-da),'C','ring');bond(r[i],m,1,'cc');
+        addH(r[i],rH*Math.cos(a+da),rH*Math.sin(a+da),'ch2');
+        for(const d of [-1.15,0,1.15]){const b=a-da+d;addH(m,A[m].x+0.74*Math.cos(b),A[m].y+0.74*Math.sin(b),'me');}
+      }else{addH(r[i],rH*Math.cos(a-da),rH*Math.sin(a-da),'ch2');addH(r[i],rH*Math.cos(a+da),rH*Math.sin(a+da),'ch2');}
+    }
+  }
+  let cx=0,cy=0;for(const a of A){cx+=a.x;cy+=a.y;}cx/=A.length;cy/=A.length;
+  for(const a of A){a.x-=cx;a.y-=cy;}
+  return {A,B};
+}
+// which kind of motion a vibrational line is, from its assignment
+function lineClass(label){
+  const s=String(label);
+  if(/C=O/.test(s))return 'CO';
+  if(/ring/.test(s)&&!/C-[HD]/.test(s))return 'RING';
+  if(/stretch/.test(s)&&/(C-[HD]|C[HD][23]|C[HD]2|C[HD]3)/.test(s))return 'XH';
+  if(/bend|scissor|wag|twist|rock|umbrella/.test(s))return 'BEND';
+  return 'RING';
+}
+function meV(cm){return cm*MEV_PER_CM;}
+// the line (if any) of a molecule within +-tol meV of a hypothetical receptor gap
+function gapMatch(lines,gap,tol){let best=null;for(const l of lines){const d=Math.abs(meV(l.nu)-gap);if(d<=tol&&(!best||d<best.d))best={l,d};}return best;}
+// what each molecule smells like (PubChem; The Good Scents Company; Wikipedia), and what was found for its deuterated form
+// (the papers in the Evidence drawers). Shown under the molecule's name.
+const ODOUR={
+  acetophenone:{H:'Smells <b>sweet and pungent</b>, of orange blossom and almond.',
+    D:'Turin reported that the d8 form smells different; controlled tests found <b>no reliable difference</b> in people (Keller &amp; Vosshall 2004; Gane et al. 2013).'},
+  exaltone:{H:'Smells <b>musky</b>, sweet and powdery: the perfumer\'s Exaltone.',
+    D:'Volunteers told the d28 form apart and described a <b>"burnt"</b> note (Gane et al. 2013).'},
+  muscone:{H:'Smells of <b>musk</b>: it is the main odorant of deer musk.',
+    D:'The human musk receptor OR5AN1 <b>responded to it as to normal muscone</b> (Block et al. 2015).'}};
+const AMU={C:12.011,H:1.008,D:2.014,O:15.999};
+function molMass(f){let m=0;String(f).replace(/([A-Z])(\d*)/g,(_,e,n)=>{m+=(AMU[e]||0)*(n?+n:1);return '';});return m;}
+
+// ---------- state ----------
+const st={mol:'acetophenone',iso:'H',str:null,reach:0,zone:null,view:'scene'};
+const strengths=[...new Set(SETS.filter(s=>s.key!=='clean').map(s=>s.strength))].sort((a,b)=>a-b);
+const reaches=[...new Set(SETS.filter(s=>s.key!=='clean').map(s=>s.reach))].sort((a,b)=>a-b);
+const curSet=()=>setKey(st.str,st.reach);
+const curTrack=(iso)=>NOTES[curSet()][trackKey(st.mol,iso||st.iso)];
+const $=id=>document.getElementById(id);
+const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ---------- audio ----------
+let AC=null, master=null;
+function audio(){
+  if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();
+    const comp=AC.createDynamicsCompressor();comp.threshold.value=-14;comp.ratio.value=6;
+    master=AC.createGain();master.gain.value=0.55;master.connect(comp);comp.connect(AC.destination);}
+  if(AC.state==='suspended')AC.resume();
+  return AC;
+}
+// Dense chords (the global blurs give thousands of grains) are synthesised in JS into a sample buffer;
+// sparse ones play as live oscillators so H<->D can glide. Same sine, envelope and gain either way.
+const BUF_MIN=150, SR=22050, pcmCache=new WeakMap();
+function notePeak(n,src){return Math.min(1,n[3]/127*src.g)*0.16;}
+function envelope(g,peak,when,stopAt){g.gain.setValueAtTime(0,when);g.gain.linearRampToValueAtTime(peak,when+0.015);
+  if(stopAt>when+0.015)g.gain.setValueAtTime(peak,stopAt);g.gain.linearRampToValueAtTime(0,stopAt+0.06);}
+function renderPCM(src,mul){
+  let m=pcmCache.get(src);if(!m){m=new Map();pcmCache.set(src,m);}
+  const k=mul.toFixed(5);if(m.has(k))return m.get(k);
+  const N=Math.ceil(SR*(DUR+0.2)),y=new Float32Array(N);
+  for(const n of src.n){
+    const peak=notePeak(n,src),w=2*Math.PI*binHz(n[2])*mul/SR,i0=Math.round(n[0]*SR);
+    const a=Math.round(0.015*SR),hold=Math.max(a,Math.round((n[1]-n[0])*SR)),end=Math.round((n[1]-n[0]+0.06)*SR),rl=Math.max(1,end-hold);
+    let c=Math.cos(w*i0),sn=Math.sin(w*i0);const cw=Math.cos(w),sw=Math.sin(w);
+    for(let i=0;i<end&&i0+i<N;i++){
+      const e=i<a?i/a:(i<hold?1:Math.max(0,(end-i)/rl));
+      y[i0+i]+=peak*e*sn;const c2=c*cw-sn*sw;sn=sn*cw+c*sw;c=c2;
+    }
+  }
+  m.set(k,y);return y;
+}
+class Player{
+  constructor(onState){this.src=null;this.pos=0;this.playing=false;this.voices=new Set();this.q=[];this.next=0;this.onState=onState||(()=>{});this.timer=null;this.mul=1;this.bs=null;this.token=0;}
+  get dur(){return DUR;}
+  get dense(){return this.src&&this.src.n.length>=BUF_MIN;}
+  now(){return this.playing?Math.max(0,Math.min(this.dur,AC.currentTime-this.t0)):this.pos;}
+  load(src,mul){const p=this.now(),was=this.playing;if(was)this.halt(0.04);this.src=src;this.mul=mul||1;if(was)this.start(p);else this.pos=p;}
+  voice(n,when,stopAt){
+    const o=AC.createOscillator(),g=AC.createGain();
+    o.type='sine';o.frequency.value=binHz(n[2])*this.mul;envelope(g,notePeak(n,this.src),when,stopAt);
+    o.connect(g);g.connect(master);o.start(when);o.stop(stopAt+0.08);
+    const v={o,g,n,when,stopAt};this.voices.add(v);o.onended=()=>this.voices.delete(v);return v;
+  }
+  start(pos){
+    this.t0=AC.currentTime-pos;this.q=[];this.next=0;
+    if(!this.dense){const t=AC.currentTime;
+      for(const n of this.src.n)if(n[0]<pos&&n[1]>pos+0.02)this.voice(n,t+0.01,this.t0+n[1]);
+      this.q=this.src.n.filter(n=>n[0]>=pos);this.pump();return;}
+    const y=renderPCM(this.src,this.mul),buf=AC.createBuffer(1,y.length,SR);buf.copyToChannel(y,0);
+    const s=AC.createBufferSource(),g=AC.createGain(),t=AC.currentTime;this.t0=t-pos;
+    s.buffer=buf;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(1,t+0.02);
+    s.connect(g);g.connect(master);s.start(t,Math.min(pos,buf.duration-0.01));this.bs={s,g};
+  }
+  pump(){
+    if(!this.playing)return;const q=this.q,ahead=AC.currentTime-this.t0+0.25;
+    while(this.next<q.length&&q[this.next][0]<ahead){const n=q[this.next++];this.voice(n,Math.max(AC.currentTime,this.t0+n[0]),this.t0+n[1]);}
+    if(AC.currentTime-this.t0>=this.dur){this.pause();this.pos=this.dur;this.onState('end');}
+  }
+  play(){audio();if(this.pos>=this.dur-0.05)this.pos=0;this.playing=true;this.start(this.pos);
+    clearInterval(this.timer);this.timer=setInterval(()=>this.pump(),40);this.onState('play');}
+  pause(){if(!this.playing)return;this.pos=this.now();this.playing=false;clearInterval(this.timer);this.halt(0.05);this.onState('pause');}
+  seek(p){p=Math.max(0,Math.min(this.dur,p));if(this.playing){this.halt(0.03);this.start(p);}else this.pos=p;this.onState('seek');}
+  halt(rel){
+    this.token++;const t=AC?AC.currentTime:0;
+    for(const v of this.voices){try{v.g.gain.cancelScheduledValues(t);v.g.gain.setValueAtTime(v.g.gain.value,t);v.g.gain.linearRampToValueAtTime(0,t+rel);v.o.stop(t+rel+0.02);}catch(e){}}
+    this.voices.clear();
+    if(this.bs){try{this.bs.g.gain.cancelScheduledValues(t);this.bs.g.gain.setValueAtTime(this.bs.g.gain.value,t);this.bs.g.gain.linearRampToValueAtTime(0,t+rel);this.bs.s.stop(t+rel+0.02);}catch(e){}this.bs=null;}
+  }
+  glide(toSrc,secs){ // sparse (clean) chords only: sounding lines slide to their counterpart bins
+    const t=AC.currentTime,pos=this.now(),covered=[];
+    for(const v of [...this.voices]){
+      if(v.when>t+0.005){try{v.g.gain.cancelScheduledValues(t);v.g.gain.setValueAtTime(0,t);v.o.stop(t+0.01);}catch(e){};this.voices.delete(v);continue;}
+      const tb=v.n[4]!=null?v.n[4]:v.n[2];covered.push(tb);
+      v.o.frequency.cancelScheduledValues(t);v.o.frequency.setValueAtTime(v.o.frequency.value,t);
+      if(secs>0)v.o.frequency.exponentialRampToValueAtTime(binHz(tb)*this.mul,t+secs);else v.o.frequency.setValueAtTime(binHz(tb)*this.mul,t);
+    }
+    this.src=toSrc;
+    // every line of the new chord is either already sounding (a glided voice) or still to come;
+    // lines whose turn in the new strum has already passed start now
+    const rest=toSrc.n.filter(n=>{if(n[1]<=pos+0.02)return false;const i=covered.indexOf(n[2]);if(i>=0){covered.splice(i,1);return false;}return true;});
+    for(const n of rest)if(n[0]<pos)this.voice(n,t+0.01,this.t0+n[1]);
+    this.q=rest.filter(n=>n[0]>=pos);this.next=0;
+  }
+}
+function prerender(){ // warm the sample buffers for the current setting (computation only, no sound)
+  setTimeout(()=>{for(const iso of ['H','D']){const tr=curTrack(iso);if(tr.n.length>=BUF_MIN)renderPCM(tr,1);}},30);
+}
+
+// ---------- main instrument ----------
+const main=new Player(s=>{syncPlay();if(s==='play'){kick();}else{draw();redrawScene();}});
+let glideAnim=null; // {from,to,start,ms}
+function syncPlay(){for(const id of ['play','play2']){const b=$(id);b.textContent=main.playing?'Pause':(main.pos>=DUR-0.05?'Replay':'Play');b.setAttribute('aria-label',main.playing?'Pause':'Play the chord');}}
+function loadMain(){main.load(curTrack());}
+
+// the WAV deliverable for the current selection (wav/<setting>/<molecule>_<H|D>.wav as mp3), via one <audio>
+const wav=$('wav');
+const wavKey=()=>curSet()+'/'+st.mol+'_'+st.iso;
+const wavOn=()=>!wav.paused&&!wav.ended;
+function syncWav(){
+  const w=WAVS[wavKey()],on=wavOn(),b=$('wavbtn');
+  b.textContent=on?'Stop the WAV render':'Play the WAV render';b.setAttribute('aria-pressed',String(on));b.disabled=!w;
+  $('wavname').innerHTML=w?('<b>'+w.wav+'</b> &middot; '+w.kb+' kB mp3'+(on?' &middot; playing':'')):'no WAV file for this setting';
+}
+function wavFollow(){ // the selection changed: a playing WAV jumps to the new file at the same moment
+  const w=WAVS[wavKey()];
+  if(wavOn()&&w&&wav.dataset.k!==wavKey()){const t=wav.currentTime;wav.src=w.src;wav.dataset.k=wavKey();wav.currentTime=t;const pr=wav.play();if(pr&&pr.catch)pr.catch(()=>{});}
+  else if(wavOn()&&!w)wav.pause();
+  syncWav();
+}
+function wavToggle(){
+  if(wavOn()){wav.pause();return;}
+  const w=WAVS[wavKey()];if(!w)return;
+  main.pause();test.pause();tour.pause();
+  if(wav.dataset.k!==wavKey()){wav.src=w.src;wav.dataset.k=wavKey();}
+  else if(wav.ended||wav.currentTime>=DUR-0.05)wav.currentTime=0;
+  const pr=wav.play();if(pr&&pr.catch)pr.catch(()=>toast('This browser could not play the WAV file'));
+}
+function seekTo(t){t=Math.max(0,Math.min(DUR,t));if(wavOn())wav.currentTime=t;else main.seek(t);redrawScene();}
+$('wavbtn').addEventListener('click',wavToggle);
+wav.addEventListener('play',()=>{syncWav();kick();});
+wav.addEventListener('pause',()=>{syncWav();draw();redrawScene();});
+wav.addEventListener('ended',()=>{syncWav();draw();redrawScene();});
+const playPos=()=>wavOn()?Math.min(DUR,wav.currentTime):main.now();
+
+// canvas: the spectrum roll. One drawing, two places: the instrument's "Data" view (#cv) and Graph 1 in The data (#cv2).
+const ROLLS=[$('cv'),$('cv2')];
+let cv=ROLLS[0],ctx=cv.getContext('2d');
+const rollSeen=new Map(ROLLS.map(c=>[c,true])); // Graph 1 is skipped while it is far off screen
+try{const io=new IntersectionObserver(es=>{let any=false;for(const e of es){rollSeen.set(e.target,e.isIntersecting);any=any||e.isIntersecting;}if(any)draw();},{rootMargin:'300px'});io.observe(ROLLS[1]);}catch(e){}
+const rollOn=c=>c===ROLLS[0]?st.view==='data':rollSeen.get(c)!==false;
+function useRoll(c){cv=c;ctx=c.getContext('2d');layout();}
+const W=1200,NU0=380,NU1=3300;
+let H=760;
+let PL=78,PR=74,PT=22,PB=44,K=1;
+function layout(){const cw=cv.clientWidth||W;const want=cw<620?1150:760;if(cv.height!==want)cv.height=want;H=cv.height;K=Math.max(1,Math.min(4,W/Math.max(280,cw)));PL=Math.round(46*K);PR=K<2.4?Math.round(50*K):Math.round(10*K);PT=Math.round(14*K);PB=Math.round(22*K);}
+const X=t=>PL+t/DUR*(W-PL-PR), Y=nu=>PT+(NU1-nu)/(NU1-NU0)*(H-PT-PB);
+const ZONES={ch:[2800,3100,'C-H stretch'],cd:[2050,2300,'C-D stretch'],co:[1650,1760,'C=O stretch'],musk:[1380,1550,'1,380-1,550']};
+const mono=(px,w)=>(w||400)+' '+Math.round(px*K)+'px "IBM Plex Mono", monospace';
+function tokens(){const c=getComputedStyle(document.documentElement),g=(k,d)=>c.getPropertyValue(k).trim()||d;
+  return {paper:g('--paper','#FBFAF9'),ink:g('--ink','#19238E'),ink2:g('--ink-2','#545BA9'),ink3:g('--ink-3','#A1A4CE'),rule:g('--rule','#D3D3E6'),tint:g('--tint','rgba(25,35,142,.07)')};}
+function draw(){
+  const pos0=playPos(),ck=pos0.toFixed(1)+' / '+DUR.toFixed(1)+' s';
+  $('clock').textContent=ck;$('clock2').textContent=ck;
+  if(document.activeElement!==$('scrub'))$('scrub').value=pos0.toFixed(2);
+  // the H<->D glide advances once per frame, for both canvases
+  let gk=0;if(glideAnim){gk=Math.min(1,(performance.now()-glideAnim.start)/glideAnim.ms);if(gk>=1)glideAnim=null;}
+  for(const c of ROLLS)if(rollOn(c)){useRoll(c);drawRoll(pos0,gk);}
+}
+function drawRoll(pos0,gk){
+  const T=tokens();
+  ctx.clearRect(0,0,W,H);ctx.fillStyle=T.paper;ctx.fillRect(0,0,W,H);
+  // spectral regions
+  ctx.font=mono(10.5,500);ctx.textBaseline='middle';
+  for(const k of ['ch','cd','co']){const [a,b,l]=ZONES[k];ctx.fillStyle=T.tint;ctx.fillRect(PL,Y(b),W-PL-PR,Y(a)-Y(b));ctx.fillStyle=T.ink2;ctx.textAlign='left';ctx.fillText(l,PL+6*K,(Y(a)+Y(b))/2);}
+  if(st.zone){const [a,b,l]=ZONES[st.zone];ctx.fillStyle=T.tint;ctx.fillRect(PL,Y(b),W-PL-PR,Y(a)-Y(b));ctx.fillRect(PL,Y(b),W-PL-PR,Y(a)-Y(b));
+    ctx.strokeStyle=T.ink;ctx.lineWidth=1.5*K;ctx.setLineDash([6*K,5*K]);ctx.strokeRect(PL+1,Y(b),W-PL-PR-2,Y(a)-Y(b));ctx.setLineDash([]);
+    ctx.fillStyle=T.ink;ctx.textAlign='left';ctx.fillText(l+' cm⁻¹',PL+6*K,Y(b)-8*K);}
+  // axes
+  ctx.strokeStyle=T.rule;ctx.lineWidth=1;ctx.fillStyle=T.ink2;ctx.font=mono(10.5);
+  for(let nu=500;nu<=3000;nu+=500){const y=Y(nu);ctx.beginPath();ctx.moveTo(PL,y);ctx.lineTo(W-PR,y);ctx.stroke();ctx.textAlign='right';ctx.fillText(String(nu),PL-6*K,y);
+    if(K<2.4){ctx.textAlign='left';ctx.fillText(Math.round(nu*HZ_PER_CM)+' Hz',W-PR+5*K,y);}}
+  ctx.strokeStyle=T.ink;ctx.beginPath();ctx.moveTo(PL,H-PB);ctx.lineTo(W-PR,H-PB);ctx.stroke();
+  ctx.textAlign='center';ctx.textBaseline='top';for(let t=0;t<=7;t++){ctx.fillText(t+' s',X(t),H-PB+6*K);}
+  ctx.textAlign='left';ctx.textBaseline='top';ctx.fillText('cm⁻¹',4*K,4*K);
+  // ghost: the other isotope's clean chord, so the shift is always visible
+  const other=st.iso==='H'?'D':'H', ghost=NOTES.clean[trackKey(st.mol,other)].n;
+  ctx.setLineDash([4*K,5*K]);ctx.lineWidth=1.3*K;ctx.strokeStyle=T.ink3;
+  for(const n of ghost){const y=Y(n[2]*CM_PER_BIN);ctx.beginPath();ctx.moveTo(X(n[0]),y);ctx.lineTo(X(n[1]),y);ctx.stroke();}
+  ctx.setLineDash([]);
+  const tr=curTrack(), clean=curSet()==='clean', bh=Math.max(3.2*K,1.4*(Y(0)-Y(CM_PER_BIN)));
+  const live=wavOn(), playing=main.playing||live, pos=pos0;
+  const src=glideAnim?NOTES.clean[trackKey(st.mol,glideAnim.from)]:tr;
+  for(const n of src.n){
+    let b=n[2];if(glideAnim&&n[4]!=null)b=n[2]*Math.pow(n[4]/n[2],gk);
+    const y=Y(b*CM_PER_BIN)-bh/2, on=pos>=n[0]&&pos<n[1]&&playing;
+    const a=clean?1:(0.25+0.75*n[3]/127);
+    ctx.globalAlpha=a*(on||!playing?1:0.75);
+    ctx.fillStyle=(clean&&!n[5])?T.ink3:T.ink;
+    const w=Math.max(1.5*K,X(n[1])-X(n[0]));
+    ctx.fillRect(X(n[0]),y,w,bh);
+    if(on){ctx.globalAlpha=0.18;ctx.fillRect(X(n[0]),y-2*K,w,bh+4*K);}
+  }
+  ctx.globalAlpha=1;
+  // the chord before the blur, drawn over the engine output as a thin line
+  if(!clean){ctx.lineWidth=1.2*K;ctx.strokeStyle=T.paper;
+    for(const n of NOTES.clean[trackKey(st.mol,st.iso)].n){const y=Y(n[2]*CM_PER_BIN);ctx.beginPath();ctx.moveTo(X(n[0]),y);ctx.lineTo(X(n[1]),y);ctx.stroke();}
+    ctx.lineWidth=0.8*K;ctx.strokeStyle=T.ink;ctx.setLineDash([2*K,2*K]);
+    for(const n of NOTES.clean[trackKey(st.mol,st.iso)].n){const y=Y(n[2]*CM_PER_BIN);ctx.beginPath();ctx.moveTo(X(n[0]),y);ctx.lineTo(X(n[1]),y);ctx.stroke();}
+    ctx.setLineDash([]);}
+  // labels on clean chords (skipped where they would collide; the full list is in the line table)
+  if(clean&&!glideAnim){ctx.font=mono(9.5,500);ctx.textAlign='right';ctx.textBaseline='bottom';let last=1e9;
+    for(const n of [...tr.n].sort((a,b)=>b[2]-a[2])){const y=Y(n[2]*CM_PER_BIN)-bh/2-1.5*K;if(Math.abs(y-last)<12*K)continue;last=y;
+      const txt=K<2.4?n[6]+'  '+n[7]:String(n[7]);ctx.fillStyle=T.paper;ctx.globalAlpha=0.9;const tw=ctx.measureText(txt).width;ctx.fillRect(X(DUR)-tw-6*K,y-11*K,tw+4*K,10.5*K);
+      ctx.globalAlpha=1;ctx.fillStyle=n[5]?T.ink:T.ink2;ctx.fillText(txt,X(DUR)-4*K,y);}}
+  // playhead
+  const px=X(pos);ctx.strokeStyle=T.ink;ctx.lineWidth=1.5*K;ctx.beginPath();ctx.moveTo(px,PT-4*K);ctx.lineTo(px,H-PB+3*K);ctx.stroke();
+  ctx.fillStyle=T.ink;ctx.beginPath();ctx.moveTo(px-5*K,PT-8*K);ctx.lineTo(px+5*K,PT-8*K);ctx.lineTo(px,PT);ctx.closePath();ctx.fill();
+}
+
+// ---------- sprites: pixel art in the shared ink palette (web/sprites.json, drawn with common/inksprite.js) ----------
+const SPR={};for(const k in SPRITE_DATA)SPR[k]=InkSprite.make(SPRITE_DATA[k]);
+const baked=new Map();
+function bakeLo(sp,f){ // a sprite frame at 1 canvas pixel per sprite pixel
+  f=f|0;const key=sp.id+':'+f;if(baked.has(key))return baked.get(key);
+  const c=document.createElement('canvas');c.width=sp.w;c.height=sp.h;const x=c.getContext('2d');
+  const n=sp.frames.length,rows=sp.frames[((f%n)+n)%n];
+  for(let j=0;j<rows.length;j++)for(let i=0;i<rows[j].length;i++){const ch=rows[j][i],col=sp.palette[ch];if(ch==='.'||!col)continue;x.fillStyle=col;x.fillRect(i,j,1,1);}
+  baked.set(key,c);return c;
+}
+function blit(c,sp,f,cx,cy){const im=bakeLo(sp,f|0);c.drawImage(im,Math.round(cx-(sp.w-1)/2),Math.round(cy-(sp.h-1)/2));}
+// A pixel layer over an SVG figure: drawn at low resolution, then scaled up by a whole number with no smoothing.
+class PixLayer{
+  constructor(id,vbw,vbh,units,minCss){this.cv=$(id);this.ctx=this.cv.getContext('2d');this.vbw=vbw;this.vbh=vbh;this.u=units;this.minCss=minCss||1.5;
+    this.lo=document.createElement('canvas');this.lc=this.lo.getContext('2d');this.ok=false;}
+  fit(){const r=this.cv.getBoundingClientRect();if(!r.width||!r.height){this.ok=false;return false;}
+    const dpr=window.devicePixelRatio||1,css=r.width/this.vbw,pxCss=Math.max(this.u*css,this.minCss);
+    this.S=Math.max(1,Math.round(pxCss*dpr));const dw=Math.round(r.width*dpr),dh=Math.round(r.height*dpr);
+    if(this.cv.width!==dw||this.cv.height!==dh){this.cv.width=dw;this.cv.height=dh;}
+    const lw=Math.ceil(dw/this.S),lh=Math.ceil(dh/this.S);if(this.lo.width!==lw||this.lo.height!==lh){this.lo.width=lw;this.lo.height=lh;}
+    this.k=css*dpr/this.S;this.ok=true;return true;}
+  begin(){if(!this.fit())return false;this.lc.clearRect(0,0,this.lo.width,this.lo.height);return true;}
+  halo(fn){ // draw sprites on a scratch layer, then lay a 1-pixel paper outline under them
+    const w=this.lo.width,h=this.lo.height,t=this.tmp||(this.tmp=document.createElement('canvas')),m=this.sil||(this.sil=document.createElement('canvas'));
+    if(t.width!==w||t.height!==h){t.width=m.width=w;t.height=m.height=h;}
+    const tc=t.getContext('2d'),mc=m.getContext('2d');tc.clearRect(0,0,w,h);fn(tc);
+    mc.globalCompositeOperation='source-over';mc.clearRect(0,0,w,h);mc.drawImage(t,0,0);mc.globalCompositeOperation='source-in';mc.fillStyle=PAL.W;mc.fillRect(0,0,w,h);mc.globalCompositeOperation='source-over';
+    for(const [dx,dy] of [[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[1,1],[-1,1],[1,-1]])this.lc.drawImage(m,dx,dy);
+    this.lc.drawImage(t,0,0);}
+  end(){const c=this.ctx;c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,this.cv.width,this.cv.height);c.imageSmoothingEnabled=false;c.drawImage(this.lo,0,0,this.lo.width*this.S,this.lo.height*this.S);}
+  x(v){return Math.round(v*this.k);} y(v){return Math.round(v*this.k);}
+}
+function pline(c,x0,y0,x1,y1,col,dash){ // Bresenham, 1 pixel wide
+  x0|=0;y0|=0;x1|=0;y1|=0;c.fillStyle=col;const dx=Math.abs(x1-x0),dy=-Math.abs(y1-y0),sx=x0<x1?1:-1,sy=y0<y1?1:-1;let e=dx+dy,i=0;
+  for(;;){if(!dash||(i++%dash[0])<dash[1])c.fillRect(x0,y0,1,1);if(x0===x1&&y0===y1)break;const e2=2*e;if(e2>=dy){e+=dy;x0+=sx;}if(e2<=dx){e+=dx;y0+=sy;}}
+}
+const GEOM={};for(const k of ORDER)GEOM[k]=molGeom(k);
+const PAL=InkSprite.PALETTE;
+// Draw one molecule. bond: pixels per bond length. vib: per-class amplitudes 0..1 and frequencies (Hz), or null.
+function drawMol(c,key,iso,cx,cy,bond,o){
+  o=o||{};const g=GEOM[key],rot=o.rot||0,cr=Math.cos(rot),sr=Math.sin(rot),t=o.t||0,v=o.vib,mini=!!o.mini;
+  const P=g.A.map((a,i)=>{let x=a.x*cr-a.y*sr,y=a.x*sr+a.y*cr,dx=0,dy=0;
+    if(v){
+      if(a.el==='H'){const p=g.A[a.par],px=p.x*cr-p.y*sr,py=p.x*sr+p.y*cr;let ux=x-px,uy=y-py;const L=Math.hypot(ux,uy)||1;ux/=L;uy/=L;
+        const s=v.XH.a*1.9*Math.sin(2*Math.PI*v.XH.f*t+i*0.7),b=v.BEND.a*1.6*Math.sin(2*Math.PI*v.BEND.f*t+i*1.3);
+        dx=ux*s-uy*b;dy=uy*s+ux*b;}
+      else if(a.el==='O'){const s=v.CO.a*1.6*Math.sin(2*Math.PI*v.CO.f*t);const L=Math.hypot(x,y)||1;dx=x/L*s;dy=y/L*s;}
+      else{const s=v.RING.a*1.2*Math.sin(2*Math.PI*v.RING.f*t+i*0.2);const L=Math.hypot(x,y)||1;dx=x/L*s;dy=y/L*s;}
+    }
+    return [Math.round(cx+x*bond+dx),Math.round(cy+y*bond+dy)];});
+  for(const b of g.B){
+    const [x0,y0]=P[b.a],[x1,y1]=P[b.b];
+    pline(c,x0,y0,x1,y1,b.cls==='XH'?PAL.B:PAL.K);
+    if(b.o===2){let nx=-(y1-y0),ny=x1-x0;const L=Math.hypot(nx,ny)||1;nx/=L;ny/=L;
+      if(b.cls==='ring'){const mx=(x0+x1)/2,my=(y0+y1)/2,cxx=cx-mx,cyy=cy-my;if(nx*cxx+ny*cyy<0){nx=-nx;ny=-ny;}
+        const off=mini?1:2,sh=0.22;pline(c,Math.round(x0+(x1-x0)*sh+nx*off),Math.round(y0+(y1-y0)*sh+ny*off),Math.round(x1-(x1-x0)*sh+nx*off),Math.round(y1-(y1-y0)*sh+ny*off),PAL.K);}
+      else{const off=mini?1:1.5;pline(c,Math.round(x0+nx*off),Math.round(y0+ny*off),Math.round(x1+nx*off),Math.round(y1+ny*off),PAL.K);pline(c,Math.round(x0-nx*off),Math.round(y0-ny*off),Math.round(x1-nx*off),Math.round(y1-ny*off),PAL.K);}}
+  }
+  g.A.forEach((a,i)=>{const [x,y]=P[i];let sp;const hi=o.isoOf?o.isoOf(i):iso; // isoOf: per-atom isotope while neutrons fly
+    if(mini){if(a.el==='H')sp=hi==='D'?SPR.miniD:SPR.miniH;else if(a.el==='O')sp=SPR.miniO;else return;}
+    else sp=a.el==='H'?(hi==='D'?SPR.atomD:SPR.atomH):(a.el==='O'?SPR.atomO:SPR.atomC);
+    if(o.only&&!o.only(a))return;
+    blit(c,sp,0,x,y);});
+  return P;
+}
+function molWidth(key,bond){const A=GEOM[key].A;let a=1e9,b=-1e9;for(const p of A){const r=Math.hypot(p.x,p.y);a=Math.min(a,-r);b=Math.max(b,r);}return Math.ceil((b-a)*bond)+4;}
+const BONDPX={acetophenone:12,exaltone:10,muscone:10}, BONDMINI={acetophenone:5,exaltone:4,muscone:4};
+
+// ---------- vibration: atoms wobble with the notes sounding at the playhead (real note lists) ----------
+const clsCache=new WeakMap();
+function noteClasses(tr,mol,iso){ // per note: [class, weight]; clean notes carry their assignment, blurred ones take the nearest line
+  let m=clsCache.get(tr);if(m)return m;const ls=MOLS[mol].lines[iso];
+  m=tr.n.map(n=>{if(n.length>6&&n[6])return [lineClass(n[6]),1];let best=ls[0],bd=1e9;for(const l of ls){const d=Math.abs(l.bin-n[2]);if(d<bd){bd=d;best=l;}}return [lineClass(best.label),1/(1+bd/3)];});
+  clsCache.set(tr,m);return m;
+}
+const vib={XH:{a:0,f:6},CO:{a:0,f:4},RING:{a:0,f:3},BEND:{a:0,f:2}};let vibOn=false, sounding=new Set();
+function updateVib(dt){
+  const playing=main.playing||wavOn();sounding=new Set();
+  const tgt={XH:[0,0],CO:[0,0],RING:[0,0],BEND:[0,0]};
+  if(playing){const pos=playPos(),tr=curTrack(),cl=noteClasses(tr,st.mol,st.iso);
+    tr.n.forEach((n,i)=>{if(n[0]<=pos&&pos<n[1]){const [c,w]=cl[i],ww=w*n[3]/127;tgt[c][0]+=ww;tgt[c][1]+=ww*n[2]*CM_PER_BIN;sounding.add(n[2]);}});}
+  const k=1-Math.exp(-dt/0.09);let any=false;
+  for(const c in vib){const [s,cm]=tgt[c],a=reduced()?0:Math.min(1,s/1.1);vib[c].a+=(a-vib[c].a)*k;if(s>0)vib[c].f=Math.max(0.8,Math.min(8,cm/s/420));if(vib[c].a>0.02)any=true;}
+  vibOn=any;
+}
+
+// ---------- Plate I: puffs of odorant riding a sniff, two docked odorants, and the loupe ----------
+const L1=new PixLayer('px1',640,450,1.6,1.5), L1b=new PixLayer('px1b',640,450,1.6,1.0), L2=new PixLayer('px2',360,400,1.6,1.5), L3=new PixLayer('px3',360,300,1.5,1.5), L4=new PixLayer('px4',520,320,1.5,1.5);
+const paths={s1:$('s1'),s2:$('s2'),s3:$('s3')}, plen={};for(const k in paths)plen[k]=paths[k].getTotalLength();
+const LAND=[[200,148],[318,147]], LOUPE={x:540,y:92,r:66,my:84}; // the loupe magnifies the odorant docked at LAND[1]
+let puffs=[], docked=[], dockB=null, puffSeq=0, swapAnim=null;
+function sniff(){
+  const now=performance.now(),id=++puffSeq;puffs=[];
+  const plan=[['s3',0,0],['s1',220,null],['s3',480,1],['s2',650,null],['s1',900,null]];
+  if(reduced()){docked=[{x:LAND[0][0],y:LAND[0][1],rot:0.3,li:0,t:-1e9},{x:LAND[1][0],y:LAND[1][1],rot:-0.5,li:1,t:-1e9}];dockB={t0:now-5000,from:[110,392],to:[128,322]};redrawScene();return;}
+  docked=[];dockB=null;
+  plan.forEach(([p,delay,li],i)=>puffs.push({p,t0:now+delay,dur:p==='s3'?2600:3300,li,land:li==null?null:LAND[li],rot0:i*1.3,spin:(i%2?1:-1)*1.6,id}));
+  for(const k in paths)paths[k].classList.add('on');
+  kick();
+}
+function puffStep(now){
+  for(const q of puffs){const u=(now-q.t0)/q.dur;if(u>=1&&q.land&&!q.done){q.done=true;docked.push({x:q.land[0],y:q.land[1],rot:q.rot0+q.spin*q.dur/1000,li:q.li,t:now});
+      if(!dockB)dockB={t0:now,from:[110,392],to:[128,322]};}}
+  puffs=puffs.filter(q=>now-q.t0<q.dur);
+  if(!puffs.length)for(const k in paths)paths[k].classList.remove('on');
+}
+// largest distance of any atom from the molecule's centre, in bond lengths
+const spanCache={};function spanBonds(key){if(spanCache[key])return spanCache[key];let m=0;for(const p of GEOM[key].A)m=Math.max(m,Math.hypot(p.x,p.y));return spanCache[key]=m;}
+// H <-> D swap: one neutron flies into (or out of) every hydrogen, staggered; the atom changes when its neutron arrives
+const N_FLY=460;function nDelay(i){return 80+((i*137)%520);}
+function isoAnim(i){const a=swapAnim;if(!a)return st.iso;const el=performance.now()-a.t0;return el<nDelay(i)+(a.to==='D'?N_FLY:0)?a.from:a.to;}
+function drawPlate1(now,t){
+  if(!L1.begin())return;
+  const sb=spanBonds(st.mol),gapLo=Math.abs(L1.x(LAND[1][0])-L1.x(LAND[0][0]));
+  // docked odorants: up to 2 px per bond bigger than the ones in flight, as far as the gap between the landing spots allows
+  const bd=Math.max(BONDMINI[st.mol]-1,Math.min(BONDMINI[st.mol]+1,Math.floor((gapLo-6)/(2*sb))));
+  const room=molWidth(st.mol,bd)+2<=gapLo;
+  L1.halo(c=>{
+    for(const q of puffs){const u=(now-q.t0)/q.dur;if(u<0)continue;const e=0.05+0.95*(1-Math.pow(1-u,1.7));
+      const pt=paths[q.p].getPointAtLength(Math.min(1,e)*plen[q.p]);
+      let x=pt.x,y=pt.y;if(q.land&&u>0.85){const w=(u-0.85)/0.15;x+=(q.land[0]-x)*w;y+=(q.land[1]-y)*w;}
+      drawMol(c,st.mol,st.iso,L1.x(x),L1.y(y),BONDMINI[st.mol],{mini:true,rot:q.rot0+q.spin*(now-q.t0)/1000});}
+    docked.forEach(d=>{if(d.li===1||room||docked.length<2)drawMol(c,st.mol,st.iso,L1.x(d.x),L1.y(d.y),bd,{mini:true,rot:d.rot,vib:vibOn?vib:null,t,isoOf:isoAnim});});
+  });
+  L1.end();
+  if(L1b.begin()){drawLoupe(now,t);L1b.end();}
+}
+// the loupe: the odorant at LAND[1], magnified roughly 1e7 times, sitting on the mucus; it wobbles with the notes.
+// It has its own pixel layer, allowed finer pixels than the plate (1 CSS px), so it still shows atoms on a phone.
+function drawLoupe(now,t){
+  const d=docked.find(q=>q.li===1);if(!d)return;const Lx=L1b;
+  const c=Lx.lc,R=LOUPE.r*Lx.k,cx=Lx.x(LOUPE.x),cy0=Lx.y(LOUPE.y),sb=spanBonds(st.mol);
+  const bond=Math.max(3,Math.min(13,Math.floor((2*R-12)/(2*sb)))),mini=bond<(st.mol==='acetophenone'?7:9);
+  let dy=0;const age=now-d.t;if(age<700&&!reduced()){const e=1-Math.pow(1-Math.max(0,age)/700,3);dy=-(1-e)*R*1.6;}
+  const cy=Lx.y(LOUPE.my)+Math.round(dy);let P=null;
+  c.save();c.beginPath();c.arc(cx,cy0,R-1,0,2*Math.PI);c.clip();
+  Lx.halo(h=>{P=drawMol(h,st.mol,st.iso,cx,cy,bond,{mini,rot:0,vib:vibOn?vib:null,t,isoOf:isoAnim});});
+  if(swapAnim&&P&&!reduced()){const el=now-swapAnim.t0;
+    GEOM[st.mol].A.forEach((a,i)=>{if(a.el!=='H')return;let u=(el-nDelay(i))/N_FLY;if(u<0||u>1)return;
+      if(swapAnim.to==='H')u=1-u;const e=1-Math.pow(1-u,2),[x,y]=P[i];let ux=x-cx,uy=y-cy;const L=Math.hypot(ux,uy)||1;ux/=L;uy/=L;
+      const far=R*0.95;blit(c,SPR.neutron,0,x+ux*far*(1-e),y+uy*far*(1-e));});}
+  c.restore();
+}
+// ---------- Plate II, Fig. b: a molecule drops into the mucus and binds a cilium ----------
+// once it binds, a burst of spikes runs up the receptor neuron's axon and the bulb on Plate I flashes (an illustration)
+const AX=$('fb-ax'),AXL=AX.getTotalLength(),BULB=document.querySelector('#plate1 [data-s="9"]');
+const FIRE0=1500,SPK=900,NSPK=3,SPKGAP=260,FIRE_END=FIRE0+SPK+NSPK*SPKGAP+500;
+function drawFigB(now,t){
+  if(!L2.begin())return;const bp=BONDMINI[st.mol];
+  if(dockB)L2.halo(c=>{let u=Math.min(1,(now-dockB.t0)/1500);if(reduced())u=1;const e=1-Math.pow(1-u,3);
+    const x=dockB.from[0]+(dockB.to[0]-dockB.from[0])*e,y=dockB.from[1]+(dockB.to[1]-dockB.from[1])*e;
+    drawMol(c,st.mol,st.iso,L2.x(x),L2.y(y),bp+1,{mini:true,rot:(1-e)*2.4+0.2,vib:vibOn?vib:null,t,isoOf:isoAnim});
+    if(!reduced()){const el=now-dockB.t0-FIRE0;
+      for(let k=0;k<NSPK;k++){const w=(el-k*SPKGAP)/SPK;if(w<0||w>1)continue;const pt=AX.getPointAtLength(w*AXL);
+        blit(c,SPR.spike,InkSprite.frameAt(SPR.spike,t),L2.x(pt.x),L2.y(pt.y));}}});
+  const el=dockB?now-dockB.t0-FIRE0:-1;
+  if(BULB)BULB.classList.toggle('fire',!reduced()&&el>=SPK*0.9&&el<SPK+(NSPK-1)*SPKGAP+420);
+  L2.end();
+}
+// ---------- Plate II, Fig. c: the same molecule in the receptor pocket, with its shape outline ----------
+const envCache=new Map();
+function shapeOutline(key,bond){ // outline of the molecule's silhouette grown by 3 px: identical for H and D (same atom sizes)
+  const k=key+':'+bond;if(envCache.has(k))return envCache.get(k);
+  const n=140,cv2=document.createElement('canvas');cv2.width=cv2.height=n;const c=cv2.getContext('2d');
+  drawMol(c,key,'H',n/2,n/2,bond,{});const d=c.getImageData(0,0,n,n).data,on=(x,y)=>x>=0&&y>=0&&x<n&&y<n&&d[(y*n+x)*4+3]>0;
+  const grow=new Uint8Array(n*n),R=4;
+  for(let y=0;y<n;y++)for(let x=0;x<n;x++)if(on(x,y))for(let j=-R;j<=R;j++)for(let i=-R;i<=R;i++)if(i*i+j*j<=R*R+1){const xx=x+i,yy=y+j;if(xx>=0&&yy>=0&&xx<n&&yy<n)grow[yy*n+xx]=1;}
+  const pts=[];for(let y=1;y<n-1;y++)for(let x=1;x<n-1;x++)if(grow[y*n+x]&&(!grow[y*n+x-1]||!grow[y*n+x+1]||!grow[(y-1)*n+x]||!grow[(y+1)*n+x]))pts.push([x-n/2,y-n/2]);
+  envCache.set(k,pts);return pts;
+}
+function drawFigC(now,t){
+  if(!L3.begin())return;const c=L3.lc,bp=BONDPX[st.mol],cx=L3.x(174),cy=L3.y(138);
+  c.fillStyle=PAL.B;for(const [x,y] of shapeOutline(st.mol,bp))if(((x*7+y*13)&3)<2)c.fillRect(cx+x,cy+y,1,1);
+  L3.halo(h=>drawMol(h,st.mol,st.iso,cx,cy,bp,{vib:vibOn?vib:null,t}));
+  L3.end();
+}
+// ---------- Plate II, Fig. d (HYPOTHESIS): inelastic electron tunnelling across the receptor ----------
+const DY0=290,DK=0.5,TOL=15; // y of 0 meV, px per meV, matching window +-meV (schematic)
+const yE=e=>DY0-e*DK;
+let gap=372, elecUntil=0, elecT0=0;
+function fig_d_update(){
+  const ls=MOLS[st.mol].lines[st.iso], other=MOLS[st.mol].lines[st.iso==='H'?'D':'H'], yD=yE(gap), m=gapMatch(ls,gap,TOL);
+  $('d-don').setAttribute('transform','translate(0 '+yD+')');
+  $('d-band').setAttribute('y',(yD-TOL*DK).toFixed(1));
+  $('d-el').setAttribute('d','M134 '+yD+' H296');
+  $('d-in').setAttribute('d','M134 '+yD+' C190 '+yD+' 236 '+DY0+' 296 '+DY0);
+  $('d-in').style.stroke=m?'#19238E':'#A1A4CE';$('d-el').style.stroke=m?'#A1A4CE':'#19238E';
+  const gl=$('d-gap').children;gl[0].setAttribute('y1',yD+3);gl[1].setAttribute('y',((yD+DY0)/2+4).toFixed(1));
+  let h='';
+  for(const l of other)if(l.h)h+='<line x1="420" x2="'+(420+(l.strength==='s'?58:l.strength==='m'?44:32))+'" y1="'+yE(meV(l.nu)).toFixed(1)+'" y2="'+yE(meV(l.nu)).toFixed(1)+'" stroke="#A1A4CE" stroke-width="1" stroke-dasharray="2 3"/>';
+  for(const l of ls){const y=yE(meV(l.nu)).toFixed(1),len=l.strength==='s'?58:l.strength==='m'?44:32,hit=m&&m.l===l;
+    h+='<line class="rung" data-bin="'+l.bin+'" x1="420" x2="'+(420+len)+'" y1="'+y+'" y2="'+y+'" stroke="'+(l.h?'#19238E':'#A1A4CE')+'" stroke-width="'+(hit?3.6:2)+'"/>';
+    if(hit)h+='<text class="pl-t" x="'+(426+len)+'" y="'+(+y+3.5)+'" style="fill:#19238E">'+Math.round(meV(l.nu))+'</text>';}
+  $('d-comb').innerHTML=h;
+  $('gapv').textContent=gap+' meV';
+  $('d-kick').textContent=m?('+1 quantum, ħω = '+Math.round(meV(m.l.nu))+' meV'):'';
+  $('d-read').innerHTML=m?('Gap '+gap+' meV matches the <b>'+m.l.label+'</b> line, '+Math.round(m.l.nu)+' cm⁻¹ = '+Math.round(meV(m.l.nu))+' meV: in the hypothesis the electron can cross, and this receptor would fire.')
+    :('No '+(st.iso==='H'?'':'deuterated ')+'line within '+TOL+' meV of '+gap+' meV: the electron has nowhere to go, so in the hypothesis this receptor stays silent'+(gapMatch(other,gap,TOL)?(', though the '+(st.iso==='H'?'deuterated':'normal')+' molecule would set it off.'):'.'));
+  return m;
+}
+let dMatch=null, kickShown=-1;
+// in the hypothesis the crossing electron hands ONE vibrational quantum to the odorant: the matching mode (the line under
+// the gap, from the same line list) gets a kick while it crosses, then rings down. Illustration of the idea, not a simulation.
+function drawFigD(now,t){
+  if(!L4.begin())return;const c=L4.lc,bp=BONDPX[st.mol]-1,cx=L4.x(214),cy=L4.y(186);
+  const yD=yE(gap),active=now<elecUntil||main.playing||wavOn(),ph=active?((now-elecT0)/1700)%1:0;
+  let kq=0;if(active&&dMatch&&!reduced())kq=ph<0.35?0:(ph<0.75?(ph-0.35)/0.4:1-(ph-0.75)/0.25);
+  let v=vibOn?vib:null;
+  if(kq>0.02){const cls=lineClass(dMatch.l.label);v={};for(const k in vib)v[k]={a:vibOn?vib[k].a:0,f:vib[k].f};
+    v[cls]={a:Math.max(v[cls].a,kq),f:Math.max(0.8,Math.min(8,dMatch.l.nu/420))};}
+  L4.halo(h=>drawMol(h,st.mol,st.iso,cx,cy,bp,{vib:v,t,isoOf:isoAnim}));
+  const ko=Math.round(kq*10)/10;if(ko!==kickShown){kickShown=ko;$('d-kick').setAttribute('opacity',String(ko));}
+  // rungs light while their note sounds
+  for(const r of $('d-comb').querySelectorAll('.rung')){const b=+r.dataset.bin;let on=false;for(const s of sounding)if(Math.abs(s-b)<=1){on=true;break;}r.classList.toggle('on',on);}
+  let ex=L4.x(120),ey=L4.y(yD)-6,f=InkSprite.frameAt(SPR.electron,t);
+  if(active&&!reduced()){
+    if(dMatch){const u=Math.min(1,ph/0.75),p=$('d-in'),pt=p.getPointAtLength(u*p.getTotalLength());ex=L4.x(pt.x);ey=L4.y(pt.y)-6;}
+    else{const u=ph<0.5?ph/0.5:(1-ph)/0.5,x=134+(206-134)*Math.min(1,u);ex=L4.x(x);ey=L4.y(yD)-6;if(u>0.85)blit(c,SPR.cross,0,L4.x(214),L4.y(yD)-8);}
+  }
+  blit(c,SPR.electron,f,ex,ey);
+  L4.end();
+}
+
+// ---------- the loupe's live caption: what the magnified odorant is doing, from the same note lists you hear ----------
+let lpLast='';
+function loupeRead(now){
+  const m=MOLS[st.mol],isH=st.iso==='H',nm=isH?m.name.toLowerCase():m.d_name;let h;
+  if(swapAnim){const toD=swapAnim.to==='D',fa=toD?m.formula_h:m.formula_d,fb=toD?m.formula_d:m.formula_h;
+    h='<b>'+(toD?'+':'−')+m.n_h+' neutrons</b>: '+fa+' ('+molMass(fa).toFixed(1)+' u) becomes '+fb+' ('+molMass(fb).toFixed(1)+' u). Same size, same shape; every bond to a '+(toD?'deuterium':'hydrogen')+' now vibrates 1.36 times '+(toD?'slower':'faster')+'.';}
+  else if(!docked.some(d=>d.li===1))h='<b>Sniffing</b>: the odorant rides the airflow up into the olfactory cleft (6). Most of the air goes past below.';
+  else if(main.playing||wavOn()){const tr=curTrack(),pos=playPos();let best=null,k=0;
+    for(const n of tr.n)if(n[0]<=pos&&pos<n[1]){k++;if(!best||n[3]>best[3])best=n;}
+    if(!best)h='<b>Between notes</b>: the atoms settle.';
+    else{let lab,cm;if(best.length>6&&best[6]){lab=best[6];cm=best[7];}
+      else{let bl=null,bd=1e9;for(const l of m.lines[st.iso]){const d=Math.abs(l.bin-best[2]);if(d<bd){bd=d;bl=l;}}lab=bl.label+(bd>1?' (nearest line)':'');cm=Math.round(best[2]*CM_PER_BIN);}
+      h='<b>Sounding</b>: '+lab+', '+Math.round(cm).toLocaleString('en-US')+' cm⁻¹ = '+Math.round(cm*HZ_PER_CM)+' Hz'+(k>1?' (loudest of '+k+' notes)':'')+'. The magnified atoms move along those bonds.';}}
+  else h='<b>Detail of 6</b>: one '+nm+' molecule on the mucus, '+m.n_h+(isH?' hydrogens (white)':' deuteriums (dark)')+'. Press <b>Play</b> and its atoms wobble with the notes; <b>Swap</b> flies a neutron into every hydrogen.';
+  if(h!==lpLast){lpLast=h;$('lp-read').innerHTML=h;}
+}
+// ---------- sound and personality: a two-part sniff, the mascot sniffing, and the blind-test nose reacting ----------
+let noiseBuf=null;
+function sniffSound(){ // filtered noise, like air drawn through a nostril: a short sniff, then a longer one (user-initiated)
+  const ac=audio();
+  if(!noiseBuf){const n=Math.round(ac.sampleRate*1.2);noiseBuf=ac.createBuffer(1,n,ac.sampleRate);const d=noiseBuf.getChannelData(0);let b=0;
+    for(let i=0;i<n;i++){const w=Math.random()*2-1;b=0.97*b+0.03*w;d[i]=0.55*w+1.6*b;}}
+  const t=ac.currentTime+0.02;
+  for(const [a,dur,pk] of [[0,0.2,1.5],[0.28,0.42,1.9]]){
+    const s=ac.createBufferSource(),bp=ac.createBiquadFilter(),g=ac.createGain();s.buffer=noiseBuf;
+    bp.type='bandpass';bp.Q.value=0.8;bp.frequency.setValueAtTime(650,t+a);bp.frequency.exponentialRampToValueAtTime(2300,t+a+dur);
+    g.gain.setValueAtTime(0,t+a);g.gain.linearRampToValueAtTime(pk,t+a+dur*0.35);g.gain.linearRampToValueAtTime(0,t+a+dur);
+    s.connect(bp);bp.connect(g);g.connect(master);s.start(t+a,Math.random()*0.5);s.stop(t+a+dur+0.03);}
+}
+let MASCOT_SRC=null;
+function mascotSniff(ms){if(reduced())return;const im=$('mascot');if(!MASCOT_SRC)MASCOT_SRC=[0,1].map(f=>InkSprite.toDataURL(SPR.mascot,f,2));
+  im.src=MASCOT_SRC[1];clearTimeout(im._t);im._t=setTimeout(()=>{im.src=MASCOT_SRC[0];},ms);}
+let mood=null;const MOOD_MS=1800;let noseUntil=0; // the test's nose sniffs while a sample plays, or for a moment when you click it
+function drawSniffer(now,t){ // the blind test's nose: sniffs while a sample plays; a tick or a cross after you answer
+  const cvs=$('sniffer');if(!cvs)return;const sp=SPR.mascot,dpr=window.devicePixelRatio||1,S=Math.max(1,Math.round(2*dpr)),w=sp.w*S,h=sp.h*S;
+  if(cvs.width!==w||cvs.height!==h){cvs.width=w;cvs.height=h;}
+  const c=cvs.getContext('2d');c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,w,h);c.imageSmoothingEnabled=false;
+  const sn=test.playing||now<noseUntil;c.drawImage(bakeLo(sp,sn&&!reduced()?Math.floor(t*2.5)%2:(sn?1:0)),0,0,w,h);
+  if(mood&&now-mood.t0<MOOD_MS){const g=mood.ok?SPR.tick:SPR.cross;c.drawImage(bakeLo(g,0),S,S,g.w*S,g.h*S);}
+}
+
+// ---------- one animation loop for the roll, the plates and the vials ----------
+let raf=0,lastT=0;const T0=performance.now();
+function busy(now){return main.playing||wavOn()||test.playing||!!glideAnim||puffs.length>0||now<elecUntil||vibOn||
+  (dockB&&now-dockB.t0<FIRE_END)||!!swapAnim||docked.some(d=>now-d.t<800)||(mood&&now-mood.t0<MOOD_MS)||now<noseUntil||now-gridPulse<PULSE_MS;}
+function frame(now){
+  raf=0;const dt=Math.max(0,Math.min(0.1,(now-(lastT||now))/1000));lastT=now;const t=Math.max(0,(now-T0)/1000);
+  draw();updateVib(dt);puffStep(now);
+  if(swapAnim&&now-swapAnim.t0>N_FLY+700)swapAnim=null;
+  if(sceneVisible()){drawPlate1(now,t);loupeRead(now);}
+  drawFigB(now,t);drawFigC(now,t);drawFigD(now,t);drawVials(t);drawSniffer(now,t);if(now-gridPulse<PULSE_MS+100)gridDraw();
+  if(busy(now))raf=requestAnimationFrame(frame);else lastT=0;
+}
+function kick(){if(!raf)raf=requestAnimationFrame(frame);}
+function redrawScene(){kick();}
+const sceneVisible=()=>st.view==='scene';
+function poke(ms){elecT0=performance.now();elecUntil=elecT0+(ms||3600);kick();}
+
+// readouts
+function refresh(){
+  const m=MOLS[st.mol], set=SETS.find(s=>s.key===curSet()), tr=curTrack();
+  $('molname').innerHTML=(st.iso==='H'?m.name:m.d_name_cap)+'<small>'+(st.iso==='H'?m.formula_h:m.formula_d)+' · '+m.n_h+(st.iso==='H'?' hydrogens':' deuteriums')+' · '+molMass(st.iso==='H'?m.formula_h:m.formula_d).toFixed(1)+' <span class="nc">u</span></small><span class="odour">'+ODOUR[st.mol][st.iso]+'</span>';
+  $('p2-mol').textContent=(st.iso==='H'?m.name:m.d_name)+' · '+(st.iso==='H'?m.formula_h:m.formula_d);
+  document.querySelectorAll('[data-iso]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.iso===st.iso)));
+  document.querySelectorAll('#g-mol button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mol===st.mol)));
+  document.querySelectorAll('#g-str button').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.str==='off'?null:+b.dataset.str)===st.str)));
+  document.querySelectorAll('#g-reach button').forEach(b=>{b.setAttribute('aria-pressed',String(st.str!=null&&+b.dataset.reach===st.reach));b.disabled=st.str==null||!availableSet(setKey(st.str,+b.dataset.reach));});
+  $('r-engine').textContent=set.key==='clean'?'none: the input score, before any quantum step':'blur-midi-v1 · Atlas statevector simulator (no QPU)';
+  $('r-set').textContent=set.key==='clean'?'no blur':('strength '+set.strength+' · reach '+set.reach+' ('+reachName(set.reach).toLowerCase()+')'+' · qubits param 20 · resolution 1 tick');
+  $('r-job').textContent=set.job_id||'none (classical input)';
+  const ti=META.tracks.findIndex(t=>t.molecule===st.mol&&t.isotope===st.iso);
+  $('r-track').textContent=(st.iso==='H'?m.name:m.d_name)+' · track '+(ti+1)+' of 6 · '+tr.n.length+' notes'+(set.key==='clean'?'':' out (from '+NOTES.clean[trackKey(st.mol,st.iso)].n.length+' in)');
+  const q=META.tracks[ti];
+  $('r-qubits').textContent=set.key==='clean'?'none yet (the blur uses '+q.qubits+' per pass)':(q.qubits+' per pass, computed: '+q.pitch_qubits+' pitch ('+q.pitch_rows_est+' rows) + '+q.time_qubits+' time ('+q.time_steps+' steps)');
+  // shift line
+  const lh=m.lines.H, ld=m.lines.D, topH=Math.max(...lh.map(l=>l.nu)), topD=Math.max(...ld.map(l=>l.nu)), moved=lh.filter(l=>l.h).length;
+  $('shift').innerHTML='Top line: <b>'+Math.round(st.iso==='H'?topH:topD)+' cm⁻¹ = '+Math.round((st.iso==='H'?topH:topD)*HZ_PER_CM)+' Hz</b> · '+moved+' of '+lh.length+' lines move a hydrogen · H→D: '+Math.round(topH)+' → '+Math.round(topD)+' cm⁻¹ ('+semis(topD/topH).toFixed(2)+' semitones)';
+  $('legend').innerHTML=set.key==='clean'
+    ?'<span><i style="background:var(--ink)"></i>moves when H becomes D</span><span><i style="background:var(--ink-3)"></i>heavy atoms, stays put</span><span><i style="border-top:2px dashed var(--ink-3);height:0"></i>the other isotope</span>'
+    :'<span><i style="background:var(--ink)"></i>engine output notes (darker = louder)</span><span><i style="border-top:2px dotted var(--ink);height:0"></i>this chord before the blur</span><span><i style="border-top:2px dashed var(--ink-3);height:0"></i>the other isotope</span>';
+  // Graph 1 in The data carries the same legend, shift line and selection as the instrument
+  $('legend2').innerHTML=$('legend').innerHTML;$('shift2').innerHTML=$('shift').innerHTML;
+  $('roll-now').innerHTML='<b>'+(st.iso==='H'?m.name:m.d_name_cap)+'</b> &middot; '+(set.key==='clean'?'no blur':'blur '+set.strength+' &times; '+reachName(set.reach).toLowerCase());
+  $('lt-mol').innerHTML='<b>'+m.name+'</b> &middot; '+m.lines.H.length+' lines';
+  wavFollow();
+  $('t-mol').textContent=m.name.toLowerCase();$('t-set').textContent=set.key==='clean'?'no blur':'quantum blur, strength '+set.strength+', reach '+set.reach;
+  dMatch=fig_d_update();
+  lineTable();gridPulse=performance.now();gridDraw();jobRows();draw();redrawScene();
+}
+function lineTable(){
+  const m=MOLS[st.mol];let h='<thead><tr><th>Vibration (normal)</th><th>H cm⁻¹</th><th>D cm⁻¹ (est.)</th><th>H Hz</th><th>D Hz</th></tr></thead><tbody>';
+  for(const l of [...m.lines.H].sort((a,b)=>b.nu-a.nu)){const d=m.lines.D.find(x=>x.nu_h===l.nu_h&&x.idx===l.idx);
+    h+='<tr><td>'+l.label+(l.h?'':' (heavy atoms)')+'</td><td>'+l.nu+'</td><td class="'+(l.h?'mv':'')+'">'+Math.round(d.nu)+'</td><td>'+Math.round(l.hz)+'</td><td class="'+(l.h?'mv':'')+'">'+Math.round(d.hz)+'</td></tr>';}
+  $('ltable').innerHTML=h+'</tbody>';
+}
+
+// controls
+function buildSeg(id,items){const el=$(id);el.innerHTML='';for(const [label,attrs] of items){const b=document.createElement('button');b.type='button';b.textContent=label;for(const k in attrs)b.dataset[k]=attrs[k];el.appendChild(b);}return el;}
+buildSeg('g-mol',ORDER.map(k=>[MOLS[k].short,{mol:k}]));
+buildSeg('g-str',[['Off',{str:'off'}],...strengths.map(s=>[String(s),{str:String(s)}])]);
+const reachName=r=>r===0?'Local':(r===1?'Global':(r===0.5?'Halfway':'Reach '+r));
+buildSeg('g-reach',reaches.map(r=>[reachName(r),{reach:String(r)}]));
+$('g-mol').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;st.mol=b.dataset.mol;st.zone=null;loadMain();refresh();newPair();prerender();sniff();poke();});
+$('g-str').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;st.str=b.dataset.str==='off'?null:+b.dataset.str;if(st.str!=null&&!availableSet(curSet()))st.reach=reaches.find(r=>availableSet(setKey(st.str,r)));loadMain();refresh();newPair();prerender();});
+$('g-reach').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.disabled)return;st.reach=+b.dataset.reach;loadMain();refresh();newPair();prerender();});
+$('g-view').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;setView(b.dataset.view);});
+function setView(v){st.view=v;$('v-scene').hidden=v!=='scene';$('v-key').hidden=v!=='scene';$('v-data').hidden=v!=='data';
+  document.querySelectorAll('#g-view button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===v)));
+  $('viewcap').innerHTML=v==='scene'?'<b>Plate I</b> &middot; the nose in section':'<b>Data</b> &middot; the chord as a spectrum roll';draw();redrawScene();}
+function setIso(iso){
+  if(iso===st.iso)return;const from=st.iso;st.iso=iso;if(!reduced())swapAnim={from,to:iso,t0:performance.now()};
+  if(curSet()==='clean'){
+    if(main.playing&&!main.dense)main.glide(curTrack(),reduced()?0:0.8);else main.load(curTrack());
+    if(!reduced()){glideAnim={from,to:iso,start:performance.now(),ms:800};kick();}
+  }else loadMain();
+  refresh();poke();
+}
+document.querySelectorAll('[data-iso]').forEach(b=>b.addEventListener('click',()=>setIso(b.dataset.iso)));
+$('swap').addEventListener('click',()=>setIso(st.iso==='H'?'D':'H'));
+$('play').addEventListener('click',()=>{test.pause();tour.pause();wav.pause();if(main.playing)main.pause();else{main.load(curTrack());main.play();if(!docked.length)sniff();kick();}});
+$('restart').addEventListener('click',()=>{ // back to 0 s and play from there (the WAV render if that is what is sounding)
+  if(wavOn()){wav.currentTime=0;draw();redrawScene();return;}
+  seekTo(0);if(!main.playing)$('play').click();draw();});
+$('sniff').addEventListener('click',()=>{sniff();sniffSound();mascotSniff(1400);poke();});
+$('scrub').addEventListener('input',e=>{seekTo(+e.target.value);draw();});
+$('gap').addEventListener('input',e=>{gap=+e.target.value;dMatch=fig_d_update();poke(2600);});
+// scrub on either spectrum roll (the instrument's Data view or Graph 1): click or drag moves the playhead,
+// Space plays or pauses, the arrows scrub by 0.5 s
+function tAt(e,c){useRoll(c);const r=c.getBoundingClientRect();const x=(e.clientX-r.left)/r.width*W;return (x-PL)/(W-PL-PR)*DUR;}
+for(const c of ROLLS){let drag=false;
+  c.addEventListener('pointerdown',e=>{drag=true;try{c.setPointerCapture(e.pointerId);}catch(_){}seekTo(tAt(e,c));draw();});
+  c.addEventListener('pointermove',e=>{if(drag){seekTo(tAt(e,c));draw();}});
+  c.addEventListener('pointerup',()=>{drag=false;});c.addEventListener('pointercancel',()=>{drag=false;});
+  c.addEventListener('keydown',e=>{
+    if(e.key===' '){e.preventDefault();$('play').click();}
+    else if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();seekTo(playPos()+(e.key==='ArrowLeft'?-0.5:0.5));draw();}
+  });}
+// Graph 1's own transport is the instrument's: the same buttons, one state
+$('play2').addEventListener('click',()=>$('play').click());
+$('restart2').addEventListener('click',()=>$('restart').click());
+$('swap2').addEventListener('click',()=>$('swap').click());
+// the S shortcut (named on the Swap button) works anywhere on the page, in the Scene view too, except while typing
+document.addEventListener('keydown',e=>{
+  if((e.key!=='s'&&e.key!=='S')||e.ctrlKey||e.metaKey||e.altKey||e.defaultPrevented)return;
+  const t=e.target;if(t&&(t.isContentEditable||/^(TEXTAREA|SELECT)$/.test(t.tagName)||(t.tagName==='INPUT'&&!/^(range|checkbox|radio|button)$/.test(t.type))))return;
+  e.preventDefault();$('swap').click();
+});
+document.querySelectorAll('[data-load],[data-zone]').forEach(b=>b.addEventListener('click',()=>{
+  if(b.dataset.load){st.mol=b.dataset.load;loadMain();newPair();sniff();}
+  st.zone=b.dataset.zone||null;refresh();
+  // a shaded band shows on the spectrum roll (Graph 1 in The data, and the instrument's Data view); a loaded molecule on Plate I
+  (st.zone?$('g-roll'):document.querySelector('.stage')).scrollIntoView({behavior:reduced()?'auto':'smooth',block:'start'});
+  toast(b.dataset.zone?'Shaded on the instrument':'Loaded '+MOLS[st.mol].name);
+}));
+// "See it drawn": an evidence drawer points at the plate figure it describes (and sets its electron going)
+document.querySelectorAll('[data-fig]').forEach(b=>b.addEventListener('click',()=>{$(b.dataset.fig).scrollIntoView({behavior:reduced()?'auto':'smooth',block:'center'});poke(4000);}));
+// the plate key: hover or focus a name to find it on the plate
+(function(){const svg=$('plate1');
+  function hl(k,on){svg.querySelectorAll('.co[data-k="'+k+'"]').forEach(g=>g.classList.toggle('hl',on));
+    svg.querySelectorAll('[data-s="'+k+'"]').forEach(p=>{if(p.tagName==='g')p.querySelectorAll('path,rect').forEach(q=>q.classList.toggle('s-hl',on));else p.classList.toggle('s-hl',on);});}
+  document.querySelectorAll('#key li').forEach(li=>{const k=li.dataset.k;
+    li.addEventListener('mouseenter',()=>hl(k,true));li.addEventListener('mouseleave',()=>hl(k,false));
+    li.addEventListener('focus',()=>hl(k,true));li.addEventListener('blur',()=>hl(k,false));});
+  svg.querySelectorAll('.co').forEach(g=>{const k=g.dataset.k;g.addEventListener('mouseenter',()=>hl(k,true));g.addEventListener('mouseleave',()=>hl(k,false));});
+  // click a number to name the part; click anywhere else on the plate to sniff (same as the Sniff button)
+  svg.addEventListener('click',e=>{const co=e.target.closest('.co');
+    if(co){const k=co.dataset.k,li=document.querySelector('#key li[data-k="'+k+'"]');hl(k,true);
+      if(li)toast(k+' · '+li.querySelector('span').firstChild.textContent+' ('+li.querySelector('i').textContent+')');return;}
+    $('sniff').click();});
+})();
+// Plate II by hand: click Fig. b to drop a fresh odorant onto a cilium (it binds, the neuron fires, the bulb flashes);
+// click Fig. c to swap H and D (the atoms change, the shape outline does not); drag on Fig. d to move the gap.
+$('figb').addEventListener('click',()=>{dockB={t0:performance.now(),from:[110,392],to:[128,322]};poke(1200);kick();});
+$('figc').addEventListener('click',()=>setIso(st.iso==='H'?'D':'H'));
+(function(){const svg=$('figd'),gin=$('gap');let on=false;
+  function at(e){const m=svg.getScreenCTM();if(!m)return;const y=new DOMPoint(e.clientX,e.clientY).matrixTransform(m.inverse()).y;
+    const g=Math.round(Math.max(+gin.min,Math.min(+gin.max,(DY0-y)/DK)));if(g===gap)return;gap=g;gin.value=String(g);dMatch=fig_d_update();poke(2600);}
+  // mouse and pen drag; a finger taps (so the page still scrolls on a phone)
+  svg.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')return;on=true;try{svg.setPointerCapture(e.pointerId);}catch(_){}at(e);});
+  svg.addEventListener('click',at);
+  svg.addEventListener('pointermove',e=>{if(on)at(e);});
+  svg.addEventListener('pointerup',()=>{on=false;});svg.addEventListener('pointercancel',()=>{on=false;});})();
+// Fig. c membrane (lipid heads and tails), drawn once
+(function(){let h='';for(let x=4;x<360;x+=8){h+='<circle cx="'+x+'" cy="180" r="3.3" fill="#A1A4CE" stroke="#545BA9" stroke-width=".5"/><circle cx="'+x+'" cy="216" r="3.3" fill="#A1A4CE" stroke="#545BA9" stroke-width=".5"/>'+
+  '<path d="M'+(x-1.2)+' 184v12M'+(x+1.2)+' 184v12M'+(x-1.2)+' 200v12M'+(x+1.2)+' 200v12" stroke="#A1A4CE" stroke-width=".6"/>';}$('c-mem').innerHTML=h;})();
+
+// ---------- Graph 2: every chord before and after every blur (hero.png, drawn live from the same note lists) ----------
+// rows: each molecule normal then deuterated; columns: the input score, then the nine blur-midi-v1 jobs (reach, then strength)
+const GCOLS=['clean',...SETS.filter(s=>s.key!=='clean').sort((a,b)=>a.reach-b.reach||a.strength-b.strength).map(s=>s.key)];
+const GROWS=[];for(const m of ORDER)for(const iso of ['H','D'])GROWS.push([m,iso]);
+const GW=1200,GH=576,GL=114,GT=62,GB=30,GPAD=8;
+const gcw=(GW-GL-GPAD)/GCOLS.length,gch=(GH-GT-GB)/GROWS.length;
+const gcell=(ci,ri)=>({x:GL+ci*gcw,y:GT+ri*gch,w:gcw-GPAD,h:gch-GPAD});
+let gridBase=null,gridScale=0,gridPulse=-1e9;const PULSE_MS=1100; // the backing store follows the on-screen size, so the small labels stay sharp
+function gridBuild(){ // the static part: every cell's notes, the headers and the axis note (built once, rebuilt when fonts arrive)
+  const T=tokens(),c=document.createElement('canvas');c.width=Math.round(GW*gridScale);c.height=Math.round(GH*gridScale);const g=c.getContext('2d');g.scale(gridScale,gridScale);
+  g.fillStyle=T.paper;g.fillRect(0,0,GW,GH);
+  g.textBaseline='middle';
+  // headers: "input score" over the first column, one bracketed "blur-midi-v1" over the nine jobs, then strength and reach
+  {const a=gcell(0,0),b=gcell(1,0),z=gcell(GCOLS.length-1,0);g.textAlign='center';g.fillStyle=T.ink;g.font='500 10.5px "IBM Plex Mono", monospace';
+    g.fillText('input score',a.x+a.w/2,GT-46);g.fillText('blur-midi-v1, 20 qubits per pass (Atlas simulator)',(b.x+z.x+z.w)/2,GT-46);
+    g.strokeStyle=T.ink2;g.lineWidth=1;g.beginPath();g.moveTo(b.x,GT-33);g.lineTo(b.x,GT-37);g.lineTo(z.x+z.w,GT-37);g.lineTo(z.x+z.w,GT-33);g.stroke();}
+  GCOLS.forEach((k,ci)=>{const s=SETS.find(x=>x.key===k),{x,w}=gcell(ci,0);g.fillStyle=T.ink2;g.textAlign='center';g.font='400 10px "IBM Plex Mono", monospace';
+    g.fillText(k==='clean'?'no quantum':('strength '+s.strength),x+w/2,GT-23);g.fillText(k==='clean'?'step':('reach '+s.reach),x+w/2,GT-10);});
+  GROWS.forEach(([m,iso],ri)=>{const M=MOLS[m],{y,h}=gcell(0,ri);g.textAlign='left';g.fillStyle=T.ink;g.font='500 10.5px "IBM Plex Mono", monospace';
+    g.fillText(M.short,6,y+h/2-7);g.fillStyle=T.ink2;g.font='400 10px "IBM Plex Mono", monospace';g.fillText(iso==='H'?'normal, '+M.n_h+' H':'deuterated, d'+M.n_h,6,y+h/2+8);});
+  const bh=Math.max(1,1.6*CM_PER_BIN/(NU1-NU0)*(gch-GPAD));
+  GCOLS.forEach((k,ci)=>GROWS.forEach(([m,iso],ri)=>{const {x,y,w,h}=gcell(ci,ri),tr=NOTES[k][trackKey(m,iso)],clean=k==='clean';
+    g.fillStyle='#FFFFFF';g.fillRect(x,y,w,h);g.strokeStyle=T.rule;g.lineWidth=1;g.strokeRect(x+.5,y+.5,w-1,h-1);
+    g.save();g.beginPath();g.rect(x+1,y+1,w-2,h-2);g.clip();
+    for(const n of tr.n){const cm=n[2]*CM_PER_BIN;if(cm<NU0-30||cm>NU1+30)continue;
+      g.globalAlpha=clean?1:(0.25+0.75*n[3]/127);g.fillStyle=(clean&&!n[5])?T.ink3:T.ink;
+      g.fillRect(x+1+n[0]/DUR*(w-2),y+1+(NU1-cm)/(NU1-NU0)*(h-2)-bh/2,Math.max(0.8,(n[1]-n[0])/DUR*(w-2)),bh);}
+    g.restore();g.globalAlpha=1;}));
+  g.fillStyle=T.ink2;g.textAlign='center';g.font='400 10px "IBM Plex Mono", monospace';
+  g.font='500 10.5px "IBM Plex Mono", monospace';g.fillText('across each cell: time, 0 to 7 s   |   up: wavenumber, 380 to 3,300 cm⁻¹ (times 0.25 gives Hz)',GL+(GW-GL)/2,GH-GB/2);
+  gridBase=c;
+}
+function gridPos(){return [Math.max(0,GCOLS.indexOf(curSet())),GROWS.findIndex(([m,iso])=>m===st.mol&&iso===st.iso)];}
+function gridDraw(){
+  const cvs=$('grid');if(!cvs)return;const dpr=window.devicePixelRatio||1,sc=Math.max(0.5,Math.min(3,(cvs.clientWidth||GW)*dpr/GW));
+  if(Math.abs(sc-gridScale)>0.01){gridScale=sc;cvs.width=Math.round(GW*sc);cvs.height=Math.round(GH*sc);gridBase=null;}
+  if(!gridBase)gridBuild();const g=cvs.getContext('2d'),T=tokens();
+  g.setTransform(1,0,0,1,0,0);g.drawImage(gridBase,0,0);g.scale(gridScale,gridScale);
+  const [ci,ri]=gridPos(),{x,y,w,h}=gcell(ci,ri);
+  g.strokeStyle=T.ink;g.lineWidth=2.4;g.strokeRect(x-1.5,y-1.5,w+3,h+3);
+  // a choice made anywhere (instrument, Graph 2, jobs table) pulses its cell here for a moment
+  const pu=(performance.now()-gridPulse)/PULSE_MS;if(pu>=0&&pu<1&&!reduced()){g.globalAlpha=1-pu;g.lineWidth=1.5;g.strokeRect(x-4-6*pu,y-4-6*pu,w+8+12*pu,h+8+12*pu);g.globalAlpha=1;}
+  // the framed cell's row and column labels in ink
+  g.fillStyle=T.ink;g.fillRect(GL+ci*gcw,GT-4,w,2);g.fillRect(GL-7,y,2,h);
+  const m=MOLS[st.mol],s=SETS.find(q=>q.key===curSet()),n=curTrack().n.length;
+  $('grid-read').innerHTML='<b>In the instrument now</b>: '+(st.iso==='H'?m.name.toLowerCase():m.d_name)+' &middot; '+(s.key==='clean'?'input score, no blur':'blur strength '+s.strength+', reach '+s.reach+' &middot; job '+s.job_id)+' &middot; '+n.toLocaleString('en-US')+' notes';
+}
+function selectCell(mol,iso,key){ // load one cell of Graph 2 (or one job) into the instrument: molecule, isotope and blur
+  const s=SETS.find(x=>x.key===key);if(!s)return;
+  const molCh=mol!==st.mol,isoCh=iso!==st.iso;
+  if(molCh){st.mol=mol;st.zone=null;}
+  st.str=key==='clean'?null:s.strength;if(key!=='clean')st.reach=s.reach;
+  if(isoCh){const from=st.iso;st.iso=iso;if(!reduced())swapAnim={from,to:iso,t0:performance.now()};}
+  loadMain();refresh();newPair();prerender();if(molCh)sniff();poke();
+}
+(function(){const cvs=$('grid');
+  const at=e=>{const r=cvs.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*GW,y=(e.clientY-r.top)/r.height*GH;
+    const ci=Math.floor((x-GL)/gcw),ri=Math.floor((y-GT)/gch);return (ci>=0&&ci<GCOLS.length&&ri>=0&&ri<GROWS.length)?[ci,ri]:null;};
+  cvs.addEventListener('click',e=>{const p=at(e);if(!p)return;const [m,iso]=GROWS[p[1]];selectCell(m,iso,GCOLS[p[0]]);});
+  cvs.addEventListener('keydown',e=>{const d={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key];if(!d)return;e.preventDefault();
+    let [ci,ri]=gridPos();ci=Math.max(0,Math.min(GCOLS.length-1,ci+d[0]));ri=Math.max(0,Math.min(GROWS.length-1,ri+d[1]));
+    const [m,iso]=GROWS[ri];selectCell(m,iso,GCOLS[ci]);});})();
+
+// ---------- Jobs and credits: the nine Atlas jobs, each loadable into the instrument ----------
+(function(){const jobs=SETS.filter(s=>s.job_id).sort((a,b)=>a.reach-b.reach||a.strength-b.strength);
+  let h='<thead><tr><th>Strength</th><th>Reach</th><th>Job ID</th><th>Run time</th><th>Notes out (6 tracks)</th><th></th></tr></thead><tbody>';
+  for(const s of jobs){const outs=GROWS.map(([m,iso])=>NOTES[s.key][trackKey(m,iso)].n.length).join(' / ');
+    h+='<tr data-key="'+s.key+'"><td data-l="strength">'+s.strength+'</td><td data-l="reach">'+s.reach+' ('+reachName(s.reach).toLowerCase()+')</td><td class="id" data-l="job">'+s.job_id+'</td><td data-l="run time">'+(s.seconds?s.seconds.toFixed(1)+' s':'-')+'</td><td class="outs" data-l="notes out">'+outs+'</td><td><button type="button" data-job="'+s.key+'" aria-label="Load the blur strength '+s.strength+', reach '+s.reach+' into the instrument">Load</button></td></tr>';}
+  const ins=GROWS.map(([m,iso])=>NOTES.clean[trackKey(m,iso)].n.length).join(' / ');
+  h+='<tr data-key="clean"><td colspan="2">input score</td><td class="id">none (classical input)</td><td>-</td><td class="outs" data-l="notes">'+ins+' (in)</td><td><button type="button" data-job="clean" aria-label="Load the input score (no blur) into the instrument">Load</button></td></tr>';
+  $('jobtable').innerHTML=h+'</tbody>';
+  $('jobtable').addEventListener('click',e=>{const b=e.target.closest('button[data-job]');if(!b)return;selectCell(st.mol,st.iso,b.dataset.job);
+    const s=SETS.find(x=>x.key===b.dataset.job);toast(s.key==='clean'?'Loaded the input score (no blur)':'Loaded blur strength '+s.strength+', reach '+s.reach+' (job '+s.job_id.slice(0,8)+')');});
+  $('jobs-sum').textContent=META.jobs+' blur-midi-v1 jobs · 20 qubits per pass · simulator, no QPU';})();
+function jobRows(){document.querySelectorAll('#jobtable tr[data-key]').forEach(r=>r.classList.toggle('cur',r.dataset.key===curSet()));}
+
+// ---------- blind test ----------
+const test=new Player(s=>{if(s!=='play'){$('pA').textContent='Play A';$('pB').textContent='Play B';}kick();drawVials(0);});
+let trial=null, which=null;const hist=[];
+function newPair(){test.pause();trial=newTrial();which=null;
+  for(const k of ['A','B']){$('s'+k).classList.remove('right','wrong');$('v'+k).textContent='';$('c'+k).disabled=false;}
+  $('next').disabled=true;$('pA').textContent='Play A';$('pB').textContent='Play B';drawVials(0);}
+function playSample(k){
+  main.pause();tour.pause();wav.pause();
+  if(test.playing&&which===k){test.pause();return;}
+  test.pause();which=k;const isD=(k==='A')===trial.dIsA;
+  const mul=$('disguise').checked?(k==='A'?trial.mulA:trial.mulB):1;
+  test.load(curTrack(isD?'D':'H'),mul);test.pos=0;test.play();
+  $('pA').textContent=k==='A'?'Stop A':'Play A';$('pB').textContent=k==='B'?'Stop B':'Play B';
+}
+$('pA').addEventListener('click',()=>playSample('A'));$('pB').addEventListener('click',()=>playSample('B'));
+// the sniff bottles are buttons too: click (or Enter / Space) uncorks one and plays its sample; again stops it
+const keyAct=(el,fn)=>{el.addEventListener('click',fn);el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fn();}});};
+keyAct($('vialA'),()=>playSample('A'));keyAct($('vialB'),()=>playSample('B'));
+// the test's pixel nose: click it and it sniffs (a sniff sound and two frames of animation; it carries no hint)
+keyAct($('sniffer'),()=>{sniffSound();noseUntil=performance.now()+1400;mascotSniff(1400);kick();});
+// sniff bottles: uncorked while their sample plays; labelled H or D once you answer
+function drawVials(t){
+  for(const k of ['A','B']){const cvs=$('vial'+k);if(!cvs)continue;const dpr=window.devicePixelRatio||1,S=Math.max(1,Math.round(4*dpr));
+    const w=18*S,h=28*S;if(cvs.width!==w||cvs.height!==h){cvs.width=w;cvs.height=h;}
+    const c=cvs.getContext('2d');c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,w,h);c.imageSmoothingEnabled=false;
+    const open=test.playing&&which===k,sp=open?SPR.vialOpen:SPR.vial,f=open?InkSprite.frameAt(sp,t):0;
+    c.drawImage(bakeLo(sp,f),0,0,w,h);
+    const isD=trial&&((k==='A')===trial.dIsA),letter=trial&&trial.answer?(isD?SPR.letterD:SPR.letterH):SPR.letterQ;
+    c.drawImage(bakeLo(letter,0),7*S,17*S,5*S,7*S);
+    if(trial&&trial.answer===k){const ok=isD;c.drawImage(bakeLo(ok?SPR.tick:SPR.cross,0),(ok?9:11)*S,0,(ok?9:7)*S,7*S);}
+  }
+}
+function answer(pickA){
+  if(!trial||trial.answer)return;test.pause();const ok=judge(trial,pickA);
+  hist.push({ok,mol:st.mol,set:curSet()});
+  const d=trial.dIsA?'A':'B',pk=pickA?'A':'B';
+  $('s'+pk).classList.add(ok?'right':'wrong');
+  $('v'+d).textContent='deuterated';$('v'+(d==='A'?'B':'A')).textContent='normal';
+  $('cA').disabled=$('cB').disabled=true;$('next').disabled=false;$('next').focus();
+  mood={ok,t0:performance.now()};kick();
+  score();drawVials(0);toast(ok?'Right: that one was deuterated':'Not this time: '+d+' was deuterated');
+}
+$('cA').addEventListener('click',()=>answer(true));$('cB').addEventListener('click',()=>answer(false));
+$('next').addEventListener('click',newPair);
+$('treset').addEventListener('click',()=>{hist.length=0;score();newPair();});
+$('disguise').addEventListener('change',()=>{if(test.playing)playSample(which);});
+function score(){
+  const k=hist.filter(h=>h.ok).length,n=hist.length;
+  $('tscore').innerHTML=k+' <small>/ '+n+'</small>';
+  $('tdots').innerHTML=hist.map(h=>'<i class="'+(h.ok?'ok':'no')+'"></i>').join('');
+  if(!n){$('tp').textContent='Answer a few pairs. Guessing gets about half right.';return;}
+  const p=binomTail(k,n);
+  $('tp').textContent='Chance of doing at least this well by pure guessing: p = '+fmtP(p)+(n<6?' (too few trials to mean much yet).':(p<0.01?'. Your ear hears deuterium.':(p<0.05?'. Probably not luck.':'. Indistinguishable from guessing so far.')));
+}
+$('tshare').addEventListener('click',async()=>{
+  const k=hist.filter(h=>h.ok).length,n=hist.length;
+  history.replaceState(null,'','#'+encodeView({mol:st.mol,iso:st.iso,set:curSet(),view:st.view}));
+  const text=n?('I picked the deuterated chord in '+k+' of '+n+' blind trials (p = '+fmtP(binomTail(k,n))+') on The Quantum Nose Test. '+location.href):('The Quantum Nose Test: can you hear deuterium? '+location.href);
+  try{await navigator.clipboard.writeText(text);toast('Score copied');}catch(e){toast(text);}
+});
+$('share').addEventListener('click',async()=>{
+  history.replaceState(null,'','#'+encodeView({mol:st.mol,iso:st.iso,set:curSet(),view:st.view}));
+  try{await navigator.clipboard.writeText(location.href);toast('Link copied');}catch(e){toast('Copy failed: the link is in your address bar');}
+});
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2400);}
+
+// ---------- the audio tour (the WAV deliverable, as mp3) ----------
+const tour=$('tour'), TOUR_PARTS=[['no blur','clean'],['local blur','s1_r0'],['global blur','s0.5_r1']], SEG=8;
+(function(){const el=$('tour-chips');
+  TOUR_PARTS.forEach(([pl],pi)=>ORDER.forEach((m,mi)=>{const b=document.createElement('button');b.type='button';
+    const t=(pi*6+mi*2)*SEG;b.dataset.t=t;b.textContent=MOLS[m].short+' · '+pl;b.title='H at '+t+' s, D at '+(t+SEG)+' s';
+    b.addEventListener('click',()=>{main.pause();test.pause();wav.pause();tour.currentTime=t;const p=tour.play();if(p&&p.catch)p.catch(()=>{});});el.appendChild(b);}));
+  const j=k=>(SETS.find(x=>x.key===k)||{}).job_id||'-';$('tour-j1').textContent=j('s1_r0');$('tour-j2').textContent=j('s0.5_r1');
+  tour.addEventListener('play',()=>{main.pause();test.pause();wav.pause();});
+  tour.addEventListener('timeupdate',()=>{const seg=Math.floor(tour.currentTime/(2*SEG));
+    [...el.children].forEach((b,i)=>b.setAttribute('aria-current',String(i===seg&&!tour.paused)));});
+  tour.addEventListener('pause',()=>[...el.children].forEach(b=>b.setAttribute('aria-current','false')));
+})();
+
+// proof chips, job list, sprite legend and mascot (real numbers from the build)
+$('proof').innerHTML='<span class="hot"><b>20</b> qubits per blur pass</span><span><b>'+META.jobs+'</b> real Atlas jobs</span><span><b>'+(META.jobs*6)+'</b> chords blurred</span><span>Atlas simulator &middot; no QPU</span>';
+$('joblist').innerHTML='Jobs: '+SETS.filter(s=>s.job_id).map(s=>'strength '+s.strength+', reach '+s.reach+': '+s.job_id).join('<br>');
+(function(){const img=(sp,s)=>'<img alt="" width="'+sp.w*s+'" height="'+sp.h*s+'" src="'+InkSprite.toDataURL(sp,0,s)+'">';
+  $('atomlegend').innerHTML='<span>'+img(SPR.atomH,3)+'H, hydrogen: mass 1</span><span>'+img(SPR.atomD,3)+'D, deuterium: mass 2, same size</span><span>'+img(SPR.atomC,3)+'carbon</span><span>'+img(SPR.atomO,3)+'oxygen</span><span>'+img(SPR.electron,3)+'electron (Fig. d)</span><span>'+img(SPR.neutron,3)+'neutron: H + neutron = D</span>';
+  $('mascot').src=InkSprite.toDataURL(SPR.mascot,0,2);})();
+
+// restore a shared view
+let hashView=null;
+(function(){const v=decodeView(location.hash);if(!v)return;st.mol=v.mol;st.iso=v.iso;hashView=v.view;
+  if(availableSet(v.set)&&v.set!=='clean'){const s=SETS.find(x=>x.key===v.set);st.str=s.strength;st.reach=s.reach;}})();
+$('scrub').max=DUR.toFixed(2);
+// at rest: two molecules already sit on the olfactory epithelium and one on a cilium (nothing moves until you act)
+docked=[{x:LAND[0][0],y:LAND[0][1],rot:0.3,li:0,t:-1e9},{x:LAND[1][0],y:LAND[1][1],rot:-0.5,li:1,t:-1e9}];dockB={t0:-1e9,from:[110,392],to:[128,322]};
+loadMain();refresh();newPair();score();prerender();if(hashView==='data')setView('data');
+let rz=0;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{draw();gridDraw();redrawScene();},60);});
+// the canvas labels use IBM Plex Mono (imported by the brand kit): redraw once the web fonts have arrived
+try{document.fonts.load('500 12px "IBM Plex Mono"').then(()=>{gridBase=null;gridDraw();draw();},()=>{});document.fonts.ready.then(()=>{gridBase=null;gridDraw();draw();redrawScene();});}catch(e){}
+</script>

@@ -1,0 +1,187 @@
+{
+ "name": "probe3",
+ "job_id": "1a5c3e5e-4132-415a-84b9-c3015e2bbc94",
+ "params": {
+  "n_qubits": 3,
+  "coupling_map": [
+   [
+    0,
+    1
+   ],
+   [
+    1,
+    2
+   ]
+  ],
+  "machine": "aer",
+  "seed": 7,
+  "shots": 1024,
+  "tomography": 2,
+  "sample": true,
+  "targets": [
+   {
+    "qubits": [
+     0
+    ],
+    "expvals": {
+     "X": 1.0
+    }
+   },
+   {
+    "qubits": [
+     0,
+     1
+    ],
+    "expvals": {
+     "XX": -1.0,
+     "YY": -1.0
+    }
+   },
+   {
+    "qubits": [
+     1,
+     2
+    ],
+    "expvals": {
+     "XX": 1.0,
+     "YY": 1.0
+    }
+   },
+   null
+  ]
+ },
+ "input_files": {},
+ "seconds": 14.0,
+ "files": {
+  "circuit": "qdrive_probe3_circuit.qasm"
+ },
+ "result": {
+  "circuit": "OPENQASM 3.0;\ninclude \"stdgates.inc\";\ngate rxx(p0) _gate_q_0, _gate_q_1 {\n  h _gate_q_0;\n  h _gate_q_1;\n  cx _gate_q_0, _gate_q_1;\n  rz(p0) _gate_q_1;\n  cx _gate_q_0, _gate_q_1;\n  h _gate_q_1;\n  h _gate_q_0;\n}\ngate sxdg _gate_q_0 {\n  s _gate_q_0;\n  h _gate_q_0;\n  s _gate_q_0;\n}\ngate ryy(p0) _gate_q_0, _gate_q_1 {\n  sxdg _gate_q_0;\n  sxdg _gate_q_1;\n  cx _gate_q_0, _gate_q_1;\n  rz(p0) _gate_q_1;\n  cx _gate_q_0, _gate_q_1;\n  sx _gate_q_0;\n  sx _gate_q_1;\n}\ngate rzz(p0) _gate_q_0, _gate_q_1 {\n  cx _gate_q_0, _gate_q_1;\n  rz(p0) _gate_q_1;\n  cx _gate_q_0, _gate_q_1;\n}\nqubit[3] q;\nrz(0.03179791305362902) q[0];\nry(1.600380929687945) q[0];\nrz(0.02042574633601118) q[0];\nrz(-1.6274957551475773) q[0];\nry(-2.390436891577328) q[0];\nrz(2.1190939809524685) q[0];\nrz(-0.1387046870280039) q[1];\nry(3.1157962712324823) q[1];\nrz(0.14984270879449585) q[1];\nrxx(-0.07748773668896622) q[0], q[1];\nryy(1.5136630229618286) q[0], q[1];\nrzz(2.0563469076308825) q[0], q[1];\nrz(0.6036584251523316) q[0];\nry(-1.4636069606986963) q[0];\nrz(0.2199115568964816) q[0];\nrz(0.7485688850660819) q[1];\nry(2.26616939125553) q[1];\nrz(-0.2898337792405338) q[1];\nrz(-1.6117832996798678) q[1];\nry(-1.6440760939075265) q[1];\nrz(-0.6356225369301828) q[1];\nrz(0.011014107874606716) q[2];\nry(-2.7372135549140517) q[2];\nrz(1.3942910853276977) q[2];\nrxx(-0.32429974964716896) q[1], q[2];\nryy(-1.6087955142971813) q[1], q[2];\nrzz(-0.624703709059822) q[1], q[2];\nrz(1.519499297988253) q[1];\nry(-0.36945461291446935) q[1];\nrz(0.9172841927410363) q[1];\nrz(-0.9444055333740782) q[2];\nry(-1.6645461711638974) q[2];\nrz(-0.7400106108912666) q[2];\n",
+  "counts": {
+   "000": 74,
+   "001": 11,
+   "010": 294,
+   "011": 46,
+   "100": 123,
+   "101": 40,
+   "110": 332,
+   "111": 104
+  },
+  "measured": {
+   "III": 1.0413484342939159,
+   "IIX": 0.1810310771637874,
+   "IIY": -0.723401024309539,
+   "IIZ": 0.5920875803597394,
+   "IXI": -0.08750950290047904,
+   "IXX": -0.00761480819897122,
+   "IXY": 0.07622922250555644,
+   "IXZ": -0.11436541496465863,
+   "IYI": 0.17437812403074437,
+   "IYX": 0.03413022018462563,
+   "IYY": -0.21163095858176217,
+   "IYZ": 0.07349949801132583,
+   "IZI": -0.6020396385684749,
+   "IZX": -0.0018512278421880177,
+   "IZY": 0.39441305370946245,
+   "IZZ": -0.4339317747224639,
+   "XII": -0.5283743481706646,
+   "XXI": -0.017645790437024165,
+   "XYI": -0.06339591632242197,
+   "XZI": 0.9708819902028569,
+   "YII": -0.16016283267369666,
+   "YXI": 0.7847380562405132,
+   "YYI": 0.06086503996552796,
+   "YZI": 0.10134396887926071,
+   "ZII": -0.13657438285873189,
+   "ZXI": 0.13415722252524268,
+   "ZYI": -0.8405438695388912,
+   "ZZI": 0.021746606028219203
+  },
+  "seed": 7,
+  "tomography": {
+   "0": {
+    "X": 0.1810310771637874,
+    "Y": -0.723401024309539,
+    "Z": 0.5920875803597394
+   },
+   "0,1": {
+    "II": 1.0413484342939159,
+    "IX": 0.1810310771637874,
+    "IY": -0.723401024309539,
+    "IZ": 0.5920875803597394,
+    "XI": -0.08750950290047904,
+    "XX": -0.00761480819897122,
+    "XY": 0.07622922250555644,
+    "XZ": -0.11436541496465863,
+    "YI": 0.17437812403074437,
+    "YX": 0.03413022018462563,
+    "YY": -0.21163095858176217,
+    "YZ": 0.07349949801132583,
+    "ZI": -0.6020396385684749,
+    "ZX": -0.0018512278421880177,
+    "ZY": 0.39441305370946245,
+    "ZZ": -0.4339317747224639
+   },
+   "0,2": {
+    "II": 1.0413484342939159,
+    "IX": 0.1810310771637874,
+    "IY": -0.723401024309539,
+    "IZ": 0.5920875803597394,
+    "XI": -0.5283743481706646,
+    "XX": null,
+    "XY": null,
+    "XZ": null,
+    "YI": -0.16016283267369666,
+    "YX": null,
+    "YY": null,
+    "YZ": null,
+    "ZI": -0.13657438285873189,
+    "ZX": null,
+    "ZY": null,
+    "ZZ": null
+   },
+   "1": {
+    "X": -0.08750950290047904,
+    "Y": 0.17437812403074437,
+    "Z": -0.6020396385684749
+   },
+   "1,2": {
+    "II": 1.0413484342939159,
+    "IX": -0.08750950290047904,
+    "IY": 0.17437812403074437,
+    "IZ": -0.6020396385684749,
+    "XI": -0.5283743481706646,
+    "XX": -0.017645790437024165,
+    "XY": -0.06339591632242197,
+    "XZ": 0.9708819902028569,
+    "YI": -0.16016283267369666,
+    "YX": 0.7847380562405132,
+    "YY": 0.06086503996552796,
+    "YZ": 0.10134396887926071,
+    "ZI": -0.13657438285873189,
+    "ZX": 0.13415722252524268,
+    "ZY": -0.8405438695388912,
+    "ZZ": 0.021746606028219203
+   },
+   "2": {
+    "X": -0.5283743481706646,
+    "Y": -0.16016283267369666,
+    "Z": -0.13657438285873189
+   }
+  }
+ },
+ "response": {
+  "$schema": "https://api.mothquantum.com/schemas/JobResultOutputBody.json",
+  "outputs": [
+   {
+    "slot": "circuit",
+    "output_asset_id": "42220f4b-e1d1-4b75-8e82-657b8e5ac99e",
+    "url": "https://moth-api-assets-us-east-1.s3.us-east-1.amazonaws.com/jobs/1a5c3e5e-4132-415a-84b9-c3015e2bbc94/outputs/circuit?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIA6G75DOFZ6EBJ4VAY%2F20261005%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261005T053205Z&X-Amz-Expires=900&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEAsaCXVzLWVhc3QtMSJIMEYCIQCsj%2FdkjB4PemU5pykM9E1gkegXWGuAe3NUie0dfB4l0QIhAKesqw7u9Rj%2FHMOo8u2pVxxRje0lsoxDmjm3omRYi6zgKqUFCNT%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMOTc3MDk4OTk0MDM1IgxXcO7kgyMV7ga%2FBg8q%2BQRMLDjBdHKXRw7QEKp4wVIPqBXDYV3abvUkiMucaO%2BYYKXlzkZ%2BrPBz9k%2Bsk%2Bt2f%2FVt0z58CxCcXiuzZiBrCEAAUSoSiUz%2FU3G%2FSdZuBCpq7XCyIBg%2BTi2NuXPOfOqvid5NqkciWydHd2d9oEUBmNG2N2Tf063Hsz0fpjuJoYCkAJDXJ%2FCf6KE%2BiyS4d6evPKVqn6nXM4bQ35u9NNuF9RyoRv8pzG5i8lPVmYq%2B2WfeKv6a0HaG3%2BFcBh6rpMEbsjeq9W01YDYHZ5yOAuRZjjiQfUcRbzCtFncbLRkRDp9854GlG%2By7iDGkP60gck0Xzp1m7YPfbFrMycirGtOxedN3VlO1SLCwq%2FJmtsSomMgFn%2BNdY0j9tHf7QtPY6EjwH%2B6XpbxeTGxXX0ENQFj7cIlY7bdR1Vg6voXVhvbXvYcKUnch1YnA0GOV2%2B%2B1n5w%2BsGaSqvGiAyH%2FMIvaK1oZiypx%2B8Rg6c4KxOxSv66i%2BY1KC1AcRjL64wq2dJqS8my27%2FkmDiww325hFvA4Jy3PQ2xQjOUoNkXg4tFp6pxRP9DjksXP%2BhWHBfX2X9SLpRRFD84ZEFjNmQWJNtofWXZNSq%2Bz8k%2B2NUgUIOedKj2ByMc2D4idEJ7nn%2FdJ8iI9wMUtpsCTJiJd8iAubpeEtMCb0Ijtgf1Exwag5g0cRPIiIviWJcpbEYj6KfD%2FO%2BdL7QfEQ2ByvxQ4iOzF1N%2BQ30qZuQad85aGRObePTy6DxufSx0sPWX2whoiw4EGYdlRzcpNzBSy9UvDakXSaqpJmprcNPvioTu%2BXP2M9LjzQVvNnJ8fXORRh7dZCqY5pYAa3ds1E4E0%2FFZiM2fVpX8w1p2M1gY6jwEqI0PfUL0FmUtsW94ZzzSmX6BZADxA%2Bi9NYoFBTGv8Vw8BxFVjkabsQsf0kNzF9HLLRehrbNfgtcnRSiwMbsJvFRDhmJd9iYznazA6cXDN352DHf0627XQBys43vFLQEi36jeWk1PQAJV3pZ9uW4I033AtmaMchJeVBZIuZ2UX5ZnCOsGVUVC78EJkNAjtlQ%3D%3D&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22qdrive-api-v1-1a5c3e5e.brf%22%3B%20filename%2A%3DUTF-8%27%27qdrive-api-v1-1a5c3e5e.brf&response-content-type=text%2Fplain&x-id=GetObject&X-Amz-Signature=3288ae485e918bb9fe6d004ecb95aab64cad8f3ab9ca8dd537630d7910ac47c5",
+    "expires_at": "2026-10-05T05:47:05.139862948Z",
+    "content_type": "text/plain",
+    "filename": "qdrive-api-v1-1a5c3e5e.brf",
+    "size_bytes": 1601
+   }
+  ]
+ }
+}

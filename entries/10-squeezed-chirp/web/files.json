@@ -1,0 +1,10 @@
+{
+ "audio/original.wav": "entries/10-squeezed-chirp/web/audio/original.wav",
+ "audio/r0p25.wav": "entries/10-squeezed-chirp/web/audio/r0p25.wav",
+ "audio/r0p5.wav": "entries/10-squeezed-chirp/web/audio/r0p5.wav",
+ "audio/r1.wav": "entries/10-squeezed-chirp/web/audio/r1.wav",
+ "audio/r2.wav": "entries/10-squeezed-chirp/web/audio/r2.wav",
+ "audio/r4.wav": "entries/10-squeezed-chirp/web/audio/r4.wav",
+ "notebook.html": "entries/10-squeezed-chirp/web/notebook.html",
+ "img/mascot.png": "entries/10-squeezed-chirp/web/img/mascot.png"
+}

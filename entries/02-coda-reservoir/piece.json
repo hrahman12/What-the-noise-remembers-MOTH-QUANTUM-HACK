@@ -1,0 +1,35 @@
+{
+ "slug": "02-coda-reservoir",
+ "challenge": "02",
+ "bonus": false,
+ "title": "Coda Reservoir",
+ "hook": "Hear a 12-qubit reservoir click like a sperm whale.",
+ "sub": "A quantum reservoir learned the rhythms of 3,840 real codas recorded off Dominica. Play the whales, then let the reservoir carry on.",
+ "you_control": [
+  "Pick real codas, the reservoir, or the real-to-reservoir handoff, or tap a whale in the sea",
+  "Choose a whale label, or a variation level and take (each a real qrc-gen-v2 job)",
+  "Play, pause, scrub and slow down; each click lights its whale's head and sends out a ring"
+ ],
+ "engines": [
+  "qrc-train-v2",
+  "qrc-gen-v2"
+ ],
+ "qubits": 12,
+ "qubits_note": "12 reservoir qubits (num_qubits, set at training and reused by every qrc-gen-v2 job); the engine maximum, 13 is rejected with HTTP 422",
+ "hardware": null,
+ "jobs": 14,
+ "credits_spent": 18.0,
+ "deliverables": [
+  "coda_reservoir.wav",
+  "README.md",
+  "PARAMS.md",
+  "CREDITS.md",
+  "web/index.html",
+  "hero.png"
+ ],
+ "web_entry": "web/index.html",
+ "mascot": "web/img/mascot.png",
+ "status": "built",
+ "honesty": "Rhythm only: no meaning is claimed; codas are treated as rhythm tokens. Reservoir ran on Atlas's Aer simulator; tokenising, timing and click synthesis are classical.",
+ "blockers": []
+}

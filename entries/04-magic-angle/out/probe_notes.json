@@ -1,0 +1,52 @@
+[
+ {
+  "s": 0.5,
+  "r": "symmetric",
+  "note": "timing frame (9.8 s at 1024 px, 21 qubits). A 4 px register pattern dominates; the lattice is gone",
+  "j": "4857f978-0fcf-4fb9-88f9-2086e4913dac",
+  "A": 81454.67691890428,
+  "B": 81449.41364522229,
+  "mirrorA": 81449.41364522229,
+  "mirrorB": 81454.67691890428
+ },
+ {
+  "s": 0.1,
+  "r": "symmetric",
+  "note": "honeycomb visible, but with a symmetric twist B is the mirror of A, so 'B' peaks may be mirror copies",
+  "j": "c36f717d-0df6-4b5e-81ed-87776a6ca0bb",
+  "A": 17444403.472094055,
+  "B": 17623260.39337803,
+  "mirrorA": 17623260.39337803,
+  "mirrorB": 17444403.472094055
+ },
+ {
+  "s": 0.25,
+  "r": "symmetric",
+  "note": "speckle; same mirror ambiguity",
+  "j": "96779332-e7a5-4dcf-a803-632a43b5e7eb",
+  "A": 1168890.865486973,
+  "B": 434189.39443516376,
+  "mirrorA": 434189.39443516376,
+  "mirrorB": 1168890.865486973
+ },
+ {
+  "s": 0.1,
+  "r": "15 deg offset",
+  "note": "honeycomb visible, but layer B is weak; the mirror copy of A is 30x stronger than true B (Bragg power B/A = 0.02; A alone leaks 0.001)",
+  "j": "e221d40c-ee68-4e2f-91ed-f6aee92c1083",
+  "A": 14376150.300406631,
+  "B": 313177.73478527804,
+  "mirrorA": 9496284.113126006,
+  "mirrorB": 951264.7080350688
+ },
+ {
+  "s": 0.25,
+  "r": "15 deg offset",
+  "note": "speckle; layer B clearly present. Chosen for the sweep (this job is also the 1.10 deg frame) (Bragg power B/A = 0.34; A alone leaks 0.001)",
+  "j": "47a90588-995e-4df7-80cf-905dfd9261ee",
+  "A": 120257.35593684172,
+  "B": 40750.42701872591,
+  "mirrorA": 86943.51395430314,
+  "mirrorB": 76530.67075784749
+ }
+]

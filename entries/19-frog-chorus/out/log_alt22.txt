@@ -1,0 +1,4 @@
+  qdrive-api-v1: submitted 8ece2a2c-4035-4d0c-950c-5174a228b2d4
+  qdrive-api-v1: done 8ece2a2c in 174.1s
+  alt22: 8ece2a2c-4035-4d0c-950c-5174a228b2d4  (174.1 s)
+ledgered spend for 19-frog-chorus: 9 of 12 credits

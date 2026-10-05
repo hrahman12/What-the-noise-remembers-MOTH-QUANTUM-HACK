@@ -1,0 +1,828 @@
+<title>Moth Eye</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+/*BRAND*/
+/* Layout: the night-garden scene is the hero. A pixel moth sits on a twig, a bulb hangs where the lamp is,
+   a bat circles at your viewing angle, and a loupe over the moth's eye holds the live 3D facet (three.js).
+   The bat's eyelids are the meter. Charts sit one click away behind Scene / Data. Science lives in drawers.
+   Look: brief-page paper and one ink; square panels, pill controls, hairlines, no glows or gradients. */
+.wrap{max-width:78rem;margin-inline:auto}
+.hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(1.25rem,3vw,2.5rem);align-items:start;padding-block:2rem 1rem}
+.stage{position:relative;border:1px solid var(--ink);user-select:none;background:var(--panel)}
+.stagebar{display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.6rem;border-bottom:1px solid var(--ink)}
+.stagebar .seg button,.georow .seg button{padding:.5rem .7rem;font-size:.74rem}
+.scenebox{position:relative;aspect-ratio:8/7;overflow:hidden;background:#D3D3E6}
+.scenebox canvas{position:absolute;display:block}
+#bg,#fx{inset:0;width:100%;height:100%}
+#fx{pointer-events:none}
+#cv{border-radius:50%;touch-action:none;cursor:grab;background:var(--panel)}
+#cv:active{cursor:grabbing}
+#cv:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.tag{position:absolute;right:.5rem;bottom:.5rem;font:500 .62rem/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);background:var(--paper);border:1px solid var(--ink);padding:.3rem .45rem;pointer-events:none}
+.bubble{position:absolute;font:500 .72rem/1.2 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--on-ink);background:var(--ink);padding:.35rem .55rem;border-radius:999px;pointer-events:none;opacity:0;transition:opacity .25s;white-space:nowrap;transform:translate(-50%,-100%)}
+.bubble.good{background:var(--good)}
+.bubble.on{opacity:1}
+.georow{display:flex;justify-content:center;padding:.6rem;border-top:1px solid var(--ink)}
+.meter{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.4rem 1rem;align-items:center;border-top:1px solid var(--ink);padding:.75rem .95rem}
+.meter canvas{display:block;image-rendering:pixelated}
+.meter .mt{display:grid;gap:.3rem;min-width:0}
+.meter .top{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;flex-wrap:wrap}
+.meter .big{font:400 2rem/1 var(--display);letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums}
+.mood{font:500 .78rem/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
+.mood span{color:var(--ink-2);letter-spacing:.04em;text-transform:none}
+.cmp{font:400 .74rem/1.45 var(--mono);color:var(--ink-2);font-variant-numeric:tabular-nums}
+.cmp b{color:var(--ink);font-weight:500}
+.scene-note{padding:.55rem .95rem;border-top:1px solid var(--rule);font:400 .7rem/1.45 var(--mono);color:var(--ink-2)}
+.nogl[hidden]{display:none}
+.nogl{position:absolute;inset:0;display:grid;place-items:center;padding:2rem;text-align:center;color:var(--ink-2);background:var(--panel)}
+.view[hidden],.seg[hidden]{display:none}
+.dataview{display:grid;gap:1.6rem;padding:1rem}
+.copy{display:grid;gap:1.1rem;min-width:0}
+.kicker{font:500 .74rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+h1{font-size:clamp(2.3rem,5vw,4.2rem);line-height:1;letter-spacing:-.03em}
+.sub{font-size:1.06rem;color:var(--ink-2);max-width:46ch}
+.answer{font-size:.95rem;color:var(--ink);border-inline-start:2px solid var(--ink);padding-inline-start:.8rem;max-width:52ch}
+.steps{display:grid;gap:.55rem;counter-reset:s;margin:0;padding:0;list-style:none}
+.steps li{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:.6rem;align-items:baseline;font-size:.95rem}
+.steps li::before{counter-increment:s;content:counter(s);font:500 .8rem/1.6 var(--mono);color:var(--on-ink);background:var(--ink);border-radius:99px;width:1.6rem;height:1.6rem;display:grid;place-items:center}
+.steps b{font-weight:500}
+.panel{display:grid;gap:.9rem;background:var(--panel);border:1px solid var(--rule);padding:1.1rem 1.2rem}
+.panel hr{border:0;border-top:1px solid var(--rule);margin:0}
+.row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.row.split{justify-content:space-between}
+.ticks{display:flex;justify-content:space-between;font:500 .7rem/1 var(--mono);color:var(--ink-2);padding-inline:2px}
+.stackbox{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.9rem;align-items:center}
+.stackbox canvas{display:block;image-rendering:pixelated;border:1px solid var(--rule);background:#D3D3E6}
+.stackbox p{font-size:.86rem;color:var(--ink)}
+.stackbox p b{font:500 1em/1 var(--mono)}
+.ctl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:1rem;align-items:center}
+.pad{position:relative;width:132px;height:132px;border-radius:50%;border:1px solid var(--ink);background:var(--panel-2);touch-action:none;cursor:crosshair}
+.pad::before,.pad::after{content:"";position:absolute;background:var(--rule)}
+.pad::before{left:50%;top:8%;bottom:8%;width:1px}
+.pad::after{top:50%;left:8%;right:8%;height:1px}
+.pad .dot{position:absolute;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;background:var(--ink);border:3px solid var(--panel);outline:1px solid var(--ink);z-index:1}
+.pad:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.readout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.25rem .9rem;font:400 .76rem/1.5 var(--mono);color:var(--ink-2);margin:0;border-top:1px solid var(--rule);padding-top:.8rem}
+.readout dd{margin:0}
+.readout b{color:var(--ink);font-weight:500;overflow-wrap:anywhere}
+.lutbox{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.9rem;align-items:center}
+.lutbox canvas{width:120px;height:120px;image-rendering:pixelated;border:1px solid var(--ink)}
+.small{font-size:.8rem;color:var(--ink-2)}
+.fig{display:grid;gap:.7rem;min-width:0}
+.fig h2{font-size:1.35rem}
+.fig svg{width:100%;height:auto;display:block;background:var(--panel);border:1px solid var(--rule)}
+.legend{display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;font:500 .72rem/1.3 var(--mono);color:var(--ink-2)}
+.legend i{display:inline-block;width:18px;height:0;border-top:2px solid var(--ink);vertical-align:middle;margin-right:.45rem}
+.legend i.x{width:auto;height:auto;border:0;font:600 .9rem/1 var(--mono);color:var(--ink);font-style:normal;margin-right:.35rem;vertical-align:baseline}
+.legend i.now{width:0;height:12px;border-top:0;border-left:2px solid var(--ink)}
+.fig svg .pt{cursor:pointer}
+.fig svg .pt:focus-visible{outline:none;stroke:var(--ink);stroke-width:3}
+.verdict{max-width:80ch;color:var(--ink);font-size:.95rem;border-inline-start:2px solid var(--ink);padding-inline-start:.9rem}
+.film{margin-top:2.5rem;display:grid;gap:0}
+.film .ink-bar{flex-wrap:wrap;gap:.4rem 1rem}
+.film .frame{border:1px solid var(--ink);border-top:0;background:var(--panel)}
+.film video{display:block;width:100%;height:auto;aspect-ratio:16/9;background:var(--panel-2)}
+.film .cap{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.6rem 1.5rem;align-items:start;padding:1rem 1.1rem;border-top:1px solid var(--ink)}
+.film .cap p{color:var(--ink-2);font-size:.92rem;max-width:72ch}
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:var(--ink);color:var(--on-ink);font:500 .82rem/1 var(--mono);padding:.8rem 1.1rem;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100vw - 32px);text-align:center}
+.toast.on{opacity:1}
+.more{margin-top:2.5rem}
+table.t{border-collapse:collapse;font:400 .74rem/1.4 var(--mono);width:100%}
+table.t th,table.t td{border-bottom:1px solid var(--rule);padding:.35rem .4rem;text-align:left;vertical-align:top}
+table.t th{color:var(--ink);font-weight:500;border-bottom-color:var(--ink)}
+.tw{overflow-x:auto}
+code{font:400 .86em/1 var(--mono);color:var(--ink)}
+@media (max-width:960px){.hero{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:620px){.scenebox{aspect-ratio:1/1}}
+@media (max-width:620px){.film .cap{grid-template-columns:minmax(0,1fr)}.dataview{padding:.75rem}}
+@media (max-width:460px){.meter .big{font-size:1.55rem}.meter{padding:.65rem .7rem;gap:.4rem .7rem}.stagebar .seg button{padding:.45rem .5rem;font-size:.68rem}.georow{padding:.5rem .4rem}.georow .seg button{padding:.45rem .38rem;font-size:.63rem;letter-spacing:.01em}
+  .ctl{grid-template-columns:minmax(0,1fr)}.pad{margin-inline:auto}.stackbox{grid-template-columns:minmax(0,1fr)}.stackbox canvas{margin-inline:auto}.tag{font-size:.56rem;padding:.25rem .35rem}}
+</style>
+
+<div class="wrap">
+  <nav class="wtnr-bar"><a href="https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa">What the Noise Remembers</a><span class="count"><b>03</b> / 11 &middot; Hide</span></nav>
+
+  <div class="hero">
+    <div>
+      <div class="stage" id="stage">
+        <div class="stagebar">
+          <div class="seg" role="group" aria-label="View">
+            <button type="button" data-view="scene" aria-pressed="true">Scene</button>
+            <button type="button" data-view="data" aria-pressed="false">Data</button>
+          </div>
+          <div class="seg" role="group" aria-label="Shading inside the loupe" id="g-mode">
+            <button type="button" data-mode="0" aria-pressed="true">Night scene</button>
+            <button type="button" data-mode="1" aria-pressed="false">Raw R</button>
+          </div>
+        </div>
+
+        <div class="view" id="v-scene">
+          <div class="scenebox" id="scenebox">
+            <canvas id="bg" aria-label="Night garden: a moth on a twig, a bulb where the lamp is, and a bat circling at your viewing angle. Drag the sky to move the lamp."></canvas>
+            <canvas id="cv" width="600" height="600" tabindex="0" aria-label="The loupe: one 3D moth-eye facet shaded with the quantum entanglement shader. Drag or use arrow keys to orbit, plus and minus to zoom."></canvas>
+            <canvas id="fx" aria-hidden="true"></canvas>
+            <span class="tag" aria-hidden="true">Loupe: one facet, live 3D</span>
+            <span class="bubble" id="bubble" aria-hidden="true"></span>
+            <div class="nogl" id="nogl" hidden>This viewer needs WebGL2. The Data view and the drawers still work.</div>
+          </div>
+          <div class="georow">
+            <div class="seg" role="group" aria-label="What sits on the moth's eye">
+              <button type="button" data-geo="eye" aria-pressed="true">Moth eye</button>
+              <button type="button" data-geo="dome" aria-pressed="false">Bare dome</button>
+              <button type="button" data-geo="slab" aria-pressed="false">Flat slab</button>
+              <button type="button" data-geo="both" aria-pressed="false">Eye vs slab</button>
+            </div>
+          </div>
+          <div class="meter" aria-live="polite">
+            <canvas id="bateye" width="52" height="30" aria-hidden="true"></canvas>
+            <div class="mt">
+              <div class="top"><span class="label">What the bat sees</span><span class="big" id="m-big">&ndash;</span></div>
+              <p class="mood"><b id="m-mood">&ndash;</b> <span id="m-flash"></span></p>
+              <p class="cmp" id="m-bars"></p>
+            </div>
+          </div>
+          <p class="scene-note">A cartoon cast. Real data moves only the bat&rsquo;s eyelids (the meter), its place on the arc (your tilt), the glint on the moth&rsquo;s eye (flash) and the dots in the layer stack.</p>
+        </div>
+
+        <div class="view dataview" id="v-data" hidden>
+          <div class="fig">
+            <div class="row split"><h2 id="ch-h">Does the shine die as you add layers?</h2><span class="label" id="ch-verdict"></span></div>
+            <svg id="plot" viewBox="0 0 720 306" role="img" aria-label="Reflectance against number of layers for every real run"></svg>
+            <div class="legend" id="legend"></div>
+          </div>
+          <div class="fig">
+            <div class="row split"><h2 id="tl-h">Where is the bat looking from?</h2></div>
+            <svg id="tilt" viewBox="0 0 720 264" role="img" aria-labelledby="tl-h"></svg>
+            <div class="legend" id="tl-legend"></div>
+            <p class="small">The bat meter, measured off-screen at fixed tilts for the run you have selected (azimuth 0). Head-on, the pillars return more light than the slab. Past the crossover the slab acts as a mirror and the pillars stay dimmer. Press <b>Sweep the tilt</b> in the controls to fly the bat through it.</p>
+          </div>
+          <div class="fig">
+            <h2>The table every pixel looks up</h2>
+            <div class="lutbox">
+              <canvas id="lut" width="60" height="60" aria-label="The reflectance lookup table of the current run"></canvas>
+              <p class="small">The R lookup table this run returned: interlayer phase left to right, incidence angle from normal (bottom) to grazing (top). Darker ink is more reflective. Every pixel of the 3D facet looks up its reflectance here.</p>
+            </div>
+          </div>
+          <p class="verdict" id="ch-note"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="copy">
+      <p class="kicker">Challenge 03 &middot; Three dimensions</p>
+      <h1>Hide a moth&rsquo;s shiny eye from the bat.</h1>
+      <p class="sub">Real moth eyes kill glare with nanopillars. Put a 3D nanopillar eye under the loupe, shade it with a quantum thin-film shader, stack up to six layers, and see whether the bat still spots the shine.</p>
+      <p class="answer" id="answer"></p>
+      <div class="proof" id="proof"></div>
+      <ol class="steps">
+        <li><span><b>Orbit</b> the eye in the loupe (drag, or focus it and use the arrow keys). The bat flies to where you look from.</span></li>
+        <li><span><b>Move the lamp</b>: drag the pad, or drag across the sky in the scene.</span></li>
+        <li><span><b>Stack layers</b> 1 to 6. Each step swaps in a different real shader run.</span></li>
+        <li><span><b>Compare</b> the nanopillar eye with a bare dome and a flat slab.</span></li>
+      </ol>
+
+      <div class="panel">
+        <div class="row split"><span class="label">Layers in the stack</span><span class="label" id="l-val">6 layers</span></div>
+        <input type="range" id="layers" min="1" max="6" step="1" value="6" aria-label="Number of conducting layers (each value is a separate Atlas run)">
+        <div class="ticks" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+        <div class="stackbox">
+          <canvas id="stack" width="84" height="60" aria-hidden="true"></canvas>
+          <p id="stack-txt" aria-live="polite"></p>
+        </div>
+        <div class="row split">
+          <span class="label">Nonlinear interaction</span>
+          <div class="seg" role="group" aria-label="Nonlinear interaction strength" id="g-int">
+            <button type="button" data-int="1" aria-pressed="true">On (1)</button>
+            <button type="button" data-int="0" aria-pressed="false">Off (0)</button>
+          </div>
+        </div>
+        <p class="small" id="int-note">The &ldquo;off&rdquo; control was run at 1 and 6 layers only.</p>
+        <hr>
+        <div class="ctl">
+          <div class="pad" id="pad" tabindex="0" role="slider" aria-label="Lamp direction. Arrow keys move the lamp." aria-valuetext=""><div class="dot" id="dot"></div></div>
+          <div style="display:grid;gap:.55rem">
+            <span class="label">Lamp direction</span>
+            <span class="small" id="pad-val">&ndash;</span>
+            <div class="row"><button type="button" class="btn ghost" id="torch">Torch test</button></div>
+          </div>
+        </div>
+        <div class="row split"><span class="label">The bat&rsquo;s viewpoint</span><span class="label" id="tilt-val">&ndash;</span></div>
+        <div class="row">
+          <button type="button" class="btn ghost" id="headon">Head-on</button>
+          <button type="button" class="btn ghost" id="graze">Grazing</button>
+          <button type="button" class="btn ghost" id="sweep" aria-pressed="false">Sweep the tilt 0&ndash;85&deg;</button>
+        </div>
+        <hr>
+        <div class="row split"><span class="label">Film spacing (shader uniform)</span><span class="label" id="th-val">500 nm</span></div>
+        <input type="range" id="thick" min="100" max="1000" step="10" value="500" aria-label="Interlayer spacing in nanometres, the engine shader's uThickness uniform">
+        <div class="row">
+          <button type="button" class="btn" id="share">Copy link to this view</button>
+          <button type="button" class="btn ghost" id="reset">Reset</button>
+        </div>
+        <dl class="readout">
+          <dt>Engine</dt><dd><b>entanglement-shader-v1</b> &middot; Atlas statevector simulator</dd>
+          <dt>Params</dt><dd><b id="r-params">&ndash;</b></dd>
+          <dt>Qubits</dt><dd><b id="r-qubits">&ndash;</b></dd>
+          <dt>Job</dt><dd><b id="r-job">&ndash;</b></dd>
+          <dt>LUT</dt><dd><b id="r-lut">&ndash;</b></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <section class="film" aria-labelledby="film-h">
+    <div class="ink-bar"><span id="film-h">The film &middot; moth_eye.mp4</span><span>52 s &middot; no sound</span></div>
+    <div class="frame">
+      <video id="film" controls playsinline preload="metadata" poster="img/film-poster.webp" aria-label="moth_eye.mp4: the engine shader on the 3D facet, layers 1 to 6, raw output, then eye against slab from head-on to grazing">
+        <source data-src="video/moth_eye.mp4" type="video/mp4">
+      </video>
+      <div class="cap">
+        <p>The brief&rsquo;s deliverable: the same WebGL2 shader and the same real lookup tables, rendered offline frame by frame. It steps through layers 1 to 6 (each a separate Atlas run), shows the raw engine output, then sets the eye beside the flat slab and tilts from head-on to grazing. It only plays when you press play.</p>
+        <span class="label">Classical render of cached engine output</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="more">
+    <details class="drawer"><summary>Why a moth eye?</summary><div class="body">
+      <p>A night-flying moth&rsquo;s compound eye is tiled with facets, and each facet is covered in bumps about 200 nm apart, smaller than the wavelength of light. Bernhard, Miller &amp; M&oslash;ller (Acta Physiologica Scandinavica, 1965) identified these &ldquo;corneal nipples&rdquo; as an antireflection layer, which may stop the eye glinting at predators such as bats and owls. Clapham &amp; Hutley (Nature, 1973) made artificial versions to cut reflection from lenses. The same trick now coats camera lenses and solar cells.</p>
+      <p>The bumps work because they are sub-wavelength. To arriving light they look like a smooth ramp in refractive index from air into the cornea, not like separate surfaces. That is a <i>graded-index</i> effect.</p>
+    </div></details>
+    <details class="drawer"><summary>What the quantum engine did</summary><div class="body">
+      <p>Atlas <b>entanglement-shader-v1</b> implements the quantum collision model of Ferreira, Topel, Fromholz &amp; Wootton (arXiv:2606.29989, 2026). Light rays and the surface mode of each conducting layer are qubits, and every ray&ndash;layer collision is a small multi-qubit gate. Running the circuit on Atlas&rsquo;s classical statevector simulator gives a reflectance R and a transmittance T for every incidence angle and interlayer phase. The engine bakes them into 60&times;60 lookup tables and returns them with a GLSL shader that reads them. The loupe runs that shader, ported line by line to WebGL2.</p>
+      <p>Layers and rays share a 21-qubit budget, and the engine only checks it once a job starts, so we had to probe with real jobs. Seven layers allows at most 5 rays, but the engine needs at least as many rays as layers, so <b>6 layers &times; 6 rays</b> is the largest stack that fits. A probe with 7 rays at 6 layers was rejected (&ldquo;at most 6&rdquo;). Each ray is one qubit, so the 6 &times; 6 run sits exactly at the 21-qubit limit. Every probe was a real job, and the table below lists them all.</p>
+      <div class="tw"><table class="t" id="probes"></table></div>
+      <p>The sweep then holds the rays at 6 and steps the layers from 1 to 6, so only the layer count changes. Everything else stays fixed: single-layer reflectance 0.2, absorption 0.95, and the defaults (interaction 1, style &ldquo;peaked&rdquo;, resolution 60). Two control runs switch the nonlinear interaction off (interaction 0) at 1 and 6 layers.</p>
+    </div></details>
+    <details class="drawer"><summary>How the bat meter and the scene work</summary><div class="body">
+      <p>After each change, the page renders every geometry once more, off-screen, from your exact viewpoint. For each pixel it records the luminance of the engine&rsquo;s reflectance at that pixel&rsquo;s viewing angle, then averages over the pixels the object covers. Under a uniform sky, that average is the fraction of light the object sends back to the bat, and it is the big number under the scene. <b>Flash</b> is the same average, counted only where a pixel&rsquo;s mirror direction points within about 3&deg; of the lamp, so it is the share of the surface that mirrors the lamp straight at the bat. The tilt chart in the Data view is this meter measured at fixed angles for every run.</p>
+      <p>What in the scene is data: the bat&rsquo;s eyelids open in eight steps with that number (fully shut at 22% or less, fully open at 72% or more). The words &ldquo;dozing&rdquo; (under 32%), &ldquo;peering&rdquo; (32&ndash;50%) and &ldquo;spotted you&rdquo; (50% or more) are our own bands, and the moth tucks its wings when the bat is spotting it. The bat sits on an arc at your viewing tilt: level with the loupe is head-on, overhead is grazing. The bulb sits where the lamp pad points. The moth&rsquo;s eye glints when the flash is above 0.01%. In the layer stack, the ten dots are the run&rsquo;s mean R and T, rounded to tenths. Everything else (wing flaps, stars, the little moths at the bulb) is decoration.</p>
+      <p>Everything in the meter is classical arithmetic on the downloaded lookup tables. The night sky, lamp colour and tone mapping in &ldquo;Night scene&rdquo; are our own rendering choices. &ldquo;Raw R&rdquo; shows the engine shader&rsquo;s reflectance output with no scene lighting.</p>
+    </div></details>
+    <details class="drawer"><summary>What this does not claim</summary><div class="body">
+      <p class="honesty">This is an analogy. Real moth eyes suppress reflection with a sub-wavelength graded-index structure. The engine models a stack of thin conducting sheets with quantum-optical interactions, and a shader applied facet by facet is geometric optics, which breaks down at the scale of real nanopillars. Our facet is only 24 pillar pitches across, so you can see the pillars. All circuits ran on Atlas&rsquo;s classical statevector simulator, not on quantum hardware. We claim no quantum advantage, and the engine&rsquo;s own &ldquo;no classical shader can replicate&rdquo; wording is not a claim we test. Some lookup-table values exceed 1, which the engine documents as HDR output, so we show them unclipped. Bats hunt mostly by echolocation, not by sight; the bat here is a stand-in for any watcher.</p>
+      <p class="honesty" id="verdict-long"></p>
+    </div></details>
+    <details class="drawer"><summary>The offline film and how to rebuild everything</summary><div class="body">
+      <p>The brief&rsquo;s deliverable is an MP4 of the shader on a 3D asset. <code>moth_eye.mp4</code> (the player above) is rendered offline by this same WebGL code in headless Chrome, frame by frame from a fixed script, and piped into ffmpeg. The copy on this page is re-encoded smaller (H.264) to keep the page light. <code>reflectance_vs_layers.png</code> is the plot. The pixel cast is drawn by <code>make_sprites.py</code> into <code>web/sprites.json</code>. Scripts, job IDs and the full parameter table are in the entry&rsquo;s README and PARAMS.md.</p>
+    </div></details>
+  </section>
+  <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script>
+/*CORE*/
+/*INKSPRITE*/
+const LUTS = /*LUTS*/{};
+const META = /*META*/{};
+const SPRITES = /*SPRITES*/{};
+
+// ---------- state ----------
+const DEF = {layers: 6, inter: 1, geo: 'eye', mode: 0, az: 28, el: 22, dist: 50, lx: -0.45, ly: 0.5, th: 500};
+const st = Object.assign({}, DEF);
+let view = 'scene';
+const $ = (id) => document.getElementById(id);
+const tagFor = MothEye.tagFor;
+const hasRun = (L, i) => !!LUTS[tagFor(L, i)];
+const resFor = (L, i) => (META.results || []).find(r => r.tag === tagFor(L, i));
+const pct = (v) => (100 * v).toFixed(1) + '%';
+const RM = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Qubits: 6 x 6 is the engine-confirmed 21-qubit limit. Smaller stacks: the engine does not report a count;
+// our fit to its five budget messages is q = rays + layers - floor(layers/4) + 10 (shown as "about").
+const qubitsFit = (L, R) => R + L - Math.floor(L / 4) + 10;
+
+// ---------- the pixel cast (web/sprites.json, drawn with common/inksprite.js) ----------
+const SP = {};
+for (const [k, v] of Object.entries(SPRITES)) SP[k] = InkSprite.make(v);
+const PAL = InkSprite.PALETTE;
+// Mood bands are ours; the number behind them is the real meter value.
+const moodOf = (R) => R >= 0.50 ? 'spot' : R >= 0.32 ? 'peer' : 'doze';
+const MOOD_TXT = {doze: 'Dozing', peer: 'Peering', spot: 'Spotted you'};
+const lidOf = (R) => Math.max(0, Math.min(1, (R - 0.22) / 0.5));   // bat eyelid: shut at 22%, open at 72%
+
+// ---------- three.js viewer (core.js) inside the loupe ----------
+const cv = $('cv');
+let V = {ok: false};
+function init() {
+  if (typeof THREE !== 'undefined') V = MothEye.Viewer(THREE, cv, LUTS);
+  if (!V.ok) $('nogl').hidden = false;
+}
+function layout() { if (!V.ok) return; const w = cv.clientWidth || 400; V.setSize(w, w, Math.min(window.devicePixelRatio || 1, 2)); }
+function draw() { if (!V.ok) return; V.draw(st, {bothZoom: 2.0}); queueMeter(); drawTilt(); kick(); }
+
+// ---------- meter: off-screen render per geometry, average over covered pixels ----------
+let meterQ = false, meterLast = 0, lastOut = null;
+function queueMeter() {
+  if (meterQ) return;
+  meterQ = true;
+  const wait = Math.max(0, 150 - (performance.now() - meterLast));
+  setTimeout(() => requestAnimationFrame(() => { meterQ = false; meterLast = performance.now(); measure(); }), wait);
+}
+const NAMES = {eye: 'Moth eye', dome: 'Bare dome', slab: 'Flat slab'};
+const curGeo = () => st.geo === 'both' ? 'eye' : st.geo;
+function measure() {
+  if (!V.ok) return;
+  const out = V.measure(st);
+  lastOut = out;
+  const cur = curGeo(), R = out[cur].R;
+  $('m-big').textContent = pct(R);
+  $('m-mood').textContent = MOOD_TXT[moodOf(R)];
+  $('m-flash').textContent = `· flash ${(100 * out[cur].glare).toFixed(2)}%`;
+  $('m-bars').innerHTML = ['eye', 'dome', 'slab'].map(k => {
+    const on = k === cur || (st.geo === 'both' && k === 'slab');
+    return on ? `<b>${NAMES[k]} ${pct(out[k].R)}</b>` : `${NAMES[k]} ${pct(out[k].R)}`;
+  }).join(' &middot; ');
+  react(out);
+}
+
+// ================= the scene =================
+const bg = $('bg'), fx = $('fx'), bctx = bg.getContext('2d'), fctx = fx.getContext('2d');
+const S = {s: 4, W: 172, H: 172, dpr: 1, cx: 90, cy: 78, r: 58, ring: null};
+const A = {ready: false, mood: 'peer', lid: 0.45, lidShown: 0.45, glare: 0, bat: null, moodT: -9, swoopT: -9, flutterT: -9, flutterT2: -9, celebT: -9};
+
+function sceneLayout() {
+  const box = $('scenebox'), cssW = box.clientWidth, cssH = box.clientHeight;
+  if (!cssW) return false;
+  const dpr = Math.min(window.devicePixelRatio || 1, 3);
+  const pw = Math.round(cssW * dpr), ph = Math.round(cssH * dpr);
+  const s = Math.max(1, Math.round(pw / 176));
+  Object.assign(S, {s, dpr, W: Math.ceil(pw / s), H: Math.ceil(ph / s)});
+  for (const c of [bg, fx]) { c.width = pw; c.height = ph; }
+  S.r = Math.round(Math.min(S.W, S.H) * 0.335);
+  S.cx = Math.round(S.W * 0.53); S.cy = Math.round(S.H * 0.44);
+  S.moth = {x: 2, y: S.H - 49};
+  S.eye = {x: S.moth.x + 30, y: S.moth.y + 12};       // the moth's right eye, where the loupe looks
+  const k = s / dpr, rin = S.r - 1.5;                     // css px per scene pixel; the lens sits just inside the ring
+  Object.assign(cv.style, {left: (S.cx - rin) * k + 'px', top: (S.cy - rin) * k + 'px', width: 2 * rin * k + 'px', height: 2 * rin * k + 'px'});
+  bakeRing();
+  starsFor();
+  A.bat = null;
+  paintBG();
+  return true;
+}
+const rect = (c, x, y, w, h, col) => { c.fillStyle = PAL[col] || col; c.fillRect(x * S.s, y * S.s, w * S.s, h * S.s); };
+// sprites are padded to even sizes, so a top-left on whole scene pixels lands on whole device pixels
+const blit = (c, sp, f, x, y, o) => InkSprite.draw(c, sp, f, (Math.round(x) + sp.w / 2) * S.s, (Math.round(y) + sp.h / 2) * S.s, S.s, o);
+
+function bakeRing() {   // loupe ring and the zoom callout, baked once per layout
+  const c = document.createElement('canvas'); c.width = fx.width; c.height = fx.height;
+  const x = c.getContext('2d');
+  const {cx, cy, r} = S;
+  // callout: two dotted ink lines from the moth's eye to the rim
+  const base = Math.atan2(S.eye.y - cy, S.eye.x - cx);
+  for (const d of [-0.42, 0.42]) {
+    const tx = cx + r * Math.cos(base + d), ty = cy + r * Math.sin(base + d);
+    const n = Math.ceil(Math.hypot(tx - S.eye.x, ty - S.eye.y));
+    for (let i = 3; i < n; i += 2) rect(x, Math.round(S.eye.x + (tx - S.eye.x) * i / n), Math.round(S.eye.y + (ty - S.eye.y) * i / n), 1, 1, 'K');
+  }
+  for (let yy = cy - r - 3; yy <= cy + r + 3; yy++) for (let xx = cx - r - 3; xx <= cx + r + 3; xx++) {
+    const d = Math.hypot(xx + 0.5 - cx, yy + 0.5 - cy), a = Math.atan2(yy + 0.5 - cy, xx + 0.5 - cx);
+    if (d >= r - 1.5 && d < r) rect(x, xx, yy, 1, 1, 'B');
+    else if (d >= r && d < r + 2.2) rect(x, xx, yy, 1, 1, (a < -1.9 && a > -2.6 && d < r + 1.1) ? 'W' : 'K');
+  }
+  S.ring = c;
+}
+function starsFor() {
+  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  S.stars = [];
+  for (let i = 0; i < 60 && S.stars.length < 16; i++) {
+    const x = Math.floor(rnd() * (S.W - 6)) + 2, y = Math.floor(rnd() * S.H * 0.62) + 2;
+    if (Math.hypot(x - S.cx, y - S.cy) < S.r + 8 || (x < 24 && y < 24)) continue;
+    S.stars.push({x, y, p: rnd()});
+  }
+}
+function lampPos() {
+  const m = Math.hypot(st.lx, st.ly), a = m < 0.08 ? -Math.PI / 2 : Math.atan2(st.ly, st.lx), R = S.r + 17;
+  return {x: Math.max(8, Math.min(S.W - 8, S.cx + R * Math.cos(a))), y: Math.max(14, Math.min(S.H - 14, S.cy - R * Math.sin(a)))};
+}
+function tiltNow() { return Math.acos(Math.cos(st.el * Math.PI / 180) * Math.cos(st.az * Math.PI / 180)) * 180 / Math.PI; }
+function batTarget() {   // on an arc round the loupe: level with it = head-on, overhead = grazing
+  const t = Math.min(90, tiltNow()) * Math.PI / 180, side = Math.sin(st.az * Math.PI / 180) < -1e-6 ? -1 : 1;
+  const rx = Math.min(S.r + 13, side > 0 ? S.W - S.cx - 18 : S.cx - 18), ry = S.r + 9;
+  return {x: S.cx + side * rx * Math.cos(t), y: S.cy - ry * Math.sin(t)};
+}
+
+function paintBG() {
+  const c = bctx, W = S.W, H = S.H;
+  c.imageSmoothingEnabled = false;
+  rect(c, 0, 0, W, H, 'T');
+  blit(c, SP.moon, 0, 4, 4);
+  for (let x = 0; x < W; x++) {   // far hedge (L) and near grass (B), drawn as pixel columns
+    const h1 = Math.round(15 + 3 * Math.sin(x / 9) + 2 * Math.sin(x / 4.3 + 1.7));
+    rect(c, x, H - h1, 1, h1, 'L');
+    const h2 = Math.round(5 + 1.6 * Math.sin(x / 5 + 0.4) + (x % 7 === 0 ? 2 : 0) + (x % 11 === 3 ? 1 : 0));
+    rect(c, x, H - h2, 1, h2, 'B');
+    rect(c, x, H - h2, 1, 1, 'K');
+  }
+  const L = lampPos();   // the bulb's cord hangs from the top edge, behind the loupe
+  for (let y = 0; y < L.y - 9; y++) if (y % 4 !== 3) rect(c, Math.round(L.x) - 1, y, 1, 1, 'K');
+  const ty = S.moth.y + 36;   // the twig the moth sits on
+  for (let x = 0; x < 64; x++) { const y = ty + Math.round(x * 0.08); rect(c, x, y, 1, 1, 'K'); rect(c, x, y + 1, 1, 1, 'B'); rect(c, x, y + 2, 1, 1, 'K'); }
+  blit(c, SP.leaf, 0, 56, ty + 4);
+  blit(c, SP.leaf, 0, 6, ty + 2, {flipX: true});
+}
+
+function react(out) {   // the cast reacts to the measured light
+  const R = out[curGeo()].R, m = moodOf(R), now = performance.now() / 1000;
+  A.lid = lidOf(R); A.glare = out[curGeo()].glare;
+  if (!A.ready) { A.ready = true; A.mood = m; A.lidShown = A.lid; }   // first reading: no fanfare on load
+  if (m !== A.mood) {
+    const was = A.mood; A.mood = m; A.moodT = now;
+    if (m === 'spot') { A.swoopT = now; say('Spotted you!', false, 'bat'); }
+    else if (m === 'doze' && was !== 'doze') { A.celebT = now; say('Hidden! The bat dozes off', true, 'moth'); }
+  }
+  kick();
+}
+function say(text, good, who) {
+  const b = $('bubble'); b.textContent = text; b.classList.toggle('good', good); b.dataset.who = who; b.classList.add('on');
+  clearTimeout(b._h); b._h = setTimeout(() => b.classList.remove('on'), 1800); placeBubble();
+}
+function placeBubble() {
+  const b = $('bubble'); const k = S.s / S.dpr;
+  const p = b.dataset.who === 'bat' && A.bat ? {x: A.bat.x, y: A.bat.y - 12} : {x: S.moth.x + 24, y: S.moth.y - 2};
+  const half = (b.offsetWidth || 120) / 2, maxX = S.W * k - half - 4;
+  b.style.left = Math.max(half + 4, Math.min(maxX, p.x * k)) + 'px'; b.style.top = Math.max(b.offsetHeight + 4, p.y * k) + 'px';
+}
+
+function paintFX(t) {
+  const c = fctx, rm = RM();
+  if (rm) t = 0;
+  c.clearRect(0, 0, fx.width, fx.height);
+  c.imageSmoothingEnabled = false;
+  for (const s of S.stars) blit(c, SP.star, ((t * 0.5 + s.p) % 1) < 0.25 ? 1 : 0, s.x - 2, s.y - 2);
+  if (S.ring) c.drawImage(S.ring, 0, 0);
+  // the lamp: halo dots, rays toward the loupe, two tiny moths, the bulb
+  const L = lampPos(), dx = S.cx - L.x, dy = S.cy - L.y, dl = Math.hypot(dx, dy) || 1;
+  for (let yy = -11; yy <= 11; yy++) for (let xx = -11; xx <= 11; xx++) {
+    const d = Math.hypot(xx, yy); if (d > 8.6 && d < 10.6 && (xx + yy) % 2 === 0) rect(c, Math.round(L.x) + xx, Math.round(L.y) + yy, 1, 1, 'W');
+  }
+  for (const da of [-0.32, 0, 0.32]) {
+    const ux = Math.cos(Math.atan2(dy, dx) + da), uy = Math.sin(Math.atan2(dy, dx) + da);
+    for (let i = 12; i < 18; i++) if ((i + Math.floor(t * 8)) % 3 !== 0) rect(c, Math.round(L.x + ux * i), Math.round(L.y + uy * i), 1, 1, 'O');
+  }
+  blit(c, SP.bulb, InkSprite.frameAt(SP.bulb, t), L.x - 7, L.y - 9);
+  for (let i = 0; i < 2; i++) {
+    const a = t * (1.6 + i * 0.5) + i * 3.1;
+    blit(c, SP.minimoth, InkSprite.frameAt(SP.minimoth, t + i * 0.13), L.x - 3 + Math.cos(a) * (11 + i * 2), L.y - 2 + Math.sin(a) * (7 + i));
+  }
+  // the moth: relaxed, peeking at the bat, or wings tucked; clicks make it flutter, hiding makes it hop
+  const ms = A.mood === 'doze' ? SP.moth : A.mood === 'peer' ? SP.moth_peek : SP.moth_alarm;
+  let mx = S.moth.x, my = S.moth.y, mf = InkSprite.frameAt(ms, t);
+  const fl = t - A.flutterT, cel = t - A.celebT;
+  if (!rm && fl >= 0 && fl < 0.8) { my -= Math.round(3 * Math.sin(Math.PI * fl / 0.8)); mf = Math.floor(fl * 16) % ms.frames.length; }
+  if (!rm && cel >= 0 && cel < 1.0) my -= Math.round(4 * Math.abs(Math.sin(Math.PI * cel * 2)));
+  if (!rm && A.mood === 'spot' && (t - A.moodT < 0.7 || (t % 2.4) < 0.25)) mx += (Math.floor(t * 18) % 2 ? 1 : -1);
+  blit(c, ms, mf, mx, my);
+  if (A.glare > 1e-4) {   // the lamp mirrored in the moth's eye (the meter's flash)
+    const f = A.glare > 1e-3 ? (rm ? 0 : [0, 2][Math.floor(t * 5) % 2]) : 1;
+    blit(c, SP.glint, f, mx + 31, my + 8);
+  }
+  // the bat, at your viewing angle; eases along its arc, swoops when it spots the moth
+  const to = batTarget();
+  if (!A.bat || rm) A.bat = {x: to.x, y: to.y};
+  else { A.bat.x += (to.x - A.bat.x) * 0.25; A.bat.y += (to.y - A.bat.y) * 0.25; }
+  let bx = A.bat.x, by = A.bat.y;
+  const sw = t - A.swoopT, lp = t - A.flutterT2;
+  if (!rm && sw >= 0 && sw < 0.8) { const u = Math.sin(Math.PI * sw / 0.8) * 0.38; bx += (S.cx - bx) * u; by += (S.cy - by) * u; }
+  if (!rm && lp >= 0 && lp < 0.7) by -= Math.round(5 * Math.sin(Math.PI * lp / 0.7));
+  const bs = A.mood === 'doze' ? SP.bat_doze : SP.bat;
+  blit(c, bs, InkSprite.frameAt(bs, t * (A.mood === 'doze' ? 0.6 : 1)), bx - bs.w / 2, by - bs.h / 2);
+  if (A.mood === 'doze') for (let i = 0; i < 2; i++) {
+    const u = rm ? 0.3 + i * 0.4 : (t * 0.45 + i * 0.5) % 1;
+    blit(c, SP.zz, 0, bx + 6 + i * 3 + Math.round(Math.sin(u * 6) * 1.5), by - 12 - Math.round(u * 12), {alpha: 1 - u * 0.8});
+  }
+  if (A.mood === 'spot') blit(c, SP.bang, 0, bx - 1, by - 20);
+  if ($('bubble').classList.contains('on')) placeBubble();
+}
+
+// the bat meter canvas: frames 0..7 of "batface" = the eyelid, eased toward the measured value
+const BE = {s: 3};
+function batLayout() {
+  const c = $('bateye'), dpr = Math.min(window.devicePixelRatio || 1, 3), small = c.parentElement.clientWidth < 360;
+  BE.s = Math.max(1, Math.round((small ? 2 : 3) * dpr));
+  c.width = SP.batface.w * BE.s; c.height = SP.batface.h * BE.s;
+  c.style.width = c.width / dpr + 'px'; c.style.height = c.height / dpr + 'px';
+}
+function paintBat() {
+  const c = $('bateye').getContext('2d'), sp = SP.batface;
+  c.clearRect(0, 0, c.width, c.height); c.imageSmoothingEnabled = false;
+  const f = Math.max(0, Math.min(7, Math.round(A.lidShown * 7)));
+  InkSprite.draw(c, sp, f, sp.w * BE.s / 2, sp.h * BE.s / 2, BE.s);
+}
+
+// the layer stack: ten dots of lamp light split into back (R), through (T) and the rest, from the run's means
+const STK = {s: 3, W: 84, H: 60, t0: -9, cnt: null};
+function stackLayout() {
+  const c = $('stack'), dpr = Math.min(window.devicePixelRatio || 1, 3), small = c.parentElement.clientWidth < 380;
+  STK.s = Math.max(1, Math.round((small ? 2.6 : 2.6) * dpr));
+  c.width = STK.W * STK.s; c.height = STK.H * STK.s;
+  c.style.width = c.width / dpr + 'px'; c.style.height = c.height / dpr + 'px';
+}
+function stackCounts() {
+  const r = resFor(st.layers, st.inter); if (!r) return null;
+  const nR = Math.round(10 * r.lut_mean_R), nT = Math.min(10 - nR, Math.round(10 * r.lut_mean_T));
+  return {nR, nT, nA: 10 - nR - nT, R: r.lut_mean_R, T: r.lut_mean_T, N: r.layers};
+}
+function paintStack(t) {
+  const c = $('stack').getContext('2d'), s = STK.s, k = stackCounts(); if (!k) return;
+  const px = (x, y, w, h, col) => { c.fillStyle = PAL[col]; c.fillRect(Math.round(x) * s, Math.round(y) * s, w * s, h * s); };
+  c.clearRect(0, 0, STK.W * s, STK.H * s); c.imageSmoothingEnabled = false;
+  InkSprite.draw(c, SP.bulb_s, 0, (1 + SP.bulb_s.w / 2) * s, (1 + SP.bulb_s.h / 2) * s, s);
+  const top = 18, hit = {x: 30, y: top - 1}, bot = top + 4 * k.N - 1;
+  for (let i = 0; i < k.N; i++) { for (let x = 12; x < 50; x++) { px(x, top + 4 * i, 1, 1, 'K'); px(x, top + 4 * i + 1, 1, 1, 'L'); } }
+  const src = {x: 5, y: 6};
+  const slotR = (j) => ({x: hit.x + (78 - hit.x) * (j + 1) / 10, y: hit.y + (1 - hit.y) * (j + 1) / 10});
+  const slotT = (j) => ({x: 30 + (78 - 30) * (j + 1) / 10, y: bot + 2 + (STK.H - 3 - bot - 2) * (j + 1) / 10});
+  const slotA = (j) => ({x: 15 + 3.4 * j, y: top + 4 * (j % k.N) + 2});
+  for (let j = 0; j < 10; j++) { const a = slotR(j), b = slotT(j); px(a.x, a.y, 1, 1, 'L'); px(b.x, b.y, 1, 1, 'L'); }
+  InkSprite.draw(c, SP.lbl_r, 0, (79 + SP.lbl_r.w / 2) * s, (6 + SP.lbl_r.h / 2) * s, s);    // R: back toward the bat
+  InkSprite.draw(c, SP.lbl_t, 0, (79 + SP.lbl_t.w / 2) * s, (48 + SP.lbl_t.h / 2) * s, s);   // T: through the stack
+  const p = RM() ? 1 : Math.max(0, Math.min(1, (t - STK.t0) / 1.4));
+  for (let i = 0; i < 10; i++) {
+    const kind = i < k.nR ? 'R' : i < k.nR + k.nT ? 'T' : 'A';
+    const end = kind === 'R' ? slotR(i) : kind === 'T' ? slotT(i - k.nR) : slotA(i - k.nR - k.nT);
+    const u = Math.max(0, Math.min(1, (p - i * 0.03) / 0.45)), w = Math.max(0, Math.min(1, (p - 0.5 - i * 0.02) / 0.4));
+    const q = w > 0 ? {x: hit.x + (end.x - hit.x) * w, y: hit.y + (end.y - hit.y) * w} : {x: src.x + (hit.x - src.x) * u, y: src.y + (hit.y - src.y) * u};
+    if (p >= 1 || u > 0) px(q.x - 1, q.y - 1, 2, 2, kind === 'A' ? 'B' : 'O');
+  }
+}
+function stackText() {
+  const k = stackCounts(); if (!k) return;
+  $('stack-txt').innerHTML = `Of every 10 dots of lamp light, <b>${k.nR}</b> bounce back, <b>${k.nT}</b> get through and <b>${k.nA}</b> stay in the ${k.N}-layer stack.<br><span class="small">Mean of this run&rsquo;s tables: R ${k.R.toFixed(3)}, T ${k.T.toFixed(3)}, rounded to tenths.</span>`;
+}
+
+// one gentle loop for the pixel cast; idles at ~12 fps, sleeps when the scene is off screen or hidden
+let raf = 0, lastPaint = 0, sceneVisible = true;
+function tick(now) {
+  raf = 0;
+  const t = now / 1000, rm = RM();
+  A.lidShown += (A.lid - A.lidShown) * (rm ? 1 : 0.35);
+  if (Math.abs(A.lid - A.lidShown) < 0.01) A.lidShown = A.lid;
+  if (now - lastPaint > 80) { lastPaint = now; if (view === 'scene') { paintFX(t); paintBat(); } paintStack(t); }
+  const busy = A.lidShown !== A.lid || (t - STK.t0) < 1.6;
+  if (!rm && !document.hidden && (sceneVisible && view === 'scene' || busy)) raf = requestAnimationFrame(tick);
+}
+function kick() { if (!raf) raf = requestAnimationFrame(tick); }
+document.addEventListener('visibilitychange', kick);
+if ('IntersectionObserver' in window) new IntersectionObserver(es => { sceneVisible = es.some(e => e.isIntersecting); kick(); }).observe($('scenebox'));
+
+// pointer in the sky: drag to move the lamp; poke the moth or the bat
+function toScene(e) { const r = bg.getBoundingClientRect(); return {x: (e.clientX - r.left) / r.width * S.W, y: (e.clientY - r.top) / r.height * S.H}; }
+const onMoth = (p) => p.x >= S.moth.x + 4 && p.x <= S.moth.x + 44 && p.y >= S.moth.y && p.y <= S.moth.y + 38;
+const onBat = (p) => A.bat && Math.abs(p.x - A.bat.x) < 17 && Math.abs(p.y - A.bat.y) < 10;
+const nearLamp = (p) => { const L = lampPos(); return Math.hypot(p.x - L.x, p.y - L.y) < 14; };
+let lampDrag = false;
+function lampFrom(p) {
+  const a = Math.atan2(-(p.y - S.cy), p.x - S.cx), m = Math.min(0.99, Math.max(0.55, Math.hypot(st.lx, st.ly)));
+  st.lx = m * Math.cos(a); st.ly = m * Math.sin(a); render(false); draw(); paintBG();
+}
+bg.addEventListener('pointerdown', e => {
+  const p = toScene(e), now = performance.now() / 1000;
+  if (onMoth(p)) { A.flutterT = now; kick(); return; }
+  if (onBat(p)) { A.flutterT2 = now; kick(); return; }
+  if (e.pointerType === 'mouse' || nearLamp(p)) { lampDrag = true; bg.setPointerCapture(e.pointerId); stopSweep(); lampFrom(p); }
+});
+bg.addEventListener('pointermove', e => {
+  const p = toScene(e);
+  if (lampDrag) { lampFrom(p); return; }
+  bg.style.cursor = onMoth(p) || onBat(p) ? 'pointer' : nearLamp(p) ? 'grab' : 'crosshair';
+});
+const endLamp = () => { lampDrag = false; };
+bg.addEventListener('pointerup', endLamp); bg.addEventListener('pointercancel', endLamp);
+bg.addEventListener('touchstart', e => { const t = e.touches[0]; if (t && nearLamp(toScene(t))) e.preventDefault(); }, {passive: false});
+
+// ---------- text readouts, LUT thumbnail, plot ----------
+function render(full = true) {
+  const r = resFor(st.layers, st.inter);
+  $('l-val').textContent = `${st.layers} layer${st.layers > 1 ? 's' : ''}`;
+  $('th-val').textContent = `${st.th} nm`;
+  const L = MothEye.padToLight(st.lx, st.ly);
+  const elev = Math.asin(L[1]) * 180 / Math.PI, side = Math.atan2(L[0], L[2]) * 180 / Math.PI;
+  $('pad-val').textContent = `${side >= 0 ? 'right' : 'left'} ${Math.abs(side).toFixed(0)}°, ${elev >= 0 ? 'up' : 'down'} ${Math.abs(elev).toFixed(0)}°`;
+  $('pad').setAttribute('aria-valuetext', $('pad-val').textContent);
+  $('dot').style.left = (50 + 50 * st.lx * 0.92) + '%'; $('dot').style.top = (50 - 50 * st.ly * 0.92) + '%';
+  $('tilt-val').textContent = `tilt ${Math.min(90, tiltNow()).toFixed(0)}°`;
+  if (r) {
+    $('r-params').textContent = `layers ${r.layers} · incoming_rays ${r.rays} · reflectance 0.2 · absorption 0.95 · interaction ${r.interaction}`;
+    const q = qubitsFit(r.layers, r.rays);
+    $('r-qubits').textContent = (r.layers === 6 && r.rays === 6) ? '21: the 6 × 6 budget limit (7 rays rejected)' : `about ${q} of 21 (our fit to the engine's budget messages)`;
+    $('r-job').textContent = r.job_id;
+    $('r-lut').textContent = `${r.lut_shape[0]}×${r.lut_shape[1]} · mean R ${r.lut_mean_R.toFixed(3)} · mean T ${r.lut_mean_T.toFixed(3)}`;
+  }
+  document.querySelectorAll('[data-geo]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.geo === st.geo)));
+  document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.mode === st.mode)));
+  document.querySelectorAll('[data-view]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === view)));
+  document.querySelectorAll('[data-int]').forEach(b => { b.setAttribute('aria-pressed', String(+b.dataset.int === st.inter)); b.disabled = !hasRun(st.layers, +b.dataset.int); });
+  $('layers').value = st.layers; $('thick').value = st.th;
+  if (full) { drawLut(); drawPlot(); stackText(); }
+  drawTilt();
+  kick();
+}
+
+const PAPER = [251, 250, 249], INK = [25, 35, 142];   // brand paper -> ink ramp (low R pale, high R dark)
+function drawLut() {
+  const t = LUTS[tagFor(st.layers, st.inter)]; if (!t) return;
+  const d = MothEye.b64floats(t.R), c = $('lut').getContext('2d'), img = c.createImageData(t.w, t.h);
+  let mx = 0; for (const v of d) mx = Math.max(mx, v);
+  for (let row = 0; row < t.h; row++) for (let col = 0; col < t.w; col++) {
+    const v = d[row * t.w + col] / mx, o = ((t.h - 1 - row) * t.w + col) * 4;   // theta = 0 at the bottom
+    img.data[o] = INK[0] * v + PAPER[0] * (1 - v); img.data[o + 1] = INK[1] * v + PAPER[1] * (1 - v); img.data[o + 2] = INK[2] * v + PAPER[2] * (1 - v); img.data[o + 3] = 255;
+  }
+  c.putImageData(img, 0, 0);
+}
+
+// One ink, told apart by weight, tint, dash and marker (brand: no second accent colour).
+const C = {ink: '#19238E', ink2: '#545BA9', ink3: '#A1A4CE', rule: '#D3D3E6', panel: '#FFFFFF', tint: 'rgba(25,35,142,.07)'};
+const MONO = 'IBM Plex Mono, monospace';
+const SERIES = [
+  {key: 'lut_mean_R', label: 'reflectance: mean of the R table', color: C.ink, w: 2.6, css: 'solid'},
+  {key: 'eye', label: 'reflectance: moth-eye facet seen head-on', color: C.ink2, w: 1.8, dash: '6 4', hollow: true, css: 'dashed'},
+  {key: 'hemi_R', label: 'reflectance: flat slab under a uniform sky', color: C.ink3, w: 2, css: 'solid'},
+  {key: 'lut_mean_T', label: 'transmittance: mean of the T table', color: C.ink, w: 1.6, dash: '1.5 4', hollow: true, css: 'dotted'},
+];
+const chartW = (svg, h) => { const W = (svg.clientWidth || 720) < 560 ? 440 : 720; svg.setAttribute('viewBox', `0 0 ${W} ${h}`); return W; };
+const legendLine = (color, css) => `<i style="border-top-color:${color};border-top-style:${css}"></i>`;
+function drawPlot() {
+  const sw = (META.results || []).filter(r => r.series === 'sweep').sort((a, b) => a.layers - b.layers);
+  const ctl = (META.results || []).filter(r => r.series === 'control');
+  if (!sw.length) return;
+  const val = (r, s) => s.key === 'eye' ? (r.gpu_head_on || r.head_on).eye : r[s.key];
+  const all = sw.flatMap(r => SERIES.map(s => val(r, s))).concat(ctl.map(r => r.lut_mean_R));
+  const lo = 0, hi = Math.max(0.75, Math.ceil(Math.max(...all) * 10 + 0.5) / 10);
+  const W = chartW($('plot'), 306), R0 = W - 30;
+  const X = (L) => 94 + (L - 1) * ((R0 - 114) / 5), Y = (v) => 260 - (v - lo) / (hi - lo) * 230;
+  let s = '';
+  for (let v = 0; v < hi; v += 0.2) s += `<line x1="70" x2="${R0}" y1="${Y(v)}" y2="${Y(v)}" stroke="${v === 0 ? C.ink : C.rule}"/><text x="62" y="${Y(v) + 5}" fill="${C.ink2}" font-size="14" text-anchor="end" font-family="${MONO}">${v.toFixed(1)}</text>`;
+  for (const r of sw) s += `<text x="${X(r.layers)}" y="285" fill="${C.ink2}" font-size="14" text-anchor="middle" font-family="${MONO}">${r.layers}</text>`;
+  s += `<text x="${(70 + R0) / 2}" y="301" fill="${C.ink2}" font-size="12" text-anchor="middle" font-family="${MONO}">LAYERS (RAYS FIXED AT 6)</text>`;
+  s += `<rect x="${X(st.layers) - 18}" y="18" width="36" height="250" fill="${C.tint}"/>`;
+  for (const se of SERIES) {
+    s += `<polyline fill="none" stroke="${se.color}" stroke-width="${se.w}" ${se.dash ? `stroke-dasharray="${se.dash}"` : ''} points="${sw.map(r => X(r.layers) + ',' + Y(val(r, se))).join(' ')}"/>`;
+    for (const r of sw) s += `<circle class="pt" tabindex="0" role="button" aria-label="${r.layers} layers: ${se.label} ${val(r, se).toFixed(3)}" data-l="${r.layers}" cx="${X(r.layers)}" cy="${Y(val(r, se))}" r="${r.layers === st.layers && st.inter === 1 ? 6 : 4}" fill="${se.hollow ? C.panel : se.color}" stroke="${se.color}" stroke-width="1.6"><title>${r.layers} layers · ${se.label}: ${val(r, se).toFixed(3)} · job ${r.job_id}</title></circle>`;
+  }
+  for (const r of ctl) s += `<g class="pt" tabindex="0" role="button" aria-label="Control, interaction off, ${r.layers} layers: mean R ${r.lut_mean_R.toFixed(3)}" data-l="${r.layers}" data-i="0"><path d="M${X(r.layers) - 6},${Y(r.lut_mean_R) - 6}l12,12m0,-12l-12,12" stroke="${C.ink}" stroke-width="2.4"/><title>control, interaction 0, ${r.layers} layers · mean R ${r.lut_mean_R.toFixed(3)} · job ${r.job_id}</title></g>`;
+  $('plot').innerHTML = s;
+  $('plot').querySelectorAll('.pt').forEach(p => {
+    const go = () => { st.layers = +p.dataset.l; st.inter = p.dataset.i === '0' ? 0 : 1; if (!hasRun(st.layers, st.inter)) st.inter = 1; refresh(); };
+    p.addEventListener('click', go); p.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+  });
+}
+
+const TILT = [
+  {label: 'moth-eye facet', color: C.ink, w: 2.6, css: 'solid'},
+  {label: 'bare dome', color: C.ink2, w: 1.8, dash: '6 4', hollow: true, css: 'dashed'},
+  {label: 'flat slab', color: C.ink3, w: 2, css: 'solid'},
+];
+function drawTilt() {
+  const T = META.tilt; if (!T) return;
+  const rows = T.runs[tagFor(st.layers, st.inter)]; if (!rows) return;
+  const W = chartW($('tilt'), 264), R0 = W - 30;
+  const X = (e) => 70 + e / 90 * (R0 - 70), Y = (v) => 220 - (v - 0.1) / 0.75 * 200;
+  let s = '';
+  s += `<line x1="70" x2="${R0}" y1="220" y2="220" stroke="${C.ink}"/>`;
+  for (const v of [0.2, 0.4, 0.6, 0.8]) s += `<line x1="70" x2="${R0}" y1="${Y(v)}" y2="${Y(v)}" stroke="${C.rule}"/><text x="62" y="${Y(v) + 5}" fill="${C.ink2}" font-size="14" text-anchor="end" font-family="${MONO}">${v.toFixed(1)}</text>`;
+  for (const e of [0, 15, 30, 45, 60, 75, 90]) s += `<text x="${X(e)}" y="242" fill="${C.ink2}" font-size="14" text-anchor="middle" font-family="${MONO}">${e}°</text>`;
+  s += `<text x="${(70 + R0) / 2}" y="260" fill="${C.ink2}" font-size="12" text-anchor="middle" font-family="${MONO}">VIEWING TILT FROM THE FACET'S AXIS</text>`;
+  [2, 1, 0].forEach(k => {
+    const se = TILT[k];
+    s += `<polyline fill="none" stroke="${se.color}" stroke-width="${se.w}" ${se.dash ? `stroke-dasharray="${se.dash}"` : ''} points="${rows.map((r, i) => X(T.elevations[i]) + ',' + Y(r[k])).join(' ')}"/>`;
+    s += rows.map((r, i) => `<circle cx="${X(T.elevations[i])}" cy="${Y(r[k])}" r="2.8" fill="${se.hollow ? C.panel : se.color}" stroke="${se.color}" stroke-width="1.4"><title>${se.label} at ${T.elevations[i]}°: ${r[k].toFixed(3)}</title></circle>`).join('');
+  });
+  const th = Math.min(90, tiltNow()), lx = Math.min(R0 - 64, X(th) + 6);
+  s += `<line x1="${X(th)}" x2="${X(th)}" y1="18" y2="220" stroke="${C.ink}" stroke-width="1.5"/><rect x="${lx}" y="16" width="64" height="20" fill="${C.ink}"/><text x="${lx + 32}" y="30.5" fill="${C.panel}" font-size="12" text-anchor="middle" font-family="${MONO}">BAT ${th.toFixed(0)}°</text>`;
+  $('tilt').innerHTML = s;
+  $('tilt').setAttribute('aria-label', `Seen reflectance against viewing tilt for ${st.layers} layers. The bat is at ${th.toFixed(0)} degrees.`);
+}
+let sweepAnim = null;
+function stopSweep() { if (sweepAnim) { cancelAnimationFrame(sweepAnim); sweepAnim = null; } $('sweep').setAttribute('aria-pressed', 'false'); $('sweep').textContent = 'Sweep the tilt 0–85°'; }
+$('sweep').addEventListener('click', () => {   // user-started; click again (or touch the eye) to pause
+  if (sweepAnim) { stopSweep(); return; }
+  st.az = 0;
+  if (RM()) { st.el = 70; draw(); render(false); return; }
+  const start = st.el >= 84 ? 0 : Math.max(0, st.el); st.el = start;
+  $('sweep').setAttribute('aria-pressed', 'true'); $('sweep').textContent = 'Pause the sweep';
+  let last = performance.now();
+  const step = (now) => { st.el = Math.min(85, st.el + (now - last) / 1000 * 17); last = now; draw(); render(false);
+    if (st.el < 85) sweepAnim = requestAnimationFrame(step); else stopSweep(); };
+  sweepAnim = requestAnimationFrame(step);
+});
+cv.addEventListener('pointerdown', stopSweep);
+
+function refresh() { STK.t0 = performance.now() / 1000; render(true); draw(); }
+
+function setView(v) {
+  view = v === 'data' ? 'data' : 'scene';
+  $('v-scene').hidden = view !== 'scene'; $('v-data').hidden = view !== 'data'; $('g-mode').hidden = view !== 'scene';
+  if (view === 'scene') { sceneLayout(); layout(); batLayout(); draw(); }
+  else { drawPlot(); drawTilt(); drawLut(); }
+  render(false);
+}
+
+// ---------- static text from the data ----------
+function staticText() {
+  const sw = (META.results || []).filter(r => r.series === 'sweep').sort((a, b) => a.layers - b.layers);
+  const nJobs = (META.results || []).length;
+  $('proof').innerHTML = `<span class="hot"><b>21</b> qubits at the 6 &times; 6 limit</span><span><b>${nJobs}</b> real shader runs</span><span><b>${(META.probes || []).length}</b> budget probes</span><span><b>statevector</b> simulator</span>`;
+  $('legend').innerHTML = SERIES.map(s => `<span>${legendLine(s.color, s.css)}${s.label}</span>`).join('') + '<span><i class="x">&times;</i>control with interaction off: mean of the R table</span>';
+  $('tl-legend').innerHTML = TILT.map(s => `<span>${legendLine(s.color, s.css)}${s.label}</span>`).join('') + '<span><i class="now"></i>the bat&rsquo;s current tilt</span>';
+  if (sw.length > 1) {
+    const a = sw[0], b = sw[sw.length - 1], d = b.lut_mean_R - a.lut_mean_R;
+    const word = d < -0.005 ? 'falls' : d > 0.005 ? 'rises' : 'barely moves';
+    $('ch-verdict').textContent = `Mean R ${word}: ${a.lut_mean_R.toFixed(3)} → ${b.lut_mean_R.toFixed(3)}`;
+    $('answer').textContent = d > 0.005
+      ? `Short answer: no. Going from 1 to 6 layers makes the film slightly shinier (mean R ${a.lut_mean_R.toFixed(3)} → ${b.lut_mean_R.toFixed(3)}); only the light getting through dies. The pillars mostly change where the shine goes. Open Data for the charts.`
+      : `Mean R ${word} from 1 to 6 layers (${a.lut_mean_R.toFixed(3)} → ${b.lut_mean_R.toFixed(3)}). Open Data for the charts.`;
+    $('ch-note').textContent = META.verdict || '';
+    $('verdict-long').textContent = META.verdict_long || '';
+  }
+  $('probes').innerHTML = '<tr><th>layers</th><th>rays</th><th>result</th><th>job</th></tr>' + (META.probes || []).map(p =>
+    `<tr><td>${p.layers}</td><td>${p.incoming_rays}</td><td>${p.status === 'completed' ? 'completed (the 6-layer run below)' : 'rejected: ' + p.message.replace(/^.*?qubits\. /, '')}</td><td>${p.job_id.slice(0, 8)}</td></tr>`).join('');
+}
+
+// ---------- input ----------
+const toast = (msg) => { const t = $('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 1800); };
+const clampEl = (v) => Math.max(-80, Math.min(80, v));
+const pointers = new Map(); let pinch0 = null;
+cv.addEventListener('pointerdown', e => { cv.setPointerCapture(e.pointerId); pointers.set(e.pointerId, [e.clientX, e.clientY]); if (pointers.size === 2) { const [a, b] = [...pointers.values()]; pinch0 = {d: Math.hypot(a[0] - b[0], a[1] - b[1]), dist: st.dist}; } });
+cv.addEventListener('pointermove', e => {
+  if (!pointers.has(e.pointerId)) return;
+  const prev = pointers.get(e.pointerId); pointers.set(e.pointerId, [e.clientX, e.clientY]);
+  if (pointers.size === 2 && pinch0) { const [a, b] = [...pointers.values()]; st.dist = Math.max(30, Math.min(120, pinch0.dist * pinch0.d / Math.max(10, Math.hypot(a[0] - b[0], a[1] - b[1])))); }
+  else { st.az -= (e.clientX - prev[0]) * 0.35; st.el = clampEl(st.el + (e.clientY - prev[1]) * 0.35); }
+  draw(); render(false);
+});
+const endP = e => { pointers.delete(e.pointerId); if (pointers.size < 2) pinch0 = null; render(false); };
+cv.addEventListener('pointerup', endP); cv.addEventListener('pointercancel', endP);
+cv.addEventListener('wheel', e => { e.preventDefault(); st.dist = Math.max(30, Math.min(120, st.dist * (1 + Math.sign(e.deltaY) * 0.08))); draw(); }, {passive: false});
+cv.addEventListener('keydown', e => {
+  const k = {ArrowLeft: [-5, 0], ArrowRight: [5, 0], ArrowUp: [0, 5], ArrowDown: [0, -5]}[e.key];
+  if (k) { e.preventDefault(); st.az += k[0]; st.el = clampEl(st.el + k[1]); draw(); render(false); }
+  if (e.key === '+' || e.key === '=') { st.dist = Math.max(30, st.dist * 0.92); draw(); }
+  if (e.key === '-') { st.dist = Math.min(120, st.dist * 1.08); draw(); }
+});
+// light pad
+const pad = $('pad');
+function setLamp(x, y) { const m = Math.hypot(x, y); if (m > 0.99) { x *= 0.99 / m; y *= 0.99 / m; } st.lx = x; st.ly = y; render(false); draw(); paintBG(); }
+function padFrom(e) { const r = pad.getBoundingClientRect(); setLamp(((e.clientX - r.left) / r.width * 2 - 1) / 0.92, -((e.clientY - r.top) / r.height * 2 - 1) / 0.92); }
+pad.addEventListener('pointerdown', e => { pad.setPointerCapture(e.pointerId); padFrom(e); });
+pad.addEventListener('pointermove', e => { if (pad.hasPointerCapture(e.pointerId)) padFrom(e); });
+pad.addEventListener('keydown', e => {
+  const k = {ArrowLeft: [-0.05, 0], ArrowRight: [0.05, 0], ArrowUp: [0, 0.05], ArrowDown: [0, -0.05]}[e.key];
+  if (!k) return; e.preventDefault(); setLamp(st.lx + k[0], st.ly + k[1]);
+});
+$('layers').addEventListener('input', () => { st.layers = +$('layers').value; if (!hasRun(st.layers, st.inter)) st.inter = 1; refresh(); });
+$('thick').addEventListener('input', () => { st.th = +$('thick').value; render(false); draw(); });
+document.querySelectorAll('[data-geo]').forEach(b => b.addEventListener('click', () => { st.geo = b.dataset.geo; render(false); draw(); }));
+document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => { st.mode = +b.dataset.mode; render(false); draw(); }));
+document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+document.querySelectorAll('[data-int]').forEach(b => b.addEventListener('click', () => { if (hasRun(st.layers, +b.dataset.int)) { st.inter = +b.dataset.int; refresh(); } }));
+$('torch').addEventListener('click', () => {   // put the lamp right behind the bat's head
+  const p = MothEye.orbitPosition(st.az, st.el, 1); setLamp(p[0], p[1]);
+  toast(p[2] < 0.15 ? 'The bat is behind the facet: the lamp only lights the front' : 'Lamp moved behind the bat: torch test');
+});
+$('headon').addEventListener('click', () => { stopSweep(); st.az = 0; st.el = 0; draw(); render(false); });
+$('graze').addEventListener('click', () => { stopSweep(); st.az = 0; st.el = 72; draw(); render(false); });
+$('reset').addEventListener('click', () => { stopSweep(); Object.assign(st, DEF); history.replaceState(null, '', location.pathname + location.search); paintBG(); refresh(); });
+$('share').addEventListener('click', async () => {
+  const f = (v, d) => v.toFixed(d);
+  history.replaceState(null, '', '#' + ['L' + st.layers, 'i' + st.inter, st.geo, 'm' + st.mode, 'a' + f(st.az, 0), 'e' + f(st.el, 0), 'd' + f(st.dist, 0), 'x' + f(st.lx, 2), 'y' + f(st.ly, 2), 't' + st.th, view === 'data' ? 'vD' : 'vS'].join('_'));
+  try { await navigator.clipboard.writeText(location.href); toast('Link copied'); } catch (e) { toast('Copy failed: the link is in your address bar'); }
+});
+function fromHash() {
+  const parts = location.hash.replace(/^#/, '').split('_'); if (parts.length < 10) return;
+  const num = (s, p) => { const v = parseFloat(s.slice(p.length)); return s.startsWith(p) && isFinite(v) ? v : null; };
+  const L = num(parts[0], 'L'), i = num(parts[1], 'i');
+  if (L >= 1 && L <= 6) st.layers = Math.round(L);
+  if (i === 0 || i === 1) st.inter = hasRun(st.layers, i) ? i : 1;
+  if (['eye', 'dome', 'slab', 'both'].includes(parts[2])) st.geo = parts[2];
+  const m = num(parts[3], 'm'); if (m === 0 || m === 1) st.mode = m;
+  const a = num(parts[4], 'a'), e = num(parts[5], 'e'), d = num(parts[6], 'd'), x = num(parts[7], 'x'), y = num(parts[8], 'y'), t = num(parts[9], 't');
+  if (a !== null) st.az = a; if (e !== null) st.el = clampEl(e); if (d !== null) st.dist = Math.max(30, Math.min(120, d));
+  if (x !== null && y !== null && Math.hypot(x, y) < 1) { st.lx = x; st.ly = y; }
+  if (t !== null && t >= 100 && t <= 1000) st.th = Math.round(t);
+  if (parts[10] === 'vD') view = 'data';
+}
+
+// ---------- film: attach the source only when the player nears the viewport (lazy, like loading="lazy") ----------
+(function lazyFilm() {
+  const v = $('film'), src = v.querySelector('source[data-src]');
+  const attach = () => { if (!src.getAttribute('src')) { src.setAttribute('src', src.dataset.src); v.load(); } };   // preload="metadata": no autoplay
+  if (!('IntersectionObserver' in window)) { attach(); return; }
+  const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); attach(); } }, {rootMargin: '300px 0px'});
+  io.observe(v);
+  v.addEventListener('focus', attach, {once: true});
+})();
+
+// ---------- boot ----------
+window.addEventListener('hashchange', () => { fromHash(); setView(view); refresh(); });
+fromHash();
+staticText();
+init();
+sceneLayout(); batLayout(); stackLayout(); layout();
+window.addEventListener('resize', () => { if (view === 'scene') { sceneLayout(); layout(); } batLayout(); stackLayout(); draw(); drawPlot(); drawTilt(); });
+setView(view);
+render(true); draw();
+</script>

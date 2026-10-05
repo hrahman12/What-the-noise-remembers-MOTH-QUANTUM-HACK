@@ -1,0 +1,4 @@
+  comet-qrng-v1: submitted ea258824-af68-40a1-8758-a5a37c74e899
+  comet-qrng-v1: done ea258824 in 547.6s
+  fez_148p8: ea258824-af68-40a1-8758-a5a37c74e899 backend=ibm_fez bytes=91345 S=2.5427999999999997 accounted=True grade=hardware-accounted
+spent for 05-jam-the-bat: 20 of 45 credits

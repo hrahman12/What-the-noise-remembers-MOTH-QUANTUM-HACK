@@ -1,0 +1,131 @@
+{
+  "$schema": "https://api.mothquantum.com/schemas/Engine.json",
+  "engine_id": "entanglement-shader-v1",
+  "name": "Entanglement Shader",
+  "description": "Quantum iridescent BSDF generator.",
+  "owner": "51d7e7a6-480b-41bc-a3c1-7ea1f8886ea0",
+  "owner_type": "user",
+  "created_by": "51d7e7a6-480b-41bc-a3c1-7ea1f8886ea0",
+  "visibility": "public",
+  "queue": "",
+  "input_type": "application/json",
+  "output_type": "application/zip",
+  "output_files": [
+    {
+      "name": "result",
+      "content_types": [
+        "application/zip"
+      ],
+      "required": true,
+      "description": "ZIP archive containing all shader formats (OSL, Marmoset .frag, GLSL, HLSL, MaterialX) and the shared R/T lookup tables (EXR, HDR)."
+    }
+  ],
+  "is_multipart": false,
+  "is_async": false,
+  "execution_mode": "handler",
+  "run_policy": {
+    "timeout": 18000,
+    "max_retries": 1,
+    "heartbeat": 18000
+  },
+  "params_schema": {
+    "description": "Request body parameters.",
+    "properties": {
+      "absorption": {
+        "default": 0.95,
+        "description": "Fraction of the maximum absorption achievable at the given reflectance.\n\n- `0` \u2014 no absorption.\n- `1` \u2014 maximum absorption and minimum transmission.\n",
+        "maximum": 1,
+        "minimum": 0,
+        "title": "Absorption",
+        "type": "number"
+      },
+      "incoming_rays": {
+        "default": 8,
+        "description": "Number of light rays entering the stack simultaneously.\n\n- Must be `>= layers` so that at least one ray is transmitted.\n- Maximum enforced by the 21-qubit budget at validation time.\n",
+        "minimum": 1,
+        "title": "Incoming Rays",
+        "type": "integer"
+      },
+      "interaction": {
+        "default": 1,
+        "description": "Strength of the nonlinear quantum interaction terms.\n\n- `0` \u2014 interaction disabled; only reflectance and absorption shape the output.\n- Positive vs. negative values of the same magnitude produce distinct colour patterns.\n",
+        "title": "Interaction",
+        "type": "number"
+      },
+      "layers": {
+        "default": 2,
+        "description": "Number of conducting sheets in the stack.\n\n- Maximum enforced by the 21-qubit budget at validation time.\n",
+        "minimum": 1,
+        "title": "Layers",
+        "type": "integer"
+      },
+      "reflectance": {
+        "default": 0.2,
+        "description": "Fraction of reflected power of a single ray and layer at normal incidence.\n\n- `0` \u2014 perfect transmittance and no absorption.\n- `1` \u2014 perfect mirror, no transmission or absorption.\n",
+        "maximum": 1,
+        "minimum": 0,
+        "title": "Reflectance",
+        "type": "number"
+      },
+      "resolution": {
+        "anyOf": [
+          {
+            "minimum": 10,
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": 60,
+        "description": "Density of the angle\u2013phase lookup table baked into the shader.\n\n- Higher values reduce banding on close-up or oblique surfaces.\n",
+        "title": "Resolution"
+      },
+      "style": {
+        "default": "peaked",
+        "description": "Selects which nonlinear interaction channels are active.\n\n- `peaked` \u2014 reflection and transmission peak at the same angle for large number of layers.\n- `frustrated` \u2014 competing interaction channels produce a non-monotone colour pattern.\n- `3-body` \u2014 three-body interactions only; subtle, low-contrast effect.\n- `constrained` \u2014 higher ray counts suppress transmission, deepening shadows.\n",
+        "enum": [
+          "peaked",
+          "frustrated",
+          "3-body",
+          "constrained"
+        ],
+        "title": "Style",
+        "type": "string"
+      }
+    },
+    "title": "Params",
+    "type": "object"
+  },
+  "credits_per_run": 1,
+  "enabled": true,
+  "registered_at": "2026-08-27T09:52:26Z",
+  "updated_at": "2026-08-27T09:52:26Z",
+  "description_md": "Entanglement Shader\n\nGenerates an iridescent surface material driven by quantum entanglement.\nStacking ultra-thin conducting layers causes light to bounce and interfere,\nproducing angle-dependent colour shifts that no classical shader can replicate.\n\nHow to use\n----------\nInvoke this endpoint with a POST request.\n\nThe request body must be ``application/json``.\n\nThe body of the request must include:\n\n- ``reflectance``\n- ``absorption``\n- ``layers``\n- ``incoming_rays``\n\nThe body of the request may also include:\n\n- ``resolution``\n- ``interaction``\n- ``style``\n\nFor more details about these parameters see the request schema below.\n\nOutput\n------\nReturns a ZIP archive containing all shader formats and shared textures:\n\n- ``entanglement_texture.osl``  \u2014 Open Shading Language (Blender, Maya, Houdini, RenderMan).\n- ``entanglement_texture.frag`` \u2014 Marmoset Toolbag 4 custom shader.\n- ``entanglement_texture.glsl`` \u2014 Standalone GLSL fragment shader (OpenGL 3.3+).\n- ``entanglement_texture.hlsl`` \u2014 HLSL pixel shader (Direct3D 11 / SM 5.0).\n- ``entanglement_texture.mtlx`` \u2014 MaterialX material definition.\n- ``R_lut.exr`` / ``R_lut.hdr`` \u2014 Float32 reflectance lookup table.\n- ``T_lut.exr`` / ``T_lut.hdr`` \u2014 Float32 transmittance lookup table.\n\nNo quantum hardware is required at render time.",
+  "code_samples": [
+    {
+      "lang": "Python",
+      "source": "import requests\nr = requests.post(\n    \"https://api.mothquantum.com/v1/generation/entanglement-shader-v1/process\",\n    headers={\"Authorization\": \"Bearer YOUR_KEY\"},\n    json={\n        \"reflectance\": 0.2,\n        \"absorption\": 0.5,\n        \"layers\": 3,\n        \"incoming_rays\": 8,\n    },\n)\njob = r.json()\nprint(job[\"job_id\"])\n"
+    },
+    {
+      "lang": "curl",
+      "source": "curl -X POST https://api.mothquantum.com/v1/generation/entanglement-shader-v1/process \\\n  -H \"Authorization: Bearer YOUR_KEY\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"reflectance\": 0.2, \"absorption\": 0.5, \"layers\": 3, \"incoming_rays\": 8}'\n"
+    }
+  ],
+  "error_codes": [
+    {
+      "type": "max_qubits_exceeded",
+      "description": "Configuration requires more qubits than the maximum allowed."
+    }
+  ],
+  "banner_image_id": null,
+  "card_image_id": null,
+  "banner_image_tag": null,
+  "card_image_tag": null,
+  "has_estimate": false,
+  "estimate": null,
+  "has_estimate_fn": false,
+  "estimate_needs_container": false,
+  "sidecar_endpoint": null,
+  "has_validate_fn": false
+}

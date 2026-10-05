@@ -99,9 +99,11 @@ details.drawer .body{padding-bottom:1.25rem;color:var(--ink-2);max-width:68ch;di
 /* Layout: the hero is an engraved scientific plate. A hawkmoth's head in profile sits on a twig; callouts zoom
    from its compound eye to the facet mosaic and on into the loupe, which holds the live 3D facet (three.js).
    A lamp hangs where the light pad points, a bat flies at your viewing angle, and an engraved bat's eyelid is
-   the meter. Charts sit one click away behind Scene / Data; two labelled plates follow the hero; science lives in
-   drawers. Look: brief-page paper and one ink; square panels, pill controls, hairlines, no glows or gradients. */
+   the meter. Below the hero, titled sections: The data (every chart, always visible), the plates, the film, The
+   science, How it was made, What this does not claim, Jobs and credits. Long text lives in drawers.
+   Look: brief-page paper and one ink; square panels, pill controls, hairlines, no glows or gradients. */
 .wrap{max-width:78rem;margin-inline:auto}
+.wtnr-bar .count{white-space:nowrap}
 .hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(1.25rem,3vw,2.5rem);align-items:start;padding-block:2rem 1rem}
 .stage{position:relative;border:1px solid var(--ink);user-select:none;background:var(--panel)}
 .stagebar{display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.6rem;border-bottom:1px solid var(--ink)}
@@ -131,13 +133,18 @@ details.drawer .body{padding-bottom:1.25rem;color:var(--ink-2);max-width:68ch;di
 .meter .big{font:400 2rem/1 var(--display);letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums}
 .mood{font:500 .78rem/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
 .mood span{color:var(--ink-2);letter-spacing:.04em;text-transform:none}
-.cmp{font:400 .74rem/1.45 var(--mono);color:var(--ink-2);font-variant-numeric:tabular-nums}
-.cmp b{color:var(--ink);font-weight:500}
+.meter .bars{grid-column:1/-1}
+.bars{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:.35rem .6rem;align-items:center;font:500 .7rem/1.2 var(--mono);color:var(--ink-2)}
+.bars .bar{height:8px;background:var(--panel-2);border:1px solid var(--rule);overflow:hidden}
+.bars .bar i{display:block;height:100%;width:0;background:var(--ink-3)}
+.bars .bar i.on{background:var(--ink)}
+.bars .v{font-variant-numeric:tabular-nums;color:var(--ink);text-align:right}
+.bars .cur{color:var(--ink);font-weight:500}
 .scene-note{padding:.55rem .95rem;border-top:1px solid var(--rule);font:400 .7rem/1.45 var(--mono);color:var(--ink-2)}
 .nogl[hidden]{display:none}
 .nogl{position:absolute;z-index:3;inset:0;display:grid;place-items:center;padding:2rem;text-align:center;color:var(--ink-2);background:var(--panel)}
-.view[hidden],.seg[hidden]{display:none}
-.dataview{display:grid;gap:1.6rem;padding:1rem}
+.seg[hidden]{display:none}
+.jump{text-decoration:none}
 .copy{display:grid;gap:1.1rem;min-width:0}
 .kicker{font:500 .74rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
 h1{font-size:clamp(2.3rem,5vw,4.2rem);line-height:1;letter-spacing:-.03em}
@@ -168,7 +175,8 @@ h1{font-size:clamp(2.3rem,5vw,4.2rem);line-height:1;letter-spacing:-.03em}
 .readout dd{margin:0}
 .readout b{color:var(--ink);font-weight:500;overflow-wrap:anywhere}
 .lutbox{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.9rem;align-items:center}
-.lutbox canvas{width:120px;height:120px;image-rendering:pixelated;border:1px solid var(--ink)}
+.lutbox canvas{width:160px;height:160px;image-rendering:pixelated;border:1px solid var(--ink)}
+.lutbox p{max-width:62ch}
 .small{font-size:.8rem;color:var(--ink-2)}
 .fig{display:grid;gap:.7rem;min-width:0}
 .fig h2{font-size:1.35rem}
@@ -180,6 +188,26 @@ h1{font-size:clamp(2.3rem,5vw,4.2rem);line-height:1;letter-spacing:-.03em}
 .fig svg .pt{cursor:pointer}
 .fig svg .pt:focus-visible{outline:none;stroke:var(--ink);stroke-width:3}
 .verdict{max-width:80ch;color:var(--ink);font-size:.95rem;border-inline-start:2px solid var(--ink);padding-inline-start:.9rem}
+/* titled sections below the hero: a solid ink bar, then a panel (charts, tables) or open drawers (long text) */
+.ink-bar h2{font:inherit;letter-spacing:inherit;color:inherit;margin:0}
+.toc{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:1.5rem;align-items:center}
+.toc .label{margin-right:.3rem}
+.toc a{font:500 .7rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink);text-decoration:none;border:1px solid var(--ink);border-radius:999px;padding:.55rem .8rem;background:var(--panel)}
+.toc a:hover{background:var(--tint)}
+.sec{margin-top:2.5rem;scroll-margin-top:1rem}
+.sec .ink-bar{flex-wrap:wrap;gap:.4rem 1rem}
+.secbody{border:1px solid var(--ink);border-top:0;background:var(--panel);padding:1.2rem 1.2rem 1.4rem;display:grid;gap:1.8rem}
+.secbody.open{border:0;background:transparent;padding:.3rem 0 0;gap:0}
+.figs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.6rem 2rem;align-items:start}
+.claim{display:grid;gap:.8rem;max-width:80ch}
+.claim .honesty{font-size:.9rem}
+.runbtn{border:1px solid var(--ink);background:transparent;color:var(--ink);border-radius:999px;padding:.4rem .65rem;font:500 .72rem/1 var(--mono);cursor:pointer;white-space:nowrap}
+.runbtn:hover{background:var(--tint)}
+.runbtn[aria-pressed="true"]{background:var(--ink);color:var(--on-ink)}
+#runs th,#runs td{white-space:nowrap;vertical-align:middle}
+.credits{display:grid;gap:.45rem;margin:0;padding-left:1.1rem;color:var(--ink-2);font-size:.9rem;max-width:84ch}
+.credits b{color:var(--ink);font-weight:500}
+.secbody h3{font-size:1.2rem}
 .plates{margin-top:2.5rem}
 .plates .ink-bar{flex-wrap:wrap;gap:.4rem 1rem}
 .plategrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid var(--ink);border-top:0;background:var(--panel)}
@@ -212,43 +240,40 @@ table.t th,table.t td{border-bottom:1px solid var(--rule);padding:.35rem .4rem;t
 table.t th{color:var(--ink);font-weight:500;border-bottom-color:var(--ink)}
 .tw{overflow-x:auto}
 code{font:400 .86em/1 var(--mono);color:var(--ink)}
-@media (max-width:960px){.hero{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:960px){.hero{grid-template-columns:minmax(0,1fr)}.figs{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:620px){.scenebox{aspect-ratio:1/1}}
-@media (max-width:620px){.film .cap{grid-template-columns:minmax(0,1fr)}.dataview{padding:.75rem}}
+@media (max-width:620px){.film .cap{grid-template-columns:minmax(0,1fr)}.secbody{padding:.9rem .75rem 1.1rem}.lutbox{grid-template-columns:minmax(0,1fr)}.lutbox canvas{width:140px;height:140px}}
 @media (max-width:820px){.plategrid{grid-template-columns:minmax(0,1fr)}.plate+.plate{border-left:0;border-top:1px solid var(--ink)}.plate{padding:1rem .8rem 1.1rem}}
-@media (max-width:460px){.meter .big{font-size:1.55rem}.meter{padding:.65rem .7rem;gap:.4rem .7rem}.stagebar .seg button{padding:.45rem .5rem;font-size:.68rem}.georow{padding:.5rem .4rem}.georow .seg button{padding:.45rem .38rem;font-size:.63rem;letter-spacing:.01em}.lblbtn{padding:.4rem .7rem;font-size:.66rem}.meter svg{width:58px}
+@media (max-width:460px){.wtnr-bar{font-size:.66rem;letter-spacing:.08em}.meter .big{font-size:1.55rem}.meter{padding:.65rem .7rem;gap:.4rem .7rem}.stagebar .seg button{padding:.45rem .5rem;font-size:.68rem}.georow{padding:.5rem .4rem}.georow .seg button{padding:.45rem .38rem;font-size:.63rem;letter-spacing:.01em}.lblbtn{padding:.4rem .7rem;font-size:.66rem}.meter svg{width:58px}
   .ctl{grid-template-columns:minmax(0,1fr)}.pad{margin-inline:auto}.stackbox{grid-template-columns:minmax(0,1fr)}.stackbox svg{margin-inline:auto}.tag{font-size:.56rem;padding:.25rem .35rem}}
 </style>
 
 <div class="wrap">
-  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count"><b>03</b> / 11 &middot; Hide</span></nav>
+  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count"><b>Challenge 03</b> &middot; Hide</span></nav>
 
   <div class="hero">
     <div>
       <div class="stage" id="stage">
         <div class="stagebar">
-          <div class="seg" role="group" aria-label="View">
-            <button type="button" data-view="scene" aria-pressed="true">Scene</button>
-            <button type="button" data-view="data" aria-pressed="false">Data</button>
-          </div>
-          <div class="seg" role="group" aria-label="Shading inside the loupe" id="g-mode">
+          <a class="btn ghost lblbtn jump" href="#data">The data &darr;</a>
+          <div class="seg" role="group" aria-label="Shading" id="g-mode">
             <button type="button" data-mode="0" aria-pressed="true">Night scene</button>
             <button type="button" data-mode="1" aria-pressed="false">Raw R</button>
           </div>
         </div>
 
-        <div class="view" id="v-scene">
+        <div id="v-scene">
           <div class="scenebox" id="scenebox">
             <svg id="bg" stroke-linejoin="round" stroke-linecap="round" role="img" aria-label="An engraved plate: a hawkmoth's head in profile on a twig, with its compound eye, palp, coiled proboscis and antennae labelled. A callout enlarges the eye's surface into hexagonal facets, and a second callout enlarges one facet into the live 3D loupe. A lamp hangs where the light pad points and a bat flies at your viewing angle. Drag the sky to move the lamp."></svg>
-            <canvas id="cv" width="600" height="600" tabindex="0" aria-label="The loupe: one 3D moth-eye facet covered in corneal nipples, shaded with the quantum entanglement shader. Drag or use arrow keys to orbit, plus and minus to zoom."></canvas>
+            <canvas id="cv" width="600" height="600" tabindex="0" aria-label="3D moth-eye facet shaded with the quantum entanglement shader. Drag or use arrow keys to orbit, plus and minus to zoom. This is the loupe: one facet covered in corneal nipples."></canvas>
             <svg id="fx" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"></svg>
             <span class="tag" aria-hidden="true">Loupe: one facet, live 3D</span>
             <span class="bubble" id="bubble" aria-hidden="true"></span>
-            <div class="nogl" id="nogl" hidden>This viewer needs WebGL2. The Data view and the drawers still work.</div>
+            <div class="nogl" id="nogl" hidden>This viewer needs WebGL2. The plot below and the drawers still work.</div>
           </div>
           <p class="loupe-cap"><b>In the loupe:</b> one facet&rsquo;s corneal nipples, the sub-wavelength bumps ~200&nbsp;nm apart; 24 across this facet, ~150 on a real one.</p>
           <div class="georow">
-            <div class="seg" role="group" aria-label="What sits on the moth's eye">
+            <div class="seg" role="group" aria-label="Geometry">
               <button type="button" data-geo="eye" aria-pressed="true">Moth eye</button>
               <button type="button" data-geo="dome" aria-pressed="false">Bare dome</button>
               <button type="button" data-geo="slab" aria-pressed="false">Flat slab</button>
@@ -259,47 +284,26 @@ code{font:400 .86em/1 var(--mono);color:var(--ink)}
           <div class="meter" aria-live="polite">
             <svg id="bateye" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"></svg>
             <div class="mt">
-              <div class="top"><span class="label">What the bat sees</span><span class="big" id="m-big">&ndash;</span></div>
+              <div class="top"><span class="label">How visible are you &middot; what the bat sees</span><span class="big" id="m-big">&ndash;</span></div>
               <p class="mood"><b id="m-mood">&ndash;</b> <span id="m-flash"></span></p>
-              <p class="cmp" id="m-bars"></p>
             </div>
+            <div class="bars" id="m-bars"></div>
           </div>
           <p class="scene-note">An engraved plate drawn from published anatomy and measurements (no photos traced): a hawkmoth head with a <i>Manduca</i>-sized eye (about 27,000 facets, each 30&nbsp;&micro;m), its facet lenses at &times;300, and one facet live in the loupe; the watcher is a big brown bat. Real data moves only the bat&rsquo;s eyelid (the meter), its place on the arc (your tilt), the glint on the moth&rsquo;s eye (flash), the lamp (your light pad) and the dots in the layer stack. The facet mesh on the head is drawn about 5&times; coarser than real so you can see it.</p>
-        </div>
-
-        <div class="view dataview" id="v-data" hidden>
-          <div class="fig">
-            <div class="row split"><h2 id="ch-h">Does the shine die as you add layers?</h2><span class="label" id="ch-verdict"></span></div>
-            <svg id="plot" viewBox="0 0 720 306" role="img" aria-label="Reflectance against number of layers for every real run"></svg>
-            <div class="legend" id="legend"></div>
-          </div>
-          <div class="fig">
-            <div class="row split"><h2 id="tl-h">Where is the bat looking from?</h2></div>
-            <svg id="tilt" viewBox="0 0 720 264" role="img" aria-labelledby="tl-h"></svg>
-            <div class="legend" id="tl-legend"></div>
-            <p class="small">The bat meter, measured off-screen at fixed tilts for the run you have selected (azimuth 0). Head-on, the pillars return more light than the slab. Past the crossover the slab acts as a mirror and the pillars stay dimmer. Press <b>Sweep the tilt</b> in the controls to fly the bat through it.</p>
-          </div>
-          <div class="fig">
-            <h2>The table every pixel looks up</h2>
-            <div class="lutbox">
-              <canvas id="lut" width="60" height="60" aria-label="The reflectance lookup table of the current run"></canvas>
-              <p class="small">The R lookup table this run returned: interlayer phase left to right, incidence angle from normal (bottom) to grazing (top). Darker ink is more reflective. Every pixel of the 3D facet looks up its reflectance here.</p>
-            </div>
-          </div>
-          <p class="verdict" id="ch-note"></p>
         </div>
       </div>
     </div>
 
     <div class="copy">
       <p class="kicker">Challenge 03 &middot; Three dimensions</p>
-      <h1>Hide a moth&rsquo;s shiny eye from the bat.</h1>
-      <p class="sub">Real moth eyes kill glare with nanopillars. Put a 3D nanopillar eye under the loupe, shade it with a quantum thin-film shader, stack up to six layers, and see whether the bat still spots the shine.</p>
+      <h1>Try to hide a moth&rsquo;s eye from the lamp.</h1>
+      <p class="sub">Real moth eyes kill glare with nanopillars. Shade a 3D nanopillar eye with a quantum thin-film shader, stack up to six layers, and see whether the shine dies. In the scene the eye sits under a loupe and a bat watches from wherever you look: does it still spot the shine?</p>
       <p class="answer" id="answer"></p>
       <div class="proof" id="proof"></div>
-      <ol class="steps">
-        <li><span><b>Orbit</b> the eye in the loupe (drag, or focus it and use the arrow keys). The bat flies to where you look from.</span></li>
-        <li><span><b>Move the lamp</b>: drag the pad, or drag across the sky in the scene.</span></li>
+      <p class="label" id="play-h">How to play</p>
+      <ol class="steps" aria-labelledby="play-h">
+        <li><span><b>Orbit</b> the eye: drag it, or focus it and use the arrow keys. It sits in the loupe, and the bat flies to where you look from.</span></li>
+        <li><span><b>Drag the lamp</b> on the light pad to move the glints. You can also drag across the sky in the scene.</span></li>
         <li><span><b>Stack layers</b> 1 to 6. Each step swaps in a different real shader run.</span></li>
         <li><span><b>Compare</b> the nanopillar eye with a bare dome and a flat slab.</span></li>
       </ol>
@@ -333,7 +337,7 @@ code{font:400 .86em/1 var(--mono);color:var(--ink)}
         <div class="row">
           <button type="button" class="btn ghost" id="headon">Head-on</button>
           <button type="button" class="btn ghost" id="graze">Grazing</button>
-          <button type="button" class="btn ghost" id="sweep" aria-pressed="false">Sweep the tilt 0&ndash;85&deg;</button>
+          <button type="button" class="btn ghost sweepbtn" id="sweep" aria-pressed="false">Sweep the tilt 0&ndash;85&deg;</button>
         </div>
         <hr>
         <div class="row split"><span class="label">Film spacing (shader uniform)</span><span class="label" id="th-val">500 nm</span></div>
@@ -353,8 +357,43 @@ code{font:400 .86em/1 var(--mono);color:var(--ink)}
     </div>
   </div>
 
-  <section class="plates" aria-labelledby="pl-h">
-    <div class="ink-bar"><span id="pl-h">The real eye, plate by plate</span><span>Drawn from published measurements &middot; not engine data</span></div>
+  <nav class="toc" aria-label="Sections of this page">
+    <span class="label">On this page</span>
+    <a href="#data">The data</a><a href="#plates">The plates</a><a href="#the-film">The film</a><a href="#science">The science</a><a href="#made">How it was made</a><a href="#claims">What this does not claim</a><a href="#jobs">Jobs and credits</a>
+  </nav>
+
+  <section class="sec" id="data" aria-labelledby="data-h">
+    <div class="ink-bar"><h2 id="data-h">The data</h2><span id="data-sub">Real engine output &middot; follows your controls</span></div>
+    <div class="secbody">
+      <div class="figs">
+        <div class="fig">
+          <div class="row split"><h2 id="ch-h">Does the shine die as you add layers?</h2><span class="label" id="ch-verdict"></span></div>
+          <svg id="plot" viewBox="0 0 720 306" role="img" aria-label="Reflectance against number of layers for every real run"></svg>
+          <div class="legend" id="legend"></div>
+          <p class="small">Every point is a real Atlas run. Click or press Enter on a point to load that run into the scene, the meter and the other charts.</p>
+          <p class="small">The four points above each layer count come from the same run, so a click anywhere in that column loads it.</p>
+        </div>
+        <div class="fig">
+          <div class="row split"><h2 id="tl-h">Where is the bat looking from?</h2>
+            <button type="button" class="btn ghost sweepbtn" id="sweep2" aria-pressed="false">Sweep the tilt 0&ndash;85&deg;</button></div>
+          <svg id="tilt" viewBox="0 0 720 264" role="img" aria-labelledby="tl-h"></svg>
+          <div class="legend" id="tl-legend"></div>
+          <p class="small">The same meter, measured off-screen at fixed tilts for the run you have selected (azimuth 0). Head-on, the pillars return more light than the slab. Past the crossover the slab acts as a mirror and the pillars stay dimmer. In the scene, the bat flies to this tilt; <b>Sweep the tilt</b> flies it through the whole curve.</p>
+        </div>
+      </div>
+      <div class="fig">
+        <h2>The table every pixel looks up</h2>
+        <div class="lutbox">
+          <canvas id="lut" width="60" height="60" aria-label="The reflectance lookup table of the current run"></canvas>
+          <p class="small">The R lookup table this run returned: phase left to right, incidence angle from normal (bottom) to grazing (top). Every pixel of the eye looks up its reflectance here. Darker ink is more reflective; the phase is the interlayer phase. <span id="lut-run"></span></p>
+        </div>
+      </div>
+      <p class="verdict" id="ch-note"></p>
+    </div>
+  </section>
+
+  <section class="plates sec" id="plates" aria-labelledby="pl-h">
+    <div class="ink-bar"><h2 id="pl-h">The real eye, plate by plate</h2><span>Drawn from published measurements &middot; not engine data</span></div>
     <div class="plategrid">
       <figure class="plate">
         <svg id="pl-omma" role="img" aria-labelledby="pl-omma-c"></svg>
@@ -369,8 +408,8 @@ code{font:400 .86em/1 var(--mono);color:var(--ink)}
     </div>
   </section>
 
-  <section class="film" aria-labelledby="film-h">
-    <div class="ink-bar"><span id="film-h">The film &middot; moth_eye.mp4</span><span>52 s &middot; no sound</span></div>
+  <section class="film sec" id="the-film" aria-labelledby="film-h">
+    <div class="ink-bar"><h2 id="film-h">The film &middot; moth_eye.mp4</h2><span>52 s &middot; no sound</span></div>
     <div class="frame">
       <video id="film" controls playsinline preload="metadata" poster="img/film-poster.webp" aria-label="moth_eye.mp4: the engine shader on the 3D facet, layers 1 to 6, raw output, then eye against slab from head-on to grazing">
         <source data-src="video/moth_eye.mp4" type="video/mp4">
@@ -382,32 +421,89 @@ code{font:400 .86em/1 var(--mono);color:var(--ink)}
     </div>
   </section>
 
-  <section class="more">
+  <section class="sec" id="science" aria-labelledby="sci-h">
+    <div class="ink-bar"><h2 id="sci-h">The science</h2><span>Open a drawer to read</span></div>
+    <div class="secbody open">
     <details class="drawer"><summary>Why a moth eye?</summary><div class="body">
-      <p>A night-flying moth&rsquo;s compound eye is tiled with facets, and each facet is covered in bumps about 200 nm apart, smaller than the wavelength of light. Bernhard, Miller &amp; M&oslash;ller (Acta Physiologica Scandinavica, 1965) identified these &ldquo;corneal nipples&rdquo; as an antireflection layer, which may stop the eye glinting at predators such as bats and owls. Clapham &amp; Hutley (Nature, 1973) made artificial versions to cut reflection from lenses. The same trick now coats camera lenses and solar cells.</p>
+      <p>A night-flying moth&rsquo;s compound eye is tiled with facets, and each facet is covered in bumps about 200 nm apart, smaller than the wavelength of light. Bernhard, Miller &amp; M&oslash;ller (Acta Physiologica Scandinavica, 1965) identified these &ldquo;corneal nipples&rdquo; as an antireflection layer, which may stop the eye glinting at predators. Clapham &amp; Hutley (Nature, 1973) made artificial versions to cut reflection from lenses. The same trick now coats camera lenses and solar cells.</p>
       <p>The bumps work because they are sub-wavelength. To arriving light they look like a smooth ramp in refractive index from air into the cornea, not like separate surfaces. That is a <i>graded-index</i> effect.</p>
-      <p>The numbers in the drawings are published ones. The tobacco hawkmoth <i>Manduca sexta</i> has about 27,000 facets per eye, each about 30&nbsp;&micro;m across (White and colleagues, Journal of Experimental Biology, 2003), and each ommatidium holds nine photoreceptors. Across butterflies the nipples sit 180&ndash;240&nbsp;nm apart and stand up to about 230&nbsp;nm tall (Stavenga, Foletti, Palasantzas &amp; Arikawa, Proceedings of the Royal Society B, 2006); in a crepuscular moth they stand about 256&nbsp;nm tall (Yang and colleagues, Frontiers in Physiology, 2024).</p>
+      <p>Those predators include bats and owls, so the scene puts a bat on watch. The numbers in the drawings are published ones. The tobacco hawkmoth <i>Manduca sexta</i> has about 27,000 facets per eye, each about 30&nbsp;&micro;m across (White and colleagues, Journal of Experimental Biology, 2003), and each ommatidium holds nine photoreceptors. Across butterflies the nipples sit 180&ndash;240&nbsp;nm apart and stand up to about 230&nbsp;nm tall (Stavenga, Foletti, Palasantzas &amp; Arikawa, Proceedings of the Royal Society B, 2006); in a crepuscular moth they stand about 256&nbsp;nm tall (Yang and colleagues, Frontiers in Physiology, 2024).</p>
     </div></details>
     <details class="drawer"><summary>What the quantum engine did</summary><div class="body">
-      <p>Atlas <b>entanglement-shader-v1</b> implements the quantum collision model of Ferreira, Topel, Fromholz &amp; Wootton (arXiv:2606.29989, 2026). Light rays and the surface mode of each conducting layer are qubits, and every ray&ndash;layer collision is a small multi-qubit gate. Running the circuit on Atlas&rsquo;s classical statevector simulator gives a reflectance R and a transmittance T for every incidence angle and interlayer phase. The engine bakes them into 60&times;60 lookup tables and returns them with a GLSL shader that reads them. The loupe runs that shader, ported line by line to WebGL2.</p>
+      <p>Atlas <b>entanglement-shader-v1</b> implements the quantum collision model of Ferreira, Topel, Fromholz &amp; Wootton (arXiv:2606.29989, 2026). Light rays and the surface mode of each conducting layer are qubits, and every ray&ndash;layer collision is a small multi-qubit gate. Running the circuit on Atlas&rsquo;s classical statevector simulator gives a reflectance R and a transmittance T for every incidence angle and interlayer phase. The engine bakes them into 60&times;60 lookup tables and returns them with a GLSL shader that reads them. This page runs that shader, ported line by line to WebGL2. In the scene it runs inside the loupe.</p>
       <p>Layers and rays share a 21-qubit budget, and the engine only checks it once a job starts, so we had to probe with real jobs. Seven layers allows at most 5 rays, but the engine needs at least as many rays as layers, so <b>6 layers &times; 6 rays</b> is the largest stack that fits. A probe with 7 rays at 6 layers was rejected (&ldquo;at most 6&rdquo;). Each ray is one qubit, so the 6 &times; 6 run sits exactly at the 21-qubit limit. Every probe was a real job, and the table below lists them all.</p>
       <div class="tw"><table class="t" id="probes"></table></div>
       <p>The sweep then holds the rays at 6 and steps the layers from 1 to 6, so only the layer count changes. Everything else stays fixed: single-layer reflectance 0.2, absorption 0.95, and the defaults (interaction 1, style &ldquo;peaked&rdquo;, resolution 60). Two control runs switch the nonlinear interaction off (interaction 0) at 1 and 6 layers.</p>
     </div></details>
-    <details class="drawer"><summary>How the bat meter and the scene work</summary><div class="body">
-      <p>After each change, the page renders every geometry once more, off-screen, from your exact viewpoint. For each pixel it records the luminance of the engine&rsquo;s reflectance at that pixel&rsquo;s viewing angle, then averages over the pixels the object covers. Under a uniform sky, that average is the fraction of light the object sends back to the bat, and it is the big number under the scene. <b>Flash</b> is the same average, counted only where a pixel&rsquo;s mirror direction points within about 3&deg; of the lamp, so it is the share of the surface that mirrors the lamp straight at the bat. The tilt chart in the Data view is this meter measured at fixed angles for every run.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="made" aria-labelledby="made-h">
+    <div class="ink-bar"><h2 id="made-h">How it was made</h2><span>The meter, the scene, the film</span></div>
+    <div class="secbody open">
+    <details class="drawer"><summary>How the meter works</summary><div class="body">
+      <p>After each change, the page renders every geometry once more, off-screen, from your exact viewpoint. For each pixel it records the luminance of the engine&rsquo;s reflectance at that pixel&rsquo;s viewing angle, then averages over the pixels the object covers. Under a uniform sky, that average is the fraction of light the object sends back to you. <b>Flash</b> is the same average, counted only where a pixel&rsquo;s mirror direction points within about 3&deg; of the lamp, so it is the share of the surface that mirrors the lamp straight at you. The tilt chart is this meter measured at fixed angles for every run.</p>
+      <p>Everything in the meter is classical arithmetic on the downloaded lookup tables. The night sky, lamp colour and tone mapping in &ldquo;Night scene&rdquo; are our own rendering choices. &ldquo;Raw R&rdquo; shows the engine shader&rsquo;s reflectance output with no scene lighting.</p>
+      <p>In the scene you watch from the bat&rsquo;s place, so what the object sends back to you is what the bat sees: the big number under the scene, with one bar per geometry. The tilt chart is in The data, above.</p>
+    </div></details>
+    <details class="drawer"><summary>How the bat and the scene work</summary><div class="body">
       <p>What in the scene is data: the engraved bat&rsquo;s eyelid opens in eight steps with that number (fully shut at 22% or less, fully open at 72% or more). The words &ldquo;Hidden&rdquo; (under 32%), &ldquo;Glimpsed&rdquo; (32&ndash;50%) and &ldquo;Spotted&rdquo; (50% or more) are our own bands. The flying bat sits on an arc at your viewing tilt: level with the loupe is head-on, overhead is grazing; it swoops when the meter crosses into &ldquo;Spotted&rdquo;. The bulb sits where the lamp pad points. The moth&rsquo;s eye glints when the flash is above 0.01%. In the layer stack, the ten dots are the run&rsquo;s mean R and T, rounded to tenths. Everything else (the bat&rsquo;s wingbeat, the stars, the marching lamp rays) is decoration.</p>
       <p>The engraving itself is classical drawing, generated from geometry we wrote down from published descriptions and measurements, not from photos: a hawkmoth (Sphingidae) head in profile with its scaled head capsule, compound eye, upcurved labial palp, coiled proboscis, scape and annulated antenna; the facet lenses as 30&nbsp;&micro;m hexagons; and a big brown bat (<i>Eptesicus fuscus</i>), whose short round-tipped ears, rounded tragus and bare, broad snout follow published descriptions of the species, calling through its open mouth, as this species does. Sources are in the entry&rsquo;s CREDITS.md.</p>
-      <p>Everything in the meter is classical arithmetic on the downloaded lookup tables. The night sky, lamp colour and tone mapping in &ldquo;Night scene&rdquo; are our own rendering choices. &ldquo;Raw R&rdquo; shows the engine shader&rsquo;s reflectance output with no scene lighting.</p>
-    </div></details>
-    <details class="drawer"><summary>What this does not claim</summary><div class="body">
-      <p class="honesty">This is an analogy. Real moth eyes suppress reflection with a sub-wavelength graded-index structure. The engine models a stack of thin conducting sheets with quantum-optical interactions, and a shader applied facet by facet is geometric optics, which breaks down at the scale of real nanopillars. Our facet is only 24 pillar pitches across, so you can see the pillars. All circuits ran on Atlas&rsquo;s classical statevector simulator, not on quantum hardware. We claim no quantum advantage, and the engine&rsquo;s own &ldquo;no classical shader can replicate&rdquo; wording is not a claim we test. Some lookup-table values exceed 1, which the engine documents as HDR output, so we show them unclipped. Bats hunt mostly by echolocation, not by sight; the bat here is a stand-in for any watcher. The engravings are our own drawings from published descriptions: the facet mesh on the head is about 5&times; coarser than real and the depth of Plate I is compressed, both so they read at screen size.</p>
-      <p class="honesty" id="verdict-long"></p>
     </div></details>
     <details class="drawer"><summary>The offline film and how to rebuild everything</summary><div class="body">
-      <p>The brief&rsquo;s deliverable is an MP4 of the shader on a 3D asset. <code>moth_eye.mp4</code> (the player above) is rendered offline by this same WebGL code in headless Chrome, frame by frame from a fixed script, and piped into ffmpeg. The copy on this page is re-encoded smaller (H.264) to keep the page light. <code>reflectance_vs_layers.png</code> is the plot. The engraved plates (the moth head, facet inset, flying bat, lamp, the bat-head meter and Plates I and II) are drawn by <code>make_plates.py</code> into <code>web/data/plates.json</code>; <code>make_sprites.py</code> rasterises the same head into the hub mascot. Scripts, job IDs and the full parameter table are in the entry&rsquo;s README and PARAMS.md.</p>
+      <p>The brief&rsquo;s deliverable is an MP4 of the shader on a 3D asset. <code>moth_eye.mp4</code> (the player above) is rendered offline by this same WebGL code in headless Chrome, frame by frame from a fixed script, and piped into ffmpeg. The copy on this page is re-encoded smaller (H.264) to keep the page light. <code>reflectance_vs_layers.png</code> is the plot. Scripts, job IDs and the full parameter table are in the entry&rsquo;s README and PARAMS.md.</p>
+      <p>The engraved plates (the moth head, facet inset, flying bat, lamp, the bat-head meter and Plates I and II) are drawn by <code>make_plates.py</code> into <code>web/data/plates.json</code>; <code>make_sprites.py</code> rasterises the same head into the hub mascot.</p>
     </div></details>
+    </div>
   </section>
+
+  <section class="sec" id="claims" aria-labelledby="claims-h">
+    <div class="ink-bar"><h2 id="claims-h">What this does not claim</h2><span>Honesty notes</span></div>
+    <div class="secbody">
+      <div class="claim">
+        <p class="honesty">This is an analogy. Real moth eyes suppress reflection with a sub-wavelength graded-index structure. The engine models a stack of thin conducting sheets with quantum-optical interactions, and a shader applied facet by facet is geometric optics, which breaks down at the scale of real nanopillars. Our facet is only 24 pillar pitches across, so you can see the pillars. All circuits ran on Atlas&rsquo;s classical statevector simulator, not on quantum hardware. We claim no quantum advantage, and the engine&rsquo;s own &ldquo;no classical shader can replicate&rdquo; wording is not a claim we test. Some lookup-table values exceed 1, which the engine documents as HDR output, so we show them unclipped.</p>
+        <p class="honesty">Bats hunt mostly by echolocation, not by sight; the bat here is a stand-in for any watcher. The engravings are our own drawings from published descriptions: the facet mesh on the head is about 5&times; coarser than real and the depth of Plate I is compressed, both so they read at screen size.</p>
+        <p class="honesty" id="verdict-long"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="jobs" aria-labelledby="jobs-h">
+    <div class="ink-bar"><h2 id="jobs-h">Jobs and credits</h2><span id="jobs-sub">Atlas jobs &middot; sources &middot; libraries</span></div>
+    <div class="secbody">
+      <div class="fig">
+        <h3>Every shader run on this page</h3>
+        <p class="small" id="jobs-note"></p>
+        <div class="tw"><table class="t" id="runs"></table></div>
+      </div>
+      <div class="fig">
+        <h3>Credits</h3>
+        <ul class="credits">
+          <li><b>Engine:</b> Moth Quantum Atlas <code>entanglement-shader-v1</code>, run on Atlas&rsquo;s classical statevector simulator. Its GLSL shader and R/T lookup tables are used unchanged; the page ports the GLSL to WebGL2.</li>
+          <li><b>Model:</b> J. S. Ferreira, S. S. Topel, P. Fromholz &amp; J. R. Wootton, &ldquo;Rendering Coherent Scattering via Quantum Collision Models&rdquo;, arXiv:2606.29989 (2026).</li>
+          <li><b>Moth-eye optics:</b> C. G. Bernhard, W. H. Miller &amp; A. R. M&oslash;ller, &ldquo;The insect corneal nipple array&rdquo;, Acta Physiologica Scandinavica 63, Suppl. 243 (1965); P. B. Clapham &amp; M. C. Hutley, &ldquo;Reduction of lens reflexion by the &lsquo;moth eye&rsquo; principle&rdquo;, Nature 244, 281&ndash;282 (1973).</li>
+          <li><b>Plates (read for anatomy and numbers; nothing traced):</b> White and colleagues, Journal of Experimental Biology (2003); Wakakuwa, Stavenga &amp; Arikawa, Photochemistry and Photobiology (2007); Yang and colleagues, Frontiers in Physiology (2024); Stavenga, Foletti, Palasantzas &amp; Arikawa, Proceedings of the Royal Society B (2006); J. Haxaire on the Sphingidae; descriptions of the big brown bat (Wikipedia, Animal Diversity Web); Surlykke, Ghose &amp; Moss, Journal of Experimental Biology (2009).</li>
+          <li><b>Libraries:</b> three.js r134 (MIT); puppeteer-core with Google Chrome for the offline film; ffmpeg (libx264, libwebp) via imageio-ffmpeg; NumPy, Matplotlib and OpenEXR. Fonts: Geist and IBM Plex Mono (SIL Open Font License).</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  <style>
+.wtnr-nav{margin-top:2.5rem;border-top:1px solid var(--ink,#19238E);padding-top:1.1rem;display:grid;gap:1rem}
+.wtnr-nav .wn-row{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:space-between;align-items:center}
+.wtnr-nav a.wn-btn{display:inline-flex;align-items:center;gap:.45rem;min-height:44px;padding:.6rem 1rem;border:1px solid var(--ink,#19238E);border-radius:999px;color:var(--ink,#19238E);text-decoration:none;font:500 .82rem/1.2 var(--body,system-ui,sans-serif);max-width:100%}
+.wtnr-nav a.wn-btn:hover,.wtnr-nav a.wn-btn:focus-visible{background:rgba(25,35,142,.07)}
+.wtnr-nav a.wn-hub{background:var(--ink,#19238E);color:var(--on-ink,#FBFAF9)}
+.wtnr-nav a.wn-hub:hover{background:#121A6E}
+.wtnr-nav details{border:1px solid var(--rule,#D3D3E6);background:var(--panel,#fff)}
+.wtnr-nav summary{cursor:pointer;padding:.75rem 1rem;font:500 .72rem/1.2 var(--mono,monospace);letter-spacing:.12em;text-transform:uppercase;color:var(--ink,#19238E)}
+.wtnr-nav ol{list-style:none;margin:0;padding:.25rem 1rem 1rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(14rem,1fr));gap:.15rem .9rem}
+.wtnr-nav ol a{display:flex;gap:.6rem;padding:.4rem 0;color:var(--ink,#19238E);text-decoration:none;font-size:.9rem;border-bottom:1px solid var(--rule,#D3D3E6)}
+.wtnr-nav ol a:hover{text-decoration:underline}
+.wtnr-nav ol a b{font:500 .78rem/1.6 var(--mono,monospace);min-width:1.6rem}
+.wtnr-nav ol a[aria-current="page"]{font-weight:600}
+.wtnr-nav ol a small{color:var(--ink-2,#545BA9);font-size:.72rem}
+</style><nav class="wtnr-nav" aria-label="All pieces"><div class="wn-row"><a class="wn-btn" href="../02-coda-reservoir/index.html" rel="prev">&larr; 02 Coda Reservoir</a><a class="wn-btn wn-hub" href="../../index.html">All 22 pieces</a><a class="wn-btn" href="../04-magic-angle/index.html" rel="next">04 Magic Angle &rarr;</a></div><details><summary>Jump to any piece (22)</summary><ol><li><a href="../01-penrose-hole/index.html"><b>01</b><span>The Hole in the Penrose</span></a></li><li><a href="../02-coda-reservoir/index.html"><b>02</b><span>Coda Reservoir</span></a></li><li><a href="../03-moth-eye/index.html" aria-current="page"><b>03</b><span>Moth Eye</span></a></li><li><a href="../04-magic-angle/index.html"><b>04</b><span>Magic Angle</span></a></li><li><a href="../05-jam-the-bat/index.html"><b>05</b><span>Jam the Bat</span></a></li><li><a href="../06-tweezer/index.html"><b>06</b><span>Tweezer</span></a></li><li><a href="../07-flavour/index.html"><b>07</b><span>FLAVOUR</span></a></li><li><a href="../08-pbit-or-qubit/index.html"><b>08</b><span>p-bit or qubit?</span></a></li><li><a href="../09-syndrome-loom/index.html"><b>09</b><span>Syndrome Loom</span></a></li><li><a href="../10-squeezed-chirp/index.html"><b>10</b><span>Squeezed Chirp</span></a></li><li><a href="../11-maxwells-ribbon/index.html"><b>11</b><span>Maxwell&#x27;s Ribbon</span></a></li><li><a href="../12-chirp-instrument/index.html"><b>12</b><span>Chirp Instrument</span></a></li><li><a href="../13-moth-to-flame/index.html"><b>13</b><span>Moth to Flame</span></a></li><li><a href="../14-hemibrain-ising/index.html"><b>14</b><span>Fly Brain Metro</span></a></li><li><a href="../15-tissue-blur/index.html"><b>15</b><span>Tissue Blur</span></a></li><li><a href="../16-busy-beaver-score/index.html"><b>16</b><span>Busy Beaver Score</span></a></li><li><a href="../17-quantum-lenia/index.html"><b>17</b><span>Quantum Lenia</span></a></li><li><a href="../18-oldest-light/index.html"><b>18</b><span>Oldest Light</span></a></li><li><a href="../19-frog-chorus/index.html"><b>19</b><span>Frog Chorus</span></a></li><li><a href="../20-antimatter-drop/index.html"><b>20</b><span>Antimatter Drop</span></a></li><li><a href="../21-quantum-nose/index.html"><b>21</b><span>The Quantum Nose Test</span></a></li><li><a href="../22-scroll-unroll/index.html"><b>22</b><span>Scroll Unroll</span></a></li></ol></details></nav>
   <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -744,7 +840,7 @@ const SPRITES = {"mothhead":{"frames":[[".......................................
 // ---------- state ----------
 const DEF = {layers: 6, inter: 1, geo: 'eye', mode: 0, az: 28, el: 22, dist: 50, lx: -0.45, ly: 0.5, th: 500};
 const st = Object.assign({}, DEF);
-let view = 'scene';
+let jumpToData = false;   // old shared links (from the Data-view version) end in _vD: open them at The data
 const $ = (id) => document.getElementById(id);
 const tagFor = MothEye.tagFor;
 const hasRun = (L, i) => !!LUTS[tagFor(L, i)];
@@ -793,10 +889,11 @@ function measure() {
   $('m-big').textContent = pct(R);
   $('m-mood').textContent = MOOD_TXT[moodOf(R)];
   $('m-flash').textContent = `\u00b7 flash ${(100 * out[cur].glare).toFixed(2)}%`;
+  const max = Math.max(0.6, ...Object.values(out).map(o => o.R));
   $('m-bars').innerHTML = ['eye', 'dome', 'slab'].map(k => {
     const on = k === cur || (st.geo === 'both' && k === 'slab');
-    return on ? `<b>${NAMES[k]} ${pct(out[k].R)}</b>` : `${NAMES[k]} ${pct(out[k].R)}`;
-  }).join(' &middot; ');
+    return `<span class="${on ? 'cur' : ''}">${NAMES[k]}</span><span class="bar"><i class="${on ? 'on' : ''}" style="width:${(100 * out[k].R / max).toFixed(1)}%"></i></span><span class="v">${pct(out[k].R)} &middot; flash ${(100 * out[k].glare).toFixed(2)}%</span>`;
+  }).join('');
   react(out);
 }
 
@@ -1073,9 +1170,9 @@ function tick(now) {
   const t = now / 1000, rm = RM();
   A.lidShown += (A.lid - A.lidShown) * (rm ? 1 : 0.35);
   if (Math.abs(A.lid - A.lidShown) < 0.01) A.lidShown = A.lid;
-  if (now - lastPaint > 80) { lastPaint = now; if (view === 'scene') { paintFX(t); paintBat(); } paintStack(t); }
+  if (now - lastPaint > 80) { lastPaint = now; paintFX(t); paintBat(); paintStack(t); }
   const busy = A.lidShown !== A.lid || (t - STK.t0) < 1.6;
-  if (!rm && !document.hidden && (sceneVisible && view === 'scene' || busy)) raf = requestAnimationFrame(tick);
+  if (!rm && !document.hidden && (sceneVisible || busy)) raf = requestAnimationFrame(tick);
 }
 function kick() { if (!raf) raf = requestAnimationFrame(tick); }
 document.addEventListener('visibilitychange', kick);
@@ -1126,8 +1223,9 @@ function render(full = true) {
   }
   document.querySelectorAll('[data-geo]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.geo === st.geo)));
   document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.mode === st.mode)));
-  document.querySelectorAll('[data-view]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === view)));
   document.querySelectorAll('[data-int]').forEach(b => { b.setAttribute('aria-pressed', String(+b.dataset.int === st.inter)); b.disabled = !hasRun(st.layers, +b.dataset.int); });
+  document.querySelectorAll('.runbtn').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.l === st.layers && +b.dataset.i === st.inter)));
+  if (r) $('lut-run').textContent = `Showing run ${r.tag} (job ${r.job_id.slice(0, 8)}).`;
   $('layers').value = st.layers; $('thick').value = st.th;
   if (full) { drawLut(); drawPlot(); stackText(); }
   drawTilt();
@@ -1171,11 +1269,16 @@ function drawPlot() {
   for (const r of sw) s += `<text x="${X(r.layers)}" y="285" fill="${C.ink2}" font-size="14" text-anchor="middle" font-family="${MONO}">${r.layers}</text>`;
   s += `<text x="${(70 + R0) / 2}" y="301" fill="${C.ink2}" font-size="12" text-anchor="middle" font-family="${MONO}">LAYERS (RAYS FIXED AT 6)</text>`;
   s += `<rect x="${X(st.layers) - 18}" y="18" width="36" height="250" fill="${C.tint}"/>`;
-  for (const se of SERIES) {
-    s += `<polyline fill="none" stroke="${se.color}" stroke-width="${se.w}" ${se.dash ? `stroke-dasharray="${se.dash}"` : ''} points="${sw.map(r => X(r.layers) + ',' + Y(val(r, se))).join(' ')}"/>`;
-    for (const r of sw) s += `<circle class="pt" tabindex="0" role="button" aria-label="${r.layers} layers: ${se.label} ${val(r, se).toFixed(3)}" data-l="${r.layers}" cx="${X(r.layers)}" cy="${Y(val(r, se))}" r="${r.layers === st.layers && st.inter === 1 ? 6 : 4}" fill="${se.hollow ? C.panel : se.color}" stroke="${se.color}" stroke-width="1.6"><title>${r.layers} layers \u00b7 ${se.label}: ${val(r, se).toFixed(3)} \u00b7 job ${r.job_id}</title></circle>`;
+  for (const se of SERIES) s += `<polyline fill="none" stroke="${se.color}" stroke-width="${se.w}" ${se.dash ? `stroke-dasharray="${se.dash}"` : ''} points="${sw.map(r => X(r.layers) + ',' + Y(val(r, se))).join(' ')}"/>`;
+  // The four points in a column are four numbers from the same run, and the moth-eye and slab points nearly coincide,
+  // so each column is one target (the whole column takes the click): click it, or focus it and press Enter.
+  for (const r of sw) {
+    s += `<g class="pt" tabindex="0" role="button" aria-label="${r.layers} layers: ${SERIES.map(se => `${se.label} ${val(r, se).toFixed(3)}`).join('; ')}. Load this run." data-l="${r.layers}">` +
+      `<rect x="${X(r.layers) - 18}" y="18" width="36" height="250" fill="transparent"/>`;
+    for (const se of SERIES) s += `<circle cx="${X(r.layers)}" cy="${Y(val(r, se))}" r="${r.layers === st.layers && st.inter === 1 ? 6 : 4}" fill="${se.hollow ? C.panel : se.color}" stroke="${se.color}" stroke-width="1.6"><title>${r.layers} layers \u00b7 ${se.label}: ${val(r, se).toFixed(3)} \u00b7 job ${r.job_id}</title></circle>`;
+    s += '</g>';
   }
-  for (const r of ctl) s += `<g class="pt" tabindex="0" role="button" aria-label="Control, interaction off, ${r.layers} layers: mean R ${r.lut_mean_R.toFixed(3)}" data-l="${r.layers}" data-i="0"><path d="M${X(r.layers) - 6},${Y(r.lut_mean_R) - 6}l12,12m0,-12l-12,12" stroke="${C.ink}" stroke-width="2.4"/><title>control, interaction 0, ${r.layers} layers \u00b7 mean R ${r.lut_mean_R.toFixed(3)} \u00b7 job ${r.job_id}</title></g>`;
+  for (const r of ctl) s += `<g class="pt" tabindex="0" role="button" aria-label="Control, interaction off, ${r.layers} layers: mean R ${r.lut_mean_R.toFixed(3)}" data-l="${r.layers}" data-i="0"><rect x="${X(r.layers) - 10}" y="${Y(r.lut_mean_R) - 10}" width="20" height="20" fill="transparent"/><path d="M${X(r.layers) - 6},${Y(r.lut_mean_R) - 6}l12,12m0,-12l-12,12" stroke="${C.ink}" stroke-width="2.4"/><title>control, interaction 0, ${r.layers} layers \u00b7 mean R ${r.lut_mean_R.toFixed(3)} \u00b7 job ${r.job_id}</title></g>`;
   $('plot').innerHTML = s;
   $('plot').querySelectorAll('.pt').forEach(p => {
     const go = () => { st.layers = +p.dataset.l; st.inter = p.dataset.i === '0' ? 0 : 1; if (!hasRun(st.layers, st.inter)) st.inter = 1; refresh(); };
@@ -1204,34 +1307,29 @@ function drawTilt() {
     s += rows.map((r, i) => `<circle cx="${X(T.elevations[i])}" cy="${Y(r[k])}" r="2.8" fill="${se.hollow ? C.panel : se.color}" stroke="${se.color}" stroke-width="1.4"><title>${se.label} at ${T.elevations[i]}\u00b0: ${r[k].toFixed(3)}</title></circle>`).join('');
   });
   const th = Math.min(90, tiltNow()), lx = Math.min(R0 - 64, X(th) + 6);
-  s += `<line x1="${X(th)}" x2="${X(th)}" y1="18" y2="220" stroke="${C.ink}" stroke-width="1.5"/><rect x="${lx}" y="16" width="64" height="20" fill="${C.ink}"/><text x="${lx + 32}" y="30.5" fill="${C.panel}" font-size="12" text-anchor="middle" font-family="${MONO}">BAT ${th.toFixed(0)}\u00b0</text>`;
+  s += `<line x1="${X(th)}" x2="${X(th)}" y1="18" y2="220" stroke="${C.ink}" stroke-width="1.5"/><rect x="${lx}" y="16" width="64" height="20" fill="${C.ink}"/><text x="${lx + 32}" y="30.5" fill="${C.panel}" font-size="12" text-anchor="middle" font-family="${MONO}">YOU ${th.toFixed(0)}\u00b0</text>`;
   $('tilt').innerHTML = s;
-  $('tilt').setAttribute('aria-label', `Seen reflectance against viewing tilt for ${st.layers} layers. The bat is at ${th.toFixed(0)} degrees.`);
+  $('tilt').setAttribute('aria-label', `Seen reflectance against viewing tilt for ${st.layers} layers. You are at ${th.toFixed(0)} degrees.`);
 }
+// Two sweep buttons (the bat's viewpoint in the controls, and the tilt chart in The data) drive one sweep.
 let sweepAnim = null;
-function stopSweep() { if (sweepAnim) { cancelAnimationFrame(sweepAnim); sweepAnim = null; } $('sweep').setAttribute('aria-pressed', 'false'); $('sweep').textContent = 'Sweep the tilt 0\u201385\u00b0'; }
-$('sweep').addEventListener('click', () => {   // user-started; click again (or touch the eye) to pause
+const sweepBtns = () => document.querySelectorAll('.sweepbtn');
+function stopSweep() { if (sweepAnim) { cancelAnimationFrame(sweepAnim); sweepAnim = null; } sweepBtns().forEach(b => { b.setAttribute('aria-pressed', 'false'); b.textContent = 'Sweep the tilt 0\u201385\u00b0'; }); }
+function toggleSweep() {   // user-started; click again (or touch the eye) to pause
   if (sweepAnim) { stopSweep(); return; }
   st.az = 0;
   if (RM()) { st.el = 70; draw(); render(false); return; }
   const start = st.el >= 84 ? 0 : Math.max(0, st.el); st.el = start;
-  $('sweep').setAttribute('aria-pressed', 'true'); $('sweep').textContent = 'Pause the sweep';
+  sweepBtns().forEach(b => { b.setAttribute('aria-pressed', 'true'); b.textContent = 'Pause the sweep'; });
   let last = performance.now();
   const step = (now) => { st.el = Math.min(85, st.el + (now - last) / 1000 * 17); last = now; draw(); render(false);
     if (st.el < 85) sweepAnim = requestAnimationFrame(step); else stopSweep(); };
   sweepAnim = requestAnimationFrame(step);
-});
+}
+sweepBtns().forEach(b => b.addEventListener('click', toggleSweep));
 cv.addEventListener('pointerdown', stopSweep);
 
 function refresh() { STK.t0 = performance.now() / 1000; render(true); draw(); }
-
-function setView(v) {
-  view = v === 'data' ? 'data' : 'scene';
-  $('v-scene').hidden = view !== 'scene'; $('v-data').hidden = view !== 'data'; $('g-mode').hidden = view !== 'scene';
-  if (view === 'scene') { sceneLayout(); layout(); batLayout(); draw(); }
-  else { drawPlot(); drawTilt(); drawLut(); }
-  render(false);
-}
 
 // ---------- static text from the data ----------
 function staticText() {
@@ -1239,19 +1337,35 @@ function staticText() {
   const nJobs = (META.results || []).length;
   $('proof').innerHTML = `<span class="hot"><b>21</b> qubits at the 6 &times; 6 limit</span><span><b>${nJobs}</b> real shader runs</span><span><b>${(META.probes || []).length}</b> budget probes</span><span><b>statevector</b> simulator</span>`;
   $('legend').innerHTML = SERIES.map(s => `<span>${legendLine(s.color, s.css)}${s.label}</span>`).join('') + '<span><i class="x">&times;</i>control with interaction off: mean of the R table</span>';
-  $('tl-legend').innerHTML = TILT.map(s => `<span>${legendLine(s.color, s.css)}${s.label}</span>`).join('') + '<span><i class="now"></i>the bat&rsquo;s current tilt</span>';
+  $('tl-legend').innerHTML = TILT.map(s => `<span>${legendLine(s.color, s.css)}${s.label}</span>`).join('') + '<span><i class="now"></i>your current tilt</span>';
   if (sw.length > 1) {
     const a = sw[0], b = sw[sw.length - 1], d = b.lut_mean_R - a.lut_mean_R;
     const word = d < -0.005 ? 'falls' : d > 0.005 ? 'rises' : 'barely moves';
     $('ch-verdict').textContent = `Mean R ${word}: ${a.lut_mean_R.toFixed(3)} \u2192 ${b.lut_mean_R.toFixed(3)}`;
     $('answer').textContent = d > 0.005
-      ? `Short answer: no. Going from 1 to 6 layers makes the film slightly shinier (mean R ${a.lut_mean_R.toFixed(3)} \u2192 ${b.lut_mean_R.toFixed(3)}); only the light getting through dies. The pillars mostly change where the shine goes. Open Data for the charts.`
-      : `Mean R ${word} from 1 to 6 layers (${a.lut_mean_R.toFixed(3)} \u2192 ${b.lut_mean_R.toFixed(3)}). Open Data for the charts.`;
+      ? `Short answer: no. Going from 1 to 6 layers makes the film slightly shinier (mean R ${a.lut_mean_R.toFixed(3)} \u2192 ${b.lut_mean_R.toFixed(3)}); only the light getting through dies. The pillars mostly change where the shine goes. The charts are in The data, below the scene.`
+      : `Mean R ${word} from 1 to 6 layers (${a.lut_mean_R.toFixed(3)} \u2192 ${b.lut_mean_R.toFixed(3)}). The charts are in The data, below the scene.`;
     $('ch-note').textContent = META.verdict || '';
     $('verdict-long').textContent = META.verdict_long || '';
   }
   $('probes').innerHTML = '<tr><th>layers</th><th>rays</th><th>result</th><th>job</th></tr>' + (META.probes || []).map(p =>
     `<tr><td>${p.layers}</td><td>${p.incoming_rays}</td><td>${p.status === 'completed' ? 'completed (the 6-layer run below)' : 'rejected: ' + p.message.replace(/^.*?qubits\. /, '')}</td><td>${p.job_id.slice(0, 8)}</td></tr>`).join('');
+  jobsTable();
+}
+
+// ---------- Jobs and credits: every run, each one loadable ----------
+function jobsTable() {
+  const rs = (META.results || []).slice().sort((a, b) => a.series === b.series ? a.layers - b.layers : a.series === 'sweep' ? -1 : 1);
+  const probes = META.probes || [], runIds = new Set(rs.map(r => r.job_id));
+  const rejected = probes.filter(p => p.status !== 'completed' && !runIds.has(p.job_id)).length;
+  $('jobs-note').textContent = `${rs.length} completed shader runs and ${rejected} rejected budget probes: ${rs.length + rejected} Atlas jobs, all on the statevector simulator. Only the 6 \u00d7 6 run has an engine-confirmed qubit count (21, the limit); the others marked ~ are our fit to the engine's budget messages. Press a run to load it into the scene, the meter and the charts.`;
+  $('jobs-sub').textContent = `${rs.length + rejected} Atlas jobs \u00b7 sources \u00b7 libraries`;
+  $('runs').innerHTML = '<tr><th>run</th><th>series</th><th>layers</th><th>rays</th><th>interaction</th><th>mean R</th><th>mean T</th><th>qubits</th><th>job</th></tr>' + rs.map(r =>
+    `<tr><td><button type="button" class="runbtn" data-l="${r.layers}" data-i="${r.interaction}" aria-pressed="false" aria-label="Load run ${r.tag}">${r.tag}</button></td><td>${r.series}</td><td>${r.layers}</td><td>${r.rays}</td><td>${r.interaction}</td><td>${r.lut_mean_R.toFixed(3)}</td><td>${r.lut_mean_T.toFixed(3)}</td><td>${r.layers === 6 && r.rays === 6 ? '21 (limit)' : '~' + qubitsFit(r.layers, r.rays)}</td><td>${r.job_id}</td></tr>`).join('');
+  $('runs').querySelectorAll('.runbtn').forEach(b => b.addEventListener('click', () => {
+    stopSweep(); st.layers = +b.dataset.l; st.inter = hasRun(st.layers, +b.dataset.i) ? +b.dataset.i : 1; refresh();
+    toast(`Run ${b.textContent} loaded: scene, meter and charts updated`);
+  }));
 }
 
 // ---------- input ----------
@@ -1289,19 +1403,18 @@ $('layers').addEventListener('input', () => { st.layers = +$('layers').value; if
 $('thick').addEventListener('input', () => { st.th = +$('thick').value; render(false); draw(); });
 document.querySelectorAll('[data-geo]').forEach(b => b.addEventListener('click', () => { st.geo = b.dataset.geo; render(false); draw(); }));
 document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => { st.mode = +b.dataset.mode; render(false); draw(); }));
-document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
 $('lbl').addEventListener('click', () => { showLabels = !showLabels; $('lbl').setAttribute('aria-pressed', String(showLabels)); A.labelsT = -9; kick(); });
 document.querySelectorAll('[data-int]').forEach(b => b.addEventListener('click', () => { if (hasRun(st.layers, +b.dataset.int)) { st.inter = +b.dataset.int; refresh(); } }));
-$('torch').addEventListener('click', () => {   // put the lamp right behind the bat's head
+$('torch').addEventListener('click', () => {   // put the lamp right behind your head (where the bat flies)
   const p = MothEye.orbitPosition(st.az, st.el, 1); setLamp(p[0], p[1]);
-  toast(p[2] < 0.15 ? 'The bat is behind the facet: the lamp only lights the front' : 'Lamp moved behind the bat: torch test');
+  toast(p[2] < 0.15 ? 'You are behind the facet: the lamp only lights the front' : 'Lamp moved behind your head: torch test');
 });
 $('headon').addEventListener('click', () => { stopSweep(); st.az = 0; st.el = 0; draw(); render(false); });
 $('graze').addEventListener('click', () => { stopSweep(); st.az = 0; st.el = 72; draw(); render(false); });
 $('reset').addEventListener('click', () => { stopSweep(); Object.assign(st, DEF); history.replaceState(null, '', location.pathname + location.search); placeLamp(); refresh(); });
 $('share').addEventListener('click', async () => {
   const f = (v, d) => v.toFixed(d);
-  history.replaceState(null, '', '#' + ['L' + st.layers, 'i' + st.inter, st.geo, 'm' + st.mode, 'a' + f(st.az, 0), 'e' + f(st.el, 0), 'd' + f(st.dist, 0), 'x' + f(st.lx, 2), 'y' + f(st.ly, 2), 't' + st.th, view === 'data' ? 'vD' : 'vS'].join('_'));
+  history.replaceState(null, '', '#' + ['L' + st.layers, 'i' + st.inter, st.geo, 'm' + st.mode, 'a' + f(st.az, 1), 'e' + f(st.el, 1), 'd' + f(st.dist, 1), 'x' + f(st.lx, 3), 'y' + f(st.ly, 3), 't' + st.th].join('_'));
   try { await navigator.clipboard.writeText(location.href); toast('Link copied'); } catch (e) { toast('Copy failed: the link is in your address bar'); }
 });
 function fromHash() {
@@ -1316,7 +1429,7 @@ function fromHash() {
   if (a !== null) st.az = a; if (e !== null) st.el = clampEl(e); if (d !== null) st.dist = Math.max(30, Math.min(120, d));
   if (x !== null && y !== null && Math.hypot(x, y) < 1) { st.lx = x; st.ly = y; }
   if (t !== null && t >= 100 && t <= 1000) st.th = Math.round(t);
-  if (parts[10] === 'vD') view = 'data';
+  if (parts[10] === 'vD') jumpToData = true;
 }
 
 // ---------- film: attach the source only when the player nears the viewport (lazy, like loading="lazy") ----------
@@ -1352,15 +1465,17 @@ function platesFit() {
 }
 
 // ---------- boot ----------
-window.addEventListener('hashchange', () => { fromHash(); setView(view); refresh(); });
+// a shared-view hash has 10+ parts; a plain section anchor (#data, #jobs ...) only scrolls
+const isStateHash = () => location.hash.replace(/^#/, '').split('_').length >= 10;
+window.addEventListener('hashchange', () => { if (!isStateHash()) return; fromHash(); placeLamp(); refresh(); if (jumpToData) $('data').scrollIntoView(); });
 fromHash();
 staticText();
 buildPlates();
 init();
 buildFace(); sceneLayout(); batLayout(); stackLayout(); layout();
-window.addEventListener('resize', () => { platesFit(); if (view === 'scene') { sceneLayout(); layout(); } batLayout(); stackLayout(); draw(); drawPlot(); drawTilt(); });
-setView(view);
+window.addEventListener('resize', () => { platesFit(); sceneLayout(); layout(); batLayout(); stackLayout(); draw(); drawPlot(); drawTilt(); });
 render(true); draw();
+if (jumpToData) requestAnimationFrame(() => $('data').scrollIntoView());
 </script>
 
 </body>

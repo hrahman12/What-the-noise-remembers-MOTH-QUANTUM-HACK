@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "syndrome-loom"
+version = "0.1.0"
+description = "Weave an image through Steane-code error statistics measured on Atlas tamagotchi-v1: WIF 1.1 drafts, shaded previews, reports."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = ["numpy", "pillow"]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[project.scripts]
+loom = "loom.cli:main"
+
+[tool.setuptools]
+packages = ["loom"]
+
+[tool.setuptools.package-data]
+loom = ["data/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

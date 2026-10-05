@@ -1,0 +1,77 @@
+{
+  "slug": "13-moth-to-flame",
+  "challenge": "05",
+  "bonus": true,
+  "title": "Moth to Flame",
+  "hook": "Fly a moth home before the lamps catch it.",
+  "sub": "Every hedge in this night town was read from the shots of a quantum circuit, and one real shot decides which lamps are lit. The moth's own light reflex will try to keep it circling.",
+  "you_control": [
+    "Steer and flap against the lamp pull",
+    "Pick a shot to re-light the town",
+    "Let go and watch the reflex trap the moth",
+    "Compare the planned streets with the measured hedges, or flip to the Data view"
+  ],
+  "engines": [
+    "labyrinth-v1"
+  ],
+  "qubits": 156,
+  "qubits_note": "L1 Lamp Lane: 4x5 = 20 qubits (IBM ibm_fez), engine-reported num_qubits; L2 Hedge Row: 10x12 = 120 qubits (IBM ibm_fez), engine-reported num_qubits; L3 Night Town: 12x13 = 156 qubits (IBM ibm_fez), engine-reported num_qubits; comparison run (not a level) Lamp Lane: 20 qubits (Aer emulator, its 20-qubit ceiling); comparison run (not a level) Hedge Row: 120 qubits (IBM ibm_miami)",
+  "hardware": "ibm_fez",
+  "hardware_all": [
+    "ibm_fez"
+  ],
+  "hardware_qubits": 156,
+  "comparison_runs": [
+    {
+      "of": "L1",
+      "name": "Lamp Lane",
+      "mode": "emu",
+      "backend": "aer",
+      "qubits": 20,
+      "job": "9d0fd5f8-691b-4913-adca-056bdfa01823",
+      "ibm_job": null
+    },
+    {
+      "of": "L2",
+      "name": "Hedge Row",
+      "mode": "qpu",
+      "backend": "ibm_miami",
+      "qubits": 120,
+      "job": "da6eaf6d-512c-492d-9ee4-655ac76d0e82",
+      "ibm_job": "db1jh9ivog1s73fi7ejg"
+    }
+  ],
+  "jobs": 5,
+  "jobs_note": "3 levels, all on IBM ibm_fez, plus 2 labelled comparison runs of the same towns (Aer emulator, IBM ibm_miami)",
+  "credits_spent": 25.0,
+  "deliverables": [
+    "web/index.html",
+    "web/template.html",
+    "web/sim.js",
+    "web/levels.json",
+    "web/compare.json",
+    "web/sprites.json",
+    "web/img/mascot.png",
+    "build_web.py",
+    "run_levels.py",
+    "town.py",
+    "write_docs.py",
+    "test_sim.js",
+    "out/levels.png",
+    "out/compare.png",
+    "out/jobs.csv",
+    "out/L1.json",
+    "out/L2.json",
+    "out/L3.json",
+    "out/L1-emu.json",
+    "out/L2-miami.json",
+    "README.md",
+    "PARAMS.md",
+    "CREDITS.md"
+  ],
+  "web_entry": "web/index.html",
+  "mascot": "web/img/mascot.png",
+  "status": "built",
+  "honesty": "The flight model is a classical, simplified 2D steering rule inspired by Fabian et al. 2024; labyrinth-v1 only supplies hedges (signs of <ZZ> measured from the shots) and lit lamps (measured bits); all three levels ran on IBM ibm_fez; an earlier noiseless emulator run and an ibm_miami run of the same towns are shown only as labelled comparisons; no quantum advantage is claimed.",
+  "blockers": []
+}

@@ -1,0 +1,797 @@
+<title>The Hole in the Penrose</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/*BRAND*/
+/* Layout: the scene (tiling + cast) is the hero. Desktop: scene left, story right. Phone: headline, scene, story. */
+.wrap{max-width:76rem;margin-inline:auto}
+.hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);grid-template-areas:"stage head" "stage side";grid-template-rows:auto 1fr;column-gap:clamp(1.25rem,3vw,2.5rem);row-gap:1.1rem;align-items:start;padding-block:2rem 1rem}
+.head{grid-area:head;display:grid;gap:.9rem;min-width:0}
+.side{grid-area:side;display:grid;gap:1.1rem;min-width:0}
+.stage{grid-area:stage;position:relative;overflow:hidden;border:1px solid var(--ink);touch-action:none;user-select:none;-webkit-user-select:none;background:var(--panel)}
+.pad{position:relative}
+#cv{display:block;width:100%;height:auto;aspect-ratio:1/1}
+#fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;image-rendering:pixelated}
+#cv:focus-visible{outline-offset:-4px}
+.stage[data-tool="move"] #cv{cursor:grab}
+.stage[data-tool="brush"] #cv{cursor:none}
+.stage[data-tool="wipe"] #cv{cursor:ew-resize}
+.toolbar{position:absolute;z-index:2;left:.75rem;top:.75rem;right:.75rem;display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap;pointer-events:none}
+.toolbar>*{pointer-events:auto}
+.meter{position:absolute;z-index:2;left:.75rem;bottom:.75rem;right:.75rem;display:flex;align-items:center;gap:.75rem;background:rgba(251,250,249,.94);border:1px solid var(--ink);border-radius:999px;padding:.55rem .9rem}
+.meter .bar{flex:1;height:6px;border-radius:99px;background:var(--rule);overflow:hidden}
+.meter .bar i{display:block;height:100%;width:0;background:var(--ink);transition:width .15s}
+.meter .num{font:500 .78rem/1 var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.kicker{font:500 .74rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+h1{font-size:clamp(2.2rem,5vw,4.2rem);line-height:.98;letter-spacing:-.01em}
+.sub{font-size:1.08rem;color:var(--ink-2);max-width:46ch}
+.steps{display:grid;gap:.6rem;counter-reset:s;margin:0;padding:0;list-style:none}
+.steps li{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:.6rem;align-items:baseline;font-size:.95rem}
+.steps li::before{counter-increment:s;content:counter(s);font:500 .8rem/1.6 var(--mono);color:var(--on-ink);background:var(--ink);border-radius:99px;width:1.6rem;height:1.6rem;display:grid;place-items:center}
+/* the cast: who is who, and which of their behaviour is data */
+.cast{display:grid;gap:.7rem;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding-block:.9rem}
+.cast figure{margin:0;display:grid;grid-template-columns:5.5rem minmax(0,1fr);gap:.85rem;align-items:center}
+.cast .pic{display:grid;place-items:center;height:5.4rem;background:var(--panel);border:1px solid var(--rule)}
+.cast img{image-rendering:pixelated;display:block}
+.cast figcaption{font-size:.88rem;color:var(--ink-2);line-height:1.45}
+.cast figcaption b{color:var(--ink);font-weight:500}
+.cast .tag{display:block;font:500 .66rem/1.3 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin-bottom:.15rem}
+.panel{display:grid;gap:.9rem;background:var(--panel);border:1px solid var(--rule);padding:1.1rem 1.2rem}
+.row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.row.split{justify-content:space-between}
+.readout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.25rem .9rem;font:400 .78rem/1.5 var(--mono);color:var(--ink-2);margin:0}
+.readout dd{margin:0}
+.readout b{color:var(--ink);font-weight:500;overflow-wrap:anywhere}
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:var(--ink);color:var(--on-ink);font:500 .85rem/1 var(--mono);padding:.8rem 1.1rem;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:5;max-width:calc(100vw - 2rem);text-align:center}
+.toast.on{opacity:1}
+.wrap [hidden]{display:none !important}   /* .seg sets display, so hidden needs the help (the blur-setting group hides in sweep mode) */
+/* Scene / Data: the cast and the job table share one slot; Data also takes the cast off the canvas */
+.wrap[data-show="scene"] .only-data,.wrap[data-show="data"] .only-scene{display:none !important}
+.wrap[data-show="data"] .stage[data-tool="brush"] #cv{cursor:crosshair}
+.jobs{display:grid;gap:.6rem;border:1px solid var(--rule);background:var(--panel);padding:1rem;min-width:0}
+.jobs .tbl{overflow-x:auto;max-width:100%}
+.jobs table{width:100%;border-collapse:collapse;font:400 .74rem/1.35 var(--mono);color:var(--ink-2);font-variant-numeric:tabular-nums}
+.jobs th{font:500 .62rem/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);text-align:left;padding:.35rem .4rem;border-bottom:1px solid var(--ink);vertical-align:bottom}
+.jobs th small{display:block;letter-spacing:.04em;text-transform:none;color:var(--ink-2);font-weight:400}
+.jobs td{padding:.2rem .4rem;border-bottom:1px solid var(--rule);vertical-align:middle}
+.jobs tbody th{border-bottom:1px solid var(--rule);font-size:.7rem;letter-spacing:.02em;vertical-align:middle}
+.jobs .jb{display:block;width:100%;text-align:left;border:1px solid var(--rule);background:var(--panel);color:var(--ink);font:inherit;padding:.35rem .5rem;border-radius:0;cursor:pointer;min-height:2.25rem}
+.jobs .jb:hover{background:var(--tint)}
+.jobs .jb[aria-current="true"]{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
+.jobs .jb small{display:block;font-size:.66rem;opacity:.8}
+.jobs .id{color:var(--ink);overflow-wrap:anywhere}
+.jobs .note{font-size:.8rem;color:var(--ink-2);line-height:1.45;margin:0}
+.tune{display:grid;gap:.5rem}
+.steps small{color:var(--ink-2);font-size:.88rem}
+.steps a,.data-note a,.sec a{color:var(--ink);text-underline-offset:3px}
+.data-note{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding-block:.9rem}
+/* sections below the scene: a solid-ink title bar, then the content, always visible */
+.toc{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:2.5rem}
+.toc a{font:500 .68rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);text-decoration:none;border:1px solid var(--rule);border-radius:999px;padding:.6rem .85rem;background:var(--panel)}
+.toc a:hover{background:var(--tint)}
+.sec{margin-top:2.25rem;display:grid;gap:1.25rem;scroll-margin-top:1rem;min-width:0}
+.sec>.ink-bar{flex-wrap:wrap}
+.sec>.ink-bar h2{font:inherit;letter-spacing:inherit;color:inherit;margin:0}
+.sec>.ink-bar span{opacity:.82;text-align:right}
+.sec h3{font-size:1.3rem;line-height:1.2}
+.sec .prose{display:grid;gap:.75rem;max-width:68ch;color:var(--ink-2);align-content:start;min-width:0}
+.sec .prose h3{margin-bottom:.1rem}
+.sec .cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem 2.5rem}
+.sec code{font:400 .86em/1 var(--mono);color:var(--ink)}
+.howto{display:grid;grid-template-columns:minmax(10rem,auto) minmax(0,1fr);margin:0;border-top:1px solid var(--rule)}
+.howto dt,.howto dd{padding:.7rem 0;border-bottom:1px solid var(--rule);margin:0}
+.howto dt{font:500 .72rem/1.5 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);padding-right:1.5rem}
+.howto dd{color:var(--ink-2);font-size:.95rem}
+.howto dd b{color:var(--ink);font-weight:500}
+.fig{margin:0;display:grid;gap:.85rem;border:1px solid var(--rule);background:var(--panel);padding:1rem;min-width:0}
+.fig-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:.6rem 1rem}
+.fig-head h3{margin-top:.25rem}
+.tri{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem}
+.tri .pan{display:grid;align-content:start;border:1px solid var(--ink);background:var(--paper);min-width:0}
+.tri .lb{display:block;background:var(--ink);color:var(--on-ink);font:500 .7rem/1.3 var(--mono);padding:.35rem .55rem}
+.tri svg{display:block;width:100%;height:auto;aspect-ratio:1/1;background:var(--panel-2)}
+.fig figcaption{font:400 .76rem/1.55 var(--mono);color:var(--ink-2);display:grid;gap:.35rem;overflow-wrap:anywhere}
+.fig figcaption .c1{color:var(--ink)}
+.fig figcaption .c4{display:flex;flex-wrap:wrap;gap:.5rem .9rem;align-items:center;margin-top:.3rem}
+.btn.sm{padding:.55rem .9rem;font-size:.8rem}
+.sheet{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.6rem}
+.sheet button{display:grid;gap:.4rem;align-content:start;padding:.4rem .4rem .5rem;border:1px solid var(--rule);background:var(--paper);cursor:pointer;text-align:left;color:var(--ink);font:400 .68rem/1.4 var(--mono);border-radius:0;min-width:0}
+.sheet button:hover{background:var(--tint)}
+.sheet button[aria-current="true"]{border-color:var(--ink);outline:2px solid var(--ink);outline-offset:-3px}
+.sheet svg{display:block;width:100%;height:auto;aspect-ratio:1/1;background:var(--panel-2)}
+.sheet small{display:block;color:var(--ink-2);font-size:.64rem}
+.qc{width:100%;border-collapse:collapse;font-size:.88rem;color:var(--ink-2)}
+.qc th{font:500 .62rem/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);text-align:left;padding:.35rem .6rem .35rem 0;border-bottom:1px solid var(--ink)}
+.qc td{padding:.5rem .7rem .5rem 0;border-bottom:1px solid var(--rule);vertical-align:top}
+.qc td:last-child{color:var(--ink)}
+.qc b{font-weight:500}
+.facts{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.45rem 1rem;margin:0;font-size:.92rem;align-content:start}
+.facts dt{font:500 .7rem/1.6 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.facts dd{margin:0;color:var(--ink-2);overflow-wrap:anywhere}
+.facts .id{font:400 .8rem/1.4 var(--mono);color:var(--ink)}
+.credits{margin:0;padding-left:1.1rem;display:grid;gap:.6rem;color:var(--ink-2);font-size:.92rem}
+.credits b{color:var(--ink);font-weight:500}
+@media (max-width:900px){.sec .cols{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:700px){.sheet{grid-template-columns:repeat(2,minmax(0,1fr))}.tri{gap:.4rem}.tri .lb{font-size:.6rem;padding:.3rem .35rem}
+  .howto{grid-template-columns:minmax(0,1fr)}.howto dt{border-bottom:0;padding-bottom:0}.fig{padding:.7rem}}
+@media (max-width:900px){
+  .hero{grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "stage" "side";grid-template-rows:auto;padding-block:1.4rem 1rem}
+}
+@media (max-width:600px){
+  h1{font-size:2.15rem}
+  .toolbar{position:static;padding:.5rem;border-bottom:1px solid var(--ink);background:var(--paper)}
+  .toolbar .seg button{padding:.5rem .7rem}
+  .meter{position:static;border:0;border-top:1px solid var(--ink);border-radius:0;background:var(--paper)}
+}
+</style>
+
+<div class="wrap" id="wrap" data-show="scene">
+  <nav class="wtnr-bar"><a href="https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa">What the Noise Remembers</a><span class="count"><b>Challenge 01</b> · Recover</span></nav>
+
+  <div class="hero">
+    <div class="head">
+      <p class="kicker">Challenge 01 · One image, one engine</p>
+      <h1>Tear a hole in a pattern that never repeats.</h1>
+    </div>
+
+    <div class="stage" id="stage" data-tool="brush">
+      <div class="toolbar">
+        <div class="seg" role="group" aria-label="Tool" id="g-tool">
+          <button type="button" id="t-brush" data-tool="brush" aria-pressed="true">Repair brush</button>
+          <button type="button" id="t-move" data-tool="move" aria-pressed="false">Move hole</button>
+          <button type="button" id="t-wipe" data-tool="wipe" aria-pressed="false">Compare</button>
+        </div>
+        <div class="seg" role="group" aria-label="Blur setting" id="g-setting">
+          <button type="button" id="s-scr" data-set="scrambled" aria-pressed="true">Scrambled</button>
+          <button type="button" id="s-mem" data-set="memory" aria-pressed="false">Faint memory</button>
+        </div>
+      </div>
+      <div class="pad">
+        <canvas id="cv" width="1024" height="1024" tabindex="0" aria-label="Penrose tiling with a quantum-blurred hole. Use the tools to move the hole, paint tiles back, or wipe to compare. A small moth, the mender, is your repair brush; a guilty moth, the nibbler, sits on the rim. Arrow keys move the hole; hold Space to compare."></canvas>
+        <canvas id="fx" aria-hidden="true"></canvas>
+      </div>
+      <div class="meter"><span class="label">Restored</span><div class="bar"><i id="m-bar"></i></div><span class="num" id="m-num">0 / 0 tiles</span></div>
+    </div>
+
+    <div class="side">
+      <p class="sub">A quantum blur scrambled this hole across 20 qubits. Now it's your job to put the pattern back, tile by tile.</p>
+      <div class="proof">
+        <span class="hot"><b>20</b> qubits per blur</span>
+        <span><b>30</b> real Atlas jobs</span>
+        <span><b>0</b> repeats, ever</span>
+      </div>
+      <ol class="steps">
+        <li><span><b>Paint</b> over the hole to restore the tiles under your brush. <small>The mender moth is your brush.</small></span></li>
+        <li><span><b>Move</b> the hole anywhere and watch the engine rewrite a new patch. <small>Drag it, or use the arrow keys.</small></span></li>
+        <li><span><b>Compare</b>: drag across to see the original beneath the blur. <small>Or hold Space.</small></span></li>
+        <li><span><b>Check</b> the numbers: all 30 jobs and both figures are in <a href="#data">The data</a> below, or open the 12-job sweep.</span></li>
+      </ol>
+
+      <div class="row split">
+        <span class="label">View</span>
+        <div class="seg" role="group" aria-label="View" id="g-view">
+          <button type="button" data-view="scene" aria-pressed="true">Scene</button>
+          <button type="button" data-view="data" aria-pressed="false">Data</button>
+        </div>
+      </div>
+
+      <div class="cast only-scene" aria-label="The cast">
+        <figure><div class="pic"><img id="cast-mender" alt="Pixel-art moth carrying a rhombus tile" width="75" height="84"></div>
+          <figcaption><span class="tag">The mender</span>Your brush. It rebuilds tiles from the tiling's own substitution rule: classical geometry, no decoder.</figcaption></figure>
+        <figure><div class="pic"><img id="cast-nibbler" alt="Pixel-art moth looking guilty, with crumbs" width="75" height="69"></div>
+          <figcaption><span class="tag">The nibbler</span>Stands in for the blur. Its belly and crumb pile are measured from the job image: <b id="nib-cap">-</b>.</figcaption></figure>
+      </div>
+
+      <div class="data-note only-data" id="data-note">
+        <p class="note">The cast is off the canvas. Re-erase any tiles you have painted back and the hole shows the engine output exactly as downloaded. Every job on the page is listed in <a href="#data">The data</a> below; pick one to load it.</p>
+      </div>
+
+      <div class="panel">
+        <div class="row split">
+          <span class="label">Brush size</span>
+          <span class="label" id="brush-val">48 px</span>
+        </div>
+        <input type="range" id="brush" min="16" max="140" value="48" aria-label="Brush size">
+        <div class="row">
+          <button type="button" class="btn" id="auto">Restore the rest</button>
+          <button type="button" class="btn ghost" id="reset">Re-erase</button>
+          <button type="button" class="btn ghost" id="share">Copy link to this view</button>
+        </div>
+        <div class="row split">
+          <span class="label">Tune the engine</span>
+          <button type="button" class="btn ghost" id="tune-toggle" aria-expanded="false" aria-controls="tune">Show the 12-job sweep</button>
+        </div>
+        <div class="tune" id="tune" hidden>
+          <div class="row"><span class="label" style="min-width:5.5rem">Strength</span><div class="seg" id="t-strength"></div></div>
+          <div class="row"><span class="label" style="min-width:5.5rem">Gate</span><div class="seg" id="t-style"></div></div>
+          <div class="row"><span class="label" style="min-width:5.5rem">Reach</span><div class="seg" id="t-reach"></div></div>
+        </div>
+        <dl class="readout">
+          <dt>Engine</dt><dd><b>blur-v1 v1.1.9</b> · statevector simulator</dd>
+          <dt>Params</dt><dd><b id="r-params">–</b></dd>
+          <dt>Hole</dt><dd><b id="r-hole">–</b></dd>
+          <dt>Nibbled</dt><dd><b id="r-nib">–</b></dd>
+          <dt>Job</dt><dd><b id="r-job">–</b></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <nav class="toc" aria-label="Sections on this page">
+    <a href="#how-to-play">How to play</a><a href="#data">The data</a><a href="#made">How it was made</a><a href="#science">The science</a><a href="#claims">What this does not claim</a><a href="#credits">Jobs and credits</a>
+  </nav>
+
+  <section class="sec" id="how-to-play" aria-labelledby="h-play">
+    <div class="ink-bar"><h2 id="h-play">How to play</h2><span>Every control, and what it does</span></div>
+    <dl class="howto">
+      <dt>Repair brush</dt><dd>Fly the mender over the hole and every tile under its brush drops back in. <b>Brush size</b> sets its reach, from 16 to 140 px.</dd>
+      <dt>Move hole</dt><dd>Drag the hole, or use the arrow keys on the tiling. The nibbler follows, and a different engine job fills it. The hole snaps to the nearest of nine computed positions.</dd>
+      <dt>Compare</dt><dd>Drag across to peek at the original beneath the blur, or hold Space.</dd>
+      <dt>Scrambled &middot; Faint memory</dt><dd>The two blur settings run at every hole position: strength 1.0 &middot; rx &middot; reach 1, or strength 0.3 &middot; rx &middot; reach 0.</dd>
+      <dt>Restore the rest</dt><dd>Puts the remaining tiles back from the rim inward. Press <b>Pause</b>, or touch the tiling, to stop it. <b>Re-erase</b> empties the hole again.</dd>
+      <dt>Show the 12-job sweep</dt><dd>Pick a strength, gate and reach at the original hole, (580, 440). <b>Back to the movable hole</b> returns to the nine positions.</dd>
+      <dt>Scene &middot; Data</dt><dd>Data takes the cast off the canvas, so the hole shows the engine output exactly as downloaded.</dd>
+      <dt>Copy link to this view</dt><dd>Copies a link that reopens this exact hole and setting, or this sweep job.</dd>
+    </dl>
+  </section>
+
+  <section class="sec" id="data" aria-labelledby="h-data">
+    <div class="ink-bar"><h2 id="h-data">The data</h2><span>2 figures &middot; 30 jobs</span></div>
+
+    <figure class="fig" id="fig-tri" aria-labelledby="fig-tri-h">
+      <div class="fig-head">
+        <div><span class="label">Figure 1 &middot; hero.png, drawn live</span><h3 id="fig-tri-h">The Hole in the Penrose</h3></div>
+        <div class="row"><span class="label">Panel 2 shows</span>
+          <div class="seg" role="group" aria-label="Figure 1 job" id="g-tri">
+            <button type="button" data-tri="hero" aria-pressed="true">Hero job</button>
+            <button type="button" data-tri="scene" aria-pressed="false">Job on screen</button>
+          </div></div>
+      </div>
+      <div class="tri">
+        <div class="pan"><span class="lb">1&nbsp; intact</span><svg id="tri-1" viewBox="0 0 1024 1024" role="img" aria-label="Panel 1: the intact Penrose tiling"><image href="img/intact.webp" width="1024" height="1024"/></svg></div>
+        <div class="pan"><span class="lb">2&nbsp; erased by blur-v1</span><svg id="tri-2" viewBox="0 0 1024 1024" role="img" aria-label="Panel 2: the tiling with the hole erased by blur-v1"><image href="img/intact.webp" width="1024" height="1024"/><image id="tri-crop" width="541" height="541"/><g class="ring" id="tri-ring2"></g></svg></div>
+        <div class="pan"><span class="lb">3&nbsp; rebuilt from the substitution rule</span><svg id="tri-3" viewBox="0 0 1024 1024" role="img" aria-label="Panel 3: the hole rebuilt from the substitution rule"><defs><clipPath id="tri-clip"><circle id="tri-clipc" r="270"/></clipPath></defs><image href="img/intact.webp" width="1024" height="1024"/><g id="tri-tiles" clip-path="url(#tri-clip)"><path id="tri-thick" fill="rgb(233,196,106)"/><path id="tri-thin" fill="rgb(58,74,92)"/><path id="tri-edge" fill="none" stroke="rgb(24,22,20)" stroke-width="1" stroke-linejoin="round"/></g><g class="ring" id="tri-ring3"></g></svg></div>
+      </div>
+      <figcaption>
+        <span class="c1" id="tri-cap">Panel 2: Atlas blur-v1 v1.1.9, 1024 px image + disk mask (r=270 px, 20 qubits), strength=1.0, style=rx, reach=1.0, size=1024 (default).&nbsp; job_id c868dccb-e0e4-4b14-a101-943fb3d5d2d8</span>
+        <span>Ran on Atlas's classical statevector simulator (blur-v1 has no QPU mode). Panel 3 is classical geometry: the same Robinson-triangle deflation, repainted inside the hole.</span>
+        <span class="c3">Penrose tilings form quantum error-correcting codes in which erasures of any finite region can be recovered (Li &amp; Boyle, arXiv:2311.13040). Atlas did not run that code.</span>
+        <span class="c4"><button type="button" class="btn ghost sm" id="tri-load">Load this job in the scene</button> <span id="tri-where">The dashed ring marks the hole, centre (580, 440).</span></span>
+      </figcaption>
+    </figure>
+
+    <figure class="fig" id="fig-sweep" aria-labelledby="fig-sweep-h">
+      <div class="fig-head">
+        <div><span class="label">Figure 2 &middot; sweep.png, drawn live</span><h3 id="fig-sweep-h">Full 12-job sweep</h3></div>
+        <span class="label">Pick a job to load it in the scene</span>
+      </div>
+      <div class="sheet" id="sheet"></div>
+      <figcaption>
+        <span>Every completed job in the blur-v1 sweep at the original hole, centre (580, 440), r = 270 px, 20 qubits. Each cell shows the 541 px box around the hole, as downloaded, and is labelled with its strength, gate, reach and the first 8 characters of its job ID. Rows run from strength 0.3 to 1.0.</span>
+      </figcaption>
+    </figure>
+
+    <div class="jobs" id="jobs" aria-label="All 30 engine jobs">
+      <div class="fig-head"><div><span class="label">Table 1 &middot; all 30 jobs</span><h3>Every engine job on the page</h3></div><span class="label">Pick one to load it</span></div>
+      <span class="label">9 hole positions &times; 2 settings &middot; 18 jobs</span>
+      <div class="tbl"><table id="tab-pos">
+        <thead><tr><th scope="col">Hole</th><th scope="col">Scrambled<small>1.0 &middot; rx &middot; reach 1</small></th><th scope="col">Faint memory<small>0.3 &middot; rx &middot; reach 0</small></th></tr></thead>
+        <tbody></tbody></table></div>
+      <span class="label">12-job sweep at the original hole (580, 440)</span>
+      <div class="tbl"><table id="tab-sweep">
+        <thead><tr><th scope="col">Strength &middot; gate &middot; reach</th><th scope="col">Changed</th><th scope="col">Shift</th><th scope="col">Job</th></tr></thead>
+        <tbody></tbody></table></div>
+      <p class="note">Each cell reads <b>changed &middot; shift</b>: the share of hole pixels whose colour moved by more than 10% of full scale, and the mean largest-channel shift. Both are classical measurements of the downloaded image against the original, made at build time.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="made" aria-labelledby="h-made">
+    <div class="ink-bar"><h2 id="h-made">How it was made</h2><span>blur-v1 &middot; 20 qubits</span></div>
+    <div class="cols">
+      <div class="prose">
+        <h3>What the quantum engine did</h3>
+        <p>Atlas blur-v1 encodes the pixels inside the hole as a quantum state on a Gray-coded register. The hole's 541-pixel bounding box needs 10 + 10 = 20 qubits, which is the engine's maximum. One rotation is applied per qubit and the state is read back out. At full strength and reach, the aperiodic pattern comes back on a square grid: a periodic ghost of the qubit register itself.</p>
+        <p>Every image you see inside the hole is a downloaded engine output: 9 hole positions × 2 settings, plus a 12-job parameter sweep. The job ID updates as you go.</p>
+        <p>Outside the hole each output is bit-identical to the original tiling, so the page stores a lossless crop of each job around its hole and lays it over the original. The build checks that this rebuilds every downloaded image pixel for pixel.</p>
+      </div>
+      <div class="prose">
+        <h3>What is quantum, what is classical</h3>
+        <div class="tbl"><table class="qc">
+          <thead><tr><th scope="col">Step</th><th scope="col">Kind</th></tr></thead>
+          <tbody>
+            <tr><td>Tiling generation (<code>tiling.py</code>): Robinson-triangle deflation, 7 iterations</td><td>classical</td></tr>
+            <tr><td>Mask (<code>mask.py</code>)</td><td>classical</td></tr>
+            <tr><td>Blur inside the hole (<code>run_blur.py</code> → blur-v1)</td><td>quantum circuit, <b>run on Atlas's classical statevector simulator</b>. blur-v1 has no QPU mode</td></tr>
+            <tr><td>Rebuild (<code>rebuild.py</code>): re-run the same deflation, repaint the half-rhombs touching the hole</td><td>classical geometry; diff vs intact inside the mask = 0.00 %</td></tr>
+            <tr><td>This page: the repair brush, the moths, and the changed &middot; shift measurements</td><td>classical, in your browser and at build time</td></tr>
+          </tbody></table></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="science" aria-labelledby="h-sci">
+    <div class="ink-bar"><h2 id="h-sci">The science</h2><span>Li &amp; Boyle 2023</span></div>
+    <div class="prose">
+      <h3>Why a Penrose tiling?</h3>
+      <p>Two rhombs cover the plane forever without repeating. Every finite patch still shows up again and again, so the surroundings of a hole pin down what used to be inside it.</p>
+      <p>Li &amp; Boyle (arXiv:2311.13040) turned that property into a quantum error-correcting code: erase any finite region and it can be diagnosed and repaired from the rest. Your repair brush is a hand-drawn cartoon of that idea.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="claims" aria-labelledby="h-claims">
+    <div class="ink-bar"><h2 id="h-claims">What this does not claim</h2><span>Honesty</span></div>
+    <div class="cols">
+      <div class="prose">
+        <p class="honesty">blur-v1 runs on a classical statevector simulator and has no QPU mode. The repair is classical geometry: your browser re-runs the same Robinson-triangle deflation. Atlas didn't encode or correct anything. The hole snaps to the nearest of nine computed positions.</p>
+      </div>
+      <div class="prose">
+        <h3>Who are the moths?</h3>
+        <p>Cartoons. The mender is your cursor and the nibbler is a stand-in for the blur; neither ran on a quantum computer. Only one thing they show is data: the nibbler's belly and crumb pile come from a classical measurement of each job image against the original, made at build time (the share of hole pixels whose colour moved by more than 10%, and the mean colour shift). Strong settings make it plump with a big pile; the faint-memory setting leaves it slim. Everything else they do, from flapping to fleeing, is decoration.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="credits" aria-labelledby="h-credits">
+    <div class="ink-bar"><h2 id="h-credits">Jobs and credits</h2><span>30 completed jobs</span></div>
+    <div class="cols">
+      <dl class="facts">
+        <dt>Engine</dt><dd>blur-v1 v1.1.9 (Atlas), classical statevector simulator</dd>
+        <dt>Qubits</dt><dd>20 per blur: the hole's 541 px bounding box needs ⌈log₂ 541⌉ × 2 = 20 qubits, blur-v1's maximum</dd>
+        <dt>Jobs</dt><dd>30 completed: 18 for 9 hole positions × 2 settings (r = 270 px), 12 for the parameter sweep at (580, 440). All are in <a href="#jobs">Table 1</a>.</dd>
+        <dt>Hero job</dt><dd>strength 1.0 &middot; rx &middot; reach 1.0 &middot; <span class="id">c868dccb-e0e4-4b14-a101-943fb3d5d2d8</span></dd>
+        <dt>Defaults</dt><dd>size = 1024, downscale = true, mask_bin_size = 4, mask_min_region = 16</dd>
+      </dl>
+      <ul class="credits">
+        <li><b>Moth Quantum Atlas, blur-v1 (Quantum Blur).</b> Built on the <a href="https://github.com/qiskit-community/QuantumBlur" rel="noopener">QuantumBlur library</a>.</li>
+        <li><b>Zhi Li &amp; Latham Boyle</b>, "The Penrose Tiling is a Quantum Error-Correcting Code", <a href="https://arxiv.org/abs/2311.13040" rel="noopener">arXiv:2311.13040</a> (2023).</li>
+        <li><b>Robinson-triangle deflation:</b> standard construction (R. M. Robinson; see also B. Grünbaum &amp; G. C. Shephard, <i>Tilings and Patterns</i>, 1987). The implementation in <code>tiling.py</code>, and its port on this page, are our own.</li>
+        <li><b>Sprites.</b> The mender and nibbler moths, crumbs, sparkles and sweat drop are original pixel art drawn for this piece in the shared ink palette. No third-party art is used.</li>
+      </ul>
+    </div>
+  </section>
+  <!--NAV-->
+  <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>/*INKSPRITE*/</script>
+<script>
+const POS = /*POSITIONS*/[];
+const SWEEP = /*SWEEP*/[];
+const SPRITES = /*SPRITES*/{};
+const TUNE_CENTRE = {x:580, y:440, r:270};
+const XS = [300, 512, 724];
+const RM = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+const SP = {}; for (const k in SPRITES) SP[k] = InkSprite.make(SPRITES[k]);
+const now = () => performance.now() / 1000;
+
+// ---- Penrose P3 by Robinson-triangle deflation (same rule as tiling.py) ----
+const PHI=(1+Math.sqrt(5))/2, N=1024, RADIUS=1.08*Math.hypot(N,N)/2;
+function tiling(iter){
+  const C=(re,im)=>({re,im}), add=(a,b)=>C(a.re+b.re,a.im+b.im), sub=(a,b)=>C(a.re-b.re,a.im-b.im), sc=(a,k)=>C(a.re*k,a.im*k);
+  let t=[];
+  for(let i=0;i<10;i++){
+    let b=C(RADIUS*Math.cos((2*i-1)*Math.PI/10),RADIUS*Math.sin((2*i-1)*Math.PI/10));
+    let c=C(RADIUS*Math.cos((2*i+1)*Math.PI/10),RADIUS*Math.sin((2*i+1)*Math.PI/10));
+    if(i%2===0){const s=b;b=c;c=s;}
+    t.push([0,C(0,0),b,c]);
+  }
+  for(let k=0;k<iter;k++){
+    const o=[];
+    for(const [kind,a,b,c] of t){
+      if(kind===0){const p=add(a,sc(sub(b,a),1/PHI));o.push([0,c,p,b],[1,p,c,a]);}
+      else{const q=add(b,sc(sub(a,b),1/PHI)),r=add(b,sc(sub(c,b),1/PHI));o.push([1,r,c,a],[1,q,r,b],[0,r,q,a]);}
+    }
+    t=o;
+  }
+  return t.map(([k,a,b,c])=>{const p=[a,b,c].map(z=>[z.re+N/2,z.im+N/2]);
+    return {k,p,cx:(p[0][0]+p[1][0]+p[2][0])/3,cy:(p[0][1]+p[1][1]+p[2][1])/3};})
+    .filter(({p})=>!(Math.max(...p.map(v=>v[0]))<0||Math.min(...p.map(v=>v[0]))>N||Math.max(...p.map(v=>v[1]))<0||Math.min(...p.map(v=>v[1]))>N));
+}
+const TILES=tiling(7);
+const THICK='rgb(233,196,106)', THIN='rgb(58,74,92)', EDGE='rgb(24,22,20)';   // the tiling's own colours (as in intact.png)
+
+// ---- state ----
+const cv=document.getElementById('cv'), ctx=cv.getContext('2d'), stage=document.getElementById('stage');
+const $=id=>document.getElementById(id);
+const imgs={}; function img(src){if(!imgs[src]){const i=new Image();i.decoding='async';i.src=src;i.onload=draw;imgs[src]=i;}return imgs[src];}
+const ready=i=>i&&i.complete&&i.naturalWidth>0;
+const st={tool:'brush', setting:'scrambled', tuning:false, hole:{x:512,y:512,r:270},
+          tune:{strength:1,style:'rx',reach:1}, restored:new Set(), born:new Map(), brush:48, cursor:null, wipe:.5,
+          drag:null, peek:false, painting:false, complete:false, popping:false, view:'scene'};
+img('img/intact.webp');
+// The data section's figures (drawn further down; declared here because draw() keeps them in sync)
+const tri={mode:'hero'};            // Figure 1, panel 2: the hero job (as in hero.png) or the job on screen
+let triKey='', sheetCells=[];
+
+const hole=()=>st.tuning?TUNE_CENTRE:st.hole;
+function current(){
+  if(st.tuning){const t=st.tune;return SWEEP.find(s=>s.strength===t.strength&&s.style===t.style&&s.reach===t.reach);}
+  return POS.find(p=>p.x===st.hole.x&&p.y===st.hole.y&&p.setting===st.setting);
+}
+function inHole(t,h){
+  const ins=([x,y])=>(x-h.x)**2+(y-h.y)**2<=h.r*h.r;
+  return t.p.some(ins)||ins([t.cx,t.cy]);
+}
+let holeTiles=[], holeKey='';
+function tilesFor(h){const key=h.x+','+h.y;if(key!==holeKey){holeKey=key;holeTiles=TILES.map((t,i)=>i).filter(i=>inHole(TILES[i],h));}return holeTiles;}
+function progress(){const list=tilesFor(hole());let d=0;for(const i of list)if(st.restored.has(i))d++;return {done:d,total:list.length};}
+
+function pathTile(t){ctx.beginPath();ctx.moveTo(t.p[0][0],t.p[0][1]);ctx.lineTo(t.p[1][0],t.p[1][1]);ctx.lineTo(t.p[2][0],t.p[2][1]);ctx.closePath();}
+function drawTile(t){
+  pathTile(t);ctx.fillStyle=t.k===0?THICK:THIN;ctx.fill();
+  ctx.beginPath();ctx.moveTo(t.p[1][0],t.p[1][1]);ctx.lineTo(t.p[0][0],t.p[0][1]);ctx.lineTo(t.p[2][0],t.p[2][1]);
+  ctx.strokeStyle=EDGE;ctx.lineWidth=1.4;ctx.stroke();
+}
+const POP=.22, backOut=a=>1+2.70158*(a-1)**3+1.70158*(a-1)**2;
+function addTile(i){st.restored.add(i);if(!RM)st.born.set(i,now());}
+
+let castKey='';
+function draw(){
+  const job=current(), h=hole(), intact=img('img/intact.webp'), crop=job?img(job.file):null, t=now();
+  ctx.imageSmoothingEnabled=false;
+  ctx.fillStyle='#FBFAF9';ctx.fillRect(0,0,N,N);
+  if(ready(intact))ctx.drawImage(intact,0,0,N,N);
+  // the engine output: a lossless crop of the downloaded job image, laid over the identical original
+  if(job){if(ready(crop))ctx.drawImage(crop,job.crop[0],job.crop[1]);
+    else{ctx.fillStyle='#F0F0F4';ctx.beginPath();ctx.arc(h.x,h.y,h.r,0,2*Math.PI);ctx.fill();}}
+  // restored tiles, clipped to the hole; new ones pop in
+  ctx.save();ctx.beginPath();ctx.arc(h.x,h.y,h.r,0,2*Math.PI);ctx.clip();
+  let popping=false;
+  for(const i of st.restored){
+    const b=st.born.get(i), a=b==null?1:(t-b)/POP;
+    if(a>=1){if(b!=null)st.born.delete(i);drawTile(TILES[i]);continue;}
+    popping=true;const T=TILES[i], s=.3+.7*backOut(Math.max(0,a));
+    ctx.save();ctx.translate(T.cx,T.cy);ctx.scale(s,s);ctx.translate(-T.cx,-T.cy);drawTile(T);ctx.restore();
+  }
+  ctx.restore();st.popping=popping;
+  // compare: original on the left of the wipe line
+  if(st.tool==='wipe'||st.peek){
+    const x=st.peek?N:st.wipe*N;
+    if(ready(intact)){ctx.save();ctx.beginPath();ctx.rect(0,0,x,N);ctx.clip();ctx.drawImage(intact,0,0,N,N);ctx.restore();}
+    if(!st.peek){ctx.fillStyle='#FBFAF9';ctx.fillRect(x-3,0,6,N);ctx.fillStyle='#19238E';ctx.fillRect(x-1,0,2,N);
+      ctx.beginPath();ctx.arc(x,N/2,26,0,2*Math.PI);ctx.fill();
+      ctx.fillStyle='#FBFAF9';ctx.beginPath();ctx.moveTo(x-17,N/2);ctx.lineTo(x-6,N/2-9);ctx.lineTo(x-6,N/2+9);ctx.closePath();ctx.fill();
+      ctx.beginPath();ctx.moveTo(x+17,N/2);ctx.lineTo(x+6,N/2-9);ctx.lineTo(x+6,N/2+9);ctx.closePath();ctx.fill();}
+  }
+  // hole ring
+  ctx.setLineDash([14,10]);ctx.lineWidth=7;ctx.strokeStyle='#19238E';ctx.beginPath();ctx.arc(h.x,h.y,h.r+4,0,2*Math.PI);ctx.stroke();
+  ctx.lineWidth=3;ctx.strokeStyle='#FBFAF9';ctx.stroke();ctx.setLineDash([]);
+  if(st.drag){ctx.lineWidth=4;ctx.strokeStyle='#19238E';ctx.setLineDash([6,8]);ctx.beginPath();ctx.arc(st.drag.x,st.drag.y,h.r,0,2*Math.PI);ctx.stroke();ctx.setLineDash([]);}
+  // readouts
+  const p=progress();
+  $('m-num').textContent=`${p.done} / ${p.total} tiles`;
+  $('m-bar').style.width=(p.total?100*p.done/p.total:0)+'%';
+  $('r-params').textContent=job?`strength ${job.strength} · ${job.style} · reach ${job.reach}`:'–';
+  $('r-hole').textContent=`(${h.x}, ${h.y}) · r ${h.r} px · 20 qubits`;
+  $('r-job').textContent=job?job.job_id:'loading…';
+  const nib=job?`${Math.round(job.changed*100)}% of hole pixels changed · mean shift ${Math.round(job.shift*100)}%`:'–';
+  $('r-nib').textContent=nib;
+  $('auto').disabled=p.done===p.total;
+  $('reset').disabled=p.done===0;
+  const key=job?job.job_id:'';
+  if(key!==castKey){castKey=key;const k=job?jobKey(job):'';
+    document.querySelectorAll('.jb,.sj').forEach(b=>b.setAttribute('aria-current',String(b.dataset.k===k)));$('nib-cap').textContent=job?`${Math.round(job.changed*100)}% of the hole's pixels changed, mean shift ${Math.round(job.shift*100)}%`:'-';
+    castPic('cast-nibbler',isFat(job)?'nibbler_fat':'nibbler',0);}
+  syncFigs();
+}
+
+// ---- the cast (pixel sprites on a device-resolution overlay; integer scale, no smoothing) ----
+const fx=$('fx'), fctx=fx.getContext('2d');
+const F={k:1,u:2,dpr:1,css:1};
+function sizeFx(){const r=cv.getBoundingClientRect(), dpr=window.devicePixelRatio||1;
+  const w=Math.max(1,Math.round(r.width*dpr)), hh=Math.max(1,Math.round(r.height*dpr));
+  if(fx.width!==w||fx.height!==hh){fx.width=w;fx.height=hh;}
+  F.k=w/N;F.dpr=dpr;F.css=r.width;F.u=Math.max(1,Math.round((r.width>=520?3:2)*dpr));}
+if(window.ResizeObserver)new ResizeObserver(sizeFx).observe(cv);
+addEventListener('resize',sizeFx);sizeFx();
+const sp=()=>F.u/F.k;                                   // canvas units per sprite pixel
+function put(name,f,x,y){InkSprite.draw(fctx,SP[name],f,x*F.k,y*F.k,F.u);}
+const isFat=job=>!!job&&job.shift>=.2;                  // measured mean colour shift inside the hole
+function castPic(id,name,f){const el=$(id), s=Math.max(1,Math.round(3*(window.devicePixelRatio||1))), d=window.devicePixelRatio||1;
+  el.src=InkSprite.toDataURL(SP[name],f,s);el.width=Math.round(SP[name].w*s/d);el.height=Math.round(SP[name].h*s/d);}
+castPic('cast-mender','mender',0);
+
+const NIB_ANG=[-45,-28,-62,-12,8,-118,28,152,172,196,214];
+const MEN_ANG=[135,155,115,175,95,200,60,40,225,250,20];
+function band(){
+  const c=cv.getBoundingClientRect(), s=N/(c.height||1); let top=6,bot=N-6;
+  for(const el of [document.querySelector('.toolbar'),document.querySelector('.meter')]){
+    const r=el.getBoundingClientRect(); if(r.bottom<=c.top||r.top>=c.bottom)continue;
+    if(r.top-c.top<c.height/2)top=Math.max(top,(r.bottom-c.top)*s+6);else bot=Math.min(bot,(r.top-c.top)*s-6);
+  }
+  return {top,bot};
+}
+const angDist=(a,b)=>Math.abs(((a-b)%360+540)%360-180);
+function seat(h,cands,name,avoid,b){               // a rim angle where the sprite stands fully visible, feet on the ring
+  const S=SP[name], s=sp(), w=S.w*s, hg=S.h*s; let first=null;
+  for(const d of cands){
+    if(avoid!=null&&angDist(d,avoid)<110)continue;
+    const a=d*Math.PI/180, x=h.x+Math.cos(a)*(h.r+6), y=h.y+Math.sin(a)*(h.r+6)-hg/2, c={x,y,deg:d};
+    if(!first)first=c;
+    if(x-w/2>=6&&x+w/2<=N-6&&y-hg/2>=b.top&&y+hg/2<=b.bot)return c;
+  }
+  return first;
+}
+
+const M={x:null,y:null,happyUntil:0,ax:0,ay:0};       // the mender
+const NB={mode:'idle',until:0,t0:0};                  // the nibbler: idle | chomp | flee | gone | return
+let sparks=[];
+function sparkleAt(x,y,t0){if(!RM&&sparks.length<60)sparks.push({x,y,t0:t0||now()});}
+function nibChomp(){if(NB.mode==='idle'||NB.mode==='chomp'){NB.mode='chomp';NB.until=now()+.9;}}
+function nibReturn(){if(NB.mode==='gone'||NB.mode==='flee'){NB.mode=RM?'idle':'return';NB.t0=now();}}
+function celebrate(viaAuto){
+  toast(viaAuto?'Pattern restored from the rim inward. The nibbler flew off.':'Restored! The nibbler flew off.');
+  if(RM){NB.mode='gone';return;}
+  const t=now(), arr=[...st.restored];NB.mode='flee';NB.t0=t;M.happyUntil=t+1.4;
+  for(let k=0;k<18&&arr.length;k++){const T=TILES[arr[(Math.random()*arr.length)|0]];sparkleAt(T.cx,T.cy,t+k*.05);}
+}
+function checkDone(viaAuto){const p=progress(), full=p.total>0&&p.done===p.total;
+  if(full&&!st.complete){st.complete=true;celebrate(viaAuto);}
+  else if(!full&&st.complete){st.complete=false;nibReturn();}}
+
+function frame(t,dt){
+  sizeFx();
+  fctx.setTransform(1,0,0,1,0,0);fctx.clearRect(0,0,fx.width,fx.height);fctx.imageSmoothingEnabled=false;
+  if(st.view==='data'){brushRing();return;}
+  const h0=hole(), h=st.drag?{x:st.drag.x,y:st.drag.y,r:h0.r}:h0, job=current(), s=sp(), fat=isFat(job), b=band();
+  const nseat=seat(h,NIB_ANG,'nibbler_fat',null,b);
+  // -- mender goal --
+  const MS=SP.mender, halfH=MS.h*s/2, TILE=9.5*s;       // the carried tile sits 9.5 sprite px below the centre
+  let gx,gy,snap=false,fly=false,fast=false;
+  if(anim){gx=M.ax;gy=M.ay-TILE;fly=fast=true;}
+  else if(t<M.happyUntil){gx=h.x;gy=h.y-TILE-Math.abs(Math.sin(t*9))*10*s;fly=true;}
+  else if(st.tool==='brush'&&st.cursor){gx=st.cursor.x;gy=st.cursor.y-TILE;snap=true;fly=true;fast=st.painting;}
+  else if(st.tool==='wipe'){gx=st.wipe*N;gy=N/2-26-halfH;}
+  else{const m=seat(h,MEN_ANG,'mender',nseat.deg,b);gx=m.x;gy=m.y;}
+  if(M.x==null||snap||RM){M.x=gx;M.y=gy;}
+  else{const e=Math.min(1,dt*(anim?10:7));M.x+=(gx-M.x)*e;M.y+=(gy-M.y)*e;}
+  const moving=Math.hypot(gx-M.x,gy-M.y)>2*s;
+  // -- nibbler --
+  if(NB.mode==='chomp'&&t>NB.until)NB.mode='idle';
+  let nx=nseat.x, ny=nseat.y, nname=fat?'nibbler_fat':'nibbler', nf=InkSprite.frameAt(SP[nname],t), sweat=false, show=NB.mode!=='gone';
+  const away=(()=>{const dx=nx-h.x,dy=ny-h.y,l=Math.hypot(dx,dy)||1;return {x:dx/l,y:dy/l};})();
+  if(st.drag){nname=fat?'nibbler_chomp_fat':'nibbler_chomp';nf=InkSprite.frameAt(SP[nname],t);}
+  else if(NB.mode==='chomp'){nname=fat?'nibbler_chomp_fat':'nibbler_chomp';nf=RM?0:Math.floor(t*7)%2;}
+  else if(NB.mode==='flee'||NB.mode==='return'){
+    const a=(t-NB.t0)/(NB.mode==='flee'?1.3:.7);
+    if(a>=1){if(NB.mode==='flee'){NB.mode='gone';show=false;}else{NB.mode='chomp';NB.until=t+.9;}}
+    else{const d=NB.mode==='flee'?a*a:(1-a)*(1-a);nx+=away.x*d*760;ny+=away.y*d*760-Math.sin(a*14)*12;nname='nibbler_flee';nf=Math.floor(t*12)%2;}
+  }
+  else if(NB.mode==='idle'){
+    const near=(snap||fly||moving)&&Math.hypot(M.x-nx,(M.y+TILE)-ny)<200;
+    if(near){nname=fat?'nibbler_startled_fat':'nibbler_startled';nf=0;sweat=true;if(!RM)ny-=(Math.floor(t*6)%2)*s*2;}
+    else{const p=progress();sweat=p.total>0&&p.done/p.total>=.5;}
+  }
+  // crumbs: the measured nibble (more mean colour shift, bigger pile). Left on the rim even after it flees.
+  if(job&&!st.drag){
+    const n=Math.max(1,Math.min(10,Math.round(job.shift*20))), side=nseat.x>N/2?-1:1, NS=SP.nibbler_fat;
+    const bx=nseat.x+side*(NS.w*s/2+3*s), by=nseat.y+NS.h*s/2-3*s;
+    const OFF=[[0,0],[5,0],[10,0],[15,0],[2.5,-3.5],[7.5,-3.5],[12.5,-3.5],[5,-7],[10,-7],[7.5,-10.5]];
+    for(let i=0;i<n;i++)put('crumb',i%2,bx+side*OFF[i][0]*s,by+OFF[i][1]*s);
+  }
+  if(show){put(nname,nf,nx,ny);if(sweat)put('sweat',0,nx+10*s,ny-9*s+(RM?0:(Math.floor(t*5)%3))*s);}
+  brushRing();   // under the mender
+  // mender
+  const flying=fly||moving;
+  let mname=flying?'mender':'mender_rest', mf;
+  if(RM)mf=0;else if(flying)mf=Math.floor(t*(fast?18:10))%4;else mf=InkSprite.frameAt(SP.mender_rest,t);
+  put(mname,mf,M.x,M.y);
+  // sparkles on freshly restored tiles
+  sparks=sparks.filter(p=>t-p.t0<.34);
+  for(const p of sparks){const a=t-p.t0;if(a>=0)put('sparkle',Math.min(3,Math.floor(a*12)),p.x,p.y);}
+}
+
+function brushRing(){
+  if(st.tool!=='brush'||!st.cursor||anim)return;const k=F.k;
+  fctx.lineWidth=3*F.dpr;fctx.strokeStyle='#FBFAF9';fctx.beginPath();fctx.arc(st.cursor.x*k,st.cursor.y*k,st.brush*k,0,2*Math.PI);fctx.stroke();
+  fctx.lineWidth=1.25*F.dpr;fctx.strokeStyle='#19238E';fctx.beginPath();fctx.arc(st.cursor.x*k,st.cursor.y*k,st.brush*k+2*F.dpr,0,2*Math.PI);fctx.stroke();
+}
+
+let raf=0,lastT=0,onScreen=true;
+function loop(ms){const t=ms/1000, dt=lastT?Math.min(.05,t-lastT):0;lastT=t;
+  if(st.popping)draw();
+  frame(now(),dt);
+  raf=(onScreen&&!document.hidden)?requestAnimationFrame(loop):0;}
+function kick(){if(!raf){lastT=0;raf=requestAnimationFrame(loop);}}
+if(window.IntersectionObserver)new IntersectionObserver(es=>{onScreen=es[0].isIntersecting;if(onScreen)kick();}).observe(stage);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)kick();});
+
+// ---- pointer ----
+function pt(e){const r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)/r.width*N,y:(e.clientY-r.top)/r.height*N};}
+function paint(p){
+  const h=hole(), added=[];
+  for(const i of tilesFor(h)){const t=TILES[i];if(!st.restored.has(i)&&Math.hypot(t.cx-p.x,t.cy-p.y)<st.brush){addTile(i);added.push(i);}}
+  if(added.length&&sparks.length<14){const T=TILES[added[(Math.random()*added.length)|0]];sparkleAt(T.cx,T.cy);}
+  if(added.length){draw();checkDone();}
+  return added.length;
+}
+function snapHole(q){
+  let best=POS[0],bd=1e9;for(const p of POS){if(p.setting!==st.setting)continue;const d=Math.hypot(p.x-q.x,p.y-q.y);if(d<bd){bd=d;best=p;}}
+  return best;
+}
+function moveHole(x,y){st.hole={x,y,r:270};st.restored.clear();st.born.clear();draw();checkDone();nibChomp();}
+let down=false;
+cv.addEventListener('pointerdown',e=>{
+  stopAuto();down=true;try{cv.setPointerCapture(e.pointerId);}catch(_){}
+  const p=pt(e);st.cursor=p;
+  if(st.tool==='brush'){st.painting=true;paint(p);}
+  else if(st.tool==='move'&&!st.tuning){st.drag=p;}
+  else if(st.tool==='wipe'){st.wipe=Math.max(0,Math.min(1,p.x/N));}
+  draw();
+});
+cv.addEventListener('pointermove',e=>{
+  const p=pt(e);st.cursor=p;
+  if(!down)return;
+  if(st.tool==='brush')paint(p);
+  else if(st.tool==='move'&&st.drag){st.drag=p;draw();}
+  else if(st.tool==='wipe'){st.wipe=Math.max(0,Math.min(1,p.x/N));draw();}
+});
+function up(e){
+  down=false;st.painting=false;
+  if(st.drag){const q=snapHole(st.drag);st.drag=null;moveHole(q.x,q.y);}
+  if(e&&e.pointerType&&e.pointerType!=='mouse')st.cursor=null;   // finger lifted: the mender flies home
+  draw();
+}
+cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
+cv.addEventListener('pointerleave',()=>{if(!down)st.cursor=null;});
+cv.addEventListener('keydown',e=>{
+  const m={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key];
+  if(m&&!st.tuning){e.preventDefault();const ix=XS.indexOf(st.hole.x),iy=XS.indexOf(st.hole.y);
+    const nx=XS[Math.max(0,Math.min(2,ix+m[0]))], ny=XS[Math.max(0,Math.min(2,iy+m[1]))];
+    if(nx!==st.hole.x||ny!==st.hole.y)moveHole(nx,ny);}
+  if(e.key===' '){e.preventDefault();st.peek=true;draw();}
+});
+cv.addEventListener('keyup',e=>{if(e.key===' '){st.peek=false;draw();}});
+
+// ---- controls ----
+const toast=(msg)=>{const t=$('toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),1900);};
+function press(sel,attr,val){document.querySelectorAll(sel).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset[attr]===val)));}
+document.querySelectorAll('#g-tool [data-tool]').forEach(b=>b.addEventListener('click',()=>{st.tool=b.dataset.tool;stage.dataset.tool=st.tool;press('#g-tool [data-tool]','tool',st.tool);draw();}));
+document.querySelectorAll('#g-setting [data-set]').forEach(b=>b.addEventListener('click',()=>{if(st.setting!==b.dataset.set){st.setting=b.dataset.set;nibChomp();}press('#g-setting [data-set]','set',st.setting);draw();}));
+function setView(v){st.view=v;$('wrap').dataset.show=v;press('#g-view [data-view]','view',v);draw();frame(now(),0);kick();}   // redraw the cast overlay now, not on the next frame
+document.querySelectorAll('#g-view [data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
+const brush=$('brush');
+brush.addEventListener('input',()=>{st.brush=+brush.value;$('brush-val').textContent=brush.value+' px';draw();});
+let anim=null;
+function stopAuto(){if(anim){cancelAnimationFrame(anim);anim=null;$('auto').textContent='Restore the rest';}}
+$('auto').addEventListener('click',()=>{   // user-started; any canvas touch stops it
+  if(anim){stopAuto();return;}
+  const h=hole(), rest=tilesFor(h).filter(i=>!st.restored.has(i)).sort((a,b)=>Math.hypot(TILES[b].cx-h.x,TILES[b].cy-h.y)-Math.hypot(TILES[a].cx-h.x,TILES[a].cy-h.y));
+  if(RM){rest.forEach(i=>st.restored.add(i));draw();checkDone(true);return;}
+  $('auto').textContent='Pause';
+  const step=()=>{let sx=0,sy=0,n=0;
+    for(let k=0;k<6&&rest.length;k++){const i=rest.shift();addTile(i);sx+=TILES[i].cx;sy+=TILES[i].cy;n++;}
+    if(n){M.ax=sx/n;M.ay=sy/n;if(Math.random()<.5)sparkleAt(M.ax,M.ay);}
+    draw();
+    if(rest.length)anim=requestAnimationFrame(step);else{anim=null;$('auto').textContent='Restore the rest';checkDone(true);}};
+  anim=requestAnimationFrame(step);
+});
+$('reset').addEventListener('click',()=>{stopAuto();st.restored.clear();st.born.clear();draw();checkDone();nibChomp();cv.focus({preventScroll:true});});
+$('share').addEventListener('click',async()=>{
+  const tag=jobKey(current())+(st.view==='data'?'-data':'');
+  try{history.replaceState(null,'','#'+tag);}catch(_){}
+  const url=location.href;
+  try{await navigator.clipboard.writeText(url);toast('Link copied');}catch(e){toast('Copy failed: the link is in your address bar');}
+});
+const tuneBtn=$('tune-toggle'), tunePanel=$('tune');
+function setTuning(on){stopAuto();st.tuning=on;tunePanel.hidden=!on;tuneBtn.setAttribute('aria-expanded',String(on));
+  tuneBtn.textContent=on?'Back to the movable hole':'Show the 12-job sweep';$('g-setting').hidden=on;}
+const fresh=()=>{st.restored.clear();st.born.clear();refresh();checkDone();nibChomp();};
+tuneBtn.addEventListener('click',()=>{setTuning(!st.tuning);fresh();});
+function seg(id,values,label,get,set){
+  const el=$(id);
+  values.forEach(v=>{const b=document.createElement('button');b.type='button';b.id=id+'-'+String(v).replace('.','_');b.textContent=label(v);
+    b.addEventListener('click',()=>{stopAuto();set(v);fresh();});el.appendChild(b);});
+  el._sync=()=>[...el.children].forEach((b,i)=>b.setAttribute('aria-pressed',String(get()===values[i])));
+}
+seg('t-strength',[0.3,0.6,1],v=>v.toFixed(1),()=>st.tune.strength,v=>st.tune.strength=v);
+seg('t-style',['rx','ry'],v=>v,()=>st.tune.style,v=>st.tune.style=v);
+seg('t-reach',[0,1],v=>v===0?'0 local':'1 global',()=>st.tune.reach,v=>st.tune.reach=v);
+function refresh(){['t-strength','t-style','t-reach'].forEach(id=>$(id)._sync());
+  $('t-move').disabled=st.tuning;$('t-move').title=st.tuning?'The 12-job sweep was run at one hole, (580, 440). Go back to the movable hole to move it.':'';
+  if(st.tuning&&st.tool==='move'){st.tool='brush';stage.dataset.tool='brush';press('#g-tool [data-tool]','tool','brush');}
+  const j=current();if(j)img(j.file);draw();}
+
+// one key per job, used by the share link and the Data table: p512-300-scrambled (a hole position) or t10rx1 (a sweep job)
+function jobKey(j){return !j?'':j.setting?`p${j.x}-${j.y}-${j.setting}`:`t${Math.round(j.strength*10)}${j.style}${j.reach}`;}
+function loadJob(j){
+  stopAuto();
+  if(j.setting){if(st.tuning)setTuning(false);st.setting=j.setting;press('#g-setting [data-set]','set',j.setting);st.hole={x:j.x,y:j.y,r:270};}
+  else{if(!st.tuning)setTuning(true);st.tune={strength:j.strength,style:j.style,reach:j.reach};}
+  fresh();
+}
+// restore a shared view from the link (#p512-300-scrambled or #t10rx1, plus -data for the Data view)
+function applyHash(){
+  const m=location.hash.match(/^#(p\d+-\d+-(?:scrambled|memory)|t\d+r[xy]\d)(-data)?$/);
+  const j=m&&POS.concat(SWEEP).find(x=>jobKey(x)===m[1]);
+  if(!j)return false;
+  loadJob(j);setView(m[2]?'data':'scene');return true;
+}
+addEventListener('hashchange',applyHash);
+// the Data view: every job on the page; each one loads into the scene
+(function(){
+  const pct=v=>Math.round(v*100)+'%', short=id=>id.slice(0,8);
+  function jb(j,html,aria){const b=document.createElement('button');b.type='button';b.className='jb';b.dataset.k=jobKey(j);b.title='Job '+j.job_id;
+    b.setAttribute('aria-label',aria);b.innerHTML=html;b.addEventListener('click',()=>{loadJob(j);showScene();});return b;}
+  const pb=$('tab-pos').tBodies[0];
+  for(const y of XS)for(const x of XS){
+    const tr=pb.insertRow(), th=document.createElement('th');th.scope='row';th.textContent=`(${x}, ${y})`;tr.appendChild(th);
+    for(const set of ['scrambled','memory']){const j=POS.find(p=>p.x===x&&p.y===y&&p.setting===set), td=tr.insertCell();
+      if(j)td.appendChild(jb(j,`${pct(j.changed)} &middot; ${pct(j.shift)}<small>${short(j.job_id)}</small>`,
+        `Load hole (${x}, ${y}), ${set==='memory'?'faint memory':'scrambled'}: ${pct(j.changed)} changed, ${pct(j.shift)} shift, job ${j.job_id}`));}
+  }
+  const sb=$('tab-sweep').tBodies[0];
+  for(const j of SWEEP){const tr=sb.insertRow();
+    tr.insertCell().appendChild(jb(j,`${j.strength.toFixed(1)} &middot; ${j.style} &middot; ${j.reach}`,
+      `Load sweep job: strength ${j.strength.toFixed(1)}, gate ${j.style}, reach ${j.reach}, job ${j.job_id}`));
+    tr.insertCell().textContent=pct(j.changed);tr.insertCell().textContent=pct(j.shift);
+    const id=tr.insertCell();id.className='id';id.textContent=short(j.job_id);id.title=j.job_id;}
+  castKey='';   // the next draw() marks the job on screen
+})();
+
+// ---- The data: Figure 1 (hero.png) and Figure 2 (sweep.png), redrawn live from the same downloaded job images ----
+const HERO = SWEEP.find(s=>s.strength===1&&s.style==='rx'&&s.reach===1);   // job c868dccb..., the hero of hero.png
+const f1 = v => Number(v).toFixed(1);
+function showScene(){   // a job picked down here loads in the scene up top: bring the scene into view
+  const r=stage.getBoundingClientRect();
+  if(r.top<0||r.bottom>innerHeight)stage.scrollIntoView({behavior:RM?'auto':'smooth',block:'center'});
+}
+const holeOf = j => j.setting?{x:j.x,y:j.y,r:j.r||270}:TUNE_CENTRE;
+const tileCache = new Map();
+function tilesAt(h){const key=h.x+','+h.y;if(!tileCache.has(key))tileCache.set(key,TILES.map((t,i)=>i).filter(i=>inHole(TILES[i],h)));return tileCache.get(key);}
+const SVGNS='http://www.w3.org/2000/svg';
+function ringSvg(g,x,y,r){   // the page's hole ring: dashed ink with a paper core
+  g.textContent='';
+  for(const [w,col] of [[7,'#19238E'],[3,'#FBFAF9']]){const c=document.createElementNS(SVGNS,'circle');
+    for(const [k,v] of [['cx',x],['cy',y],['r',r],['fill','none'],['stroke',col],['stroke-width',w],['stroke-dasharray','14 10']])c.setAttribute(k,v);
+    g.appendChild(c);}
+}
+const triJob = () => tri.mode==='hero'?HERO:current();
+function drawTri(j){
+  const h=holeOf(j), im=$('tri-crop');
+  // panel 2: the downloaded job image (its lossless crop laid over the identical original, as in the scene)
+  im.setAttribute('href',j.file);im.setAttribute('x',j.crop[0]);im.setAttribute('y',j.crop[1]);
+  ringSvg($('tri-ring2'),h.x,h.y,h.r+4);ringSvg($('tri-ring3'),h.x,h.y,h.r+4);
+  // panel 3: every half-rhomb touching the hole, from the same Robinson-triangle deflation, clipped to the hole
+  const cc=$('tri-clipc');cc.setAttribute('cx',h.x);cc.setAttribute('cy',h.y);cc.setAttribute('r',h.r);
+  const d=['',''], e=[], q=v=>v[0].toFixed(1)+' '+v[1].toFixed(1);
+  for(const i of tilesAt(h)){const t=TILES[i];d[t.k]+=`M${q(t.p[0])}L${q(t.p[1])}L${q(t.p[2])}Z`;e.push(`M${q(t.p[1])}L${q(t.p[0])}L${q(t.p[2])}`);}
+  $('tri-thick').setAttribute('d',d[0]);$('tri-thin').setAttribute('d',d[1]);$('tri-edge').setAttribute('d',e.join(''));
+  $('tri-cap').textContent=`Panel 2: Atlas blur-v1 v1.1.9, 1024 px image + disk mask (r=270 px, 20 qubits), strength=${f1(j.strength)}, style=${j.style}, reach=${f1(j.reach)}, size=1024 (default).  job_id ${j.job_id}`;
+  $('tri-where').textContent=`The dashed ring marks the hole, centre (${h.x}, ${h.y})`+(j.setting?`, ${j.setting==='memory'?'faint memory':'scrambled'} setting.`:'.');
+  $('tri-2').setAttribute('aria-label',`Panel 2: the tiling with the hole at (${h.x}, ${h.y}) erased by blur-v1, job ${j.job_id}`);
+  $('tri-load').textContent=tri.mode==='hero'?'Load this job in the scene':'Back to the scene';
+}
+function syncFigs(){   // called at the end of draw(): repaint Figure 1 only when its job changes
+  const j=triJob();
+  if(j){const key=tri.mode+'|'+j.job_id;if(key!==triKey){triKey=key;drawTri(j);}}
+}
+// Figure 2: the 4 x 3 contact sheet, in out/jobs.csv order (rows: strength 0.3, 0.6, 1.0)
+(function(){
+  const box=$('sheet'), C=TUNE_CENTRE;
+  for(const j of SWEEP){
+    const b=document.createElement('button');b.type='button';b.className='sj';b.dataset.k=jobKey(j);b.title='Job '+j.job_id;
+    b.setAttribute('aria-label',`Load sweep job: strength ${f1(j.strength)}, gate ${j.style}, reach ${f1(j.reach)}, job ${j.job_id}`);
+    const sv=document.createElementNS(SVGNS,'svg');sv.setAttribute('viewBox',`0 0 ${j.crop[2]} ${j.crop[3]}`);sv.setAttribute('aria-hidden','true');
+    const im=document.createElementNS(SVGNS,'image');im.setAttribute('width',j.crop[2]);im.setAttribute('height',j.crop[3]);
+    const g=document.createElementNS(SVGNS,'g');ringSvg(g,C.x-j.crop[0],C.y-j.crop[1],C.r+3);sv.append(im,g);
+    const lab=document.createElement('span');lab.style.whiteSpace='pre-wrap';lab.textContent=`strength ${f1(j.strength)}  ${j.style}  reach ${f1(j.reach)}`;
+    const id=document.createElement('small');id.textContent=j.job_id.slice(0,8);
+    b.append(sv,lab,id);b.addEventListener('click',()=>{loadJob(j);showScene();});
+    box.appendChild(b);sheetCells.push({j,im});
+  }
+  // the 12 images load with the sweep preload below, or as soon as the figure scrolls into view
+  if(window.IntersectionObserver)new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){loadSheet();o.disconnect();}}).observe(box);
+})();
+function loadSheet(){for(const c of sheetCells)if(!c.im.getAttribute('href'))c.im.setAttribute('href',c.j.file);}
+document.querySelectorAll('#g-tri [data-tri]').forEach(b=>b.addEventListener('click',()=>{
+  tri.mode=b.dataset.tri;press('#g-tri [data-tri]','tri',tri.mode);triKey='';syncFigs();}));
+$('tri-load').addEventListener('click',()=>{if(tri.mode==='hero')loadJob(HERO);showScene();});
+applyHash();
+// preload what the user is most likely to touch next (crops are small)
+POS.forEach(p=>img(p.file));setTimeout(()=>{SWEEP.forEach(p=>img(p.file));loadSheet();},1200);
+refresh();
+kick();
+</script>

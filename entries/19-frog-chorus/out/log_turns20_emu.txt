@@ -1,0 +1,4 @@
+  graph-v1: submitted af1641e9-f45d-4359-bcc6-f176b60ae55f
+  graph-v1: done af1641e9 in 15.9s
+  turns20_emu: af1641e9-f45d-4359-bcc6-f176b60ae55f  backend aer  ibm job None  (15.9 s)
+ledgered spend for 19-frog-chorus: 21 of 22 credits

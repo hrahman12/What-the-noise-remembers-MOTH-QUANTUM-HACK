@@ -1,0 +1,22 @@
+train ca93fb54-f7d5-4b58-b540-de8137d57536  (2133.4 s)
+  qrc-gen-v2 attempt 1 failed: POST /engines/qrc-gen-v2/process -> 422: {"$schema":"https://api.mothquantum.com/schemas/ErrorModel.json","title":"Unprocessable Entity","status":422,"detail":"input files do not match the engine's requirements","errors":[{"message":"must be an asset UUID","location":"body.input_files.state"}]}
+
+  qrc-gen-v2 attempt 2 failed: POST /engines/qrc-gen-v2/process -> 422: {"$schema":"https://api.mothquantum.com/schemas/ErrorModel.json","title":"Unprocessable Entity","status":422,"detail":"input files do not match the engine's requirements","errors":[{"message":"must be an asset UUID","location":"body.input_files.state"}]}
+
+  qrc-gen-v2 attempt 1 failed: POST /engines/qrc-gen-v2/process -> 422: {"$schema":"https://api.mothquantum.com/schemas/ErrorModel.json","title":"Unprocessable Entity","status":422,"detail":"input files do not match the engine's requirements","errors":[{"message":"must be an asset UUID","location":"body.input_files.state"}]}
+
+  qrc-gen-v2 attempt 2 failed: POST /engines/qrc-gen-v2/process -> 422: {"$schema":"https://api.mothquantum.com/schemas/ErrorModel.json","title":"Unprocessable Entity","status":422,"detail":"input files do not match the engine's requirements","errors":[{"message":"must be an asset UUID","location":"body.input_files.state"}]}
+
+  qrc-gen-v2 attempt 1 failed: POST /engines/qrc-gen-v2/process -> 422: {"$schema":"https://api.mothquantum.com/schemas/ErrorModel.json","title":"Unprocessable Entity","status":422,"detail":"input files do not match the engine's requirements","errors":[{"message":"must be an asset UUID","location":"body.input_files.state"}]}
+
+  qrc-gen-v2 attempt 2 failed: POST /engines/qrc-gen-v2/process -> 422: {"$schema":"https://api.mothquantum.com/schemas/ErrorModel.json","title":"Unprocessable Entity","status":422,"detail":"input files do not match the engine's requirements","errors":[{"message":"must be an asset UUID","location":"body.input_files.state"}]}
+
+  qrc-gen-v2 attempt 1 failed: POST /engines/qrc-gen-v2/process -> 422: {"$schema":"https://api.mothquantum.com/schemas/ErrorModel.json","title":"Unprocessable Entity","status":422,"detail":"input files do not match the engine's requirements","errors":[{"message":"must be an asset UUID","location":"body.input_files.state"}]}
+
+  qrc-gen-v2 attempt 2 failed: POST /engines/qrc-gen-v2/process -> 422: {"$schema":"https://api.mothquantum.com/schemas/ErrorModel.json","title":"Unprocessable Entity","status":422,"detail":"input files do not match the engine's requirements","errors":[{"message":"must be an asset UUID","location":"body.input_files.state"}]}
+
+  qrc-gen-v2 attempt 1 failed: POST /engines/qrc-gen-v2/process -> 422: {"$schema":"https://api.mothquantum.com/schemas/ErrorModel.json","title":"Unprocessable Entity","status":422,"detail":"input files do not match the engine's requirements","errors":[{"message":"must be an asset UUID","location":"body.input_files.state"}]}
+
+  qrc-gen-v2 attempt 2 failed: POST /engines/qrc-gen-v2/process -> 422: {"$schema":"https://api.mothquantum.com/schemas/ErrorModel.json","title":"Unprocessable Entity","status":422,"detail":"input files do not match the engine's requirements","errors":[{"message":"must be an asset UUID","location":"body.input_files.state"}]}
+
+ledgered spend for 02-coda-reservoir: 5 / 20

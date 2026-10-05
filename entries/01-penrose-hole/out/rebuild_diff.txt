@@ -1,0 +1,2 @@
+tiles repainted: 859 half-rhombs
+pixels differing (>24/255) inside mask: 0 / 229789 = 0.0000%

@@ -17,7 +17,8 @@ site = f"https://{user}.github.io/{repo}/"
 pieces = []
 for pj in sorted((ROOT / "entries").glob("*/piece.json")):
     p = json.loads(pj.read_text(encoding="utf-8"))
-    pieces.append((pj.parent.name, p.get("title", pj.parent.name), p.get("hook", "")))
+    if (docs / "demos" / f"{pj.parent.name}.gif").exists():  # only pieces whose clip is recorded
+        pieces.append((pj.parent.name, p.get("title", pj.parent.name), p.get("hook", "")))
 
 lines = [
     "## Live demo",

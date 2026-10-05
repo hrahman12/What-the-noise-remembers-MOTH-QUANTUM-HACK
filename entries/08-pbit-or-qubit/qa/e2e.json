@@ -1,0 +1,28 @@
+{
+ "ok": true,
+ "steps": [
+  "data consistency: 8 completed jobs (2 on ibm_fez) and 4 cancelled, all in the ledger (60 credits); completed ones in cache/graph-v1; deliverables and files.json present",
+  "load: versus card first, silent, brand bar to the hub, proof chips = piece.json / PARAMS.md",
+  "sections and graphs: 8 titled sections in order, toc links scroll to each; edge, magnetisation and both MI charts drawn; 5 stat tiles; 16 tiles; 6 engravings; 10 lab cards",
+  "chart readouts: tap an edge / bar / cell, arrow keys step, Esc clears; readouts quote the drawn numbers; tomography tick adds its value",
+  "Press start: sound started (4 sources, AudioContext running); 20 magnets match the real sample; tape drawn",
+  "transport: Play batch / Stop, step forward and back, tap a tape column: the board follows",
+  "a call: S calls the sauna; the stamp, verdict, chance meter and the envelope's source appear",
+  "sound: playing sounds stopped by Sound: off (20 -> 0), calls silent while off, Sound: on plays again",
+  "pause and clock: Pause locks the calls, Resume frees them; the clock running out ends the envelope and is not a call",
+  "whole game: 5 plates to the final card (Final score 10,242); boss locks every picker; 6 job IDs revealed, all in PARAMS.md and cache/graph-v1",
+  "final card buttons: Open the data scrolls to the charts; Play again restarts at the 50 K plate",
+  "one problem: arena graph buttons, J dial, The data and classic pickers and Jobs \"Show\" all move the boards, readouts and charts together",
+  "selected options: Atlas emulator / ibm_fez, 20 / all and Graph / Bits each change the page when picked after the other option (the dead-control flags were already-selected options)",
+  "classic board: pin / unpin a tile (click, Enter), hover reads bits, guess by click and key, score against a coin, next, reset, reveal scrolls to The data",
+  "drawers and reset: 5 drawers open and close; Reset game returns to the versus card; the title card's Sound button drives the in-game one; No clock / 15 s clock",
+  "jobs table: 14 IDs = PARAMS.md; spend 60 credits = ledger",
+  "share and reload: Copy link writes #ring.0p4.emu.bars; reloading it restores graph, J, source and tile style everywhere; a bad hash falls back",
+  "clipboard blocked: the link appears selected next to the button that was pressed",
+  "navigation: brand bar and nav reach the hub; prev 07, next 09; the list opens with 22 known pieces and marks this one",
+  "reduced motion: no idle flips, no particles; the game still plays",
+  "375 px: no horizontal scroll; the nav sits after Jobs and credits, above the footer",
+  "web app front end: app/public is the same page plus the live panel; /api/health answers; Run stays off with live runs disabled (no Atlas call)",
+  "no page errors"
+ ]
+}

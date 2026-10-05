@@ -96,14 +96,17 @@ details.drawer .body{padding-bottom:1.25rem;color:var(--ink-2);max-width:68ch;di
 .wtnr-foot{margin-top:2.5rem;border-top:1px solid var(--rule);padding-top:1rem;font:400 .72rem/1.5 var(--mono);letter-spacing:.04em;color:var(--ink-2)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
-/* Layout: the petri dish is the hero (Scene). Each kernel is a lens; the radial profile, the kernel heatmap and the table
-   of measured fates sit one click away (Data). Look: Moth Hack brief-page style from common/brand.css, plus the shared
-   ink pixel-art cast (common/inksprite.js, web/sprites.json), drawn at integer scales with smoothing off. */
+/* Layout: the petri dish is the hero (the sprite scene), with How to play and the kernel lab beside it. Below it, titled
+   sections: The data (kernel heatmap, radial profile, table of measured fates), What the noise remembers (snapshot
+   plates), The film, The science, How it was made, What this does not claim, Jobs and credits.
+   Look: Moth Hack brief-page style from common/brand.css, plus the shared ink pixel-art cast (common/inksprite.js,
+   web/sprites.json), drawn at integer scales with smoothing off. */
 [hidden]{display:none!important}
 .wrap{max-width:78rem;margin-inline:auto}
 .hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);grid-template-areas:"stage intro" "stage howto" "stage lab";grid-template-rows:auto auto 1fr;gap:1.25rem clamp(1.25rem,3vw,2.5rem);align-items:start;padding-block:2rem 1rem}
 .intro{grid-area:intro;display:grid;gap:1rem;min-width:0}
-.howto{grid-area:howto;display:grid;gap:1rem;min-width:0}
+.howto{grid-area:howto}
+.keys{font:400 .72rem/1.45 var(--mono);color:var(--ink-2);border-top:1px solid var(--rule);padding-top:.7rem}
 .stagecol{grid-area:stage;display:grid;gap:.75rem;min-width:0}
 @media (min-width:961px) and (min-height:780px){.stagecol{position:sticky;top:1rem}}
 #lab{grid-area:lab;align-self:start}
@@ -160,11 +163,27 @@ h1{font-size:clamp(2.1rem,4.2vw,3.5rem);line-height:1.02;letter-spacing:-.02em}
 .strip .cap b{color:var(--ink);font-weight:500}
 .fate{font-size:.95rem;color:var(--ink);border-inline-start:2px solid var(--ink);padding-inline-start:.8rem}
 .fate small{display:block;color:var(--ink-2);font:400 .72rem/1.4 var(--mono);letter-spacing:.03em;margin-top:.3rem}
-.kfig{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.9rem;align-items:center}
-#kprev{width:128px;height:128px;image-rendering:pixelated;border:1px solid var(--ink);background:var(--paper)}
-#kprof{width:100%;height:128px;display:block;border:1px solid var(--rule)}
+.btn.small{padding:.55rem .9rem;font-size:.8rem}
+/* the sections under the scene: the data (graphs), the snapshots, the film, the science, honesty, jobs and credits */
+.sec{margin-top:2.5rem;display:grid;gap:1rem}
+.sec:focus{outline:none}
+.secbody{display:grid;gap:.75rem;max-width:72ch}
+.dgrid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:1rem;align-items:start}
+.dfig{margin:0;display:grid;gap:.75rem;background:var(--panel);border:1px solid var(--rule);padding:.9rem;min-width:0}
+.dtitle{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.3rem 1rem;font:500 .72rem/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);border-bottom:1px solid var(--rule);padding-bottom:.55rem}
+.dtitle span+span{color:var(--ink-2);letter-spacing:.04em;text-transform:none;font-weight:400}
+.dtitle b{font-weight:500;letter-spacing:.04em}
+.kfig{display:grid;grid-template-columns:minmax(0,.48fr) minmax(0,1fr);gap:.9rem;align-items:center}
+#kprev{width:100%;height:auto;aspect-ratio:1/1;image-rendering:pixelated;border:1px solid var(--ink);background:var(--paper);display:block}
+#kprof{width:100%;height:auto;aspect-ratio:480/224;display:block;border:1px solid var(--rule)}
 .dcap{font:400 .7rem/1.4 var(--mono);color:var(--ink-2)}
+table.jobs.fates td{padding:0;vertical-align:middle}
+table.jobs.fates td:first-child,table.jobs.fates th{padding:.4rem .45rem}
+.fcell{display:block;width:100%;border:0;background:transparent;padding:.4rem .45rem;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.fcell:hover{background:var(--tint);color:var(--ink)}
 table.fates td.cur{background:var(--panel-2);color:var(--ink);font-weight:500;outline:1px solid var(--ink);outline-offset:-1px}
+.credits{margin:0;padding-inline-start:1.1rem;display:grid;gap:.45rem;font-size:.86rem;color:var(--ink-2);max-width:78ch}
+.credits b{color:var(--ink);font-weight:500}
 .readout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.3rem 1rem;font:400 .76rem/1.5 var(--mono);color:var(--ink-2);margin:0;border-top:1px solid var(--rule);padding-top:.8rem}
 .readout dd{margin:0}
 .readout b{color:var(--ink);font-weight:500;overflow-wrap:anywhere}
@@ -201,27 +220,33 @@ table.jobs td,table.jobs th{border-bottom:1px solid var(--rule);padding:.4rem .4
 table.jobs th{color:var(--ink);font-weight:500;letter-spacing:.06em;text-transform:uppercase;font-size:.68rem;border-bottom-color:var(--ink)}
 .scroll{overflow-x:auto}
 @media (prefers-reduced-motion:reduce){.lens.pick canvas{animation:none}}
-@media (max-width:960px){.hero{grid-template-columns:minmax(0,1fr);grid-template-areas:"intro" "stage" "howto" "lab";grid-template-rows:auto}}
-@media (max-width:560px){.sliders{grid-template-columns:minmax(0,1fr)}.transport .btn{padding:.6rem .85rem;font-size:.86rem}.panel .seg button{padding:.55rem .55rem;font-size:.7rem}.toolbar .seg button{padding:.5rem .65rem;gap:.35rem}.lenses{grid-template-columns:repeat(2,minmax(0,1fr))}.tiles{grid-template-columns:minmax(0,1fr)}.tile{grid-template-columns:120px minmax(0,1fr);align-items:center}.kfig{grid-template-columns:minmax(0,1fr)}#kprev{width:96px;height:96px}.ink-bar{font-size:.68rem;padding:.75rem .85rem}.panel{padding:0 .9rem .9rem}.panel>.ink-bar:first-child{margin-inline:-.9rem}.dish{padding:9px;border-radius:24px}.dish::before{inset:4px;border-radius:20px}.glass{border-radius:14px}.tape{left:20px;max-width:calc(100% - 40px)}.kick-row{align-items:center}}
+@media (max-width:960px){.hero{grid-template-columns:minmax(0,1fr);grid-template-areas:"intro" "stage" "howto" "lab";grid-template-rows:auto}.dgrid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:560px){.sliders{grid-template-columns:minmax(0,1fr)}.transport .btn{padding:.6rem .85rem;font-size:.86rem}.panel .seg button{padding:.55rem .55rem;font-size:.7rem}.toolbar .seg button{padding:.5rem .65rem;gap:.35rem}.lenses{grid-template-columns:repeat(2,minmax(0,1fr))}.tiles{grid-template-columns:minmax(0,1fr)}.tile{grid-template-columns:120px minmax(0,1fr);align-items:center}.kfig{grid-template-columns:minmax(0,1fr)}#kprev{width:140px}.dfig{padding:.7rem}table.jobs.fates{font-size:.68rem}.fcell,table.jobs.fates td:first-child,table.jobs.fates th{padding:.38rem .3rem}.ink-bar{font-size:.68rem;padding:.75rem .85rem}.panel{padding:0 .9rem .9rem}.panel>.ink-bar:first-child{margin-inline:-.9rem}.dish{padding:9px;border-radius:24px}.dish::before{inset:4px;border-radius:20px}.glass{border-radius:14px}.tape{left:20px;max-width:calc(100% - 40px)}.kick-row{align-items:center}}
 </style>
 
 <div class="wrap">
-  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count"><b>Bonus</b> &middot; Challenge 04</span></nav>
+  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count">Challenge 04</span></nav>
 
   <div class="hero">
     <header class="intro">
       <div class="kick-row">
-        <p class="kicker">Bonus &middot; Challenge 04 &middot; Moving image</p>
+        <p class="kicker">Challenge 04 &middot; Moving image</p>
         <button type="button" class="mascot" id="mascot" aria-label="Orbi, an Orbium with a face. Tap for a measured fact." title="Tap me"><canvas id="mascot-c" width="96" height="90"></canvas></button>
       </div>
       <h1>Paint creatures, then blur their sense of touch with quantum noise.</h1>
-      <p class="sub">Lenia is a smooth Game of Life. Every cell feels its neighbours through a ring-shaped kernel. We sent that kernel through a quantum blur on an 18-qubit register. Swap the lens and watch Orbium slow down, break up or flood the dish.</p>
+      <p class="sub">Lenia is a smooth Game of Life. Every cell feels its neighbours through a ring-shaped kernel. We sent that kernel through a quantum blur on an 18-qubit register. Swap it in and watch Orbium slow down, break up or flood the world.</p>
+      <div class="proof">
+        <span class="hot"><b>20</b> qubits per snapshot blur</span>
+        <span><b>18</b> qubits per kernel blur</span>
+        <span><b>5</b> completed Atlas jobs</span>
+        <span>Atlas <b>simulator</b> &middot; no QPU</span>
+      </div>
     </header>
 
     <div class="stagecol">
       <div class="dish" id="stage">
         <div class="glass">
-          <canvas id="cv" width="768" height="768" tabindex="0" aria-label="Live Lenia world in a petri dish, 256 by 256 cells. Pointer: paint with the selected tool. Keyboard: arrow keys move the cursor, Enter paints, Space plays or pauses, period steps, R resets."></canvas>
+          <canvas id="cv" width="768" height="768" tabindex="0" aria-label="Live Lenia world, 256 by 256 cells. Pointer: paint with the selected tool. Keyboard: arrow keys move the cursor, Enter paints, Space plays or pauses, period steps, R resets."></canvas>
           <div class="toolbar">
             <div class="seg" role="group" aria-label="Painting tool">
               <button type="button" data-tool="creature" aria-pressed="true"><img class="ico" data-ico="pipette" alt="">Orbium</button>
@@ -233,7 +258,7 @@ table.jobs th{color:var(--ink);font-weight:500;letter-spacing:.06em;text-transfo
         <span class="tape" id="tape" aria-hidden="true">QL-17</span>
       </div>
       <div class="transport" role="group" aria-label="Playback">
-        <p class="hint" id="hint">Press and drag to aim the pipette, release to drop an Orbium.</p>
+        <p class="hint" id="hint">Press and drag to aim, release to drop an Orbium.</p>
         <div class="row">
           <button type="button" class="btn" id="play" aria-pressed="false">Play</button>
           <button type="button" class="btn ghost" id="stepb">Step</button>
@@ -249,39 +274,26 @@ table.jobs th{color:var(--ink);font-weight:500;letter-spacing:.06em;text-transfo
       </div>
     </div>
 
-    <div class="howto">
-      <div class="proof">
-        <span class="hot"><b>20</b> qubits per snapshot blur</span>
-        <span><b>18</b> qubits per kernel blur</span>
-        <span><b>5</b> completed Atlas jobs</span>
-        <span>Atlas <b>simulator</b> &middot; no QPU</span>
-      </div>
+    <section class="panel howto" aria-labelledby="howto-h">
+      <div class="ink-bar"><span id="howto-h">How to play</span><span>4 steps</span></div>
       <ol class="steps">
-        <li><span><b>Paint</b> the dish: drag the pipette to aim an Orbium, brush on random soup, or erase.</span></li>
-        <li><span><b>Swap the lens</b>: the creature's sense of touch, original or one of three real quantum-blurred kernels.</span></li>
+        <li><span><b>Paint</b> on the world: drag to aim an Orbium, spray random soup, or erase.</span></li>
+        <li><span><b>Swap the kernel</b>: the original, or one of three real quantum-blurred ones.</span></li>
         <li><span><b>Play, pause, step</b> or reset. Nothing moves until you press Play.</span></li>
-        <li><span><b>Seed</b> the dish from a quantum-blurred snapshot plate and see what regrows.</span></li>
+        <li><span><b>Seed</b> the world from a quantum-blurred snapshot and see what regrows.</span></li>
       </ol>
-    </div>
+      <p class="keys">Pointer: paint with the selected tool. Keyboard: arrow keys move the cursor, Enter paints, Space plays or pauses, period steps, R resets.</p>
+    </section>
 
     <div class="panel" id="lab">
-      <div class="ink-bar"><span>Kernel lenses</span><span id="k-name">Original</span></div>
+      <div class="ink-bar"><span>Kernel lab</span><span id="k-name">Original</span></div>
       <div class="lenses" id="g-set" role="group" aria-label="Kernel"></div>
       <div class="row split">
         <div class="seg" role="group" aria-label="Kernel shell" id="g-shell"></div>
-        <div class="seg" role="group" aria-label="View"><button type="button" data-view="scene" aria-pressed="true">Scene</button><button type="button" data-view="data" aria-pressed="false">Data</button></div>
+        <button type="button" class="btn ghost small" id="to-data" aria-controls="data">See the graphs &darr;</button>
       </div>
       <div id="v-scene">
         <button type="button" class="strip" id="strip" aria-label="The measured fate of one Orbium under this kernel. Press to replay."><canvas id="strip-c" width="10" height="68"></canvas><span class="cap"><span id="strip-tag">&ndash;</span><span>tap to replay</span></span></button>
-      </div>
-      <div id="v-data" hidden>
-        <div class="kfig">
-          <canvas id="kprev" width="32" height="32" aria-label="The current kernel, 32 by 32 cells"></canvas>
-          <canvas id="kprof" width="480" height="224" aria-label="Radial profile of the current kernel against the original"></canvas>
-        </div>
-        <p class="dcap">Left: the engine's 32 &times; 32 kernel block, each cell one pixel. Right: its radial profile against the original.</p>
-        <div class="scroll"><table class="jobs fates" id="fates"></table></div>
-        <p class="dcap">Measured fate of one Orbium after 2,000 steps (&mu; 0.15, &sigma; 0.015, analyze.py). Numbers are glide speeds in cells per step.</p>
       </div>
       <p class="fate" id="fate">&ndash;</p>
       <dl class="readout">
@@ -295,7 +307,7 @@ table.jobs th{color:var(--ink);font-weight:500;letter-spacing:.06em;text-transfo
         <div class="sl"><label for="mu" class="label">Centre &mu;</label><input type="range" id="mu" min="0.10" max="0.25" step="0.001" value="0.15"><output id="mu-v">0.150</output></div>
         <div class="sl"><label for="sg" class="label">Width &sigma;</label><input type="range" id="sg" min="0.005" max="0.040" step="0.0005" value="0.015"><output id="sg-v">0.0150</output></div>
         <div class="row"><button type="button" class="btn ghost" id="orbium">Back to Orbium (0.15, 0.015)</button></div>
-        <p>The measured fates in the lenses panel are for &mu; 0.15, &sigma; 0.015 only.</p>
+        <p>The measured fates in the kernel panel are for &mu; 0.15, &sigma; 0.015 only.</p>
       </div></details>
       <div class="row">
         <button type="button" class="btn" id="share">Copy link to this setup</button>
@@ -303,10 +315,29 @@ table.jobs th{color:var(--ink);font-weight:500;letter-spacing:.06em;text-transfo
     </div>
   </div>
 
+  <section class="sec" id="data" aria-labelledby="data-h" tabindex="-1">
+    <div class="ink-bar"><span id="data-h">The data</span><span>engine + our runs</span></div>
+    <div class="dgrid">
+      <figure class="dfig">
+        <p class="dtitle"><span>The kernel</span><b id="d-name">Original &middot; Ring</b></p>
+        <div class="kfig">
+          <canvas id="kprev" width="32" height="32" aria-label="The current kernel, 32 by 32 cells"></canvas>
+          <canvas id="kprof" width="960" height="448" aria-label="Radial profile of the current kernel against the original"></canvas>
+        </div>
+        <figcaption class="dcap">Left: the engine's 32 &times; 32 kernel block, each cell one pixel. Right: its radial profile against the original.</figcaption>
+      </figure>
+      <figure class="dfig">
+        <p class="dtitle"><span>Measured fates</span><span>press a cell to load that kernel</span></p>
+        <div class="scroll"><table class="jobs fates" id="fates"></table></div>
+        <figcaption class="dcap">Measured fate of one Orbium after 2,000 steps (&mu; 0.15, &sigma; 0.015, analyze.py). Numbers are glide speeds in cells per step.</figcaption>
+      </figure>
+    </div>
+  </section>
+
   <section class="snaps" aria-labelledby="snap-h">
-    <div class="ink-bar"><span>What the noise remembers</span><span>3 plates &middot; 20 qubits</span></div>
-    <h2 id="snap-h">Seed the dish from a quantum-blurred snapshot.</h2>
-    <p class="sub" style="max-width:70ch">A 528 &times; 528 Lenia world with a colony of Orbium went through blur-core-v1 on a 20-qubit register. Each plate holds its 128 &times; 128 colony. Pick one to load it into the dish, paused, then press Play.</p>
+    <div class="ink-bar"><span>What the noise remembers</span><span>3 snapshots &middot; 20 qubits</span></div>
+    <h2 id="snap-h">Seed the world from a quantum-blurred snapshot.</h2>
+    <p class="sub" style="max-width:70ch">A 528 &times; 528 Lenia world with a colony of Orbium went through blur-core-v1 on a 20-qubit register. Pick one to load its 128 &times; 128 colony into the live world, paused, then press Play.</p>
     <div class="tiles" id="tiles"></div>
   </section>
 
@@ -319,12 +350,16 @@ table.jobs th{color:var(--ink);font-weight:500;letter-spacing:.06em;text-transfo
     </figure>
   </section>
 
-  <section class="more">
+  <section class="more" aria-label="The science">
     <div class="ink-bar"><span>The science</span><span>Atlas simulator &middot; no QPU</span></div>
     <details class="drawer"><summary>Why Lenia?</summary><div class="body">
       <p>Lenia (Bert Wang-Chak Chan, <i>Complex Systems</i> 28(3), 2019) makes the Game of Life continuous in space, time and state. Each step, every cell sums its neighbourhood through a smooth ring-shaped kernel, and a bell-shaped growth curve turns that sum into growth or decay. Hundreds of creature-like patterns live in it. Orbium unicaudatus is the classic glider.</p>
       <p>The kernel is the creature's sense of touch: it decides how far, and how strongly, each cell feels the others. Change only the kernel and the same creature lives a different life.</p>
     </div></details>
+  </section>
+
+  <section class="more" aria-label="How it was made">
+    <div class="ink-bar"><span>How it was made</span><span>blur-core-v1 &middot; 18 + 20 qubits</span></div>
     <details class="drawer"><summary>What the quantum engine did</summary><div class="body">
       <p><b>Engine:</b> Atlas blur-core-v1, run on Atlas's classical statevector simulator (exact probabilities, no shots). It amplitude-encodes a grid onto a Gray-coded qubit register, applies Rx rotations to the register's qubits (strength sets the angle, reach sets how far up the register they go), and reads the probabilities back out, rescaled to the input's maximum. Neighbouring cells differ by one bit, so the rotations spread each value onto its neighbours: a blur made of interference.</p>
       <p>The engine's own job status reports the register: "Recovered 18-qubit grid from measurement" for the kernels and "Recovered 20-qubit grid" for the snapshot.</p>
@@ -332,16 +367,31 @@ table.jobs th{color:var(--ink);font-weight:500;letter-spacing:.06em;text-transfo
       <p><b>Snapshot:</b> a 528 &times; 528 classical Lenia world. 528 is over 512 per side, so the engine pads each axis to 1024: 10 + 10 = <b>20 qubits</b> (about 27% of the register holds the world, the rest is padding). Two jobs: strength 0.5 and 0.25, reach 0.</p>
       <p><b>Why not 24 qubits:</b> the Atlas API rejects request bodies over 1 MiB (HTTP 413, measured with free invalid-parameter probes), and a 1024 &times; 1024 grid is 2.1 MB even as zeros. Results are capped too. Three of our eight paid jobs failed after the simulation finished with a result-payload error (TMPRL1103): reach 1 on the kernels (twice), because a fully non-local blur makes every one of 262,144 outputs a non-zero float, and a first snapshot with creatures spread over the whole world. The colony now sits in the top-left 128 &times; 128 corner so the output stays small.</p>
       <p><b>Measured locality:</b> at reach 0 the outputs are exactly zero outside aligned Gray-code blocks: 16 cells wide on the 256-cell kernel axes (so each kernel stays inside a 32 &times; 32 window) and 64 to 128 cells wide on the 1024-cell snapshot axes. So reach 0 rotates only the lower qubits of each axis, not the whole register.</p>
-      <div class="scroll"><table class="jobs" id="jobs"></table></div>
+      <p class="dcap">Every job these paragraphs mention is listed under <a href="#jobs-sec">Jobs and credits</a>.</p>
     </div></details>
     <details class="drawer"><summary>About the characters</summary><div class="body">
       <p>Orbi, the eyes, the pipette, the brush, the eraser and the lenses are pixel art in the shared ink palette (web/sprites.json). They never invent data. Eyes sit on every live blob that counts as Orbium-sized by the same rule as the counter (mass 55 to 95, as in analyze.py), and look the way that blob actually moves. A ghost rises when a blob that had counted for at least 30 steps stops counting (or when you erase or overpaint one). A sparkle marks one you dropped, or a new one once it has counted for 30 steps. The 30-step wait only keeps flickering soup from spawning ghosts; the counter itself uses no wait. Their blinking is decoration.</p>
       <p>The fate strip under the lenses replays the measured result for the chosen kernel and shell: Orbi glides at the measured speed (0.61 cells per step becomes a fixed on-screen pace), the pale outline keeps the original kernel's pace, and the break-up and flood scenes stand for the measured fates, not for their timing. Orbi in the corner pulls a dizzy face when the live dish floods (mass over 4,000).</p>
     </div></details>
-    <details class="drawer"><summary>What this does not claim</summary><div class="body">
+  </section>
+
+  <section class="sec" id="claims" aria-labelledby="claims-h">
+    <div class="ink-bar"><span id="claims-h">What this does not claim</span><span>honesty</span></div>
+    <div class="secbody">
       <p class="honesty">The dynamics are classical Lenia, computed in your browser (and in Python for the film). Only the kernels and the snapshots went through the quantum blur, and that blur ran on a classical statevector simulator, not quantum hardware. This is not a quantum cellular automaton, shows no quantum advantage, and "Quantum Lenia" is just the name of this pipeline.</p>
-      <p class="honesty">The fates shown in the lenses panel were measured in our own runs (one Orbium, 2,000 steps, &mu; 0.15, &sigma; 0.015). Other seeds or settings can behave differently. Snapshot values are shown and seeded at 16-bit precision. The Orbium pattern is from Bert Chan's MIT-licensed Lenia repository.</p>
-    </div></details>
+      <p class="honesty">The fates shown in the kernel panel were measured in our own runs (one Orbium, 2,000 steps, &mu; 0.15, &sigma; 0.015). Other seeds or settings can behave differently. Snapshot values are shown and seeded at 16-bit precision. The Orbium pattern is from Bert Chan's MIT-licensed Lenia repository.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="jobs-sec" aria-labelledby="jobs-h">
+    <div class="ink-bar"><span id="jobs-h">Jobs and credits</span><span>5 completed jobs</span></div>
+    <div class="scroll"><table class="jobs" id="jobs"></table></div>
+    <ul class="credits">
+      <li><b>Lenia</b>: Bert Wang-Chak Chan, "Lenia: Biology of Artificial Life", <i>Complex Systems</i> 28(3), 251&ndash;286 (2019), <a href="https://arxiv.org/abs/1812.05433">arXiv:1812.05433</a>. The rule and Orbium's settings (R 13, T 10, &mu; 0.15, &sigma; 0.015).</li>
+      <li><b>Orbium unicaudatus</b> pattern: Bert Chan's <a href="https://github.com/Chakazul/Lenia">Lenia repository</a>, MIT License, Copyright (c) 2018 Bert Chan.</li>
+      <li><b>Engine</b>: Moth Quantum Atlas, blur-core-v1 (Quantum Blur Core), run on the Atlas classical statevector simulator.</li>
+      <li><b>Everything else</b> (kernel shells, worlds, snapshots, film frames and the pixel-art sprites) was generated by this project's code. Fonts: Geist and IBM Plex Mono (SIL Open Font License).</li>
+    </ul>
   </section>
   <style>
 .wtnr-nav{margin-top:2.5rem;border-top:1px solid var(--ink,#19238E);padding-top:1.1rem;display:grid;gap:1rem}
@@ -600,7 +650,7 @@ if (typeof document !== "undefined") (function () {
   const off = document.createElement("canvas"); off.width = off.height = N;
   const octx = off.getContext("2d"), img = octx.createImageData(N, N), LUT = lut();
   const w = makeWorld(), seedA = new Float64Array(N * N);
-  const st = {tool: "creature", shell: "ring", set: "o", seed: "d", playing: false, spf: reduce ? 1 : 2, br: 14, view: "scene",
+  const st = {tool: "creature", shell: "ring", set: "o", seed: "d", playing: false, spf: reduce ? 1 : 2, br: 14,
               ptr: null, mouse: false, down: false, kbd: {y: 128, x: 128}, kbdOn: false, drag: null, lastDir: [1, 0]};
   const live = {mass: 0, count: 0};
   const kcache = {};
@@ -778,7 +828,7 @@ if (typeof document !== "undefined") (function () {
     else if (e.key === ".") { setPlaying(false); doStep(); refresh("step"); }
     else if (e.key === "r" || e.key === "R") $("reset").click();
   });
-  const hintsText = {creature: "Press and drag to aim the pipette, release to drop an Orbium.", soup: "Drag the brush to paint random soup, as in Lenia's random starts.", erase: "Drag the eraser to clear cells."};
+  const hintsText = {creature: "Press and drag to aim, release to drop an Orbium.", soup: "Drag to spray random soup, as in Lenia's random starts.", erase: "Drag to erase."};
   document.querySelectorAll("[data-tool]").forEach(b => b.addEventListener("click", () => {
     st.tool = b.dataset.tool; document.querySelectorAll("[data-tool]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
     $("hint").textContent = hintsText[st.tool]; compose();
@@ -829,11 +879,12 @@ if (typeof document !== "undefined") (function () {
   }
   seg("g-shell", SHELLS, () => st.shell, v => st.shell = v, "kernel shell");
 
-  // ---- Data view: kernel heatmap, radial profile, every measured fate ----
+  // ---- The data section: kernel heatmap, radial profile, every measured fate (always visible, follows the lab) ----
   const kp = $("kprev").getContext("2d"), pc = $("kprof"), pctx = pc.getContext("2d");
   function drawKernel() {
     kp.clearRect(0, 0, BS, BS); kp.drawImage(kernelImage(st.shell, st.set), 0, 0);
-    const b = kernelBlock(st.shell, st.set), po = profile(kernelBlock(st.shell, "o")), pn = profile(b), W = pc.width, H = pc.height, pad = 30;
+    const b = kernelBlock(st.shell, st.set), po = profile(kernelBlock(st.shell, "o")), pn = profile(b), W = 480, H = 224, pad = 30;   // drawn in 480 x 224 units at 2x for sharp text
+    pctx.setTransform(pc.width / W, 0, 0, pc.height / H, 0, 0);
     const top = Math.max(...po, ...pn) * 1.1;
     pctx.fillStyle = "#FFFFFF"; pctx.fillRect(0, 0, W, H);
     pctx.strokeStyle = PAL.K; pctx.lineWidth = 2; pctx.beginPath(); pctx.moveTo(pad, H - pad); pctx.lineTo(W - 8, H - pad); pctx.stroke();
@@ -844,22 +895,24 @@ if (typeof document !== "undefined") (function () {
     pctx.textAlign = "right"; pctx.fillStyle = PAL.K; pctx.fillText(st.set === "o" ? "ORIGINAL" : "BLURRED", W - 10, 26);
     pctx.fillStyle = PAL.B; pctx.fillText(st.set === "o" ? "" : "- - ORIGINAL", W - 10, 50); pctx.textAlign = "left";
   }
-  function buildFates() {
-    const t = $("fates"); t.innerHTML = "";
+  const fateCells = [];   // built once; a press loads that shell and kernel into the lab and the dish
+  (function () {
+    const t = $("fates");
     const h = t.insertRow(); ["shell", "original", "blur 0.25", "blur 0.5", "blur 1.0"].forEach(x => { const th = document.createElement("th"); th.textContent = x; h.appendChild(th); });
     SHELLS.forEach(([sh, name]) => {
       const tr = t.insertRow(); tr.insertCell().textContent = name;
-      SETS.forEach(([set]) => { const d = DYN.orbium[sh + "|" + DYNKEY[set]], td = tr.insertCell();
-        td.textContent = d.fate === "glides" ? "glides " + d.speed.toFixed(2) : d.fate === "fills the world" ? "floods" : d.fate;
-        if (sh === st.shell && set === st.set) td.className = "cur"; });
+      SETS.forEach(([set, setName]) => { const d = DYN.orbium[sh + "|" + DYNKEY[set]], td = tr.insertCell(), b = document.createElement("button");
+        b.type = "button"; b.className = "fcell";
+        b.textContent = d.fate === "glides" ? "glides " + d.speed.toFixed(2) : d.fate === "fills the world" ? "floods" : d.fate;
+        b.title = "Load " + setName + " \u00b7 " + name + " into the lab and the dish";
+        b.addEventListener("click", () => { st.shell = sh; st.set = set; applyKernel(true); toast(setName + " \u00b7 " + name + " kernel is now in the dish" + (st.playing ? "." : ". Press Play to watch.")); });
+        td.appendChild(b); fateCells.push([sh, set, td, b]); });
     });
+  })();
+  function buildFates() {
+    for (const [sh, set, td, b] of fateCells) { const on = sh === st.shell && set === st.set; td.className = on ? "cur" : ""; b.setAttribute("aria-pressed", String(on)); }
   }
-  function setView(v) {
-    st.view = v; $("v-scene").hidden = v !== "scene"; $("v-data").hidden = v !== "data";
-    document.querySelectorAll("[data-view]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.view === v)));
-    if (v === "scene") stripFit();
-  }
-  document.querySelectorAll("[data-view]").forEach(b => b.addEventListener("click", () => setView(b.dataset.view)));
+  $("to-data").addEventListener("click", () => { const d = $("data"); d.scrollIntoView({behavior: reduce ? "auto" : "smooth", block: "start"}); d.focus({preventScroll: true}); });
 
   // ---- the fate strip: Orbi replays the measured fate for this kernel and shell ----
   const stripB = $("strip"), sc = $("strip-c"), sx = sc.getContext("2d"), SH = 34, UPS = 55;   // strip units per second per cell/step
@@ -873,7 +926,7 @@ if (typeof document !== "undefined") (function () {
     stripDraw(run ? Math.max(0, (performance.now() - run.t0) / 1000) : Infinity);
   }
   function startStrip() { run = reduce ? null : {t0: performance.now()}; stripDraw(run ? 0 : Infinity); }
-  function stripFrame(now) { if (!run || st.view !== "scene") return; const a = Math.max(0, (now - run.t0) / 1000); if (a > stripT() + 2.2) { run = null; stripDraw(Infinity); } else stripDraw(a); }
+  function stripFrame(now) { if (!run) return; const a = Math.max(0, (now - run.t0) / 1000); if (a > stripT() + 2.2) { run = null; stripDraw(Infinity); } else stripDraw(a); }
   function hash(i) { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
   function stripDraw(a) {
     const {d, o} = fateNow(), s = ss, U = v => Math.round(v * s), T = stripT(), tt = Math.min(a, T + 2.2), x0 = 22, cy = 17.5;
@@ -914,7 +967,7 @@ if (typeof document !== "undefined") (function () {
     w.K = getK(st.shell, st.set);
     lensEls.forEach(([v, b]) => b.setAttribute("aria-pressed", String(v === st.set))); $("g-shell")._sync();
     const label = SETS.find(s => s[0] === st.set)[1] + " \u00b7 " + SHELLS.find(s => s[0] === st.shell)[1];
-    $("k-name").textContent = label; $("tape").textContent = "QL-17 \u00b7 " + label + " kernel";
+    $("k-name").textContent = label; $("d-name").textContent = label; $("tape").textContent = "QL-17 \u00b7 " + label + " kernel";
     const j = KJOBS[st.set];
     $("r-eng").textContent = j ? "Atlas blur-core-v1 \u00b7 classical statevector simulator" : "none: the classical kernel we sent";
     $("r-job").textContent = j ? j.job_id : "\u2013 (input of all three jobs)";
@@ -951,14 +1004,11 @@ if (typeof document !== "undefined") (function () {
     const j = SJOBS[key], rg = DYN.regrow[{orig: "orig", q25: "s0.25", q50: "s0.5"}[key]]["1000"].creatures;
     const d = document.createElement("div"); d.style.display = "grid"; d.style.gap = ".35rem"; d.style.minWidth = "0";
     const a1 = document.createElement("span"); a1.className = "t1"; a1.textContent = t1;
-    const a2 = document.createElement("span"); a2.className = "t2"; a2.textContent = j ? "blur-core-v1 job " + j.job_id + " \u00b7 20 qubits (engine-reported) \u00b7 reach 0" : t2;
-    const rr = document.createElement("span"); rr.className = "regrow";
-    const lab = document.createElement("span"); lab.textContent = "regrew at t 1,000:"; rr.appendChild(lab);
+    const a2 = document.createElement("span"); a2.className = "t2";
+    a2.textContent = (j ? "blur-core-v1 job " + j.job_id + " \u00b7 20 qubits (engine-reported) \u00b7 reach 0" : t2) + " \u00b7 our run: " + rg + " creature" + (rg === 1 ? "" : "s") + " left at t 1,000 (original kernel)";
+    const rr = document.createElement("span"); rr.className = "regrow"; rr.setAttribute("aria-hidden", "true"); rr.title = rg + " creature" + (rg === 1 ? "" : "s") + " left at t 1,000";
     for (let i = 0; i < rg; i++) { const m = document.createElement("img"); m.src = miniSrc; m.alt = ""; m.className = "ico"; m.width = SP.mini.w * 2; m.height = SP.mini.h * 2; rr.appendChild(m); }
-    const nb = document.createElement("b"); nb.textContent = rg + " creature" + (rg === 1 ? "" : "s"); rr.appendChild(nb);
-    const note = document.createElement("span"); note.textContent = "(our run, original kernel)"; rr.appendChild(note);
     d.append(a1, a2, rr); b.append(tape, pl, d);
-    b.setAttribute("aria-label", plate + ": " + t1 + ". Regrew " + rg + " creature" + (rg === 1 ? "" : "s") + " at t 1,000 in our run. Load into the dish.");
     b.addEventListener("click", () => loadSeed(code));
     $("tiles").appendChild(b); tileEls.push([code, b]);
   });
@@ -968,7 +1018,7 @@ if (typeof document !== "undefined") (function () {
     else if (code === "c") w.A.fill(0); else seedSnap(w.A, code.slice(1));
     seedA.set(w.A); tileEls.forEach(([c, b]) => b.setAttribute("aria-pressed", String(c === code)));
     refresh("seed");
-    if (!quiet && code[0] === "n") { toast("Plate loaded into the dish, paused. Press Play."); $("stage").scrollIntoView({behavior: reduce ? "auto" : "smooth", block: "center"}); }
+    if (!quiet && code[0] === "n") { toast("Loaded into the live world, paused. Press Play."); $("stage").scrollIntoView({behavior: reduce ? "auto" : "smooth", block: "center"}); }
   }
 
   // ---- Orbi, the mascot: idles, hops on Play, gasps at a ghost, gets dizzy when the live dish floods ----
@@ -1013,7 +1063,7 @@ if (typeof document !== "undefined") (function () {
     drawMascot(now); stripFrame(now);
     requestAnimationFrame(tick);
   }
-  function relayout() { fit(); mascotFit(); drawLenses(); if (st.view === "scene") stripFit(); }
+  function relayout() { fit(); mascotFit(); drawLenses(); stripFit(); }
   let lastW = -1;   // relayout on width changes only, one frame later (no ResizeObserver loops)
   if (typeof ResizeObserver !== "undefined") new ResizeObserver(es => { const wd = Math.round(es[0].contentRect.width); if (wd !== lastW) { lastW = wd; requestAnimationFrame(relayout); } }).observe(document.querySelector(".hero"));
   else addEventListener("resize", relayout);

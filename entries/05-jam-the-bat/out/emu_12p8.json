@@ -1,0 +1,1773 @@
+{
+ "job_id": "14c90fa7-56a4-43de-a975-96aa8322ba6a",
+ "params": {
+  "shots": 10000,
+  "output_bytes": 1000000,
+  "include_raw_counts": true,
+  "mode": "emu",
+  "num_qubits": 12,
+  "bell_witness": true
+ },
+ "output": {
+  "bell_witness": {
+   "S": 2.8366,
+   "caveat": "Fixed measurement settings, no space-like separation, fair sampling assumed: this witnesses entangling-gate and readout fidelity on the device that produced the randomness. It is not device-independent certification.",
+   "classical_bound": 2,
+   "correlators": [
+    {
+     "E": 0.7058,
+     "counts": {
+      "00": 4312,
+      "01": 723,
+      "10": 748,
+      "11": 4217
+     },
+     "qubits": [
+      12,
+      13
+     ],
+     "setting": "E(a,b)",
+     "sigma": 0.007084111518038096
+    },
+    {
+     "E": -0.7134,
+     "counts": {
+      "00": 699,
+      "01": 4274,
+      "10": 4293,
+      "11": 734
+     },
+     "qubits": [
+      14,
+      15
+     ],
+     "setting": "E(a,b')",
+     "sigma": 0.007007570477704808
+    },
+    {
+     "E": 0.7148,
+     "counts": {
+      "00": 4289,
+      "01": 711,
+      "10": 715,
+      "11": 4285
+     },
+     "qubits": [
+      16,
+      17
+     ],
+     "setting": "E(a',b)",
+     "sigma": 0.006993289354802932
+    },
+    {
+     "E": 0.7026,
+     "counts": {
+      "00": 4183,
+      "01": 716,
+      "10": 771,
+      "11": 4330
+     },
+     "qubits": [
+      18,
+      19
+     ],
+     "setting": "E(a',b')",
+     "sigma": 0.0071158501951629075
+    }
+   ],
+   "enabled": true,
+   "equivalent_depolarising_p": 0,
+   "kind": "chsh_fidelity_witness",
+   "p_value_local_realist": 0,
+   "sigma_S": 0.014100783666165509,
+   "tsirelson_bound": 2.8284271247461903,
+   "violates_classical_3sigma": true,
+   "z_above_classical": 59.33003581973968
+  },
+  "commitment": {
+   "binds": [
+    "circuit_hash",
+    "backend",
+    "provider_job_id",
+    "salt"
+   ],
+   "commit": "bb4ab6140a5c7eaf44efd8b2643308e110ef308525316403d8afc68ec871426c",
+   "committed_at": "2026-10-05T05:00:07+00:00",
+   "note": "Formed at submit, after the provider accepted the job and before any outcome existed. Publish `commit` before collect completes for it to mean anything to a third party.",
+   "salt": "b7febe04a990cf33554cec91a3502ddb1b85a4b6fd65df3db121acec30b5fc11"
+  },
+  "device_fingerprint": {
+   "bias_pvalues": [
+    0.9601227195770929,
+    0.896567269430119,
+    0.07029046301215182,
+    0.3320467307865057,
+    0.58232156673574,
+    0.4532563521438984,
+    0.23404477063948112,
+    0.2040823199368607,
+    0.7113844736028474,
+    0.24199952182643206,
+    0.638357198103246,
+    0.8650112187319796,
+    0.490196082280236,
+    0.23404477063948112,
+    0.5961141332900809,
+    0.8807655794094957,
+    1,
+    0.9441941217238862,
+    0.04442579904608063,
+    0.36282319780720484
+   ],
+   "n_qubits": 20,
+   "n_significant_pairs": 4,
+   "note": "\u27e8Z\u27e9 on randomness qubits should be \u22480 (readout/prep bias shows as a nonzero value); witness qubits are expected to be biased by their rotated bases. ZZ pairs between randomness qubits should be \u22480 \u2014 nonzero values are crosstalk / correlated readout and lower the entropy budget.",
+   "p1": [
+    0.4997,
+    0.5007,
+    0.4909,
+    0.5049,
+    0.4972,
+    0.4962,
+    0.506,
+    0.4936,
+    0.5019,
+    0.5059,
+    0.5024,
+    0.4991,
+    0.4965,
+    0.494,
+    0.5027,
+    0.5008,
+    0.5,
+    0.4996,
+    0.5101,
+    0.5046
+   ],
+   "roles": {
+    "randomness": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11
+    ],
+    "witness_pairs": [
+     [
+      12,
+      13
+     ],
+     [
+      14,
+      15
+     ],
+     [
+      16,
+      17
+     ],
+     [
+      18,
+      19
+     ]
+    ]
+   },
+   "stuck_qubits": [],
+   "top_correlated_pairs": [
+    {
+     "h_pair": 1.1790281590197103,
+     "p_max_joint": 0.4289,
+     "phi": 0.7148002287361098,
+     "qubits": [
+      16,
+      17
+     ],
+     "z": 71.48002287361098
+    },
+    {
+     "h_pair": 1.1777172889536085,
+     "p_max_joint": 0.4293,
+     "phi": -0.7134199549035841,
+     "qubits": [
+      14,
+      15
+     ],
+     "z": -71.34199549035841
+    },
+    {
+     "h_pair": 1.1715072473223935,
+     "p_max_joint": 0.4312,
+     "phi": 0.7057841089628045,
+     "qubits": [
+      12,
+      13
+     ],
+     "z": 70.57841089628045
+    },
+    {
+     "h_pair": 1.1656491770831388,
+     "p_max_joint": 0.433,
+     "phi": 0.7025872445293162,
+     "qubits": [
+      18,
+      19
+     ],
+     "z": 70.25872445293162
+    },
+    {
+     "h_pair": 1.883662912473955,
+     "p_max_joint": 0.2597,
+     "phi": -0.025760079535690573,
+     "qubits": [
+      5,
+      14
+     ],
+     "z": -2.576007953569057
+    },
+    {
+     "h_pair": 1.8928708798501384,
+     "p_max_joint": 0.258,
+     "phi": 0.02360836668157874,
+     "qubits": [
+      17,
+      19
+     ],
+     "z": 2.360836668157874
+    },
+    {
+     "h_pair": 1.9010456450963336,
+     "p_max_joint": 0.2565,
+     "phi": 0.021203552966640164,
+     "qubits": [
+      0,
+      14
+     ],
+     "z": 2.1203552966640165
+    },
+    {
+     "h_pair": 1.8961351177873806,
+     "p_max_joint": 0.2574,
+     "phi": 0.0204008633828079,
+     "qubits": [
+      16,
+      19
+     ],
+     "z": 2.04008633828079
+    },
+    {
+     "h_pair": 1.890156425150896,
+     "p_max_joint": 0.2585,
+     "phi": 0.020382293665452578,
+     "qubits": [
+      6,
+      15
+     ],
+     "z": 2.0382293665452575
+    },
+    {
+     "h_pair": 1.9010456450963336,
+     "p_max_joint": 0.2565,
+     "phi": 0.0200127635925727,
+     "qubits": [
+      5,
+      15
+     ],
+     "z": 2.00127635925727
+    },
+    {
+     "h_pair": 1.8923275719438404,
+     "p_max_joint": 0.2581,
+     "phi": 0.01995816856362846,
+     "qubits": [
+      5,
+      18
+     ],
+     "z": 1.9958168563628462
+    },
+    {
+     "h_pair": 1.882044182282414,
+     "p_max_joint": 0.26,
+     "phi": 0.019804040832658118,
+     "qubits": [
+      16,
+      18
+     ],
+     "z": 1.9804040832658119
+    },
+    {
+     "h_pair": 1.9032335866296053,
+     "p_max_joint": 0.2561,
+     "phi": 0.019684452720728787,
+     "qubits": [
+      9,
+      12
+     ],
+     "z": 1.9684452720728787
+    },
+    {
+     "h_pair": 1.9098177943566461,
+     "p_max_joint": 0.2549,
+     "phi": 0.019544367873433645,
+     "qubits": [
+      9,
+      13
+     ],
+     "z": 1.9544367873433646
+    },
+    {
+     "h_pair": 1.907070648227715,
+     "p_max_joint": 0.2554,
+     "phi": -0.01939906832265141,
+     "qubits": [
+      0,
+      15
+     ],
+     "z": -1.9399068322651412
+    },
+    {
+     "h_pair": 1.8761246398347329,
+     "p_max_joint": 0.2611,
+     "phi": 0.01907622696225632,
+     "qubits": [
+      2,
+      12
+     ],
+     "z": 1.9076226962256322
+    }
+   ],
+   "z_expectations": [
+    0.0006000000000000449,
+    -0.0014000000000000679,
+    0.018199999999999994,
+    -0.009800000000000031,
+    0.005600000000000049,
+    0.007600000000000051,
+    -0.01200000000000001,
+    0.012800000000000034,
+    -0.0038000000000000256,
+    -0.011800000000000033,
+    -0.0047999999999999154,
+    0.0018000000000000238,
+    0.007000000000000006,
+    0.01200000000000001,
+    -0.005400000000000071,
+    -0.0016000000000000458,
+    0,
+    0.0008000000000000229,
+    -0.020199999999999996,
+    -0.009200000000000097
+   ],
+   "zz_pairs": [
+    [
+     0,
+     1,
+     0.008399999999999963
+    ],
+    [
+     0,
+     2,
+     0.0031999999999999806
+    ],
+    [
+     0,
+     3,
+     0.009199999999999986
+    ],
+    [
+     0,
+     4,
+     -0.014599999999999946
+    ],
+    [
+     0,
+     5,
+     0.0018000000000000238
+    ],
+    [
+     0,
+     6,
+     0.00539999999999996
+    ],
+    [
+     0,
+     7,
+     0.0006000000000000449
+    ],
+    [
+     0,
+     8,
+     -0.0012000000000000899
+    ],
+    [
+     0,
+     9,
+     0.005600000000000049
+    ],
+    [
+     0,
+     10,
+     -0.00019999999999997797
+    ],
+    [
+     0,
+     11,
+     0.0016000000000000458
+    ],
+    [
+     0,
+     12,
+     -0.0007999999999999119
+    ],
+    [
+     0,
+     13,
+     0.017000000000000015
+    ],
+    [
+     0,
+     14,
+     0.021199999999999997
+    ],
+    [
+     0,
+     15,
+     -0.019400000000000084
+    ],
+    [
+     0,
+     16,
+     0.0010000000000000009
+    ],
+    [
+     0,
+     17,
+     -0.006199999999999983
+    ],
+    [
+     0,
+     18,
+     -0.010000000000000009
+    ],
+    [
+     0,
+     19,
+     -0.007400000000000073
+    ],
+    [
+     1,
+     2,
+     0.01200000000000001
+    ],
+    [
+     1,
+     3,
+     0.005600000000000049
+    ],
+    [
+     1,
+     4,
+     0.005800000000000027
+    ],
+    [
+     1,
+     5,
+     -0.007400000000000073
+    ],
+    [
+     1,
+     6,
+     0.009399999999999964
+    ],
+    [
+     1,
+     7,
+     -0.009800000000000031
+    ],
+    [
+     1,
+     8,
+     0.005199999999999982
+    ],
+    [
+     1,
+     9,
+     -0.0043999999999999595
+    ],
+    [
+     1,
+     10,
+     -0.0018000000000000238
+    ],
+    [
+     1,
+     11,
+     -0.012799999999999923
+    ],
+    [
+     1,
+     12,
+     0.010800000000000032
+    ],
+    [
+     1,
+     13,
+     0.0021999999999999797
+    ],
+    [
+     1,
+     14,
+     0.013599999999999945
+    ],
+    [
+     1,
+     15,
+     -0.017800000000000038
+    ],
+    [
+     1,
+     16,
+     -0.0029999999999998916
+    ],
+    [
+     1,
+     17,
+     0.0033999999999999586
+    ],
+    [
+     1,
+     18,
+     0.01200000000000001
+    ],
+    [
+     1,
+     19,
+     0.0021999999999999797
+    ],
+    [
+     2,
+     3,
+     0.010399999999999965
+    ],
+    [
+     2,
+     4,
+     0.009800000000000031
+    ],
+    [
+     2,
+     5,
+     -0.015800000000000036
+    ],
+    [
+     2,
+     6,
+     0.009000000000000008
+    ],
+    [
+     2,
+     7,
+     0.007800000000000029
+    ],
+    [
+     2,
+     8,
+     -0.007200000000000095
+    ],
+    [
+     2,
+     9,
+     0.017199999999999993
+    ],
+    [
+     2,
+     10,
+     0.0026000000000000467
+    ],
+    [
+     2,
+     11,
+     0.005600000000000049
+    ],
+    [
+     2,
+     12,
+     0.019199999999999995
+    ],
+    [
+     2,
+     13,
+     0.019000000000000017
+    ],
+    [
+     2,
+     14,
+     0
+    ],
+    [
+     2,
+     15,
+     -0.005800000000000027
+    ],
+    [
+     2,
+     16,
+     0.019000000000000017
+    ],
+    [
+     2,
+     17,
+     0.01100000000000001
+    ],
+    [
+     2,
+     18,
+     -0.015200000000000102
+    ],
+    [
+     2,
+     19,
+     -0.006199999999999983
+    ],
+    [
+     3,
+     4,
+     -0.012599999999999945
+    ],
+    [
+     3,
+     5,
+     -0.008599999999999941
+    ],
+    [
+     3,
+     6,
+     0.007399999999999962
+    ],
+    [
+     3,
+     7,
+     0.01539999999999997
+    ],
+    [
+     3,
+     8,
+     -0.0047999999999999154
+    ],
+    [
+     3,
+     9,
+     0.00039999999999995595
+    ],
+    [
+     3,
+     10,
+     0.010600000000000054
+    ],
+    [
+     3,
+     11,
+     0.006399999999999961
+    ],
+    [
+     3,
+     12,
+     -0.0007999999999999119
+    ],
+    [
+     3,
+     13,
+     0.00539999999999996
+    ],
+    [
+     3,
+     14,
+     -0.007200000000000095
+    ],
+    [
+     3,
+     15,
+     -0.0041999999999999815
+    ],
+    [
+     3,
+     16,
+     -0.014999999999999902
+    ],
+    [
+     3,
+     17,
+     -0.0045999999999999375
+    ],
+    [
+     3,
+     18,
+     0.006000000000000005
+    ],
+    [
+     3,
+     19,
+     0.007800000000000029
+    ],
+    [
+     4,
+     5,
+     0.006399999999999961
+    ],
+    [
+     4,
+     6,
+     -0.0020000000000000018
+    ],
+    [
+     4,
+     7,
+     0.017199999999999993
+    ],
+    [
+     4,
+     8,
+     -0.00019999999999997797
+    ],
+    [
+     4,
+     9,
+     0.007000000000000006
+    ],
+    [
+     4,
+     10,
+     -0.0032000000000000917
+    ],
+    [
+     4,
+     11,
+     -0.012599999999999945
+    ],
+    [
+     4,
+     12,
+     0.008199999999999985
+    ],
+    [
+     4,
+     13,
+     0.010399999999999965
+    ],
+    [
+     4,
+     14,
+     -0.010599999999999943
+    ],
+    [
+     4,
+     15,
+     0.01759999999999995
+    ],
+    [
+     4,
+     16,
+     0.015199999999999991
+    ],
+    [
+     4,
+     17,
+     0.011600000000000055
+    ],
+    [
+     4,
+     18,
+     -0.011800000000000033
+    ],
+    [
+     4,
+     19,
+     -0.011600000000000055
+    ],
+    [
+     5,
+     6,
+     -0.0036000000000000476
+    ],
+    [
+     5,
+     7,
+     0.0048000000000000265
+    ],
+    [
+     5,
+     8,
+     -0.0018000000000000238
+    ],
+    [
+     5,
+     9,
+     0.01739999999999997
+    ],
+    [
+     5,
+     10,
+     0.0016000000000000458
+    ],
+    [
+     5,
+     11,
+     -0.0009999999999998899
+    ],
+    [
+     5,
+     12,
+     -0.0005999999999999339
+    ],
+    [
+     5,
+     13,
+     0.006800000000000028
+    ],
+    [
+     5,
+     14,
+     -0.025800000000000045
+    ],
+    [
+     5,
+     15,
+     0.020000000000000018
+    ],
+    [
+     5,
+     16,
+     -0.00039999999999995595
+    ],
+    [
+     5,
+     17,
+     -0.009200000000000097
+    ],
+    [
+     5,
+     18,
+     0.01980000000000004
+    ],
+    [
+     5,
+     19,
+     0.01880000000000004
+    ],
+    [
+     6,
+     7,
+     -0.018000000000000016
+    ],
+    [
+     6,
+     8,
+     0.008199999999999985
+    ],
+    [
+     6,
+     9,
+     -0.005400000000000071
+    ],
+    [
+     6,
+     10,
+     -0.01079999999999992
+    ],
+    [
+     6,
+     11,
+     0.0010000000000000009
+    ],
+    [
+     6,
+     12,
+     -0.008599999999999941
+    ],
+    [
+     6,
+     13,
+     -0.011600000000000055
+    ],
+    [
+     6,
+     14,
+     -0.007400000000000073
+    ],
+    [
+     6,
+     15,
+     0.020399999999999974
+    ],
+    [
+     6,
+     16,
+     -0.0036000000000000476
+    ],
+    [
+     6,
+     17,
+     -0.0043999999999999595
+    ],
+    [
+     6,
+     18,
+     0.015800000000000036
+    ],
+    [
+     6,
+     19,
+     0.009199999999999986
+    ],
+    [
+     7,
+     8,
+     -0.016199999999999992
+    ],
+    [
+     7,
+     9,
+     0.0026000000000000467
+    ],
+    [
+     7,
+     10,
+     0
+    ],
+    [
+     7,
+     11,
+     -0.012599999999999945
+    ],
+    [
+     7,
+     12,
+     -0.010999999999999899
+    ],
+    [
+     7,
+     13,
+     -0.0132000000000001
+    ],
+    [
+     7,
+     14,
+     0.0006000000000000449
+    ],
+    [
+     7,
+     15,
+     0.007199999999999984
+    ],
+    [
+     7,
+     16,
+     -0.0040000000000000036
+    ],
+    [
+     7,
+     17,
+     0.0048000000000000265
+    ],
+    [
+     7,
+     18,
+     0.013000000000000012
+    ],
+    [
+     7,
+     19,
+     0.0031999999999999806
+    ],
+    [
+     8,
+     9,
+     0.00039999999999995595
+    ],
+    [
+     8,
+     10,
+     -0.0014000000000000679
+    ],
+    [
+     8,
+     11,
+     -0.006799999999999917
+    ],
+    [
+     8,
+     12,
+     0.012800000000000034
+    ],
+    [
+     8,
+     13,
+     0.007399999999999962
+    ],
+    [
+     8,
+     14,
+     -0.006399999999999961
+    ],
+    [
+     8,
+     15,
+     0.0030000000000000027
+    ],
+    [
+     8,
+     16,
+     0.010199999999999987
+    ],
+    [
+     8,
+     17,
+     0.0046000000000000485
+    ],
+    [
+     8,
+     18,
+     -0.008799999999999919
+    ],
+    [
+     8,
+     19,
+     -0.011800000000000033
+    ],
+    [
+     9,
+     10,
+     -0.009800000000000031
+    ],
+    [
+     9,
+     11,
+     0.0036000000000000476
+    ],
+    [
+     9,
+     12,
+     0.01959999999999995
+    ],
+    [
+     9,
+     13,
+     0.019399999999999973
+    ],
+    [
+     9,
+     14,
+     0.006399999999999961
+    ],
+    [
+     9,
+     15,
+     0.012199999999999989
+    ],
+    [
+     9,
+     16,
+     -0.005400000000000071
+    ],
+    [
+     9,
+     17,
+     -0.0025999999999999357
+    ],
+    [
+     9,
+     18,
+     -0.010000000000000009
+    ],
+    [
+     9,
+     19,
+     -0.0005999999999999339
+    ],
+    [
+     10,
+     11,
+     -0.00019999999999997797
+    ],
+    [
+     10,
+     12,
+     0.013399999999999967
+    ],
+    [
+     10,
+     13,
+     0.01200000000000001
+    ],
+    [
+     10,
+     14,
+     0.01739999999999997
+    ],
+    [
+     10,
+     15,
+     -0.009600000000000053
+    ],
+    [
+     10,
+     16,
+     0.0043999999999999595
+    ],
+    [
+     10,
+     17,
+     -0.0007999999999999119
+    ],
+    [
+     10,
+     18,
+     -0.0005999999999999339
+    ],
+    [
+     10,
+     19,
+     0.0028000000000000247
+    ],
+    [
+     11,
+     12,
+     -0.0047999999999999154
+    ],
+    [
+     11,
+     13,
+     0.008199999999999985
+    ],
+    [
+     11,
+     14,
+     0.011600000000000055
+    ],
+    [
+     11,
+     15,
+     -0.007800000000000029
+    ],
+    [
+     11,
+     16,
+     -0.010999999999999899
+    ],
+    [
+     11,
+     17,
+     0.0013999999999999568
+    ],
+    [
+     11,
+     18,
+     0.015199999999999991
+    ],
+    [
+     11,
+     19,
+     0.00019999999999997797
+    ],
+    [
+     12,
+     13,
+     0.7058
+    ],
+    [
+     12,
+     14,
+     -0.008399999999999963
+    ],
+    [
+     12,
+     15,
+     0.00660000000000005
+    ],
+    [
+     12,
+     16,
+     -0.005800000000000027
+    ],
+    [
+     12,
+     17,
+     -0.0018000000000000238
+    ],
+    [
+     12,
+     18,
+     -0.0016000000000000458
+    ],
+    [
+     12,
+     19,
+     0.009000000000000008
+    ],
+    [
+     13,
+     14,
+     0.0010000000000000009
+    ],
+    [
+     13,
+     15,
+     -0.010399999999999965
+    ],
+    [
+     13,
+     16,
+     -0.0023999999999999577
+    ],
+    [
+     13,
+     17,
+     0.005199999999999982
+    ],
+    [
+     13,
+     18,
+     -0.006999999999999895
+    ],
+    [
+     13,
+     19,
+     0.0020000000000000018
+    ],
+    [
+     14,
+     15,
+     -0.7134
+    ],
+    [
+     14,
+     16,
+     0.0010000000000000009
+    ],
+    [
+     14,
+     17,
+     -0.00019999999999997797
+    ],
+    [
+     14,
+     18,
+     0.016800000000000037
+    ],
+    [
+     14,
+     19,
+     0.0033999999999999586
+    ],
+    [
+     15,
+     16,
+     0.007600000000000051
+    ],
+    [
+     15,
+     17,
+     0.014800000000000035
+    ],
+    [
+     15,
+     18,
+     -0.014999999999999902
+    ],
+    [
+     15,
+     19,
+     0.0028000000000000247
+    ],
+    [
+     16,
+     17,
+     0.7148
+    ],
+    [
+     16,
+     18,
+     0.01980000000000004
+    ],
+    [
+     16,
+     19,
+     0.020399999999999974
+    ],
+    [
+     17,
+     18,
+     0.018199999999999994
+    ],
+    [
+     17,
+     19,
+     0.023599999999999954
+    ],
+    [
+     18,
+     19,
+     0.7026
+    ]
+   ]
+  },
+  "entropy": {
+   "assumptions": [
+    "shots are independent repetitions (untestable without per-shot memory)",
+    "per-bit min-entropy = min(per-qubit MCV, pairwise joint MCV/2) at 99% confidence",
+    "qubits within a shot carry no dependence beyond pairwise correlations: this is ASSUMED, not proven \u2014 it is falsified (health failure) only when collision counts on the full register or on 512 random 8/16-qubit sub-registers exceed the pairwise tree model's prediction, which catches any structure collapsing a tested alphabet below ~2\u00b7log2(shots) bits and nothing subtler",
+    "ordering entropy log2(shots!) subtracted because the backend returned counts only",
+    "the assumption-free tier (whole-shot MCV) is capped near log2(shots) bits per shot by sample size and is \u22480 in counts mode"
+   ],
+   "budget_bits": 0,
+   "budget_bits_assumption_free": 0,
+   "budget_bits_modelled": 0,
+   "h_bit": 0.9379400400897039,
+   "h_bit_components": {
+    "pair_joint_mcv_min_per_bit": 0.9391371674965392,
+    "per_qubit_mcv_min": 0.9379400400897039,
+    "whole_shot_mcv_per_bit": 0.7588720854669102,
+    "whole_shot_mcv_per_shot": 9.106465025602922
+   },
+   "h_shot_assumption_free": 9.106465025602922,
+   "health": {
+    "distinct_ratio": 1.55434709596036,
+    "expected_distinct_bitstrings": 2403.581548619098,
+    "independence_collision": {
+     "full_register": {
+      "expected": 12248.849347798967,
+      "observed": 12227,
+      "qubits": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11
+      ],
+      "sigma": 111.60530640783419,
+      "z": -0.19577337764858393
+     },
+     "model": "pairwise-tree",
+     "n_failed": 0,
+     "n_subsets": 256,
+     "note": "falsifies the pairwise model when a sub-register's alphabet is collapsed; cannot see structure that keeps every tested alphabet above ~2\u00b7log2(shots) bits",
+     "passed": true,
+     "worst_subset": {
+      "expected": 195815.6003240051,
+      "observed": 196016,
+      "qubits": [
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       9
+      ],
+      "sigma": 485.32349459441036,
+      "z": 0.41291979108158305
+     },
+     "z_threshold": 6
+    },
+    "min_bias_pvalue": 0.07029046301215182,
+    "mode": "order-free",
+    "n_biased_qubits_p<1e-6": 0,
+    "n_significant_pairs": 0,
+    "n_unique_bitstrings": 3736,
+    "passed": true,
+    "phi_max_abs": 0.01784914734163724,
+    "stuck_qubits": []
+   },
+   "marginals": {
+    "bias_pvalues": [
+     0.9601227195770929,
+     0.896567269430119,
+     0.07029046301215182,
+     0.3320467307865057,
+     0.58232156673574,
+     0.4532563521438984,
+     0.23404477063948112,
+     0.2040823199368607,
+     0.7113844736028474,
+     0.24199952182643206,
+     0.638357198103246,
+     0.8650112187319796
+    ],
+    "h_pair_min_per_bit": 0.9391371674965392,
+    "h_qubit_mcv": [
+     0.9624637444726712,
+     0.9613396971313067,
+     0.9379400400897039,
+     0.9495911617590219,
+     0.9554531524264793,
+     0.952658678412646,
+     0.9465303268983103,
+     0.9454189470809239,
+     0.9579729388598337,
+     0.9468083092604256,
+     0.9565724997829267,
+     0.9607780103873387
+    ],
+    "n": 12,
+    "n_significant_pairs": 0,
+    "ones": [
+     4997,
+     5007,
+     4909,
+     5049,
+     4972,
+     4962,
+     5060,
+     4936,
+     5019,
+     5059,
+     5024,
+     4991
+    ],
+    "p1": [
+     0.4997,
+     0.5007,
+     0.4909,
+     0.5049,
+     0.4972,
+     0.4962,
+     0.506,
+     0.4936,
+     0.5019,
+     0.5059,
+     0.5024,
+     0.4991
+    ],
+    "phi_max_abs": 0.01784914734163724,
+    "shots": 10000,
+    "stuck_qubits": [],
+    "top_correlated_pairs": [
+     {
+      "h_pair": 1.8782743349930784,
+      "p_max_joint": 0.2607,
+      "phi": -0.01784914734163724,
+      "qubits": [
+       6,
+       7
+      ],
+      "z": -1.784914734163724
+     },
+     {
+      "h_pair": 1.907070648227715,
+      "p_max_joint": 0.2554,
+      "phi": 0.017491402917704655,
+      "qubits": [
+       5,
+       9
+      ],
+      "z": 1.7491402917704655
+     },
+     {
+      "h_pair": 1.9043288280524318,
+      "p_max_joint": 0.2559,
+      "phi": 0.017418857692368398,
+      "qubits": [
+       2,
+       9
+      ],
+      "z": 1.74188576923684
+     },
+     {
+      "h_pair": 1.8879886064230225,
+      "p_max_joint": 0.2589,
+      "phi": 0.01712999192479657,
+      "qubits": [
+       4,
+       7
+      ],
+      "z": 1.712999192479657
+     },
+     {
+      "h_pair": 1.891784472680809,
+      "p_max_joint": 0.2582,
+      "phi": -0.016152799905654595,
+      "qubits": [
+       7,
+       8
+      ],
+      "z": -1.6152799905654596
+     },
+     {
+      "h_pair": 1.9004991881984654,
+      "p_max_joint": 0.2566,
+      "phi": -0.015941420755400837,
+      "qubits": [
+       2,
+       5
+      ],
+      "z": -1.5941420755400837
+     },
+     {
+      "h_pair": 1.911468647108888,
+      "p_max_joint": 0.2546,
+      "phi": 0.015527457646769938,
+      "qubits": [
+       3,
+       7
+      ],
+      "z": 1.5527457646769938
+     },
+     {
+      "h_pair": 1.9098177943566461,
+      "p_max_joint": 0.2549,
+      "phi": -0.014603591614717248,
+      "qubits": [
+       0,
+       4
+      ],
+      "z": -1.4603591614717248
+     },
+     {
+      "h_pair": 1.9147761450280716,
+      "p_max_joint": 0.254,
+      "phi": -0.01279751327353716,
+      "qubits": [
+       1,
+       11
+      ],
+      "z": -1.279751327353716
+     },
+     {
+      "h_pair": 1.9043288280524318,
+      "p_max_joint": 0.2559,
+      "phi": -0.012624094657571663,
+      "qubits": [
+       7,
+       11
+      ],
+      "z": -1.2624094657571663
+     },
+     {
+      "h_pair": 1.9142243579250375,
+      "p_max_joint": 0.2541,
+      "phi": -0.012610298159404572,
+      "qubits": [
+       4,
+       11
+      ],
+      "z": -1.2610298159404572
+     },
+     {
+      "h_pair": 1.8983154696549258,
+      "p_max_joint": 0.257,
+      "phi": -0.012545919181612988,
+      "qubits": [
+       3,
+       4
+      ],
+      "z": -1.2545919181612988
+     }
+    ],
+    "z_expectations": [
+     0.0006000000000000449,
+     -0.0014000000000000679,
+     0.018199999999999994,
+     -0.009800000000000031,
+     0.005600000000000049,
+     0.007600000000000051,
+     -0.01200000000000001,
+     0.012800000000000034,
+     -0.0038000000000000256,
+     -0.011800000000000033,
+     -0.0047999999999999154,
+     0.0018000000000000238
+    ]
+   },
+   "n_rand": 12,
+   "ordering_penalty_bits": 118458.14300288181,
+   "raw_bits": 120000,
+   "readout": "counts",
+   "shots": 10000
+  },
+  "entropy_report": {
+   "accounting_basis": "modelled-independence",
+   "assumptions": [
+    "shots are independent repetitions (untestable without per-shot memory)",
+    "per-bit min-entropy = min(per-qubit MCV, pairwise joint MCV/2) at 99% confidence",
+    "qubits within a shot carry no dependence beyond pairwise correlations: this is ASSUMED, not proven \u2014 it is falsified (health failure) only when collision counts on the full register or on 512 random 8/16-qubit sub-registers exceed the pairwise tree model's prediction, which catches any structure collapsing a tested alphabet below ~2\u00b7log2(shots) bits and nothing subtler",
+    "ordering entropy log2(shots!) subtracted because the backend returned counts only",
+    "the assumption-free tier (whole-shot MCV) is capped near log2(shots) bits per shot by sample size and is \u22480 in counts mode",
+    "extractor seed: uniform, from the shipped seed ceremony (see seeds/README.md); strong-extractor seeds may be public and reused",
+    "no statistical test on S shots can establish more than ~log2(S) bits per shot without a structural assumption; the modelled tier makes one and names it"
+   ],
+   "budget_bits": 0,
+   "budget_bits_assumption_free": 0,
+   "budget_bits_modelled": 0,
+   "entropy_accounted": false,
+   "epsilon_log2": 64,
+   "grade": "simulator-baseline",
+   "h_bit": 0.9379400400897039,
+   "h_shot_assumption_free": 9.106465025602922,
+   "health_passed": true,
+   "independence_model_falsified": false,
+   "output_bits": 0,
+   "public_output": true,
+   "raw_bits": 120000,
+   "seed_mode": "shipped",
+   "statements": [
+    "120000 raw Born-rule bits from 12 qubits \u00d7 10000 shots (counts readout)",
+    "conservative per-bit min-entropy h = 0.9379 (SP 800-90B estimators at 99% confidence)",
+    "modelled budget = 0.0 bits (no dependence beyond pairwise correlations \u2014 ASSUMED, tested only by collision consistency against the pairwise tree model: full-register z = -0.20, 0/256 sub-registers failed)",
+    "assumption-free budget = 0.0 bits (whole-shot most-common-value bound, 9.11 bits/shot; capped near log2(shots) by sample size)",
+    "extractable min-entropy budget = 0.0 bits after subtracting log2(shots!) = 118458.1 bits for counts-only readout",
+    "bytes were extracted on the modelled-independence tier",
+    "Toeplitz extractor output 0 bits, 2^-64-close to uniform given that budget (leftover hash lemma: m \u2264 budget \u2212 2\u00b764); seed 'toeplitz-v1' is a shipped uniform seed from a documented ceremony (information-theoretic)",
+    "OUTPUT BYTES ARE PUBLIC: recomputable by anyone from the raw counts and the seed. Not key material.",
+    "requested 1000000 bytes, delivered 0: budget-limited",
+    "mode='emu': bits come from a classical simulator's PRNG; not accounted as hardware entropy by construction",
+    "CHSH witness S = 2.837 \u00b1 0.014 (violates the classical bound at 3\u03c3)"
+   ],
+   "witness_violates_classical": true
+  },
+  "extractor": {
+   "epsilon_log2": 64,
+   "input_bits": 120000,
+   "input_serialisation": "sorted bitstrings repeated by count (canonical multiset)",
+   "kind": "toeplitz",
+   "output_bits": 0,
+   "public_seed": "toeplitz-v1",
+   "seed_id": "toeplitz-v1",
+   "seed_mode": "shipped"
+  },
+  "provenance": {
+   "backend": "aer",
+   "built_at": "2026-10-05T05:00:06+00:00",
+   "circuit": {
+    "bell_witness": true,
+    "n_rand": 12,
+    "n_total": 20,
+    "witness_pairs": [
+     [
+      12,
+      13
+     ],
+     [
+      14,
+      15
+     ],
+     [
+      16,
+      17
+     ],
+     [
+      18,
+      19
+     ]
+    ]
+   },
+   "circuit_hash": "76b9752d54d5aa067d4b615ddb73b55669bad46a4a2d51e754d7da4bf9c05d16",
+   "collected_at": null,
+   "committed_at": "2026-10-05T05:00:07+00:00",
+   "engine": "comet-qrng-v1",
+   "engine_version": "1.0.0",
+   "formatted_at": "2026-10-05T05:00:19+00:00",
+   "initial_layout": null,
+   "mode": "emu",
+   "provider_job_id": "3a0499075d164cdfaead27ac6c097d60",
+   "qpu_seconds": null,
+   "readout": "counts",
+   "shots": 10000
+  },
+  "pulse": {
+   "commitment": {
+    "commit": "bb4ab6140a5c7eaf44efd8b2643308e110ef308525316403d8afc68ec871426c",
+    "salt": "b7febe04a990cf33554cec91a3502ddb1b85a4b6fd65df3db121acec30b5fc11"
+   },
+   "entropy": {
+    "basis": "modelled-independence",
+    "budget_bits": 0,
+    "budget_bits_assumption_free": 0,
+    "h_bit": 0.9379400400897039,
+    "health_passed": true,
+    "readout": "counts"
+   },
+   "extractor": {
+    "epsilon_log2": 64,
+    "input_bits": 120000,
+    "input_serialisation": "sorted bitstrings repeated by count (canonical multiset)",
+    "kind": "toeplitz",
+    "output_bits": 0,
+    "public_seed": "toeplitz-v1",
+    "seed_id": "toeplitz-v1",
+    "seed_mode": "shipped"
+   },
+   "index": null,
+   "output_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+   "provenance": {
+    "backend": "aer",
+    "built_at": "2026-10-05T05:00:06+00:00",
+    "circuit": {
+     "bell_witness": true,
+     "n_rand": 12,
+     "n_total": 20,
+     "witness_pairs": [
+      [
+       12,
+       13
+      ],
+      [
+       14,
+       15
+      ],
+      [
+       16,
+       17
+      ],
+      [
+       18,
+       19
+      ]
+     ]
+    },
+    "circuit_hash": "76b9752d54d5aa067d4b615ddb73b55669bad46a4a2d51e754d7da4bf9c05d16",
+    "collected_at": null,
+    "committed_at": "2026-10-05T05:00:07+00:00",
+    "engine": "comet-qrng-v1",
+    "engine_version": "1.0.0",
+    "formatted_at": "2026-10-05T05:00:19+00:00",
+    "initial_layout": null,
+    "mode": "emu",
+    "provider_job_id": "3a0499075d164cdfaead27ac6c097d60",
+    "qpu_seconds": null,
+    "readout": "counts",
+    "shots": 10000
+   },
+   "pulse_hash": "1a41f7d1097dc6e9b6c9fa5cbdc27126804d35c9c0bdd167fcbd1d49adede05e",
+   "raw_counts_hash": "13b06031ba3ba44242442be9da1f8f4b29399af69376e30e5a22b6ab630f3f3b",
+   "timestamp": "2026-10-05T05:00:19+00:00",
+   "version": 2
+  },
+  "random": {
+   "bits": 0,
+   "bytes": 0,
+   "derived": {},
+   "hex": "",
+   "requested_bytes": 1000000
+  },
+  "raw": {
+   "counts_sha256": "13b06031ba3ba44242442be9da1f8f4b29399af69376e30e5a22b6ab630f3f3b",
+   "memory_available": false,
+   "n_unique_bitstrings": 9784,
+   "n_distinct_counts": 9784
+  }
+ }
+}

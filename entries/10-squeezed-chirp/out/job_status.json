@@ -1,0 +1,62 @@
+{
+ "iso_control": {
+  "status": "completed",
+  "progress": {
+   "detail": "Recovered 18-qubit grid from measurement",
+   "step": "done"
+  },
+  "warnings": [],
+  "submitted_at": "2026-10-05T05:13:22Z",
+  "updated_at": "2026-10-05T05:13:34Z"
+ },
+ "r0p25": {
+  "status": "completed",
+  "progress": {
+   "detail": "Recovered 18-qubit grid from measurement",
+   "step": "done"
+  },
+  "warnings": [],
+  "submitted_at": "2026-10-05T05:14:15Z",
+  "updated_at": "2026-10-05T05:14:24Z"
+ },
+ "r0p5": {
+  "status": "completed",
+  "progress": {
+   "detail": "Recovered 18-qubit grid from measurement",
+   "step": "done"
+  },
+  "warnings": [],
+  "submitted_at": "2026-10-05T05:14:33Z",
+  "updated_at": "2026-10-05T05:14:46Z"
+ },
+ "r1": {
+  "status": "completed",
+  "progress": {
+   "detail": "Recovered 18-qubit grid from measurement",
+   "step": "done"
+  },
+  "warnings": [],
+  "submitted_at": "2026-10-05T05:14:53Z",
+  "updated_at": "2026-10-05T05:15:04Z"
+ },
+ "r2": {
+  "status": "completed",
+  "progress": {
+   "detail": "Recovered 18-qubit grid from measurement",
+   "step": "done"
+  },
+  "warnings": [],
+  "submitted_at": "2026-10-05T05:15:13Z",
+  "updated_at": "2026-10-05T05:15:23Z"
+ },
+ "r4": {
+  "status": "completed",
+  "progress": {
+   "detail": "Recovered 18-qubit grid from measurement",
+   "step": "done"
+  },
+  "warnings": [],
+  "submitted_at": "2026-10-05T05:15:31Z",
+  "updated_at": "2026-10-05T05:15:43Z"
+ }
+}

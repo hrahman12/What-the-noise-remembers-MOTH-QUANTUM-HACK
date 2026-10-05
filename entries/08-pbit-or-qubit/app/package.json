@@ -1,0 +1,12 @@
+{
+  "name": "pbit-or-qubit",
+  "version": "1.0.0",
+  "private": true,
+  "description": "p-bit or qubit? Guess which sampler made a batch of Ising bitstrings: Extropic THRML p-bits or graph-v1 qubits on Atlas / IBM ibm_fez.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node ../tests/test_app.js"
+  },
+  "engines": { "node": ">=18" }
+}

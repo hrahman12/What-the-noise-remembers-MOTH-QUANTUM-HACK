@@ -1,0 +1,92 @@
+[
+ {
+  "track": 1,
+  "molecule": "acetophenone",
+  "isotope": "H",
+  "lines": 10,
+  "bins": [
+   25,
+   109
+  ],
+  "pitch_rows_est": 111,
+  "pitch_qubits": 7,
+  "time_steps": 6720,
+  "time_qubits": 13,
+  "qubits": 20
+ },
+ {
+  "track": 2,
+  "molecule": "acetophenone",
+  "isotope": "D",
+  "lines": 10,
+  "bins": [
+   20,
+   80
+  ],
+  "pitch_rows_est": 79,
+  "pitch_qubits": 7,
+  "time_steps": 6720,
+  "time_qubits": 13,
+  "qubits": 20
+ },
+ {
+  "track": 3,
+  "molecule": "exaltone",
+  "isotope": "H",
+  "lines": 9,
+  "bins": [
+   26,
+   105
+  ],
+  "pitch_rows_est": 104,
+  "pitch_qubits": 7,
+  "time_steps": 6720,
+  "time_qubits": 13,
+  "qubits": 20
+ },
+ {
+  "track": 4,
+  "molecule": "exaltone",
+  "isotope": "D",
+  "lines": 9,
+  "bins": [
+   19,
+   77
+  ],
+  "pitch_rows_est": 77,
+  "pitch_qubits": 7,
+  "time_steps": 6720,
+  "time_qubits": 13,
+  "qubits": 20
+ },
+ {
+  "track": 5,
+  "molecule": "muscone",
+  "isotope": "H",
+  "lines": 9,
+  "bins": [
+   26,
+   106
+  ],
+  "pitch_rows_est": 105,
+  "pitch_qubits": 7,
+  "time_steps": 6720,
+  "time_qubits": 13,
+  "qubits": 20
+ },
+ {
+  "track": 6,
+  "molecule": "muscone",
+  "isotope": "D",
+  "lines": 8,
+  "bins": [
+   19,
+   77
+  ],
+  "pitch_rows_est": 77,
+  "pitch_qubits": 7,
+  "time_steps": 6720,
+  "time_qubits": 13,
+  "qubits": 20
+ }
+]

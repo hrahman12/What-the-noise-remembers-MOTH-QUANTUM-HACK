@@ -1,0 +1,52 @@
+[
+ {
+  "job_id": "8285e98e-5ae7-4974-9898-696bb3ae2d14",
+  "layers": 21,
+  "incoming_rays": 30,
+  "status": "failed",
+  "error_type": "max_qubits_exceeded",
+  "message": "Configuration of(30 rays, 21 layers), exceeds the limit of 21 qubits. With 21 layers, incoming_rays must be at most -5.",
+  "max_rays_reported": -5,
+  "submitted_at": "2026-10-05T04:59:01Z"
+ },
+ {
+  "job_id": "aff508a9-2282-4f91-9328-4c9a413650a6",
+  "layers": 8,
+  "incoming_rays": 10,
+  "status": "failed",
+  "error_type": "max_qubits_exceeded",
+  "message": "Configuration of(10 rays, 8 layers), exceeds the limit of 21 qubits. With 8 layers, incoming_rays must be at most 5.",
+  "max_rays_reported": 5,
+  "submitted_at": "2026-10-05T04:59:32Z"
+ },
+ {
+  "job_id": "ea36ca02-1062-4d7c-92d1-025405e9824c",
+  "layers": 7,
+  "incoming_rays": 30,
+  "status": "failed",
+  "error_type": "max_qubits_exceeded",
+  "message": "Configuration of(30 rays, 7 layers), exceeds the limit of 21 qubits. With 7 layers, incoming_rays must be at most 5.",
+  "max_rays_reported": 5,
+  "submitted_at": "2026-10-05T05:02:29Z"
+ },
+ {
+  "job_id": "0dfd9339-f7f8-4fde-9b06-f3b5624bf888",
+  "layers": 6,
+  "incoming_rays": 6,
+  "status": "completed",
+  "error_type": null,
+  "message": null,
+  "max_rays_reported": null,
+  "submitted_at": "2026-10-05T05:03:14Z"
+ },
+ {
+  "job_id": "b0ec46ef-00d6-4c06-84c6-589d9432fd14",
+  "layers": 6,
+  "incoming_rays": 7,
+  "status": "failed",
+  "error_type": "max_qubits_exceeded",
+  "message": "Configuration of(7 rays, 6 layers), exceeds the limit of 21 qubits. With 6 layers, incoming_rays must be at most 6.",
+  "max_rays_reported": 6,
+  "submitted_at": "2026-10-05T05:05:44Z"
+ }
+]

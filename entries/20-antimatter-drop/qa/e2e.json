@@ -1,0 +1,360 @@
+{
+ "piece": "20-antimatter-drop",
+ "ok": true,
+ "passed": 88,
+ "failed": [],
+ "steps": [
+  {
+   "step": "page title is the piece title",
+   "ok": true
+  },
+  {
+   "step": "hook headline matches piece.json",
+   "ok": true
+  },
+  {
+   "step": "trap starts empty at 0 g",
+   "ok": true
+  },
+  {
+   "step": "proof chips carry the real numbers (qubits, jobs, backend, dice)",
+   "ok": true
+  },
+  {
+   "step": "readout shows the ibm_fez job id from out/jobs.json",
+   "ok": true
+  },
+  {
+   "step": "readout shows 148 + 8 Bell = 156 qubits on ibm_fez",
+   "ok": true
+  },
+  {
+   "step": "nothing sounds on load (no autoplay)",
+   "ok": true
+  },
+  {
+   "step": "brand bar reads \"Challenge 11\" and nothing on the page says Bonus",
+   "ok": true
+  },
+  {
+   "step": "every titled section is on the page, in order, below the scene",
+   "ok": true
+  },
+  {
+   "step": "both graphs and the ruler scene are visible without any toggle",
+   "ok": true
+  },
+  {
+   "step": "the |B| sketch draws its profile with coils G and A",
+   "ok": true
+  },
+  {
+   "step": "the jobs table lists both real Atlas jobs from out/jobs.json",
+   "ok": true
+  },
+  {
+   "step": "the honesty notes are visible, not hidden in a drawer",
+   "ok": true
+  },
+  {
+   "step": "the trap canvas is drawn (not blank)",
+   "ok": true
+  },
+  {
+   "step": "the ruler scene canvas is drawn (ink pixels: host, ruler, signposts)",
+   "ok": true
+  },
+  {
+   "step": "the escape curve SVG renders its axes, 11 bias columns and the 11 Table 1 rings",
+   "ok": true
+  },
+  {
+   "step": "the |B| sketch SVG renders a non-empty field profile",
+   "ok": true
+  },
+  {
+   "step": "clicking the trap stacks 19 atoms (Table 1, 0 g, one trial)",
+   "ok": true
+  },
+  {
+   "step": "the stage button now offers Ramp",
+   "ok": true
+  },
+  {
+   "step": "bias is locked during a trial",
+   "ok": true
+  },
+  {
+   "step": "Space on the trap starts the ramp (button shows Pause)",
+   "ok": true
+  },
+  {
+   "step": "the 19 escapes are exactly the first 19 ibm_fez words vs threshold 47204",
+   "ok": true
+  },
+  {
+   "step": "bank readout counts 19 dice used",
+   "ok": true
+  },
+  {
+   "step": "stack button now says Stack again",
+   "ok": true
+  },
+  {
+   "step": "escape counter shows 19 escapes",
+   "ok": true
+  },
+  {
+   "step": "the |B| sketch follows the ramp (lower barriers at 20 s)",
+   "ok": true
+  },
+  {
+   "step": "the dice log under the verdict lists the last comparisons",
+   "ok": true
+  },
+  {
+   "step": "ArrowRight steps the ramp forward (1.0 s)",
+   "ok": true
+  },
+  {
+   "step": "ArrowLeft cannot run the ramp backwards and says so",
+   "ok": true
+  },
+  {
+   "step": "dragging/keying the slider advances the ramp and spends dice",
+   "ok": true
+  },
+  {
+   "step": "Dump trap empties it and spends no dice for the atoms left",
+   "ok": true
+  },
+  {
+   "step": "Hear the dice starts sound (Web Audio sources started)",
+   "ok": true
+  },
+  {
+   "step": "the sound button now offers Mute the dice",
+   "ok": true
+  },
+  {
+   "step": "choosing a bias updates the HUD",
+   "ok": true
+  },
+  {
+   "step": "each die that lands plays a tone while sound is on",
+   "ok": true
+  },
+  {
+   "step": "Mute the dice stops the sound (context suspended)",
+   "ok": true
+  },
+  {
+   "step": "no tones while muted",
+   "ok": true
+  },
+  {
+   "step": "the +10 g calibration sends every atom down",
+   "ok": true
+  },
+  {
+   "step": "every one of the 13 bias buttons sets its own bias (11 main + 2 calibration)",
+   "ok": true
+  },
+  {
+   "step": "Full series resizes the stack to the paper total (131 at 0 g)",
+   "ok": true
+  },
+  {
+   "step": "a full series stacks 131 atoms",
+   "ok": true
+  },
+  {
+   "step": "1 trial is selectable again after Full series",
+   "ok": true
+  },
+  {
+   "step": "Real time ramps at 1 s per s",
+   "ok": true
+  },
+  {
+   "step": "Fast (selected again) ramps at about 5 s per s",
+   "ok": true
+  },
+  {
+   "step": "the curve plots your measured biases",
+   "ok": true
+  },
+  {
+   "step": "Show other worlds adds the three 1-D cartoon curves",
+   "ok": true
+  },
+  {
+   "step": "dice log lists the last eight comparisons",
+   "ok": true
+  },
+  {
+   "step": "clicking a curve column chooses that bias",
+   "ok": true
+  },
+  {
+   "step": "the |B| sketch shows the chosen bias",
+   "ok": true
+  },
+  {
+   "step": "the ruler scene is drawn beside the verdict",
+   "ok": true
+  },
+  {
+   "step": "verdict finds a balance point from your trials",
+   "ok": true
+  },
+  {
+   "step": "Clear my data empties the curve",
+   "ok": true
+  },
+  {
+   "step": "campaign starts and can be paused",
+   "ok": true
+  },
+  {
+   "step": "Pause campaign freezes the ramp",
+   "ok": true
+  },
+  {
+   "step": "campaign uses 1,721 escapes",
+   "ok": true
+  },
+  {
+   "step": "campaign used 1,721 ibm_fez dice, as replay.py",
+   "ok": true
+  },
+  {
+   "step": "verdict balance −0.82 g equals replay.py",
+   "ok": true
+  },
+  {
+   "step": "after the campaign the escape curve plots all 11 of your points and your fit line",
+   "ok": true
+  },
+  {
+   "step": "share writes a #token of allowed characters",
+   "ok": true
+  },
+  {
+   "step": "token carries the campaign tallies of replay.py",
+   "ok": true
+  },
+  {
+   "step": "share copies the link (or says it is in the address bar)",
+   "ok": true
+  },
+  {
+   "step": "reloading with the hash restores the curve",
+   "ok": true
+  },
+  {
+   "step": "reloading with the hash restores the bank position",
+   "ok": true
+  },
+  {
+   "step": "Clear my data removes the shared hash",
+   "ok": true
+  },
+  {
+   "step": "token restores the emulator dice source",
+   "ok": true
+  },
+  {
+   "step": "an exhausted bank stops the ramp and offers a rewind",
+   "ok": true
+  },
+  {
+   "step": "Rewind this bank resets the emulator bank",
+   "ok": true
+  },
+  {
+   "step": "the ramp resumes and the trial finishes after a rewind",
+   "ok": true
+  },
+  {
+   "step": "browser dice switch the readout to classical",
+   "ok": true
+  },
+  {
+   "step": "quiz scores and explains",
+   "ok": true
+  },
+  {
+   "step": "an answered question locks its other options (one answer each, Reset unlocks)",
+   "ok": true
+  },
+  {
+   "step": "Reset the quiz",
+   "ok": true
+  },
+  {
+   "step": "the last option of every question answers it, marks the right one and explains",
+   "ok": true
+  },
+  {
+   "step": "each of the 24 quiz options answers its question (marks it, explains, locks the rest)",
+   "ok": true
+  },
+  {
+   "step": "all three drawers (two science, one how-it-was-made) open with content",
+   "ok": true
+  },
+  {
+   "step": "Table 1 in the drawer lists 13 biases",
+   "ok": true
+  },
+  {
+   "step": "the honesty notes label the sound as classical",
+   "ok": true
+  },
+  {
+   "step": "brand bar links to the hub",
+   "ok": true
+  },
+  {
+   "step": "prev link goes to 19 Frog Chorus",
+   "ok": true
+  },
+  {
+   "step": "next link goes to 21 The Quantum Nose Test",
+   "ok": true
+  },
+  {
+   "step": "hub link goes to the hub",
+   "ok": true
+  },
+  {
+   "step": "jump list holds all 22 pieces with this one current",
+   "ok": true
+  },
+  {
+   "step": "nav sits just before the footer",
+   "ok": true
+  },
+  {
+   "step": "Jump to any piece opens",
+   "ok": true
+  },
+  {
+   "step": "no horizontal scroll at 375 px",
+   "ok": true
+  },
+  {
+   "step": "tapping the trap stacks atoms on a phone",
+   "ok": true
+  },
+  {
+   "step": "the stage lets the page scroll (touch-action is not none)",
+   "ok": true
+  },
+  {
+   "step": "no console or page errors during the journey",
+   "ok": true
+  }
+ ]
+}

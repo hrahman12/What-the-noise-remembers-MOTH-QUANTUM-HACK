@@ -1,0 +1,3 @@
+  qpixl-v1: submitted e4965f27-ab60-4e0d-9fc3-c4a057b58a3d
+FAILED: qpixl-v1 e4965f27-ab60-4e0d-9fc3-c4a057b58a3d failed: {"$schema": "https://api.mothquantum.com/schemas/JobStatusOutputBody.json", "job_id": "e4965f27-ab60-4e0d-9fc3-c4a057b58a3d", "engine_id": "qpixl-v1", "status": "failed", "progress": {"detail": "18/64 gcells executed", "step": "encoding"}, "error": {"message": "Stream removed (Socket closed)", "retryable": false, "type": "unavailable"}, "warnings": [], "submitted_at": "2026-10-05T05:04:34Z", "updated_at": "2026-10-05T05:04:41Z"}
+spent 17 / 45

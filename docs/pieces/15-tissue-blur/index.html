@@ -170,18 +170,49 @@ table.stats tr.on td:first-child{border-left-color:var(--ink)}
 .cast{display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:.5rem 1rem;margin:0;padding:0;list-style:none}
 .cast li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.6rem;align-items:center;font-size:.86rem}
 .cast img{image-rendering:pixelated;image-rendering:crisp-edges}
+/* titled sections under the scene: How to play, The data (figures), The science, How it was made, claims, jobs */
+.sec{margin-top:2.75rem;display:grid;gap:1rem}
+.sec>.ink-bar,.more>.ink-bar{margin-bottom:.25rem}
+.howto{display:grid;grid-template-columns:minmax(8rem,max-content) minmax(0,1fr);gap:.6rem 1.4rem;margin:0;max-width:62rem}
+.howto dt{font:500 .72rem/1.7 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
+.howto dd{margin:0;font-size:.93rem;color:var(--ink-2);padding-bottom:.6rem;border-bottom:1px solid var(--rule)}
+.howto dd b{color:var(--ink);font-weight:500}
+.fig{margin:0;display:grid;gap:.65rem;border:1px solid var(--ink);background:var(--panel);padding:.9rem 1rem 1rem;min-width:0}
+.fig-h{display:flex;flex-wrap:wrap;gap:.4rem 1rem;align-items:baseline;justify-content:space-between}
+.fig-h .label{color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:.3rem .9rem;font:400 .74rem/1.4 var(--mono);color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:.35rem}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
+.pane{position:relative;border:1px solid var(--ink);background:var(--paper);touch-action:pan-y}
+.pane canvas{display:block;width:100%;height:auto;aspect-ratio:1024/640;cursor:crosshair}
+.fig .probe{border-bottom:0;padding-bottom:0}
+.cap{font-size:.86rem;color:var(--ink-2);max-width:78ch}
+.cap b{color:var(--ink);font-weight:500}
+.prose{display:grid;gap:.75rem;color:var(--ink-2);max-width:68ch;padding-block:.6rem .2rem}
+.prose b{color:var(--ink);font-weight:500}
+.jobsblk{display:grid;gap:.6rem;padding-block:.6rem 1rem}
+.tscroll{overflow-x:auto;max-width:100%}
+table.jobs{min-width:40rem}
+table.jobs td{vertical-align:middle}
+table.jobs code{font:inherit;overflow-wrap:anywhere}
+table.jobs .btn{padding:.42rem .8rem;font-size:.78rem}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.datahint a,.note a{color:var(--link)}
 @media (max-width:1060px){.controls{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.controls .wide{grid-column:1/-1}}
 @media (max-width:900px){.top{grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "scene" "info";grid-template-rows:auto}.info{grid-template-columns:minmax(0,1fr)}}
-@media (max-width:640px){.controls{grid-template-columns:minmax(0,1fr)}.face{width:42px;height:39px}.say{font-size:.9rem}}
+@media (max-width:640px){.controls{grid-template-columns:minmax(0,1fr)}.face{width:42px;height:39px}.say{font-size:.9rem}.pair{grid-template-columns:minmax(0,1fr)}.howto{grid-template-columns:minmax(0,1fr);gap:.2rem}.howto dt{padding-top:.4rem}}
 @media (max-width:480px){.wtnr-bar{font-size:.64rem;letter-spacing:.07em}.ink-bar span+span{display:none}.tag{font-size:.58rem;padding:.32rem .4rem;top:.4rem}.tag.l{left:.4rem}.tag.r{right:.4rem}.bar .btn{padding:.55rem .8rem}.seg button{padding:.5rem .62rem}#g-tool{order:1}#g-view{order:2;margin-left:0}#peek{order:3}}
+
+/* phone: wide tables scroll inside their own box */
+table.stats{display:block;position:relative;width:auto!important;min-width:0!important;max-width:100%!important;overflow-x:auto;-webkit-overflow-scrolling:touch}
 </style>
 
 <div class="wrap">
-  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count"><b>Bonus</b> &middot; Challenge 01</span></nav>
+  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count">Challenge <b>01</b></span></nav>
 
   <div class="top">
     <header class="head">
-      <p class="kicker">Bonus &middot; Challenge 01 &middot; One image, one engine</p>
+      <p class="kicker">Challenge 01 &middot; One image, one engine</p>
       <h1>Slide a quantum lens across a mouse brain's genes.</h1>
     </header>
 
@@ -199,7 +230,7 @@ table.stats tr.on td:first-child{border-left-color:var(--ink)}
       </div>
 
       <div class="stage" id="stage" data-tool="move" data-compare="off">
-        <canvas id="cv" width="1024" height="640" tabindex="0" aria-label="Mouse brain section, gene expression map with a quantum-blurred lens held by a lab mouse. Move tool: arrow keys step the lens. Wipe tool: arrow keys move the wipe. Hold space to see the measured map. Press C to catch a ghost."></canvas>
+        <canvas id="cv" width="1024" height="640" tabindex="0" aria-label="Mouse brain section, gene expression map with a quantum-blurred lens. Move tool: arrow keys step the lens. Wipe tool: arrow keys move the wipe. Hold space to see the measured map. In the scene a lab mouse holds the lens. Press C to catch a ghost."></canvas>
         <canvas id="fx" aria-hidden="true"></canvas>
         <span class="tag l">Measured</span>
         <span class="tag r" id="tag-r">Quantum-blurred</span>
@@ -214,18 +245,12 @@ table.stats tr.on td:first-child{border-left-color:var(--ink)}
         </div>
         <p class="unit">A ghost sits on a real pixel of this job where the blur put a gene's ink and the measurement had none. One ghost stands for about 10% of that gene's blurred ink landing on such pixels (at least one if any did). The mouse and the cells are decoration.</p>
       </div>
-      <div class="datablk only-data">
-        <span class="label">Inside the mask, this job</span>
-        <table class="stats" aria-label="Agreement and ghost signal per gene">
-          <thead><tr><th scope="col">Gene</th><th scope="col">Agreement r</th><th scope="col">Ghost signal</th></tr></thead>
-          <tbody id="stats"></tbody>
-        </table>
-      </div>
+      <p class="note only-data datahint">Data view: the plain engine output with the dashed mask outline, no cast. The exact numbers for this job are always in <a href="#data">The data</a>, below.</p>
       <div class="probe" id="probe" aria-live="off"><span>Point at the tissue to read measured and blurred values.</span></div>
     </section>
 
     <aside class="info">
-      <p class="sub">95,104 measured cells from one real mouse brain section. Six genes, 20 qubits per blur. Wipe back to the measurement to see what the blur kept, and hunt the ghosts it made up.</p>
+      <p class="sub">95,104 measured cells from one real mouse brain section. Six genes, 20 qubits per blur. Wipe back to the measurement to see what the blur kept, and what it made up.</p>
       <div class="proof">
         <span class="hot"><b>20</b> qubits per blur</span>
         <span><b id="p-jobs">8</b> real Atlas jobs</span>
@@ -234,7 +259,7 @@ table.stats tr.on td:first-child{border-left-color:var(--ink)}
       </div>
       <ol class="steps" aria-label="You control">
         <li><span><b>Pick</b> a gene, or all three genes of a set at once.</span></li>
-        <li><span><b>Move</b> the lens: drag the lens or the mouse, or tap where it should go.</span></li>
+        <li><span><b>Move</b> the lens: drag it, or tap where you want it to go. The lab mouse holding it can be dragged too.</span></li>
         <li><span><b>Wipe</b> across to compare the blur with the measured map.</span></li>
         <li><span><b>Catch</b> the ghosts: tap one to read the pixel the blur invented.</span></li>
       </ol>
@@ -250,7 +275,7 @@ table.stats tr.on td:first-child{border-left-color:var(--ink)}
       <ul class="genes note" id="gene-notes"></ul>
     </div>
     <div class="panel">
-      <span class="label">Lens</span>
+      <span class="label">Mask</span>
       <div class="seg chips" role="group" aria-label="Mask" id="g-mask"></div>
       <span class="label">Reach</span>
       <div class="seg" role="group" aria-label="Reach" id="g-reach">
@@ -271,13 +296,58 @@ table.stats tr.on td:first-child{border-left-color:var(--ink)}
         <dt>Mask</dt><dd><b id="r-mask">-</b></dd>
         <dt>Job</dt><dd><b id="r-job">-</b></dd>
       </dl>
-      <p class="note only-scene">Exact agreement r and ghost signal per gene: switch the slide to <b>Data</b>.</p>
+      <p class="note">Exact agreement r and ghost signal per gene, and the measured and blurred maps side by side: <a href="#data">The data</a>, below. All 8 jobs: <a href="#jobs">Jobs and credits</a>.</p>
       <p class="note only-data">The cast is hidden in Data view. Every number here comes from the downloaded job images.</p>
     </div>
   </div>
 
-  <section class="more" aria-label="The science">
-    <div class="ink-bar"><span>The science</span><span>Classical map &middot; simulated quantum blur</span></div>
+  <section class="sec" id="how" aria-labelledby="how-h">
+    <div class="ink-bar"><span id="how-h">How to play</span><span>Every control, what it does</span></div>
+    <dl class="howto">
+      <dt>Gene set &middot; Gene</dt>
+      <dd>Pick a gene, or all three genes of a set at once. Each gene is one pigment on the paper: vermilion, teal or ultramarine, as on its chip.</dd>
+      <dt>Move lens</dt>
+      <dd>Drag the lens, or the lab mouse holding it, or tap where it should go. It snaps to the nearest of the three computed positions; the Mask chips pick Front, Centre, Back or Whole section directly. Move tool: arrow keys step the lens.</dd>
+      <dt>Wipe compare</dt>
+      <dd>Drag across the slide: left of the divider is the measured map, right of it the blur. Wipe tool: arrow keys move the wipe (hold Shift for small steps). <b>Sweep the wipe</b> moves it for you; press it again (Pause) to stop.</dd>
+      <dt>Hold: measured</dt>
+      <dd>Press and hold to see the whole measured map, with no blur and no ghosts. On the slide, holding Space does the same.</dd>
+      <dt>Catch a ghost</dt>
+      <dd>Tap a ghost, press C on the slide, or use the button. The probe then shows the real pixel under it: measured, then blurred.</dd>
+      <dt>Reach</dt>
+      <dd>0 &middot; local or 0.5 &middot; wider. Only views that were computed exist (8-credit cap): if a pick was not run, the page switches to the nearest computed view and says so.</dd>
+      <dt>Scene &middot; Data</dt>
+      <dd>Scene shows the cast on the slide; Data shows the plain engine output with the dashed mask outline.</dd>
+      <dt>Probe</dt>
+      <dd>Point at the tissue to read measured and blurred values, on the slide or on either map in The data.</dd>
+      <dt>Copy link to this view</dt>
+      <dd>Puts gene set, gene, mask, reach, wipe, tool and view in the link, so it opens on exactly this view.</dd>
+    </dl>
+  </section>
+
+  <section class="sec" id="data" aria-labelledby="data-h">
+    <div class="ink-bar"><span id="data-h">The data</span><span>Downloaded engine output &middot; classical statistics</span></div>
+    <figure class="fig" aria-labelledby="fig1-h">
+      <div class="fig-h"><span class="label" id="fig1-h">Figure 1 &middot; Measured and quantum-blurred, side by side</span><span class="legend" id="fig-legend"></span></div>
+      <div class="pair">
+        <div class="pane"><canvas id="fig-m" width="1024" height="640" role="img" aria-label="Measured expression map of the section for the genes in view"></canvas><span class="tag l">Measured</span></div>
+        <div class="pane"><canvas id="fig-b" width="1024" height="640" role="img" aria-label="The same map after blur-v1, for the job in view"></canvas><span class="tag r" id="fig-tag">Quantum-blurred</span></div>
+      </div>
+      <div class="probe" id="fig-probe" aria-live="off"><span>Point at either map to read that pixel in both.</span></div>
+      <figcaption class="cap" id="fig-cap"></figcaption>
+    </figure>
+    <figure class="fig" aria-labelledby="fig2-h">
+      <div class="fig-h"><span class="label" id="fig2-h">Inside the mask, this job</span></div>
+      <table class="stats" aria-label="Agreement and ghost signal per gene">
+        <thead><tr><th scope="col">Gene</th><th scope="col">Agreement r</th><th scope="col">Ghost signal</th></tr></thead>
+        <tbody id="stats"></tbody>
+      </table>
+      <figcaption class="cap" id="stats-cap"></figcaption>
+    </figure>
+  </section>
+
+  <section class="more" id="science" aria-labelledby="science-h">
+    <div class="ink-bar"><span id="science-h">The science</span><span>Classical map &middot; simulated quantum blur</span></div>
     <details class="drawer"><summary>Why a mouse brain's genes?</summary><div class="body">
       <p>Spatial transcriptomics measures which genes are switched on in each cell without losing where that cell sits. This map is one sagittal slice of an adult mouse brain from the whole-brain MERFISH atlas of Zhang et al. (Nature, 2023): animal 4, section 3, 95,104 cells and 1,120 genes in this release, read out by imaging. Front of the brain is on the left, the cerebellum on the right.</p>
       <ul class="genes">
@@ -288,11 +358,10 @@ table.stats tr.on td:first-child{border-left-color:var(--ink)}
       <p>On the page each gene is drawn as a pigment on paper (more expression, more ink), and the faint tint behind them is the tissue outline, found from cell density. Both are classical display choices made in your browser; the probe and the table read the raw pixel values.</p>
       <p class="honesty">Non-clinical: laboratory mouse tissue. Data CC BY 4.0, distributed by CZ CELLxGENE Discover, downloaded without an account. Credits are below.</p>
     </div></details>
-    <details class="drawer"><summary>Meet the cast</summary><div class="body">
-      <p>The pixel-art cast is drawn in the page's ink palette. Some of it is driven by the job data and some of it is decoration. Here is which is which.</p>
-      <ul class="cast" id="cast"></ul>
-      <p class="honesty">Ghost spots are found classically in <code>build_web.py</code>: the brightest blurred pixels (local maxima at least 41 px apart) among pixels that were dark (&lt; 4/255) in the measured map, inside the mask. Gene tags sit on each gene's densest measured spot (Gaussian-smoothed, 16 px). The mouse's mood follows the mean agreement r of the genes in view: happy at 0.8 or more, unsure from 0.5, dizzy below 0.5. Catching a ghost changes nothing in the data.</p>
-    </div></details>
+  </section>
+
+  <section class="more" id="made" aria-labelledby="made-h">
+    <div class="ink-bar"><span id="made-h">How it was made</span><span>Atlas blur-v1 &middot; 20 qubits &middot; simulator</span></div>
     <details class="drawer"><summary>What the quantum engine did</summary><div class="body">
       <p>Atlas <b>blur-v1</b> takes the image and a mask. For each connected mask region, and each colour channel on its own, it encodes the pixel brightnesses into the amplitudes of a quantum state, on a register where neighbouring pixels differ by one bit (QuantumBlur's Gray-code layout). It then applies one rotation gate per qubit and reads the probabilities back out as pixels. Outside the mask, every output pixel equals the input pixel (checked for all 8 jobs).</p>
       <p><b>Qubits.</b> A lens is a disk with a 541 &times; 541 px bounding box: &lceil;log&#8322; 541&rceil; + &lceil;log&#8322; 541&rceil; = 10 + 10 = <b>20 qubits</b>, the engine's maximum. The whole-section mask's box is 1012 &times; 575 px, which is also 10 + 10 = 20. These counts come from the engine's documented rule. The engine does not report a qubit count.</p>
@@ -300,11 +369,31 @@ table.stats tr.on td:first-child{border-left-color:var(--ink)}
       <p><b>What the settings did here.</b> All jobs use strength 1.0 with rx gates. At reach 0 (local), detail inside the lens regroups into square blocks but the layout survives: agreement r <span data-sum="echo-r">-</span> wherever the gene is present. At reach 0.5, the lens becomes a plaid of blocks: r <span data-sum="plaid-r">-</span>, and <span data-sum="plaid-ghost">-</span> of the blurred brightness lands where the gene was not detected.</p>
       <p class="honesty">blur-v1 runs on Atlas's classical statevector simulator. It has no QPU mode, so none of this ran on quantum hardware.</p>
     </div></details>
-    <details class="drawer"><summary>What this does not claim</summary><div class="body">
-      <p><b>The blur is a visual effect, not an analysis method.</b> It does not denoise, impute, cluster or smooth expression for statistics. It moves brightness between pixel positions according to the bit patterns of their addresses. The ghost-signal column (and the ghosts) show it placing expression where none was measured. Don't read any biology into a blurred pixel.</p>
-      <p><b>How the two numbers are computed</b> (classical, from the downloaded images, inside the mask). Agreement r is the Pearson correlation between measured and blurred pixel values for that gene. Ghost signal is the share of that gene's brightness sitting on pixels that were dark (below 4/255) in the measured map, shown as measured &rarr; blurred.</p>
-      <p class="honesty">No quantum advantage or speed-up is claimed: the simulator computes these images on classical hardware. Display colours are added in your browser. The lens snaps to the three computed positions, and nothing is computed live: while you drag, the faint rim only previews where it will snap. The 8-credit cap allowed 8 jobs, so reach 0.5 exists only for Three territories in the centre lens, and the whole-section mask only for Three territories. The mouse, its moods and the cell drawings are illustrations.</p>
+    <details class="drawer"><summary>Meet the cast</summary><div class="body">
+      <p>The pixel-art cast is drawn in the page's ink palette. Some of it is driven by the job data and some of it is decoration. Here is which is which.</p>
+      <ul class="cast" id="cast"></ul>
+      <p class="honesty">Ghost spots are found classically in <code>build_web.py</code>: the brightest blurred pixels (local maxima at least 41 px apart) among pixels that were dark (&lt; 4/255) in the measured map, inside the mask. Gene tags sit on each gene's densest measured spot (Gaussian-smoothed, 16 px). The mouse's mood follows the mean agreement r of the genes in view: happy at 0.8 or more, unsure from 0.5, dizzy below 0.5. Catching a ghost changes nothing in the data.</p>
     </div></details>
+  </section>
+
+  <section class="sec" id="claims" aria-labelledby="claims-h">
+    <div class="ink-bar"><span id="claims-h">What this does not claim</span><span>Honesty notes</span></div>
+    <div class="prose">
+      <p><b>The blur is a visual effect, not an analysis method.</b> It does not denoise, impute, cluster or smooth expression for statistics. It moves brightness between pixel positions according to the bit patterns of their addresses. The ghost-signal column shows it placing expression where none was measured. Don't read any biology into a blurred pixel. The ghosts in the scene show the same thing, pixel by pixel.</p>
+      <p><b>How the two numbers are computed</b> (classical, from the downloaded images, inside the mask). Agreement r is the Pearson correlation between measured and blurred pixel values for that gene. Ghost signal is the share of that gene's brightness sitting on pixels that were dark (below 4/255) in the measured map, shown as measured &rarr; blurred.</p>
+      <p class="honesty">No quantum advantage or speed-up is claimed: the simulator computes these images on classical hardware. Display colours are added in your browser. The lens snaps to the three computed positions, and nothing is computed live. The 8-credit cap allowed 8 jobs, so reach 0.5 exists only for Three territories in the centre lens, and the whole-section mask only for Three territories. While you drag, the faint rim only previews where it will snap. The mouse, its moods and the cell drawings are illustrations.</p>
+    </div>
+  </section>
+
+  <section class="more" id="jobs" aria-labelledby="jobs-h">
+    <div class="ink-bar"><span id="jobs-h">Jobs and credits</span><span><b id="j-n">8</b> jobs &middot; 1 credit each</span></div>
+    <div class="jobsblk">
+      <p class="cap">Every view on this page is one of these blur-v1 jobs, downloaded and shown as computed. The row marked in ink is the one on the slide; <b>Show</b> loads any of them.</p>
+      <div class="tscroll"><table class="stats jobs" aria-label="Every blur-v1 job">
+        <thead><tr><th scope="col">#</th><th scope="col">Gene set</th><th scope="col">Mask</th><th scope="col">Reach</th><th scope="col">Qubits</th><th scope="col">Seconds</th><th scope="col">Job ID</th><th scope="col"><span class="vh">Load</span></th></tr></thead>
+        <tbody id="jobrows"></tbody>
+      </table></div>
+    </div>
     <details class="drawer"><summary>Data, licence and credits</summary><div class="body">
       <p>Meng Zhang, Xingjie Pan, Won Jung, Aaron R. Halpern, Stephen W. Eichhorn, Zhiyun Lei, Limor Cohen, Kimberly A. Smith, Bosiljka Tasic, Zizhen Yao, Hongkui Zeng and Xiaowei Zhuang, "Molecularly defined and spatially resolved cell atlas of the whole mouse brain", <i>Nature</i> (2023), <a href="https://doi.org/10.1038/s41586-023-06808-9">doi:10.1038/s41586-023-06808-9</a>.</p>
       <p>Dataset "WB_MERFISH_animal4_sagittal", curated and distributed by <a href="https://cellxgene.cziscience.com/collections/0cca8620-8dee-45d0-aef5-23f032a5cf09">CZ CELLxGENE Discover</a> under CC BY 4.0. The same data is also listed as Zhuang-ABCA-4, CC BY 4.0, in the Allen Brain Cell Atlas.</p>
@@ -409,6 +498,8 @@ const LENSES = ['lens_282','lens_512','lens_742'];
 const SETTING_LABEL = {echo:'reach 0 (local)', plaid:'reach 0.5'};
 const CELL_NOTE = {Satb2:'cortical pyramidal neurons, mostly upper layers', Gpr88:'striatal medium spiny neurons', Gabra6:'cerebellar granule cells',
   Fezf2:'deep-layer (layer 5) pyramidal neurons', C1ql2:'dentate gyrus granule cells', Mog:'myelinating oligodendrocytes (fibre tracts)'};
+// where each gene sits in the brain (the gene notes under the Gene chips)
+const REGION_NOTE = {Satb2:'mostly cortex', Gpr88:'striatum', Gabra6:'cerebellar granule layer', Fezf2:'deeper cortical layers', C1ql2:'dentate gyrus', Mog:'fibre tracts (myelin)'};
 
 // ---------- pure helpers (unit-tested with node) ----------
 function findJob(jobs, set, mask, setting){ return jobs.find(j => j.composite===set && j.mask===mask && j.setting===setting) || null; }
@@ -701,7 +792,8 @@ function drawGhosts(t, now, lg){
     sprite(sp, InkSprite.frameAt(sp, t + g.i * .37), px - 6 * kg, py - 14 * kg + bob, kg, g.x > (lg ? lg.x : W / 2));
   }
   fxs.poofs = fxs.poofs.filter(p => now - p.t0 < 330);
-  for (const p of fxs.poofs) sprite(SP.poof, Math.min(2, Math.floor((now - p.t0) / 110)), p.x * sx - 6.5 * kg, p.y * sy - 14 * kg, kg, false);
+  // frame 0..2; a rAF timestamp can sit a moment before the catch's performance.now(), so clamp below too
+  for (const p of fxs.poofs) sprite(SP.poof, Math.max(0, Math.min(2, Math.floor((now - p.t0) / 110))), p.x * sx - 6.5 * kg, p.y * sy - 14 * kg, kg, false);
 }
 // gene tags (cell drawing + name) pinned on each gene's densest measured spot; kept off the lens rim and the corner label
 function drawTags(lg){
@@ -779,7 +871,8 @@ function readouts(){
     tr.append(td1, td2, td3); tb.appendChild(tr);
   });
   if (j) VERD = verdict(j, c, genesInView(), mk.name);
-  sync(); talk();
+  document.getElementById('stats-cap').innerHTML = j ? `Per gene, inside the ${mk.name.toLowerCase()} mask of job <b>${j.job_id.slice(0, 8)}</b> (${c.name}, reach ${j.reach}). Agreement r: Pearson correlation of measured and blurred pixel values. Ghost signal: share of the gene's brightness on pixels that were dark in the measurement, measured &rarr; blurred; the bar is the blurred share. Rows marked in ink are the genes in view. Both numbers are defined under What this does not claim, below.` : '';
+  sync(); talk(); drawFig(); markJob(j);
 }
 
 function probe(){
@@ -792,6 +885,90 @@ function probe(){
   const parts = [`<span>${inside ? 'inside mask' : 'outside mask: unchanged'}</span>`];
   c.genes.forEach((g, i) => { if (st.gene < 0 || st.gene === i) parts.push(`<span>${g.gene} <b>${(pm[k + i] / 255).toFixed(2)}</b> measured \u2192 <b>${(pb[k + i] / 255).toFixed(2)}</b> blurred</span>`); });
   el.innerHTML = parts.join('');
+}
+
+// ---------- The data: figure 1 (measured | blurred, the plain engine output), the per-gene table, the job list ----------
+// Figure 1 is the earlier slide without the cast: same paper, tissue tint, pigments and dashed mask outline, drawn for
+// the view the controls pick. It is redrawn only when that view (or an image, or the figure's size) changes.
+const figM = document.getElementById('fig-m'), figB = document.getElementById('fig-b');
+const gM = figM.getContext('2d'), gB = figB.getContext('2d');
+const figBase = {m: document.createElement('canvas'), b: document.createElement('canvas')};
+for (const c of Object.values(figBase)){ c.width = W; c.height = H; }
+let figKey = '', figShown = '', figCursor = null, figK = 1;
+function paint(g, v){   // paper ground + faint tissue tint, then the gene view multiplied on top (as layer() on the slide)
+  g.fillStyle = PAPER; g.fillRect(0, 0, W, H);
+  const t = img(D.tissue); if (ready(t)) g.drawImage(t, 0, 0);
+  if (!v) return;
+  g.globalCompositeOperation = v instanceof HTMLImageElement ? 'difference' : 'multiply';
+  g.drawImage(v, 0, 0); g.globalCompositeOperation = 'source-over';
+}
+function inkLine(g, path, w, dash, k){   // ink line on a paper halo (as dashed() on the slide)
+  g.save(); g.setLineDash([]); g.lineWidth = (w + 4) * k; g.strokeStyle = 'rgba(251,250,249,.9)'; path(); g.stroke();
+  g.lineWidth = w * k; g.strokeStyle = INK; g.setLineDash(dash.map(d => d * k)); path(); g.stroke(); g.restore();
+}
+function maskPath(g, mk){ return () => { g.beginPath();
+  if (mk.kind === 'lens') g.arc(mk.x, mk.y, mk.r + 3, 0, 2 * Math.PI);
+  else { mk.outline.forEach(([x, y], i) => i ? g.lineTo(x, y) : g.moveTo(x, y)); g.closePath(); } }; }
+function drawFig(){
+  const j = job(), c = comp(), mk = D.masks[st.mask];
+  figK = Math.max(1, Math.min(3.5, W / (figM.clientWidth || W)));
+  const vb = j && view(j.file, st.gene), vm = view(c.measured, st.gene);
+  const key = [j ? j.file : '-', c.measured, st.gene, st.mask, !!vb, !!vm, ready(img(D.tissue)), figK.toFixed(2)].join('|');
+  if (key !== figKey){
+    figKey = key;
+    const bm = figBase.m.getContext('2d'), bb = figBase.b.getContext('2d');
+    paint(bm, vm); inkLine(bm, maskPath(bm, mk), 3, [14, 10], figK);
+    paint(bb, vb); inkLine(bb, maskPath(bb, mk), 3, [14, 10], figK);
+    document.getElementById('fig-tag').textContent = st.setting === 'plaid' ? 'Blurred \u00b7 reach 0.5' : 'Quantum-blurred';
+    document.getElementById('fig-legend').innerHTML = genesInView().map(i => `<span><span class="chip-dot" style="background:rgb(${COL[i]})"></span>${c.genes[i].gene}</span>`).join('');
+    const who = st.gene < 0 ? 'all three genes' : c.genes[st.gene].gene;
+    document.getElementById('fig-cap').innerHTML = j ? `${c.name}, ${who}, ${mk.name.toLowerCase()}, reach ${j.reach}. Left: the measured MERFISH map. Right: the blur-v1 output downloaded for job <b>${j.job_id.slice(0, 8)}</b>. The dashed ink line is the mask; outside it the two images are identical, pixel for pixel. Same pigments and paper as the slide, without the cast or the wipe. It follows every control above; point at either map to read that pixel in both.` : '';
+    figM.setAttribute('aria-label', `Measured expression map, ${c.name}, ${who}`);
+    figB.setAttribute('aria-label', `The same map after blur-v1, job ${j ? j.job_id : '-'}, ${mk.name}, reach ${j ? j.reach : '-'}`);
+    if (figCursor) figProbe();
+  }
+  const shown = key + '|' + (figCursor ? figCursor.x + ',' + figCursor.y : '');
+  if (shown === figShown) return;
+  figShown = shown;
+  gM.drawImage(figBase.m, 0, 0); gB.drawImage(figBase.b, 0, 0);
+  if (figCursor){ const x = figCursor.x + .5, y = figCursor.y + .5, a = 14, b = 5;
+    for (const g of [gM, gB]) inkLine(g, () => { g.beginPath(); g.moveTo(x - a * figK, y); g.lineTo(x - b * figK, y); g.moveTo(x + b * figK, y); g.lineTo(x + a * figK, y);
+      g.moveTo(x, y - a * figK); g.lineTo(x, y - b * figK); g.moveTo(x, y + b * figK); g.lineTo(x, y + a * figK); }, 1.75, [], figK); }
+}
+function figProbe(){
+  const el = document.getElementById('fig-probe');
+  if (!figCursor){ el.innerHTML = '<span>Point at either map to read that pixel in both.</span>'; return; }
+  const j = job(), c = comp(), pm = pixels(c.measured), pb = j && pixels(j.file);
+  if (!pm || !pb){ el.innerHTML = tainted ? '<span>Pixel probe needs the published page (browsers block pixel reads from local files).</span>' : '<span>Loading\u2026</span>'; return; }
+  const {x, y} = figCursor, k = (y * W + x) * 4;
+  const parts = [`<span>pixel (${x}, ${y + D.crop.y0}) \u00b7 ${inMask(D.masks[st.mask], x, y) ? 'inside mask' : 'outside mask: unchanged'}</span>`];
+  c.genes.forEach((g, i) => { if (st.gene < 0 || st.gene === i) parts.push(`<span>${g.gene} <b>${(pm[k + i] / 255).toFixed(2)}</b> measured \u2192 <b>${(pb[k + i] / 255).toFixed(2)}</b> blurred</span>`); });
+  el.innerHTML = parts.join('');
+}
+for (const c of [figM, figB]){
+  const at = e => { const r = c.getBoundingClientRect();
+    figCursor = {x: Math.max(0, Math.min(W - 1, Math.floor((e.clientX - r.left) / r.width * W))), y: Math.max(0, Math.min(H - 1, Math.floor((e.clientY - r.top) / r.height * H)))};
+    drawFig(); figProbe(); };
+  c.addEventListener('pointermove', at); c.addEventListener('pointerdown', at);
+  c.addEventListener('pointerleave', () => { figCursor = null; drawFig(); figProbe(); });
+}
+// every job, with a button that puts it on the slide
+const jobRows = document.getElementById('jobrows');
+D.jobs.forEach((j, i) => {
+  const tr = document.createElement('tr'); tr.dataset.job = j.job_id;
+  const cells = [i + 1, D.composites[j.composite].name, D.masks[j.mask].name, `${j.reach} \u00b7 ${j.setting === 'plaid' ? 'wider' : 'local'}`, j.qubits, j.seconds.toFixed(1)];
+  for (const v of cells){ const td = document.createElement('td'); td.textContent = v; tr.appendChild(td); }
+  const tdId = document.createElement('td'); tdId.innerHTML = `<code>${j.job_id}</code>`; tr.appendChild(tdId);
+  const tdB = document.createElement('td'), b = document.createElement('button');
+  b.type = 'button'; b.className = 'btn ghost'; b.textContent = 'Show'; b.setAttribute('aria-label', `Show job ${i + 1} on the slide`);
+  b.addEventListener('click', () => { apply({set: j.composite, mask: j.mask, setting: j.setting}, 'set'); stage.scrollIntoView({behavior: REDUCED ? 'auto' : 'smooth', block: 'center'}); });
+  tdB.appendChild(b); tr.appendChild(tdB); jobRows.appendChild(tr);
+});
+document.getElementById('j-n').textContent = D.jobs.length;
+let markedJob = null;
+function markJob(j){
+  const id = j ? j.job_id : null; if (id === markedJob) return; markedJob = id;
+  jobRows.querySelectorAll('tr').forEach(tr => { const on = tr.dataset.job === id; tr.className = on ? 'on' : ''; const b = tr.querySelector('button'); b.textContent = on ? 'On the slide' : 'Show'; });
 }
 
 // ---------- catching ghosts ----------
@@ -834,7 +1011,8 @@ function buildGenes(){
     b.addEventListener('click', () => { st.gene = +val; newView(); draw(); }); gGene.appendChild(b); };
   mk(-1, 'All three'); comp().genes.forEach((g, i) => mk(i, g.gene, COL[i]));
   const ul = document.getElementById('gene-notes'); ul.textContent = '';
-  comp().genes.forEach(g => { const li = document.createElement('li'); li.textContent = `${g.gene}: ${CELL_NOTE[g.gene] || ''} \u00b7 ${g.cells.toLocaleString('en-US')} cells with signal`; ul.appendChild(li); });
+  comp().genes.forEach(g => { const li = document.createElement('li'); li.textContent = `${g.gene}: ${REGION_NOTE[g.gene] || ''} \u00b7 ${g.cells.toLocaleString('en-US')} cells with signal`;
+    if (CELL_NOTE[g.gene]) li.textContent += ` \u00b7 its drawing: ${CELL_NOTE[g.gene]}`; ul.appendChild(li); });
 }
 function sync(){
   press(gSet, 'set', st.set); press(gGene, 'gene', st.gene); press(gMask, 'mask', st.mask); press(gReach, 'setting', st.setting); press(gView, 'view', st.view);

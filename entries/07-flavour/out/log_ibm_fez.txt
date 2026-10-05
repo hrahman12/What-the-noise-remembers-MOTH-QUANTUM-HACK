@@ -1,0 +1,4 @@
+  qpixl-v1: submitted df2a8d6a-3fec-4dc4-a825-28375b842090
+  qpixl-v1: done df2a8d6a in 79.4s
+  ibm_fez          n=  112  job df2a8d6a-3fec-4dc4-a825-28375b842090  backend ibm_fez  rms 0.0837
+spent 18 / 45

@@ -1,0 +1,37 @@
+{
+ "source": "E. K. Anderson et al. (ALPHA Collaboration), 'Observation of the effect of gravity on the motion of antimatter', Nature 621, 716-722 (2023), doi:10.1038/s41586-023-06527-1, Table 1 'Results of the release trials'. Open access, CC BY 4.0.",
+ "transcribed_from": "Europe PMC full-text XML of PMC10533407 (https://www.ebi.ac.uk/europepmc/webservices/rest/PMC10533407/fullTextXML), table-wrap Tab1",
+ "notes": [
+  "Events are escapes in the 10-20 s window of the 20 s mirror ramp-down, inside the z-cut regions [-32.8,-12.8] cm (down) and [12.8,32.8] cm (up).",
+  "All values are corrected for the expected cosmic-ray background (hence fractional and occasionally negative counts).",
+  "They are NOT corrected for the relative detector efficiency of the up and down regions; the paper's P_dn in its Fig. 5 comes from a likelihood analysis that does apply that correction.",
+  "Bias labels are nominal (programmed) values in units of g; the paper's Fig. 5 plots derived biases that differ slightly.",
+  "Positive bias encourages antihydrogen to exit at the bottom. The +/-10 g rows are calibration trials."
+ ],
+ "columns": ["bias_g", "trials", "n_up", "n_dn", "n_loc"],
+ "rows": [
+  [-3.0, 7, 151.7, 16.5, 199.2],
+  [-2.0, 7, 128.7, 33.5, 168.2],
+  [-1.5, 6, 128.9, 57.7, 192.0],
+  [-1.0, 7, 69.7, 62.5, 183.2],
+  [-0.5, 7, 55.7, 67.5, 201.2],
+  [0.0, 7, 36.7, 94.5, 144.2],
+  [0.5, 7, 36.7, 124.5, 177.2],
+  [1.0, 7, 17.7, 119.5, 185.2],
+  [1.5, 6, 13.9, 180.7, 234.0],
+  [2.0, 7, 6.7, 163.5, 228.2],
+  [3.0, 7, 7.7, 147.5, 199.2],
+  [-10.0, 6, 142.9, 0.7, 169.0],
+  [10.0, 6, -0.1, 185.7, 213.0]
+ ],
+ "background_per_trial": {"top": "0.18 +/- 0.01", "bottom": "0.21 +/- 0.01", "loc_window_13.1s": "0.83 +/- 0.02"},
+ "headline": {
+  "a_g_over_g": 0.75, "stat_plus_sys": 0.13, "simulation": 0.16,
+  "p_no_gravity": "2.9e-4", "p_repulsive": "< 1e-15",
+  "hydrogen_symmetric_trap_down_fraction": "about 80% (simulation)",
+  "balance_field_difference_T": "-4.53e-4 (B_G - B_A) for matter in the 1-D model",
+  "mirror_peak_separation_cm": 25.6, "trap_diameter_cm": 4.4, "trap_depth_K": 0.5,
+  "ramp_s": 20, "time_window_s": [10, 20], "atoms_per_stack_campaign": "about 100 atoms from 50 stacks in about 4 h",
+  "total_events_main_dataset": 1722
+ }
+}

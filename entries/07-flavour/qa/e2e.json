@@ -1,0 +1,25 @@
+{
+ "ok": true,
+ "steps": [
+  "loaded: hub link, proof chips (13 qubits, ibm_fez, 14 jobs) match piece.json, silent",
+  "sources: atmosphere 5 GeV, reactor (4 MeV label, CPT readout), Sun (10 MeV label), accelerator at T2K 295 km",
+  "dragged the neutrino to L = 509 km; Home and Shift+arrows move it too",
+  "Start the synth; holding the A3 tube started 3 Web Audio sources and detected one neutrino",
+  "clicked Super-K: a mu-like ring lit 352 tubes",
+  "Detect x100: 1201 neutrinos, largest gap to the curves 0.7 %",
+  "chips fake_torino, fake_brussels and back to ibm_fez redraw the curves; Mix exact/measured; model 2/3",
+  "Flight: a held note flew 0.45 decades in 0.9 s; L/E knob moves the neutrino and switches source",
+  "Hold a drone / Stop the drone",
+  "graphs render: curves 1185x370 with 947 colours; three waveforms; plate figures",
+  "dragged the curves to L/E 614 km/GeV; arrow keys; out-of-range click switched source",
+  "waveforms: click or Enter plays that oscillator alone; tau is off in the 2-flavour model",
+  "Stop all sound stops the voices, the drone, the solo and the demo",
+  "demos: all three play and stop; scrub to 10.3 s then play starts there; the fake_torino cue jumps to 10.2 s",
+  "8 drawers open; eight titled sections visible; earlier words in place; no ranking wording",
+  "job table: 14 rows match PARAMS.md; fake_kyoto from the table is on the synth",
+  "share link #fake_kyoto~139~40~2~20~atmo~1 restores chip, source, energy, L/E 139, mix 0.4, model 2 and flight 0.2 after reload; a second link in the same tab (an old gelateria link) applies too",
+  "nav: prev 06, hub, next 08, and a 22-piece jump list",
+  "phone width 375 px: narrow plate, no overflow",
+  "no page errors; no external requests beyond Google Fonts"
+ ]
+}

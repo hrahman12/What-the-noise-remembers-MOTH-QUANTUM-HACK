@@ -1,0 +1,70 @@
+{
+ "slug": "05-jam-the-bat",
+ "challenge": "05",
+ "bonus": false,
+ "title": "Jam the Bat",
+ "hook": "Jam a bat that learns your rhythm.",
+ "sub": "You're a tiger moth. Your ultrasonic clicks scramble the bat's sonar, but its AI learns your timing. Feed your click jitter from a metronome, a leaky seed packet, an emulator, or 156 qubits of IBM's ibm_fez, and see which one it can read.",
+ "you_control": [
+  "Steer the moth (pointer, finger or arrow keys)",
+  "Click to jam: hold for a click train, tap for one click",
+  "Pick your noise-maker mid-flight: metronome, leaky seed packet, emulator box, or the ibm_fez / ibm_marrakesh chip",
+  "Run the bat tournament: 100-500 auto-rounds per source"
+ ],
+ "engines": [
+  "comet-qrng-v1"
+ ],
+ "qubits": 156,
+ "qubits_note": "comet-qrng-v1 on ibm_fez and on ibm_marrakesh: 148 register + 8 Bell-witness = 156 qubits each, reported by the job's provenance.circuit (n_rand 148, n_total 156); initial_layout covers physical qubits 0-155, the whole chip. Emulator runs at the 20-qubit emu cap (12+8 and 20+0).",
+ "hardware": "ibm_fez",
+ "hardware_all": [
+  "ibm_fez",
+  "ibm_marrakesh"
+ ],
+ "chsh_S": {
+  "ibm_fez": [
+   2.5428,
+   0.0154
+  ],
+  "ibm_marrakesh": [
+   2.7278,
+   0.0146
+  ],
+  "aer_emulator": [
+   2.8366,
+   0.0141
+  ]
+ },
+ "jobs": 4,
+ "credits_spent": 20,
+ "deliverables": [
+  "web/index.html",
+  "web/template.html",
+  "web/core.js",
+  "web/files.json",
+  "web/sprites.json",
+  "web/img/mascot.png",
+  "build_web.py",
+  "run_comet.py",
+  "sim.js",
+  "test_core.js",
+  "bank_checks.py",
+  "qa/e2e.cjs",
+  "out/jobs.json",
+  "out/fez_148p8.json",
+  "out/mar_148p8.json",
+  "out/emu_20p0.json",
+  "out/emu_12p8.json",
+  "out/tournament.json",
+  "out/bank_checks.json",
+  "screenshot.png",
+  "README.md",
+  "PARAMS.md",
+  "CREDITS.md"
+ ],
+ "web_entry": "web/index.html",
+ "mascot": "web/img/mascot.png",
+ "status": "built",
+ "honesty": "Hardware banks are real comet-qrng-v1 outputs from all 156 qubits of ibm_fez (S = 2.543 +/- 0.015) and ibm_marrakesh (S = 2.728 +/- 0.015), entropy-accounted under a stated independence assumption but not certified (CHSH is a fidelity witness, not device-independent); the emulator bank is an uncertified classical baseline; the game, bat AI and tournament are classical, and the tournament shows hardware, emulator and secret-seed PRNG level (p = 0.93), with only the metronome and the leaked seed losing.",
+ "blockers": []
+}

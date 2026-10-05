@@ -1,0 +1,1257 @@
+<title>Moth to Flame</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+/*BRAND*/
+/* Layout: the flight is the hero. Desktop: stage left, story + controls right. Phone: head, stage, controls.
+   Look: Moth Hack brief pages. Paper ground, one ultramarine ink, hairlines, square panels, pill buttons. */
+.wrap{max-width:78rem;margin-inline:auto}
+.hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);grid-template-areas:"stage head" "stage intro" "stage panel";grid-template-rows:auto auto 1fr;gap:1.1rem clamp(1.25rem,3vw,2.5rem);align-items:start;padding-block:2rem 1rem}
+.head{grid-area:head;display:grid;gap:1rem;min-width:0}
+.intro{grid-area:intro;display:grid;gap:1rem;min-width:0}
+.stagecol{grid-area:stage;display:grid;gap:.75rem;min-width:0}
+.side{grid-area:panel;display:grid;gap:1rem;min-width:0}
+.stage{position:relative;overflow:hidden;border:1px solid var(--ink);background:var(--ink);user-select:none}
+.stage:not(.data) .icon[aria-pressed="true"]{border-color:var(--paper)}
+canvas#cv:focus-visible{outline:2px solid var(--paper);outline-offset:-4px}
+canvas#cv{display:block;width:100%;aspect-ratio:1/1;max-height:82vh;touch-action:none;cursor:crosshair;image-rendering:pixelated}
+.stage.data{background:var(--panel)}
+.stage.data canvas#cv{image-rendering:auto}
+.stage.data canvas#cv:focus-visible{outline-color:var(--ink)}
+.chip{position:absolute;z-index:2;left:.7rem;top:.7rem;font:500 .68rem/1.35 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);background:rgba(251,250,249,.95);border:1px solid var(--ink);padding:.45rem .65rem;max-width:calc(100% - 9rem);pointer-events:none}
+.chip b{color:var(--ink);font-weight:500}
+.corner{position:absolute;z-index:2;right:.7rem;top:.7rem;display:flex;gap:.35rem;flex-wrap:wrap;justify-content:flex-end;max-width:8.5rem}
+.icon{border:1px solid var(--ink);background:var(--paper);color:var(--ink);border-radius:999px;padding:.45rem .75rem;font:500 .7rem/1 var(--mono);letter-spacing:.04em;cursor:pointer}
+.icon:hover{background:var(--panel-2)}
+.icon[aria-pressed="true"]{background:var(--ink);color:var(--on-ink)}
+.hud{position:absolute;left:.7rem;right:.7rem;bottom:.7rem;display:flex;align-items:center;gap:.7rem;background:rgba(251,250,249,.95);border:1px solid var(--ink);border-radius:999px;padding:.5rem .9rem;pointer-events:none;min-width:0}
+.hud .bar{flex:1 1 4rem;height:6px;border-radius:99px;background:var(--rule);overflow:hidden;min-width:3rem}
+.hud .bar i{display:block;height:100%;width:100%;background:var(--ink)}
+.hud .num{font:500 .74rem/1 var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--ink)}
+.hud .warn{color:var(--warn);overflow:hidden;text-overflow:ellipsis;min-width:0;flex:0 1 auto}
+.hud .warn:empty{display:none}
+.overlay{position:absolute;inset:0;display:grid;place-items:center;background:rgba(251,250,249,.5);padding:1rem}
+.overlay[hidden]{display:none}
+.stage:not(.data) .overlay{background:rgba(25,35,142,.38)}
+.overlay.end{place-items:start center;padding-top:4.6rem}
+.stage:not(.data) .overlay.end{background:rgba(25,35,142,.16)}
+.card{display:grid;gap:.75rem;justify-items:center;text-align:center;background:var(--panel);color:var(--ink);border:1px solid var(--ink);padding:1.25rem 1.35rem;max-width:24rem;max-height:100%;overflow:auto}
+#ov-moth{display:block;width:96px;height:66px;image-rendering:pixelated}
+.card h2{font-size:clamp(1.5rem,3.5vw,2.1rem);line-height:1.05}
+.card p{color:var(--ink-2);font-size:.9rem}
+.card .row{justify-content:center}
+.btn[hidden],.icon[hidden]{display:none}
+.pad{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem}
+.pad button{border:1px solid var(--ink);background:var(--panel);color:var(--ink);border-radius:999px;padding:.85rem .5rem;font:500 .76rem/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;touch-action:none;user-select:none}
+.pad button:hover{background:var(--tint)}
+.pad button.on{background:var(--ink);color:var(--on-ink)}
+.viewrow{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .9rem}
+.viewrow .label{color:var(--ink-2)}
+.legend{display:flex;flex-wrap:wrap;gap:.45rem 1.1rem;font:400 .7rem/1.4 var(--mono);color:var(--ink-2);margin:0;padding-top:.6rem;border-top:1px solid var(--rule)}
+.legend[hidden]{display:none}
+.legend span{display:inline-flex;align-items:center;gap:.45rem}
+.legend img{display:block;flex:none;image-rendering:pixelated;border:1px solid var(--ink)}
+.legend img+img{margin-left:-.2rem}
+.sw{display:inline-block;flex:none}
+.sw.lit{width:.5rem;height:.5rem;border-radius:99px;background:var(--ink);outline:1px solid var(--ink);outline-offset:2px;margin-inline:3px}
+.sw.off{width:.5rem;height:.5rem;border-radius:99px;background:var(--panel);border:1.5px solid var(--ink-3)}
+.sw.glare{width:.85rem;height:.85rem;border-radius:99px;background:rgba(25,35,142,.09);border:1px dashed var(--ink)}
+.sw.hedge{width:1rem;height:.28rem;background:var(--ink)}
+.sw.st{width:1rem;height:.45rem;background:rgba(25,35,142,.1)}
+.sw.chg{width:1rem;height:0;border-top:2px dashed var(--warn)}
+.kicker{font:500 .74rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+h1{font-size:clamp(2.3rem,5vw,4.2rem);line-height:.98;letter-spacing:-.025em;font-weight:400}
+.sub{font-size:1.05rem;color:var(--ink-2);max-width:46ch}
+.steps{display:grid;gap:.55rem;counter-reset:s;margin:0;padding:0;list-style:none}
+.steps li{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:.6rem;align-items:baseline;font-size:.94rem;color:var(--ink)}
+.steps li::before{counter-increment:s;content:counter(s);font:500 .8rem/1.6 var(--mono);color:var(--on-ink);background:var(--ink);border-radius:99px;width:1.6rem;height:1.6rem;display:grid;place-items:center}
+.steps b{font-weight:500}
+.panel{display:grid;gap:.85rem;background:var(--panel);border:1px solid var(--rule);padding:1.1rem 1.2rem}
+.row{display:flex;flex-wrap:wrap;gap:.55rem;align-items:center}
+.row.split{justify-content:space-between}
+.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(7.5rem,1fr));gap:1px;background:var(--ink);border:1px solid var(--ink)}
+.levels button{text-align:left;border:0;background:var(--panel);color:var(--ink);padding:.65rem .7rem;cursor:pointer;display:grid;grid-template-columns:auto minmax(0,1fr);gap:.25rem .6rem;align-items:center;border-radius:0}
+.levels button:hover{background:#ECEDF6}
+.levels .lvchip{display:block;width:34px;height:34px;image-rendering:pixelated;background:var(--paper);border-radius:4px;padding:2px;box-sizing:content-box}
+.levels .lvtxt{display:grid;gap:.25rem;min-width:0}
+.levels button b{font:400 1.05rem/1.1 var(--display);color:var(--ink);letter-spacing:-.01em}
+.levels .lvtxt span{font:500 .62rem/1.25 var(--mono);color:var(--ink-2);letter-spacing:.06em;text-transform:uppercase}
+.levels button[aria-pressed="true"]{background:var(--ink)}
+.levels button[aria-pressed="true"] b,.levels button[aria-pressed="true"] .lvtxt span{color:var(--on-ink)}
+.levels button:focus-visible{outline-offset:-4px;outline-color:var(--warn)}
+.shotrow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:.6rem;align-items:center}
+.shotrow .mid{display:grid;gap:.35rem;min-width:0}
+.shotrow .num{font:500 .74rem/1.35 var(--mono);color:var(--ink)}
+canvas#bits{width:100%;max-width:15rem;image-rendering:pixelated;border:1px solid var(--ink);display:block;background:var(--panel-2);cursor:pointer;touch-action:manipulation}
+.shotrow .num.pick{color:var(--ink-2);font-weight:400}
+.overlay.look{place-items:start center;padding-top:4.6rem}
+.stage:not(.data) .overlay.look{background:rgba(25,35,142,.16)}
+#ov-moth{cursor:pointer}
+.readout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.3rem .9rem;font:400 .74rem/1.5 var(--mono);color:var(--ink-2);margin:0;padding-top:.85rem;border-top:1px solid var(--rule)}
+.readout dt{text-transform:uppercase;letter-spacing:.08em;font-size:.64rem;line-height:1.8}
+.readout dd{margin:0}
+.readout b{color:var(--ink);font-weight:500;overflow-wrap:anywhere}
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:var(--ink);color:var(--on-ink);font:500 .8rem/1.2 var(--mono);letter-spacing:.04em;padding:.8rem 1.1rem;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:5;max-width:calc(100vw - 2rem);text-align:center}
+.toast.on{opacity:1}
+.more{margin-top:2.5rem}
+.more .ink-bar{margin-bottom:.25rem}
+table.map{border-collapse:collapse;font-size:.85rem;width:100%;table-layout:fixed;color:var(--ink)}
+table.map td,table.map th,.body code{overflow-wrap:anywhere}
+table.map td,table.map th{border-bottom:1px solid var(--rule);padding:.45rem .5rem .45rem 0;text-align:left;vertical-align:top}
+table.map th{font:500 .64rem/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);border-bottom-color:var(--ink)}
+.body code{font:400 .85em var(--mono);color:var(--ink)}
+.kb{font:500 .7rem/1 var(--mono);border:1px solid var(--ink-3);border-radius:3px;padding:.15rem .35rem;color:var(--ink);background:var(--panel)}
+/* below the game: every text and graph sits in a visible, titled section */
+.toc{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.9rem}
+.toc button{border:1px solid var(--rule);background:var(--panel);color:var(--ink);border-radius:999px;padding:.5rem .8rem;font:500 .68rem/1.1 var(--mono);letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+.toc button:hover{border-color:var(--ink);background:var(--tint)}
+.sec{margin-top:2.6rem;display:grid;gap:1rem;scroll-margin-top:1rem;min-width:0}
+.sec-head{display:flex;align-items:baseline;gap:.9rem;border-top:1px solid var(--ink);padding-top:1rem}
+.sec-head .label{color:var(--ink);font-size:.82rem}
+.sec-head h2{font-size:clamp(1.6rem,3.2vw,2.3rem);line-height:1.05}
+.sec-sub{color:var(--ink-2);max-width:72ch}
+.sec-sub b{color:var(--ink);font-weight:500}
+.sec .honesty{max-width:72ch;font-size:.92rem}
+table.ctl{font-size:.88rem}
+table.ctl th:first-child{width:30%}
+table.ctl td:first-child{font-weight:500}
+table.ctl code{font:400 .82em var(--mono);overflow-wrap:anywhere}
+.dtools{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.6rem 1rem;background:var(--panel);border:1px solid var(--rule);padding:.7rem .9rem}
+.dtools .label{color:var(--ink)}
+.btn.sm{padding:.5rem .85rem;font-size:.8rem}
+.btn.ghost[aria-pressed="true"]{background:var(--ink);color:var(--on-ink)}
+.figs{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:1rem;align-items:start}
+.fig{margin:0;display:grid;gap:.7rem;align-content:start;background:var(--panel);border:1px solid var(--rule);padding:1rem;min-width:0}
+.fig .fnum{font:500 .7rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
+.fig figcaption{display:grid;gap:.4rem;font-size:.86rem;color:var(--ink-2)}
+.fig .legend{border-top:0;padding-top:0}
+.readline{font:400 .74rem/1.5 var(--mono);color:var(--ink)}
+canvas#dmap{display:block;width:100%;max-height:80vh;border:1px solid var(--ink);background:var(--panel-2);touch-action:none;cursor:crosshair}
+canvas#dmap:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+canvas#dbits{display:block;width:100%;max-width:22rem;image-rendering:pixelated;border:1px solid var(--ink);background:var(--panel-2);cursor:pointer;touch-action:manipulation}
+.minis{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:.75rem;align-items:start}
+.minis button{display:grid;gap:.45rem;text-align:left;border:1px solid var(--rule);background:var(--panel);color:var(--ink);padding:.6rem;cursor:pointer;border-radius:0;min-width:0}
+.minis button:hover{border-color:var(--ink)}
+.minis button[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.minis img{display:block;width:100%;height:auto}
+.minis .mt{font:500 .7rem/1.35 var(--mono);letter-spacing:.03em;color:var(--ink)}
+.minis .ms{font:400 .68rem/1.35 var(--mono);color:var(--ink-2)}
+.minis .cmpcard{display:grid;gap:.45rem;text-align:left;border:1px dashed var(--ink-3);background:var(--panel);color:var(--ink);padding:.6rem;min-width:0}
+.minis .mt img.lvchip{display:inline-block;width:20px;height:20px;vertical-align:-6px;margin-right:.4rem;image-rendering:pixelated;background:var(--paper);border-radius:3px;padding:1px}
+.cmptools{padding:.55rem .7rem}
+table.jobs.cmpt{min-width:34rem}
+table.jobs.cmpt th[scope="row"]{width:11rem}
+.tablewrap{overflow-x:auto;border:1px solid var(--rule);background:var(--panel)}
+table.jobs{border-collapse:collapse;width:100%;min-width:60rem;font-size:.8rem;color:var(--ink)}
+table.jobs th,table.jobs td{border-bottom:1px solid var(--rule);padding:.55rem .6rem;text-align:left;vertical-align:top}
+table.jobs th{font:500 .6rem/1.25 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);border-bottom-color:var(--ink)}
+table.jobs code{font:400 .74rem/1.4 var(--mono);overflow-wrap:anywhere}
+table.jobs .btn{white-space:nowrap}
+.credits{display:grid;gap:.5rem;margin:0;padding:0;list-style:none;color:var(--ink-2);max-width:78ch;font-size:.9rem}
+.credits li{border-top:1px solid var(--rule);padding-top:.5rem}
+.credits b{color:var(--ink);font-weight:500}
+.credits code{font:400 .85em var(--mono);color:var(--ink)}
+@media (max-width:900px){.hero{grid-template-areas:"head" "stage" "intro" "panel";grid-template-columns:minmax(0,1fr)}.figs{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:560px){
+.chip{font-size:.6rem;max-width:calc(100% - 8.6rem)}.hud{gap:.5rem;padding:.45rem .7rem}.hud .label{display:none}
+.stage.fly .chip{display:none}.stage.ov .hud{display:none}
+.overlay,.overlay.end,.overlay.look{place-items:start center;padding:5.3rem .6rem .6rem}
+.card{gap:.5rem;padding:.8rem .9rem}.card h2{font-size:1.35rem}.card p{font-size:.8rem}.card .btn{padding:.62rem 1rem;font-size:.85rem}#ov-hint{display:none}
+#ov-moth{width:64px;height:44px}
+.levels{grid-template-columns:minmax(0,1fr)}
+.side .seg{background:none;border:0;padding:0;gap:.4rem}.side .seg button{border:1px solid var(--ink);padding:.55rem .8rem}.side .seg button:disabled{border-color:var(--rule)}
+.more .ink-bar span+span{display:none}
+}
+</style>
+
+<div class="wrap">
+  <nav class="wtnr-bar"><a href="https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa">What the Noise Remembers</a><span class="count">Challenge <b>05</b></span></nav>
+
+  <div class="hero">
+    <div class="head">
+      <p class="kicker">Challenge 05 · Quantum game</p>
+      <h1>Fly a moth home before the lamps catch it.</h1>
+      <p class="sub">Every hedge in this night town was read from the shots of a quantum circuit, and one real shot decides which lamps are lit. The moth's own light reflex will try to keep it circling.</p>
+    </div>
+
+    <div class="intro">
+      <div class="proof">
+        %%CHIPS%%
+      </div>
+      <ol class="steps">
+        <li><span><b>Steer</b> with <span class="kb">&larr;</span> <span class="kb">&rarr;</span> or by dragging, and <b>flap</b> with <span class="kb">&uarr;</span> to break out of a lamp's orbit.</span></li>
+        <li><span><b>Pick a shot</b>: each is a real measurement from the job, and each one lights a different set of lamps.</span></li>
+        <li><span><b>Let go</b> beside a lamp, or press Hands off mid-flight, and watch the reflex hold the moth on its own.</span></li>
+        <li><span><b>Compare</b> the planned streets with the hedges the quantum state actually produced. Flip the town to <b>Data</b>, or scroll to <b>The data</b> below, to read the measured ⟨ZZ⟩ on every edge.</span></li>
+      </ol>
+    </div>
+
+    <div class="stagecol">
+      <div class="stage" id="stage">
+        <canvas id="cv" tabindex="0" aria-label="Pixel-art night town seen from above. A moth flies from a patch of night flowers to its home cottage, between hedges and street lamps. Arrow keys steer, up arrow flaps, space pauses."></canvas>
+        <div class="chip" id="chip">–</div>
+        <div class="corner">
+          <button type="button" class="icon" id="pause" aria-label="Pause">Pause</button>
+          <button type="button" class="icon" id="sound" aria-pressed="true">Sound on</button>
+        </div>
+        <div class="hud" aria-hidden="true">
+          <span class="label">Energy</span><div class="bar"><i id="h-bar"></i></div>
+          <span class="num" id="h-time">0.0 s</span><span class="num" id="h-orb">0 loops</span><span class="num warn" id="h-warn"></span>
+        </div>
+        <div class="overlay" id="overlay">
+          <div class="card" aria-live="polite">
+            <canvas id="ov-moth" width="96" height="66" aria-hidden="true"></canvas>
+            <h2 id="ov-title">Lamp Lane</h2>
+            <p id="ov-text"></p>
+            <div class="row">
+              <button type="button" class="btn" id="ov-go">Take off</button>
+              <button type="button" class="btn ghost" id="ov-share" hidden>Copy link to this town</button>
+            </div>
+            <p id="ov-hint"><span class="kb">&larr;</span> <span class="kb">&rarr;</span> steer · <span class="kb">&uarr;</span> flap · <span class="kb">Space</span> pause · or drag on the town</p>
+          </div>
+        </div>
+      </div>
+      <div class="pad" aria-label="Touch controls">
+        <button type="button" id="p-left" aria-label="Steer left (hold)">&larr; Left</button>
+        <button type="button" id="p-flap" aria-label="Flap harder (hold)">Flap</button>
+        <button type="button" id="p-right" aria-label="Steer right (hold)">Right &rarr;</button>
+      </div>
+      <div class="viewrow">
+        <div class="seg" role="group" aria-label="Stage view">
+          <button type="button" id="v-scene" aria-pressed="true">Scene</button>
+          <button type="button" id="v-data" aria-pressed="false">Data</button>
+        </div>
+        <span class="label" id="v-note">Pixel town · hedges and lamps read from the job</span>
+      </div>
+      <p class="legend" id="leg-scene"><span><img data-sw="lit" alt="">lit lamp = bit 1 in the shot</span><span><img data-sw="dark" alt="">dark lamp = bit 0</span><span><img data-sw="glare" alt="">warm glare: energy drains fast</span><span><img data-sw="h3" alt=""><img data-sw="h2" alt=""><img data-sw="h1" alt="">hedge = measured ⟨ZZ⟩ &lt; 0, leafier when |⟨ZZ⟩| is bigger (≥ 0.1, ≥ 0.02, below)</span><span><img data-sw="path" alt="">cobbled street = ⟨ZZ⟩ ≥ 0</span><span><img data-sw="chg" alt="">changed vs plan (Plan vs measured)</span><span><img data-sw="decor" alt="">houses, trees and flowers are decoration</span></p>
+      <p class="legend" id="leg-data" hidden><span><i class="sw lit"></i>lit lamp = bit 1 in the shot</span><span><i class="sw off"></i>dark post = bit 0</span><span><i class="sw glare"></i>glare: energy drains fast</span><span><i class="sw hedge"></i>hedge = measured ⟨ZZ⟩ &lt; 0, thickness |⟨ZZ⟩|</span><span><i class="sw st"></i>street = ⟨ZZ⟩ ≥ 0</span><span><i class="sw chg"></i>changed vs plan (Plan vs measured)</span><span>numbers: measured ⟨ZZ⟩ per edge (zoomed in)</span></p>
+    </div>
+
+    <div class="side">
+      <div class="panel">
+        <span class="label">Level · each one is a real Atlas job on IBM ibm_fez</span>
+        <div class="levels" id="levels" role="group" aria-label="Level"></div>
+        <div class="row split"><span class="label">Lamps lit by shot</span><button type="button" class="btn ghost" id="shot-top" style="padding:.45rem .7rem">Most frequent</button></div>
+        <div class="shotrow">
+          <button type="button" class="btn ghost" id="shot-prev" aria-label="Previous shot" style="padding:.6rem .75rem">&lsaquo;</button>
+          <div class="mid"><span class="num" id="shot-num">–</span><canvas id="bits" width="13" height="12" tabindex="0" aria-label="Lamp map of this shot, one cell per square: warm cells are bits equal to 1 (lamp lit). Click a cell, or use the arrow keys, to read that square's qubit and bit and mark it in the town. Escape clears."></canvas><span class="num pick" id="pick-note" aria-live="polite">Tap a square on the lamp map to read its qubit</span></div>
+          <button type="button" class="btn ghost" id="shot-next" aria-label="Next shot" style="padding:.6rem .75rem">&rsaquo;</button>
+        </div>
+        <div class="row split"><span class="label">Lamp pull (dorsal-light reflex)</span><span class="label" id="pull-val">1.0×</span></div>
+        <input type="range" id="pull" min="0" max="2" step="0.1" value="1" aria-label="Lamp pull strength">
+        <div class="seg" role="group" aria-label="View options">
+          <button type="button" id="t-hands" aria-pressed="false">Hands off</button>
+          <button type="button" id="t-plan" aria-pressed="false">Plan vs measured</button>
+          <button type="button" id="t-whole" aria-pressed="false">Whole town</button>
+        </div>
+        <div class="row">
+          <button type="button" class="btn" id="go">Take off</button>
+          <button type="button" class="btn ghost" id="demo">Let go by a lamp</button>
+          <button type="button" class="btn ghost" id="reset">Reset flight</button>
+          <button type="button" class="btn ghost" id="share">Copy link to this town</button>
+        </div>
+        <dl class="readout">
+          <dt>Engine</dt><dd><b id="r-engine">–</b></dd>
+          <dt>Ran on</dt><dd><b id="r-ran">–</b></dd>
+          <dt>Atlas job</dt><dd><b id="r-job">–</b></dd>
+          <dt>IBM job</dt><dd><b id="r-ibm">–</b></dd>
+          <dt>Qubits</dt><dd><b id="r-q">–</b></dd>
+          <dt>Shots</dt><dd><b id="r-shots">–</b></dd>
+          <dt>Hedges</dt><dd><b id="r-hedge">–</b></dd>
+          <dt>Score</dt><dd><b id="r-score">–</b></dd>
+          <dt>Flight</dt><dd><b>classical 2D steering model, in your browser</b></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <section class="more" aria-label="Behind the town">
+    <div class="ink-bar"><span>Behind the town</span><span>Quantum hedges · classical flight</span></div>
+    <nav class="toc" aria-label="Sections on this page">
+      <button type="button" data-go="sec-play">01 How to play</button>
+      <button type="button" data-go="sec-data">02 The data</button>
+      <button type="button" data-go="sec-made">03 How it was made</button>
+      <button type="button" data-go="sec-science">04 The science</button>
+      <button type="button" data-go="sec-claims">05 What this does not claim</button>
+      <button type="button" data-go="sec-jobs">06 Jobs and credits</button>
+    </nav>
+
+    <section class="sec" id="sec-play" aria-labelledby="h-play">
+      <div class="sec-head"><span class="label">01</span><h2 id="h-play">How to play</h2></div>
+      <p class="sec-sub">Fly the moth from START (the night flowers) to HOME (the cottage) before its energy bar runs out. Every lit lamp tries to pull it into orbit, and you fight it. Nothing moves until you press <b>Take off</b>.</p>
+      <table class="map ctl">
+        <tr><th>You</th><th>How</th></tr>
+        <tr><td>Steer</td><td><span class="kb">&larr;</span> <span class="kb">&rarr;</span> (or <span class="kb">A</span> <span class="kb">D</span>), drag on the town, or hold the on-screen Left / Right buttons. A pad press (or the first key on the focused town) also takes off, flies again after a flight, or resumes from pause.</td></tr>
+        <tr><td>Flap harder (faster, costs energy)</td><td><span class="kb">&uarr;</span> / <span class="kb">W</span> / <span class="kb">Shift</span>, or hold <b>Flap</b></td></tr>
+        <tr><td>Pause / resume</td><td><span class="kb">Space</span> / <span class="kb">P</span>, or the Pause button</td></tr>
+        <tr><td>Reset the flight</td><td><span class="kb">R</span> / <b>Reset flight</b></td></tr>
+        <tr><td>Hands off: watch the reflex fly</td><td><span class="kb">H</span> / <b>Hands off</b>, or <b>Let go by a lamp</b> (drops the moth beside the nearest lit lamp)</td></tr>
+        <tr><td>Choose a level</td><td>one button per job, all three on IBM ibm_fez; each button shows its backend, qubits and job ID</td></tr>
+        <tr><td>Re-light the town</td><td>step through 40 measured shots (&lsaquo; &rsaquo;): the 40 most frequent, or the first 40 when all 4096 shots differ</td></tr>
+        <tr><td>Read one square</td><td>tap a square on the lamp map, or on Figure 1 below before take-off, to read its qubit and its bit in this shot; arrow keys move the pick and <span class="kb">Esc</span> clears it</td></tr>
+        <tr><td>Lamp pull</td><td>slider 0–2× scales the dorsal-light reflex (0 = lamps have no pull)</td></tr>
+        <tr><td>Plan vs measured</td><td>dashes on every edge where the quantum state disagreed with the street plan (white in the Scene, orange in the Data view and in Figure 1)</td></tr>
+        <tr><td>Scene / Data</td><td>flip the town between the pixel-art scene and the plain schematic, with the measured ⟨ZZ⟩ printed on every edge when zoomed in</td></tr>
+        <tr><td>Whole town</td><td>zoom out on the big levels (Hedge Row and Night Town)</td></tr>
+        <tr><td>Compare backends</td><td>in Figure 4 below, set a level beside an earlier run of the same town on another backend (Aer emulator, IBM ibm_miami), and mark the edges where the two runs disagree</td></tr>
+        <tr><td>Share</td><td><b>Copy link to this town</b> puts <code>#L&lt;level&gt;.s&lt;shot&gt;.p&lt;pull&gt;</code> in the URL: same town, same lamps. Opening such a link restores them.</td></tr>
+      </table>
+    </section>
+
+    <section class="sec" id="sec-data" aria-labelledby="h-data">
+      <div class="sec-head"><span class="label">02</span><h2 id="h-data">The data</h2></div>
+      <p class="sec-sub">Four charts drawn straight from the jobs, in the plain schematic style. Figures 1 and 2 show the level and shot picked above and follow the flight as it happens; Figure 3 shows every level at once; Figure 4 sets a level beside an earlier run of the same town on another backend.</p>
+      <div class="dtools">
+        <span class="label" id="dm-level">–</span>
+        <div class="row">
+          <button type="button" class="btn ghost sm" id="dm-prev" aria-label="Previous shot">&lsaquo; Shot</button>
+          <button type="button" class="btn ghost sm" id="dm-next" aria-label="Next shot">Shot &rsaquo;</button>
+          <button type="button" class="btn ghost sm" id="dm-plan" aria-pressed="false">Plan vs measured</button>
+        </div>
+      </div>
+      <div class="figs">
+        <figure class="fig">
+          <span class="fnum">Figure 1 · The town as measured</span>
+          <canvas id="dmap" tabindex="0" aria-label="Night town seen from above. A moth flies from start to home between hedges and street lamps. Arrow keys steer, up arrow flaps, space pauses. Before take-off, click a square to read its qubit, or point at an edge to read its measured ⟨ZZ⟩."></canvas>
+          <p class="legend"><span><i class="sw lit"></i>lit lamp = bit 1 in the shot</span><span><i class="sw off"></i>dark post = bit 0</span><span><i class="sw glare"></i>glare: energy drains fast</span><span><i class="sw hedge"></i>hedge = measured ⟨ZZ⟩ &lt; 0</span><span><i class="sw st"></i>street = ⟨ZZ⟩ ≥ 0</span><span><i class="sw chg"></i>changed vs plan (Plan vs measured)</span></p>
+          <figcaption><span>The whole town of the selected level, drawn from the job: hedge thickness is |⟨ZZ⟩|, and the measured ⟨ZZ⟩ is printed on every edge when there is room. It is the same flight as the town above: steer here by dragging or with the arrow keys once it has the focus.</span><span class="readline" id="dm-edge">–</span></figcaption>
+        </figure>
+        <figure class="fig">
+          <span class="fnum">Figure 2 · Lamps lit by shot</span>
+          <canvas id="dbits" width="40" height="32" tabindex="0" aria-label="Lamp map of this shot: lit squares are bits equal to 1"></canvas>
+          <figcaption><span class="readline" id="db-num">–</span><span>One cell per square, one qubit per cell, read row by row: ink = bit 1 (lamp lit), white = bit 0 (lamp dark). The pale cells are the start and home squares, which have no lamp. Click a cell to read its qubit.</span><span class="readline" id="db-pick">–</span></figcaption>
+        </figure>
+      </div>
+      <figure class="fig">
+        <span class="fnum">Figure 3 · Every level at a glance</span>
+        <div class="minis" id="minis" role="group" aria-label="Every level: click one to show it in Figures 1 and 2 and in the game"></div>
+        <figcaption><span>Schematic. Hedges: measured ⟨ZZ⟩ &lt; 0 from each job's shots (thickness = |⟨ZZ⟩|). Lamps: shot 1 of the page's list (most frequent; the first measured when every shot differs), bit 1 = lit.</span><span>Orange: edges where the measured state differs from the street plan (solid = planned street closed, dashed = planned hedge opened).</span></figcaption>
+      </figure>
+      <figure class="fig" id="fig-cmp">
+        <span class="fnum">Figure 4 · Same town, another backend (comparison runs, not levels)</span>
+        <div class="dtools cmptools">
+          <div class="seg" id="cmp-seg" role="group" aria-label="Which comparison"></div>
+          <button type="button" class="btn ghost sm" id="cmp-diff" aria-pressed="false">Mark where the two runs disagree</button>
+        </div>
+        <div class="minis cmp" id="cmp-minis">
+          <button type="button" id="cmp-a"><img alt=""><span class="mt"></span><span class="ms"></span></button>
+          <div class="cmpcard" id="cmp-b"><img alt=""><span class="mt"></span><span class="ms"></span></div>
+        </div>
+        <div class="tablewrap" tabindex="0" role="region" aria-label="Comparison table (scrolls sideways on small screens)">
+          <table class="jobs cmpt" id="cmp-table"></table>
+        </div>
+        <figcaption><span>Left: the level you fly, run on IBM ibm_fez (press it to show it in Figures 1 and 2 and in the game). Right: an earlier run of the very same street plan on another backend, kept only for this comparison: you can't fly it. Same drawing as Figure 3; the right-hand run is not a level, so it has no start or home square.</span><span class="readline" id="cmp-note">–</span></figcaption>
+      </figure>
+    </section>
+
+    <section class="sec" id="sec-made" aria-labelledby="h-made">
+      <div class="sec-head"><span class="label">03</span><h2 id="h-made">How it was made</h2></div>
+      <details class="drawer" open><summary>What the quantum engine did</summary><div class="body">
+        <p>Atlas <b>labyrinth-v1</b> gives every square of the town one qubit. A street between two squares asks for their qubits to agree (ZZ = +1), and a hedge asks for them to disagree (ZZ = −1). The engine starts from |+⟩ on every qubit, applies 3 sweeps of ZZ preparation steps over the grid (each a third of a full rotation; engine defaults), then measures 4096 shots.</p>
+        <p>%%LEVELNOTES%%</p>
+        <p>%%CHIPNOTE%%</p>
+        <p>The streets themselves were planned classically: a seeded random maze plus extra loops (<code>town.py</code>). The quantum state only approximates that plan, so it can close a planned street or open a planned hedge. Turn on <b>Plan vs measured</b> to see every edge where the measured state disagrees with the plan (orange dashes). In the pixel-art Scene the same edges get white dashes.</p>
+      </div></details>
+      <details class="drawer" open><summary>How the game reads a job</summary><div class="body">
+        <table class="map">
+          <tr><th>On screen</th><th>Comes from</th><th>Kind</th></tr>
+          <tr><td>Hedge or open street</td><td>Sign of ⟨ZZ⟩ for that pair, averaged over all of the job's measured shots. Hedge thickness is |⟨ZZ⟩|. In the pixel-art Scene a hedge gets leafier in three steps instead.</td><td>quantum samples, classical average</td></tr>
+          <tr><td>Which lamps are lit</td><td>One measured bitstring: bit 1 means lit. You can step through the 40 most frequent shots, or the first 40 when every shot came out different.</td><td>quantum sample</td></tr>
+          <tr><td>Street plan</td><td>Seeded maze in <code>town.py</code>, sent to the engine as its coupling map</td><td>classical</td></tr>
+          <tr><td>Start and home</td><td>Opposite corners if the measured hedges leave a way through. Otherwise the largest connected region, from its top-left square to its furthest square.</td><td>classical</td></tr>
+          <tr><td>Moth flight, glare, energy</td><td>A 2D steering rule running in your browser</td><td>classical</td></tr>
+          <tr><td>Pixel-art town (Scene view)</td><td>Hedges, cobbled streets, lamps and warm glare are drawn from the same measured data as the Data view: a hedge's leafiness steps up with |⟨ZZ⟩| (three tiers: below 0.02, 0.02 to 0.1, 0.1 and up). The houses and trees around the edge, the night flowers at the start and the cottage at home are decoration. The moth's dizzy stars, dust trail and celebration are drawn from the flight model, not from the job.</td><td>quantum data, classical drawing</td></tr>
+        </table>
+        <p>The engine also reports its own classical tomography estimate of ⟨ZZ⟩ (<code>zz_couplings</code>, score <code>sz_tomo</code>). The game does not use it for the layout. Hedges come only from the measured shots (score <code>sz_samp</code>).</p>
+      </div></details>
+    </section>
+
+    <section class="sec" id="sec-science" aria-labelledby="h-science">
+      <div class="sec-head"><span class="label">04</span><h2 id="h-science">The science</h2></div>
+      <details class="drawer" open><summary>Why do moths circle lamps?</summary><div class="body">
+        <p>Not because they fly toward the light. Fabian, Sondhi, Allen, Theobald and Lin filmed insects in 3D around artificial lights (<i>Nature Communications</i> 15, 689, 2024; doi:10.1038/s41467-024-44785-3). They found that the insects keep their back, the dorsal side, turned toward the brightest light. Under an open sky that reflex keeps them level. Next to a lamp it makes them fly across the light instead of at it, and they get stuck circling, stalling or flipping over.</p>
+        <p>The moth here follows a flat, top-down cartoon of that reflex. The brightest lamp it can see (hedges block the view) swings its heading until the lamp sits just ahead of its side. Left alone in open space at pull 1, it settles into an orbit about 0.44 squares from the bulb, one loop every 1.5 s or so, and burns energy in the glare. Among hedges and neighbouring lamps it swings back and forth instead, still held in the light. You steer against it. The pull slider scales the reflex from 0 (off) to 2×. Higher pull means tighter, faster orbits.</p>
+      </div></details>
+    </section>
+
+    <section class="sec" id="sec-claims" aria-labelledby="h-claims">
+      <div class="sec-head"><span class="label">05</span><h2 id="h-claims">What this does not claim</h2></div>
+      <p class="honesty">The flight model is classical and simplified: a flat steering rule inspired by the dorsal-light-response finding. It is not a simulation of insect flight, and it is not what Fabian et al. modelled in 3D. The quantum engine knows nothing about moths. It turns a street plan into correlations and samples them, and the game reads those samples as hedges and lamps. Every level ran on IBM ibm_fez hardware. The emulator run in Figure 4 is a comparison, not a level, and ran on a noiseless classical simulator of the circuit. For the hardware runs the engine reports the backend and IBM job ID but not the transpiled layout or depth, and one run per chip is not a benchmark of either chip. Nothing here shows quantum advantage, and the lamp patterns are not certified randomness. Start, home, lamp positions within each square, and the rule that the start and home squares have no lamp are game design choices.</p>
+    </section>
+
+    <section class="sec" id="sec-jobs" aria-labelledby="h-jobs">
+      <div class="sec-head"><span class="label">06</span><h2 id="h-jobs">Jobs and credits</h2></div>
+      <p class="sec-sub">One real Atlas job per level, all three on IBM ibm_fez. Press a level to fly it in the game above. The rows marked Comparison are earlier runs of the same towns on other backends, shown only in Figure 4.</p>
+      <div class="tablewrap" tabindex="0" role="region" aria-label="Jobs table (scrolls sideways on small screens)">
+        <table class="jobs">
+          <tr><th>Level</th><th>Town</th><th>Qubits</th><th>Ran on</th><th>Atlas job</th><th>IBM job</th><th>Shots</th><th>Measured hedges matching the plan</th><th>mean(plan sign × measured ⟨ZZ⟩)</th><th>Engine's classical tomography estimate (sz_tomo, not used)</th></tr>
+          %%JOBROWS%%
+        </table>
+      </div>
+      <ul class="credits">
+        %%CREDITS%%
+      </ul>
+    </section>
+  </section>
+  <!--NAV-->
+  <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/*SIM*/
+</script>
+<script>
+/*INKSPRITE*/
+</script>
+<script>
+const LEVELS = /*LEVELS*/[];
+const COMPARE = /*COMPARE*/[];   // earlier runs of the same towns on other backends: Figure 4 only, never flown
+const SPRITES = /*SPRITES*/{};
+const $ = id => document.getElementById(id);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const cv = $('cv'), ctx = cv.getContext('2d'), bitsCv = $('bits'), bctx = bitsCv.getContext('2d');
+const ui = {li: 0, shot: 0, pull: 1, hands: false, demo: false, plan: false, whole: false, paused: false, sound: true, data: false, pick: null};
+const input = {left: false, right: false, flap: false, ptr: null};
+let L, W, P, S, raf = null, last = 0, acc = 0, cam = {x: 0, y: 0, init: false};
+
+// ---------- sound: Web Audio, created only by a click ----------
+const Snd = {
+  ctx: null, master: null, last: {},
+  init() {
+    if (this.ctx) { if (this.ctx.state === 'suspended') this.ctx.resume(); return; }
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+    const c = this.ctx = new AC();
+    this.master = c.createGain(); this.master.gain.value = ui.sound ? 0.55 : 0; this.master.connect(c.destination);
+    const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 650;
+    this.hum = c.createGain(); this.hum.gain.value = 0; lp.connect(this.hum); this.hum.connect(this.master);
+    [[100, 'sawtooth', .35], [150, 'sine', .25], [50, 'sine', .5]].forEach(([f, t, g]) => {
+      const o = c.createOscillator(); o.type = t; o.frequency.value = f; const gg = c.createGain(); gg.gain.value = g; o.connect(gg); gg.connect(lp); o.start(); });
+    const buf = c.createBuffer(1, c.sampleRate * 2, c.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    const src = c.createBufferSource(); src.buffer = buf; src.loop = true;
+    const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 380; bp.Q.value = .9;
+    const am = c.createGain(); am.gain.value = .5;
+    this.lfo = c.createOscillator(); this.lfo.frequency.value = 16; const lg = c.createGain(); lg.gain.value = .5; this.lfo.connect(lg); lg.connect(am.gain); this.lfo.start();
+    this.wing = c.createGain(); this.wing.gain.value = 0;
+    src.connect(bp); bp.connect(am); am.connect(this.wing); this.wing.connect(this.master); src.start();
+  },
+  update(boost) {
+    if (!this.ctx) return; const t = this.ctx.currentTime, fly = S.state === 'fly' && !ui.paused;
+    this.hum.gain.setTargetAtTime(fly ? Math.min(.32, .045 * S.I) : 0, t, .08);
+    this.wing.gain.setTargetAtTime(fly ? (boost ? .5 : .28) : 0, t, .05);
+    this.lfo.frequency.setTargetAtTime(boost ? 26 : 16, t, .1);
+  },
+  blip(kind) {
+    if (!this.ctx || !ui.sound) return; const c = this.ctx, t = c.currentTime;
+    if (this.last[kind] && t - this.last[kind] < .12) return; this.last[kind] = t;
+    const notes = {bulb: [1400, .05, 'square', .12], hedge: [110, .12, 'sine', .25],
+                   orbit: [660 + 40 * Math.min(S.orbits, 12), .1, 'triangle', .12]};
+    const play = (f, dur, type, g, at) => { const o = c.createOscillator(), gg = c.createGain(); o.type = type; o.frequency.value = f;
+      gg.gain.setValueAtTime(g, t + at); gg.gain.exponentialRampToValueAtTime(.0001, t + at + dur); o.connect(gg); gg.connect(this.master); o.start(t + at); o.stop(t + at + dur + .02); };
+    if (kind === 'home') { play(523, .5, 'sine', .25, 0); play(784, .7, 'sine', .22, .16); play(1047, .9, 'sine', .16, .32); return; }
+    if (kind === 'spent') { const o = c.createOscillator(), gg = c.createGain(); o.frequency.setValueAtTime(440, t); o.frequency.exponentialRampToValueAtTime(110, t + 1.1);
+      gg.gain.setValueAtTime(.2, t); gg.gain.exponentialRampToValueAtTime(.0001, t + 1.2); o.connect(gg); gg.connect(this.master); o.start(); o.stop(t + 1.25); return; }
+    const n = notes[kind]; if (n) play(n[0], n[1], n[2], n[3], 0);
+  },
+  setOn(on) { if (this.master) this.master.gain.setTargetAtTime(on ? .55 : 0, this.ctx.currentTime, .03); },
+  pause(p) { if (this.ctx) { if (p) this.ctx.suspend(); else this.ctx.resume(); } }
+};
+
+// ---------- level + flight ----------
+function load(li, shot) {
+  if (raf) { cancelAnimationFrame(raf); raf = null; }
+  if (!L || li !== ui.li) { ui.pick = null; mapEdge = null; }   // a picked square or read edge belongs to one town
+  ui.li = li; L = LEVELS[li]; ui.shot = Math.max(0, Math.min(L.shotList.length - 1, shot | 0));
+  dmap.style.aspectRatio = (L.cols + .7) + ' / ' + (L.rows + .7);   // Figure 1 fits this town
+  P = Sim.params({pull: ui.pull, drain: L.drain});
+  W = Sim.build(L, L.shotList[ui.shot][0]);
+  S = Sim.init(W, P); ui.paused = false; cam.init = false; buildTown();
+  Snd.update(false); overlay('ready'); sync(); draw(); hud(); kickIdle();
+}
+function resetFlight() { load(ui.li, ui.shot); }
+function takeOff() {
+  if (S.state === 'home' || S.state === 'spent') { if (ui.demo) { ui.hands = false; ui.demo = false; } resetFlight(); }
+  if (ui.sound) Snd.init();
+  S.state = 'fly'; ui.paused = false; cam.init = false; overlay(null); Snd.pause(false); sync();
+  if (document.activeElement !== dmap) cv.focus({preventScroll: true});   // flying from Figure 1 keeps the keys there
+  run();
+}
+// science demo: put the moth beside the lit lamp nearest to it, hands off, and let the reflex fly
+function demo() {
+  const from = {x: S.x, y: S.y}; resetFlight();
+  let best = null;
+  for (const lp of W.lamps) { if (!lp.lit) continue;
+    for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4, x = lp.x + .6 * Math.cos(a), y = lp.y + .6 * Math.sin(a);
+      if (x < .15 || y < .15 || x > L.cols - .15 || y > L.rows - .15 || !Sim.visible(W, x, y, lp)) continue;
+      const d = Math.hypot(x - from.x, y - from.y); if (!best || d < best.d) best = {d, x, y, a}; } }
+  if (!best) { toast('No lamp is lit in this shot. Pick another shot.'); return; }
+  S.x = best.x; S.y = best.y; S.th = best.a + Math.PI / 2; S.trail = [[S.x, S.y]]; cam.init = false;
+  ui.hands = true; takeOff(); ui.demo = true; toast('Hands off: the reflex is flying. Press H to take over.');
+}
+function togglePause() {
+  if (S.state === 'ready') { takeOff(); return; }
+  if (S.state !== 'fly') return;
+  ui.paused = !ui.paused; Snd.pause(ui.paused); Snd.update(false);
+  overlay(ui.paused ? 'paused' : null); sync(); if (!ui.paused) run();
+}
+function run() { if (!raf) { last = performance.now(); acc = 0; raf = requestAnimationFrame(frame); } }
+function currentInput() {
+  let turn = (input.right ? 1 : 0) - (input.left ? 1 : 0);
+  if (input.ptr) { const a = Math.atan2(input.ptr.y - S.y, input.ptr.x - S.x); turn = Math.max(-1, Math.min(1, Sim.wrap(a - S.th) * 2.2)); }
+  return {turn, boost: input.flap, handsOff: ui.hands};
+}
+function frame(ts) {
+  raf = null;
+  if (S.state !== 'fly' || ui.paused) { draw(); return; }
+  acc += Math.min(.05, Math.max(0, (ts - last) / 1000)); last = ts;
+  const inp = currentInput();
+  while (acc >= 1 / 120 && S.state === 'fly') { Sim.step(W, S, inp, P, 1 / 120); acc -= 1 / 120; }
+  for (const e of S.events) Snd.blip(e); S.events.length = 0;
+  Snd.update(inp.boost && !ui.hands); draw(); hud();
+  if (S.state === 'fly') raf = requestAnimationFrame(frame); else finish();
+}
+function finish() {
+  Snd.update(false); celebT = now(); idleUntil = celebT + 6;
+  overlay(S.state); sync(); draw(); kickIdle();
+}
+
+// ---------- drawing ----------
+// Two views of the same flight. Scene (default): a pixel-art night town built from web/sprites.json with
+// common/inksprite.js. Data: the plain schematic, hedge thickness |<ZZ>| and, zoomed in, each edge's measured <ZZ>.
+// Every hedge, path and lit lamp in either view is read from the job; houses, trees and flowers are decoration.
+const T = 24;                         // art pixels per town square; the scene is always drawn at an integer scale
+const PALC = InkSprite.PALETTE;
+const SPR = {}; for (const k in SPRITES) SPR[k] = InkSprite.make(SPRITES[k]);
+const rot90 = rows => { const h = rows.length, w = rows[0].length, out = [];
+  for (let i = 0; i < w; i++) { let r = ''; for (let j = h - 1; j >= 0; j--) r += rows[j][i]; out.push(r); } return out; };
+const transpose = rows => rows[0].split('').map((_, i) => rows.map(r => r[i]).join(''));
+// a 1-pixel moonlit rim (L) around a sprite, so the dark-outlined moth still reads on the night ground
+const rim = rows => { const h = rows.length, w = rows[0].length, at = (i, j) => (i >= 0 && j >= 0 && i < w && j < h) ? rows[j][i] : '.', out = [];
+  for (let j = -1; j <= h; j++) { let r = ''; for (let i = -1; i <= w; i++) { const c = at(i, j);
+    r += c !== '.' ? c : (at(i + 1, j) !== '.' || at(i - 1, j) !== '.' || at(i, j + 1) !== '.' || at(i, j - 1) !== '.') ? 'L' : '.'; } out.push(r); }
+  return out; };
+const turned = (name, n) => { let fr = SPRITES[name].frames; for (let k = 0; k < n; k++) fr = fr.map(rot90); return InkSprite.make({frames: fr.map(rim), fps: SPRITES[name].fps}); };
+// heading index: 0 E, 1 SE, 2 S, 3 SW, 4 W, 5 NW, 6 N, 7 NE (screen y points down). Exact quarter turns keep every pixel square.
+const MOTH = [];
+[[6, 'mothN', 0], [0, 'mothN', 1], [2, 'mothN', 2], [4, 'mothN', 3], [7, 'mothNE', 0], [1, 'mothNE', 1], [3, 'mothNE', 2], [5, 'mothNE', 3]]
+  .forEach(([d, n, r]) => { MOTH[d] = turned(n, r); });
+const HEDGE_H = {3: SPR.hedge3, 2: SPR.hedge2, 1: SPR.hedge1};
+const HEDGE_V = {}; [3, 2, 1].forEach(k => { HEDGE_V[k] = InkSprite.make({frames: SPRITES['hedge' + k].frames.map(transpose)}); });
+const WALL_V = InkSprite.make({frames: SPRITES.wall.frames.map(transpose)});
+const hedgeTier = w => w >= .1 ? 3 : w >= .02 ? 2 : 1;     // leafier hedge = stronger measured anti-correlation
+const now = () => performance.now() / 1000;
+let townCv = null, celebT = 0;
+
+// exact top-left blits of baked sprite canvases (integer scale, no smoothing)
+const baked = new Map();
+function bake(sp, f, s) {
+  const key = sp.id + ':' + f + ':' + s; let c = baked.get(key); if (c) return c;
+  c = document.createElement('canvas'); c.width = sp.w * s; c.height = sp.h * s; const x = c.getContext('2d');
+  const rows = sp.frames[f % sp.frames.length];
+  for (let j = 0; j < rows.length; j++) for (let i = 0; i < rows[j].length; i++) {
+    const ch = rows[j][i], col = sp.palette[ch]; if (ch === '.' || !col) continue; x.fillStyle = col; x.fillRect(i * s, j * s, s, s); }
+  baked.set(key, c); return c;
+}
+function blit(c2, sp, f, left, top, s, alpha) {
+  const im = bake(sp, f | 0, Math.max(1, Math.round(s)));
+  if (alpha != null) { c2.save(); c2.globalAlpha = alpha; }
+  c2.drawImage(im, Math.round(left), Math.round(top));
+  if (alpha != null) c2.restore();
+}
+// put a sprite's centre (or its [col,row] anchor pixel) on device point x, y
+function blitAt(c2, sp, f, x, y, s, anchor, alpha) {
+  s = Math.max(1, Math.round(s));
+  const ax = anchor ? anchor[0] + .5 : sp.w / 2, ay = anchor ? anchor[1] + .5 : sp.h / 2;
+  blit(c2, sp, f, Math.round(x - ax * s), Math.round(y - ay * s), s, alpha);
+}
+function hashN(a, b) { const x = Math.sin(a * 127.1 + b * 311.7) * 43758.5453; return x - Math.floor(x); }
+const groundCh = (px, py) => { const h = hashN(px, py); return h < .045 ? 'B' : h > .995 ? 'L' : 'K'; };   // night grass
+const pathCh = (px, py) => { const row = Math.floor(py / 4); return (py % 4 === 0 || (px + (row % 2) * 3) % 6 === 0) ? 'K' : hashN(px + 7, py) < .06 ? 'L' : 'B'; };   // cobbles
+const glareR = () => Math.sqrt(Math.max(.01, 1 / P.glowI - .05));   // squares; brightness > glowI inside
+const glareCh = (dx, dy, rg, px, py) => { const r = Math.hypot(dx, dy); if (r > rg) return null;
+  const ring = r > rg - 1.2, core = r < rg * .45;
+  return (ring || core) ? ((px + py) % 2 === 0 ? 'O' : null) : (px % 2 === 0 && py % 2 === 0 ? 'O' : null); };
+
+// The static town for this level + shot, in art pixels, with one square of decoration around it.
+function buildTown() {
+  const M = T, Wd = L.cols * T + 2 * M, Ht = L.rows * T + 2 * M;
+  const c = document.createElement('canvas'); c.width = Wd; c.height = Ht; const x = c.getContext('2d');
+  const img = x.createImageData(Wd, Ht), d = img.data;
+  const RGB = {}; for (const k in PALC) RGB[k] = [1, 3, 5].map(i => parseInt(PALC[k].slice(i, i + 2), 16));
+  const put = (px, py, ch) => { if (px < 0 || py < 0 || px >= Wd || py >= Ht) return; const o = (py * Wd + px) * 4, col = RGB[ch]; d[o] = col[0]; d[o + 1] = col[1]; d[o + 2] = col[2]; d[o + 3] = 255; };
+  const path = new Uint8Array(Wd * Ht);
+  const cen = i => [M + (i % L.cols + .5) * T, M + (Math.floor(i / L.cols) + .5) * T];
+  for (let i = 0; i < L.qubits; i++) { const [cx, cy] = cen(i);   // a small paved plaza in every square
+    for (let py = cy - 7; py < cy + 7; py++) for (let px = cx - 7; px < cx + 7; px++) if ((px + .5 - cx) ** 2 + (py + .5 - cy) ** 2 <= 46) path[py * Wd + px] = 1; }
+  for (const e of L.edges) { if (!(e[3] >= 0)) continue;           // open street: measured <ZZ> >= 0
+    const [ax, ay] = cen(e[0]), [bx, by] = cen(e[1]);
+    if (ay === by) { for (let py = ay - 4; py < ay + 4; py++) for (let px = Math.min(ax, bx); px < Math.max(ax, bx); px++) path[py * Wd + px] = 1; }
+    else { for (let px = ax - 4; px < ax + 4; px++) for (let py = Math.min(ay, by); py < Math.max(ay, by); py++) path[py * Wd + px] = 1; } }
+  for (let py = 0; py < Ht; py++) for (let px = 0; px < Wd; px++) put(px, py, path[py * Wd + px] ? pathCh(px, py) : groundCh(px, py));
+  const rg = glareR() * T;                                          // warm dither = the glare zone of each lit lamp
+  for (const lp of W.lamps) { if (!lp.lit) continue; const lx = M + lp.x * T, ly = M + lp.y * T;
+    for (let py = Math.floor(ly - rg - 1); py <= ly + rg + 1; py++) for (let px = Math.floor(lx - rg - 1); px <= lx + rg + 1; px++) {
+      const ch = glareCh(px + .5 - lx, py + .5 - ly, rg, px, py); if (ch) put(px, py, ch); } }
+  x.putImageData(img, 0, 0);
+  // decoration around the edge: houses and trees (not data)
+  const deco = k => { const h = hashN(k, 3.3); return h < .4 ? SPR.houseA : h < .75 ? SPR.houseB : SPR.tree; };
+  for (let ci = 0; ci < L.cols; ci++) { let sp = deco(ci); blit(x, sp, 0, M + (ci + .5) * T - sp.w / 2, M - 5 - sp.h, 1);
+    sp = deco(ci + 50); blit(x, sp, 0, M + (ci + .5) * T - sp.w / 2, M + L.rows * T + 5, 1); }
+  for (let r = 0; r < L.rows; r++) { let sp = deco(r + 100); blit(x, sp, 0, M / 2 - sp.w / 2 - 1, M + (r + .5) * T - sp.h / 2, 1);
+    sp = deco(r + 150); blit(x, sp, 0, M + L.cols * T + M / 2 - sp.w / 2 + 1, M + (r + .5) * T - sp.h / 2, 1); }
+  [[M / 2, M / 2], [M + L.cols * T + M / 2, M / 2], [M / 2, M + L.rows * T + M / 2], [M + L.cols * T + M / 2, M + L.rows * T + M / 2]]
+    .forEach(([tx, ty]) => blit(x, SPR.tree, 0, tx - SPR.tree.w / 2, ty - SPR.tree.h / 2, 1));
+  // hedges: every measured <ZZ> < 0
+  for (const g of W.segs) { if (g.outer) continue;
+    const vert = g.x1 === g.x2, tier = hedgeTier(g.w), sp = vert ? HEDGE_V[tier] : HEDGE_H[tier];
+    const x0 = M + Math.min(g.x1, g.x2) * T, y0 = M + Math.min(g.y1, g.y2) * T;
+    if (vert) blit(x, sp, 0, x0 - sp.w / 2, y0 - 4, 1); else blit(x, sp, 0, x0 - 4, y0 - sp.h / 2, 1); }
+  // the town wall
+  for (let ci = 0; ci < L.cols; ci++) { blit(x, SPR.wall, 0, M + ci * T - 4, M - 4, 1); blit(x, SPR.wall, 0, M + ci * T - 4, M + L.rows * T - 4, 1); }
+  for (let r = 0; r < L.rows; r++) { blit(x, WALL_V, 0, M - 4, M + r * T - 4, 1); blit(x, WALL_V, 0, M + L.cols * T - 4, M + r * T - 4, 1); }
+  // home cottage (door shut until the moth arrives)
+  const [hx, hy] = cen(L.home); blitAt(x, SPR.cottage, 0, hx, hy, 1, SPRITES.cottage.anchor);
+  townCv = c;
+}
+
+function fit() {
+  const r = cv.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = Math.round(r.width * dpr), h = Math.round(r.height * dpr);
+  if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; }
+}
+// camera: square size s = Px * T with an integer Px whenever the town fits (crisp pixels)
+function view() {
+  const cw = cv.width, ch = cv.height, big = Math.max(L.rows, L.cols) > 6, whole = ui.whole || !big;
+  if (whole) { const m = big ? .3 : .6, fitS = Math.min(cw / (L.cols + 2 * m), ch / (L.rows + 2 * m));
+    const Px = fitS >= T ? Math.floor(fitS / T) : fitS / T, s = Px * T;
+    return {Px, s, ox: Math.round((cw - L.cols * s) / 2), oy: Math.round((ch - L.rows * s) / 2), whole: true}; }
+  const Px = Math.max(1, Math.round(Math.min(cw, ch) / 5.5 / T)), s = Px * T, hx = cw / 2 / s, hy = ch / 2 / s, m = .6;
+  const clampC = (c, h, n) => n + 2 * m <= 2 * h ? n / 2 : Math.max(h - m, Math.min(n + m - h, c));
+  const ended = S.state === 'home' || S.state === 'spent';   // end card sits at the top: keep the moth in the lower part of the view
+  const look = S.state === 'ready' && ui.pick != null ? centre(ui.pick) : null;   // before take-off: show the square picked on the lamp map
+  const tx = clampC(look ? look[0] : S.x, hx, L.cols), ty = clampC(look ? look[1] - .45 * hy : ended ? S.y - .45 * hy : S.y, hy, L.rows);
+  if (!cam.init || reduce) { cam.x = tx; cam.y = ty; cam.init = true; } else { cam.x += (tx - cam.x) * .12; cam.y += (ty - cam.y) * .12; }
+  return {Px, s, ox: Math.round(cw / 2 - cam.x * s), oy: Math.round(ch / 2 - cam.y * s), whole: false};
+}
+function centre(i) { return [i % L.cols + .5, Math.floor(i / L.cols) + .5]; }
+const PAL = {paper: '#FBFAF9', panel: '#FFFFFF', panel2: '#F0F0F4', rule: '#D3D3E6', ink: '#19238E', ink2: '#545BA9', ink3: '#A1A4CE', warn: '#B4541A'};
+const inkA = a => `rgba(25,35,142,${a.toFixed(3)})`;
+const mothDir = th => ((Math.round(th / (Math.PI / 4)) % 8) + 8) % 8;
+const FLAP = [0, 1, 2, 1];
+function mothFrame(t) {
+  if (reduce) return S.state === 'fly' ? 0 : 2;
+  if (S.state === 'fly' && !ui.paused) return FLAP[Math.floor(t * (input.flap && !ui.hands ? 20 : 12)) % 4];
+  if (S.state === 'fly') return 1;                                  // paused mid-air
+  if (S.state === 'ready') { const k = Math.floor(t * 8) % 28; return k < 8 ? FLAP[k % 4] : 2; }   // folded, with a flutter now and then
+  return 2;
+}
+const held = () => S.state === 'spent' && S.glare > .3 * S.t;       // the same rule as the end card
+
+function draw() {
+  fit(); const v = view();
+  $('stage').classList.toggle('data', ui.data);
+  if (ui.data) drawData(v); else drawScene(v);
+  drawMap();                                        // Figure 1 below follows the same flight (only while on screen)
+}
+
+function drawScene(v) {
+  const s = v.s, px = Math.max(1, Math.round(v.Px)), t = reduce ? 0 : now(), X = x => v.ox + x * s, Y = y => v.oy + y * s;
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.imageSmoothingEnabled = false;
+  ctx.fillStyle = PALC.K; ctx.fillRect(0, 0, cv.width, cv.height);
+  ctx.drawImage(townCv, v.ox - T * v.Px, v.oy - T * v.Px, townCv.width * v.Px, townCv.height * v.Px);
+  // plan vs measured: white dashes along every edge the state changed
+  if (ui.plan) for (const e of L.edges) { if ((e[3] >= 0) === (e[2] > 0)) continue;
+    const ra = Math.floor(e[0] / L.cols), ca = e[0] % L.cols, rb = Math.floor(e[1] / L.cols), cb = e[1] % L.cols, hor = ra === rb;
+    const ex = hor ? Math.max(ca, cb) : ca, ey = hor ? ra : Math.max(ra, rb);
+    for (let k = 1; k < T; k += 6) { const fx = hor ? ex : ex + k / T, fy = hor ? ey + k / T : ey;
+      const cx = Math.round(X(fx)), cy = Math.round(Y(fy)), lw = hor ? 2 : 4, lh = hor ? 4 : 2;
+      ctx.fillStyle = PALC.K; ctx.fillRect(cx - (lw / 2 + 1) * px, cy - (lh / 2 + 1) * px, (lw + 2) * px, (lh + 2) * px);
+      ctx.fillStyle = PALC.W; ctx.fillRect(cx - lw / 2 * px, cy - lh / 2 * px, lw * px, lh * px); } }
+  // trail: moth dust
+  const tr = S.trail, n = tr.length;
+  if (n > 1) { const from = S.state === 'fly' ? Math.max(1, n - 90) : 1;
+    ctx.fillStyle = PALC.W;
+    for (let i = from; i < n; i += 2) { const a = S.state === 'fly' ? (i - from) / (n - from) : .5;
+      ctx.globalAlpha = .12 + .55 * a; ctx.fillRect(Math.round(X(tr[i][0])) - px / 2 | 0, Math.round(Y(tr[i][1])) - px / 2 | 0, px, px); }
+    ctx.globalAlpha = 1; }
+  // start: a patch of night flowers
+  blitAt(ctx, SPR.flowers, InkSprite.frameAt(SPR.flowers, t), X(W.start.x), Y(W.start.y) + 8 * px, px);
+  // home: the door opens when the moth makes it
+  if (S.state === 'home') blitAt(ctx, SPR.cottage, 1, X(W.home.x), Y(W.home.y), px, SPRITES.cottage.anchor);
+  // street lamps: lit = bit 1 of the shot (warm glass, now and then a flicker), dark = bit 0
+  const x0 = -v.ox / s - 1, y0 = -v.oy / s - 1, x1 = x0 + cv.width / s + 2, y1 = y0 + cv.height / s + 2;
+  for (const lp of W.lamps) { if (lp.x < x0 || lp.x > x1 || lp.y < y0 || lp.y > y1) continue;
+    const f = lp.lit && !reduce && (Math.floor(t * 2.5 + hashN(lp.i, 9) * 40) % 7 === 0) ? 1 : 0;
+    blitAt(ctx, lp.lit ? SPR.lampLit : SPR.lampDark, f, X(lp.x), Y(lp.y), px, SPRITES.lampLit.anchor); }
+  pickBox(v, PALC.W, PALC.K);
+  // the lamp holding the moth: dotted warm line
+  if (S.state === 'fly' && Math.abs(S.dlr) > 1.2) { const lt = Sim.light(W, S.x, S.y, P);
+    if (lt.lamp) { const dx = lt.lamp.x - S.x, dy = lt.lamp.y - S.y, len = Math.hypot(dx, dy) * T, steps = Math.floor(len / 3);
+      ctx.fillStyle = PALC.O;
+      for (let k = 1; k < steps; k++) { const fx = S.x + dx * k / steps, fy = S.y + dy * k / steps; ctx.fillRect(Math.round(X(fx)), Math.round(Y(fy)), px, px); } } }
+  // the moth
+  const home = S.state === 'home', mx = home ? X(W.home.x) : X(S.x), my = home ? Y(W.home.y) + 3 * px : Y(S.y);   // home: on the doorstep
+  const dirn = home ? 6 : mothDir(S.th), mf = mothFrame(t);
+  blitAt(ctx, MOTH[dirn], mf, mx, my, px);
+  // reactions
+  const caught = S.state === 'fly' && Math.abs(S.dlr) > 1.6;
+  if (caught || held()) for (let k = 0; k < 3; k++) { const a = t * 5 + k * 2.094;
+    blitAt(ctx, SPR.star, (Math.floor(t * 6) + k) % 2, mx + Math.cos(a) * 8 * px, my - 9 * px + Math.sin(a) * 2.5 * px, px); }
+  else if (S.state === 'spent') { const b = Math.floor(t * 2) % 2;
+    blitAt(ctx, SPR.zz, 0, mx + 7 * px, my - (10 + b) * px, px); blitAt(ctx, SPR.zz, 0, mx + 12 * px, my - (16 - b) * px, Math.max(1, px - 1)); }
+  if (home) for (let k = 0; k < 3; k++) { const ph = ((t - celebT) * .7 + k / 3) % 1;
+    blitAt(ctx, SPR.heart, 0, mx + (k - 1) * 8 * px, my - (14 + ph * 12) * px, px, null, 1 - ph * .8); }
+  labels(v, PALC.W, PALC.K);
+}
+
+function drawData(v) {
+  const s = v.s;
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.imageSmoothingEnabled = true; ctx.fillStyle = PAL.panel2; ctx.fillRect(0, 0, cv.width, cv.height);
+  ctx.setTransform(s, 0, 0, s, v.ox, v.oy);
+  const x0 = -v.ox / s - 1.6, y0 = -v.oy / s - 1.6, x1 = x0 + cv.width / s + 3.2, y1 = y0 + cv.height / s + 3.2;
+  const inView = (x, y) => x > x0 && x < x1 && y > y0 && y < y1;
+  ctx.fillStyle = PAL.panel; ctx.fillRect(0, 0, L.cols, L.rows);
+  ctx.lineCap = 'round'; ctx.strokeStyle = inkA(.07); ctx.lineWidth = .42; ctx.beginPath();
+  for (const e of L.edges) if (e[3] >= 0) { const a = centre(e[0]), b = centre(e[1]); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); }
+  ctx.stroke();
+  const rg = glareR();
+  ctx.fillStyle = inkA(.07);
+  for (const lp of W.lamps) if (lp.lit && inView(lp.x, lp.y)) { ctx.beginPath(); ctx.arc(lp.x, lp.y, rg, 0, 7); ctx.fill(); }
+  ctx.strokeStyle = inkA(.42); ctx.lineWidth = .012; ctx.setLineDash([.035, .035]);
+  for (const lp of W.lamps) if (lp.lit && inView(lp.x, lp.y)) { ctx.beginPath(); ctx.arc(lp.x, lp.y, rg, 0, 7); ctx.stroke(); }
+  ctx.setLineDash([]);
+  const H = W.home; ctx.fillStyle = PAL.ink; ctx.beginPath(); ctx.arc(H.x, H.y, .24, 0, 7); ctx.fill();
+  ctx.strokeStyle = PAL.ink; ctx.lineWidth = .02; ctx.setLineDash([.06, .05]); ctx.beginPath(); ctx.arc(H.x, H.y, .31, 0, 7); ctx.stroke(); ctx.setLineDash([]);
+  for (const g of W.segs) {
+    ctx.lineWidth = g.outer ? .14 : .06 + .12 * g.w;
+    ctx.strokeStyle = g.outer ? PAL.ink : inkA(.55 + .45 * Math.min(1, g.w / .4));
+    ctx.beginPath(); ctx.moveTo(g.x1, g.y1); ctx.lineTo(g.x2, g.y2); ctx.stroke();
+  }
+  if (ui.plan) { ctx.strokeStyle = PAL.warn; ctx.lineWidth = .05; ctx.setLineDash([.08, .07]);
+    for (const e of L.edges) { if ((e[3] >= 0) === (e[2] > 0)) continue;
+      const a = centre(e[0]), b = centre(e[1]), mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, dx = b[0] - a[0], dy = b[1] - a[1];
+      ctx.beginPath(); ctx.moveTo(mx - dy * .5, my - dx * .5); ctx.lineTo(mx + dy * .5, my + dx * .5); ctx.stroke(); }
+    ctx.setLineDash([]); }
+  for (const lp of W.lamps) { if (!inView(lp.x, lp.y)) continue;
+    if (lp.lit) { ctx.fillStyle = PAL.ink; ctx.beginPath(); ctx.arc(lp.x, lp.y, .065, 0, 7); ctx.fill();
+      ctx.strokeStyle = PAL.ink; ctx.lineWidth = .018; ctx.beginPath(); ctx.arc(lp.x, lp.y, .105, 0, 7); ctx.stroke(); }
+    else { ctx.fillStyle = PAL.panel; ctx.strokeStyle = PAL.ink3; ctx.lineWidth = .02; ctx.beginPath(); ctx.arc(lp.x, lp.y, .045, 0, 7); ctx.fill(); ctx.stroke(); } }
+  const tr = S.trail, n = tr.length;
+  if (n > 1) { ctx.lineWidth = .025; const from = S.state === 'fly' ? Math.max(1, n - 90) : 1;
+    for (let i = from; i < n; i++) { const a = S.state === 'fly' ? (i - from) / (n - from) : .55;
+      ctx.strokeStyle = `rgba(84,91,169,${(.08 + .5 * a).toFixed(3)})`; ctx.beginPath(); ctx.moveTo(tr[i - 1][0], tr[i - 1][1]); ctx.lineTo(tr[i][0], tr[i][1]); ctx.stroke(); } }
+  if (S.state === 'fly' && Math.abs(S.dlr) > 1.2) { const lt = Sim.light(W, S.x, S.y, P);
+    if (lt.lamp) { ctx.strokeStyle = PAL.warn; ctx.lineWidth = .018; ctx.setLineDash([.04, .04]);
+      ctx.beginPath(); ctx.moveTo(S.x, S.y); ctx.lineTo(lt.lamp.x, lt.lamp.y); ctx.stroke(); ctx.setLineDash([]); } }
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  pickBox(v, PAL.ink, PAL.panel);
+  // measured <ZZ> on every edge, when there is room to read it
+  const dpr = cv.width / Math.max(1, cv.getBoundingClientRect().width);
+  if (s / dpr >= 78) { const fs = Math.round(Math.min(12, s / dpr * .1) * dpr);
+    ctx.font = `500 ${fs}px "IBM Plex Mono", monospace`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.lineJoin = 'round'; ctx.lineWidth = Math.max(3, fs * .3); ctx.strokeStyle = PAL.panel;
+    for (const e of L.edges) { const a = centre(e[0]), b = centre(e[1]), mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2;
+      if (!inView(mx, my)) continue; const hor = a[1] === b[1];
+      const tx = v.ox + (mx + (hor ? 0 : .22)) * s, ty = v.oy + (my + (hor ? .22 : 0)) * s;
+      const tt = (e[3] >= 0 ? '+' : '−') + Math.abs(e[3]).toFixed(2).replace(/^0/, '');
+      ctx.strokeText(tt, tx, ty); ctx.fillStyle = e[3] < 0 ? PAL.ink : PAL.ink2; ctx.fillText(tt, tx, ty); } }
+  ctx.imageSmoothingEnabled = false;
+  blitAt(ctx, MOTH[S.state === 'home' ? 6 : mothDir(S.th)], mothFrame(reduce ? 0 : now()), v.ox + S.x * s, v.oy + S.y * s, Math.max(1, Math.round(v.Px)));
+  labels(v, PAL.ink, PAL.panel);
+}
+
+function labels(v, fill, stroke) {
+  const s = v.s, dpr = cv.width / Math.max(1, cv.getBoundingClientRect().width);
+  const fs = Math.max(10 * dpr, Math.min(15 * dpr, s * .14)); ctx.font = `500 ${fs}px "IBM Plex Mono", monospace`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.lineJoin = 'round'; ctx.lineWidth = Math.max(3, fs * .3); ctx.strokeStyle = stroke;
+  const label = (t, x, y) => { ctx.strokeText(t, x, y); ctx.fillStyle = fill; ctx.fillText(t, x, y); };
+  label('HOME', v.ox + W.home.x * s, v.oy + (W.home.y + .45) * s);
+  if (S.state === 'ready') label('START', v.ox + W.start.x * s, v.oy + (W.start.y + .44) * s);
+}
+
+// the square picked on the lamp map: pixel corner brackets around it, in either view (device pixels)
+function pickBox(v, col, shadow) {
+  if (ui.pick == null) return;
+  const s = v.s, px = Math.max(1, Math.round(v.Px)), c = ui.pick % L.cols, r = Math.floor(ui.pick / L.cols);
+  const x = Math.round(v.ox + c * s) + 2 * px, y = Math.round(v.oy + r * s) + 2 * px, w = Math.round(s) - 4 * px, h = w;
+  const t = 2 * px, a = Math.max(3 * t, Math.round(s * .25));
+  const arms = [[x, y, a, t], [x, y, t, a], [x + w - a, y, a, t], [x + w - t, y, t, a],
+                [x, y + h - t, a, t], [x, y + h - a, t, a], [x + w - a, y + h - t, a, t], [x + w - t, y + h - a, t, a]];
+  ctx.fillStyle = shadow; arms.forEach(([X, Y, Wd, Hd]) => ctx.fillRect(X - px, Y - px, Wd + 2 * px, Hd + 2 * px));
+  ctx.fillStyle = col; arms.forEach(([X, Y, Wd, Hd]) => ctx.fillRect(X, Y, Wd, Hd));
+}
+
+// the lamp map of this shot: one cell per square, warm = lit (bit 1); a paper frame marks the picked square
+const BC = 8;   // map pixels per cell
+function drawBits() {
+  const b = L.shotList[ui.shot][0]; bitsCv.width = L.cols * BC; bitsCv.height = L.rows * BC;
+  bitsCv.style.aspectRatio = L.cols + ' / ' + L.rows;
+  for (let i = 0; i < L.qubits; i++) { const r = Math.floor(i / L.cols), c = i % L.cols;
+    bctx.fillStyle = (i === L.start || i === L.home) ? PALC.T : b[i] === '1' ? PALC.O : PALC.K; bctx.fillRect(c * BC, r * BC, BC, BC); }
+  if (ui.pick != null) { const r = Math.floor(ui.pick / L.cols), c = ui.pick % L.cols;
+    bctx.strokeStyle = PALC.W; bctx.lineWidth = 2; bctx.strokeRect(c * BC + 1, r * BC + 1, BC - 2, BC - 2); }
+  drawDBits();                                      // Figure 2 below: the same shot in ink
+}
+// what the picked square reads in this shot: its qubit index and measured bit (the same bit that lights its lamp)
+function pickNote() {
+  const i = ui.pick, el = $('pick-note');
+  if (i == null) { el.textContent = 'Tap a square on the lamp map to read its qubit'; $('db-pick').textContent = el.textContent; return; }
+  const bit = L.shotList[ui.shot][0][i], r = Math.floor(i / L.cols) + 1, c = i % L.cols + 1;
+  const what = i === L.start ? 'start square, no lamp by design' : i === L.home ? 'home square, no lamp by design' : bit === '1' ? 'its lamp is lit' : 'its lamp is dark';
+  el.textContent = `row ${r}, col ${c} = qubit ${i} · bit ${bit} in this shot · ${what}`;
+  $('db-pick').textContent = el.textContent;
+}
+function setPick(i) {
+  ui.pick = i;
+  $('overlay').classList.toggle('look', S.state === 'ready' && i != null);   // lift the start card so the square shows
+  cam.init = false; pickNote(); drawBits(); draw();
+}
+
+// the moth on the overlay card reacts to how the flight went
+let ovKind = 'ready';
+function drawCard() {
+  const c = $('ov-moth'); if (!c || $('overlay').hidden) return;
+  const css = matchMedia('(max-width:560px)').matches ? 2 : 3, k = Math.max(1, Math.round(css * Math.min(2, window.devicePixelRatio || 1)));
+  const sp = ovKind === 'home' ? SPR.mothHappy : ovKind === 'spent' ? (held() ? SPR.mothDizzy : SPR.mothSleepy) : ovKind === 'paused' ? SPR.mothSleepy : SPR.moth;
+  if (c.width !== sp.w * k || c.height !== sp.h * k) { c.width = sp.w * k; c.height = sp.h * k; }
+  const x = c.getContext('2d'); x.clearRect(0, 0, c.width, c.height); x.imageSmoothingEnabled = false;
+  blit(x, sp, InkSprite.frameAt(sp, reduce ? 0 : now()), 0, 0, k);
+}
+
+// gentle idle animation (flowers, lamps, the waiting moth, a short celebration) only while the stage is on screen
+let idleH = null, idleUntil = 0, stageSeen = true;
+const wantIdle = () => !reduce && stageSeen && !document.hidden && S && S.state !== 'fly' && (S.state === 'ready' || now() < idleUntil);
+function idleTick() { idleH = null; if (!wantIdle()) return; draw(); drawCard(); idleH = setTimeout(() => requestAnimationFrame(idleTick), 120); }
+function kickIdle() { drawCard(); if (!idleH && wantIdle()) idleH = setTimeout(() => requestAnimationFrame(idleTick), 120); }
+if ('IntersectionObserver' in window) new IntersectionObserver(es => { stageSeen = es[0].isIntersecting; kickIdle(); }).observe($('stage'));
+document.addEventListener('visibilitychange', kickIdle);
+
+// legend swatches and level-card chips, drawn from the same sprites
+function swatch(w, h, s, paint) { const c = document.createElement('canvas'); c.width = w * s; c.height = h * s;
+  const x = c.getContext('2d'); x.imageSmoothingEnabled = false; x.scale(s, s); paint(x); return c.toDataURL('image/png'); }
+const fillPix = (x, w, h, fn) => { for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) { const ch = fn(i, j); if (ch) { x.fillStyle = PALC[ch]; x.fillRect(i, j, 1, 1); } } };
+(function legendSwatches() {
+  const SW = {
+    lit: [11, 12, x => { fillPix(x, 11, 12, groundCh); blit(x, SPR.lampLit, 0, 0, 0, 1); }],
+    dark: [11, 12, x => { fillPix(x, 11, 12, groundCh); blit(x, SPR.lampDark, 0, 0, 0, 1); }],
+    glare: [16, 12, x => { fillPix(x, 16, 12, (i, j) => glareCh(i + .5 - 8, j + .5 - 6, 7.5, i, j) || groundCh(i, j)); }],
+    h3: [10, 10, x => { fillPix(x, 10, 10, groundCh); blit(x, SPR.hedge3, 0, -6, 1, 1); }],
+    h2: [10, 10, x => { fillPix(x, 10, 10, groundCh); blit(x, SPR.hedge2, 0, -6, 2, 1); }],
+    h1: [10, 10, x => { fillPix(x, 10, 10, groundCh); blit(x, SPR.hedge1, 0, -6, 3, 1); }],
+    path: [16, 10, x => { fillPix(x, 16, 10, (i, j) => j >= 2 && j < 8 ? pathCh(i, j + 1) : groundCh(i, j)); }],
+    chg: [16, 10, x => { fillPix(x, 16, 10, groundCh); x.fillStyle = PALC.K; x.fillRect(0, 3, 6, 4); x.fillRect(9, 3, 6, 4); x.fillStyle = PALC.W; x.fillRect(1, 4, 4, 2); x.fillRect(10, 4, 4, 2); }],
+    decor: [12, 12, x => { fillPix(x, 12, 12, groundCh); blit(x, SPR.tree, 0, 0, 0, 1); }],
+  };
+  document.querySelectorAll('img[data-sw]').forEach(im => { const d = SW[im.dataset.sw]; if (!d) return;
+    im.src = swatch(d[0], d[1], 2, d[2]); im.width = d[0] * 2; im.height = d[1] * 2; });
+})();
+const WHERE = lv => lv.mode === 'qpu' ? 'IBM ' + lv.backend : 'Aer emulator';   // "IBM ibm_fez" on every card, chip and caption
+const CHIP = lv => lv.mode !== 'qpu' ? ['chipEmu', 'Aer emulator: a classical, noiseless simulation of the circuit']
+  : /miami/.test(lv.backend) ? ['chipSquare', 'IBM Nighthawk (ibm_miami): qubits on a square lattice, four neighbours each. Schematic icon']
+  : ['chipHeavyHex', 'IBM Heron (ibm_fez): heavy-hex lattice, at most three neighbours per qubit. Schematic icon'];
+
+// ---------- The data: three charts in the plain schematic style (paper, one ink, orange for changed edges) ----------
+// Figure 1 is the town map the game was first played on (the earlier draw()): the whole town of the selected level
+// and shot, live with the flight. Figure 2 is the lamp map of the shot. Figure 3 redraws out/levels.png in the page.
+const dmap = $('dmap'), mctx = dmap.getContext('2d'), dbits = $('dbits'), dbctx = dbits.getContext('2d');
+let mapSeen = !('IntersectionObserver' in window), mapEdge = null, mapDrag = false;
+// the boundary between squares a and b (the line a hedge is drawn on), in town units
+function edgeSegOf(a, b, cols) {
+  const ra = Math.floor(a / cols), ca = a % cols, rb = Math.floor(b / cols), cb = b % cols;
+  return ra === rb ? [Math.max(ca, cb), ra, Math.max(ca, cb), ra + 1] : [ca, Math.max(ra, rb), ca + 1, Math.max(ra, rb)];
+}
+function mapFit() {
+  const r = dmap.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = Math.max(1, Math.round(r.width * dpr)), h = Math.max(1, Math.round(r.height * dpr));
+  if (dmap.width !== w || dmap.height !== h) { dmap.width = w; dmap.height = h; }
+}
+function mapGeom() {   // whole town, a third of a square of margin all round
+  const w = dmap.width, h = dmap.height, m = .35, s = Math.min(w / (L.cols + 2 * m), h / (L.rows + 2 * m));
+  return {s, ox: (w - L.cols * s) / 2, oy: (h - L.rows * s) / 2, dpr: w / Math.max(1, dmap.getBoundingClientRect().width)};
+}
+function mapPt(e) { const r = dmap.getBoundingClientRect(), v = mapGeom();
+  return {x: ((e.clientX - r.left) * v.dpr - v.ox) / v.s, y: ((e.clientY - r.top) * v.dpr - v.oy) / v.s}; }
+let mapSig = '';
+function drawMap() {
+  if (!L || !W || !S) return;
+  // redraw on every frame of a flight only while Figure 1 is on screen; otherwise only when what it shows changes
+  const flying = S.state === 'fly' && !ui.paused;
+  const sig = [ui.li, ui.shot, ui.plan, ui.pick, mapEdge, S.state, S.t.toFixed(3), Math.round(dmap.getBoundingClientRect().width)].join('|');
+  if (flying ? !mapSeen : sig === mapSig) return;
+  mapSig = sig;
+  mapFit(); const v = mapGeom(), s = v.s, c = mctx;
+  c.setTransform(1, 0, 0, 1, 0, 0); c.fillStyle = PAL.panel2; c.fillRect(0, 0, dmap.width, dmap.height);
+  c.setTransform(s, 0, 0, s, v.ox, v.oy);
+  c.fillStyle = PAL.panel; c.fillRect(0, 0, L.cols, L.rows);
+  // streets: open pairs (measured <ZZ> >= 0), a faint ink wash
+  c.lineCap = 'round'; c.strokeStyle = inkA(.07); c.lineWidth = .42; c.beginPath();
+  for (const e of L.edges) if (e[3] >= 0) { const a = centre(e[0]), b = centre(e[1]); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); }
+  c.stroke();
+  // lamp light: a flat ink tint over the glare zone (brightness > P.glowI), no glow
+  const rg = glareR();
+  c.fillStyle = inkA(.07);
+  for (const lp of W.lamps) if (lp.lit) { c.beginPath(); c.arc(lp.x, lp.y, rg, 0, 7); c.fill(); }
+  c.strokeStyle = inkA(.42); c.lineWidth = .012; c.setLineDash([.035, .035]);
+  for (const lp of W.lamps) if (lp.lit) { c.beginPath(); c.arc(lp.x, lp.y, rg, 0, 7); c.stroke(); }
+  c.setLineDash([]);
+  // home: a solid ink hollow with a dashed ring
+  const H = W.home; c.fillStyle = PAL.ink; c.beginPath(); c.arc(H.x, H.y, .24, 0, 7); c.fill();
+  c.strokeStyle = PAL.ink; c.lineWidth = .02; c.setLineDash([.06, .05]); c.beginPath(); c.arc(H.x, H.y, .31, 0, 7); c.stroke(); c.setLineDash([]);
+  // the edge being read: a soft ink band along its boundary
+  if (mapEdge != null && L.edges[mapEdge]) { const g = edgeSegOf(L.edges[mapEdge][0], L.edges[mapEdge][1], L.cols);
+    c.strokeStyle = inkA(.16); c.lineWidth = .3; c.beginPath(); c.moveTo(g[0], g[1]); c.lineTo(g[2], g[3]); c.stroke(); }
+  // hedges (measured <ZZ> < 0), thickness = |<ZZ>|
+  for (const g of W.segs) {
+    c.lineWidth = g.outer ? .14 : .06 + .12 * g.w;
+    c.strokeStyle = g.outer ? PAL.ink : inkA(.55 + .45 * Math.min(1, g.w / .4));
+    c.beginPath(); c.moveTo(g.x1, g.y1); c.lineTo(g.x2, g.y2); c.stroke();
+  }
+  // plan vs measured: edges the state changed
+  if (ui.plan) { c.strokeStyle = PAL.warn; c.lineWidth = .05; c.setLineDash([.08, .07]);
+    for (const e of L.edges) { if ((e[3] >= 0) === (e[2] > 0)) continue;
+      const a = centre(e[0]), b = centre(e[1]), mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, dx = b[0] - a[0], dy = b[1] - a[1];
+      c.beginPath(); c.moveTo(mx - dy * .5, my - dx * .5); c.lineTo(mx + dy * .5, my + dx * .5); c.stroke(); }
+    c.setLineDash([]); }
+  // posts and bulbs: lit = solid ink bulb + ring, dark = hollow post
+  for (const lp of W.lamps) {
+    if (lp.lit) { c.fillStyle = PAL.ink; c.beginPath(); c.arc(lp.x, lp.y, .065, 0, 7); c.fill();
+      c.strokeStyle = PAL.ink; c.lineWidth = .018; c.beginPath(); c.arc(lp.x, lp.y, .105, 0, 7); c.stroke(); }
+    else { c.fillStyle = PAL.panel; c.strokeStyle = PAL.ink3; c.lineWidth = .02; c.beginPath(); c.arc(lp.x, lp.y, .045, 0, 7); c.fill(); c.stroke(); } }
+  // trail
+  const tr = S.trail, n = tr.length;
+  if (n > 1) { c.lineWidth = .025; const from = S.state === 'fly' ? Math.max(1, n - 90) : 1;
+    for (let i = from; i < n; i++) { const a = S.state === 'fly' ? (i - from) / (n - from) : .55;
+      c.strokeStyle = `rgba(84,91,169,${(.08 + .5 * a).toFixed(3)})`; c.beginPath(); c.moveTo(tr[i - 1][0], tr[i - 1][1]); c.lineTo(tr[i][0], tr[i][1]); c.stroke(); } }
+  // the lamp holding the moth
+  if (S.state === 'fly' && Math.abs(S.dlr) > 1.2) { const lt = Sim.light(W, S.x, S.y, P);
+    if (lt.lamp) { c.strokeStyle = PAL.warn; c.lineWidth = .018; c.setLineDash([.04, .04]);
+      c.beginPath(); c.moveTo(S.x, S.y); c.lineTo(lt.lamp.x, lt.lamp.y); c.stroke(); c.setLineDash([]); } }
+  // moth: white wings outlined in ink, ink body
+  c.save(); c.translate(S.x, S.y); c.rotate(S.th);
+  const flap = reduce || S.state !== 'fly' || ui.paused ? .85 : .55 + .45 * Math.abs(Math.sin(performance.now() / 1000 * (input.flap ? 15 : 9) * Math.PI));
+  const bl = 1 - .35 * S.bank, br = 1 + .35 * S.bank;
+  c.fillStyle = PAL.panel; c.strokeStyle = PAL.ink; c.lineWidth = .014; c.lineJoin = 'round';
+  c.beginPath(); c.moveTo(.02, 0); c.quadraticCurveTo(-.02, -.16 * flap * bl, -.12, -.13 * flap * bl); c.quadraticCurveTo(-.07, -.02, -.05, 0); c.closePath(); c.fill(); c.stroke();
+  c.beginPath(); c.moveTo(.02, 0); c.quadraticCurveTo(-.02, .16 * flap * br, -.12, .13 * flap * br); c.quadraticCurveTo(-.07, .02, -.05, 0); c.closePath(); c.fill(); c.stroke();
+  c.fillStyle = PAL.ink; c.beginPath(); c.ellipse(-.01, 0, .07, .022, 0, 0, 7); c.fill();
+  c.restore();
+  // screen space from here on
+  c.setTransform(1, 0, 0, 1, 0, 0);
+  // the square picked on a lamp map: ink corner brackets
+  if (ui.pick != null) { const pc = ui.pick % L.cols, pr = Math.floor(ui.pick / L.cols), t = Math.max(2, Math.round(1.5 * v.dpr));
+    const x = v.ox + (pc + .08) * s, y = v.oy + (pr + .08) * s, w = .84 * s, a = .26 * s;
+    c.fillStyle = PAL.ink; [[x, y, a, t], [x, y, t, a], [x + w - a, y, a, t], [x + w - t, y, t, a], [x, y + w - t, a, t], [x, y + w - a, t, a], [x + w - a, y + w - t, a, t], [x + w - t, y + w - a, t, a]]
+      .forEach(([X, Y, Wd, Hd]) => c.fillRect(X, Y, Wd, Hd)); }
+  // measured <ZZ> on every edge, when there is room to read it
+  c.lineJoin = 'round'; c.textAlign = 'center'; c.textBaseline = 'middle';
+  if (s / v.dpr >= 70) { const fs = Math.round(Math.min(12, s / v.dpr * .1) * v.dpr);
+    c.font = `500 ${fs}px "IBM Plex Mono", monospace`; c.lineWidth = Math.max(3, fs * .3); c.strokeStyle = PAL.panel;
+    for (const e of L.edges) { const a = centre(e[0]), b = centre(e[1]), mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, hor = a[1] === b[1];
+      const tx = v.ox + (mx + (hor ? 0 : .22)) * s, ty = v.oy + (my + (hor ? .22 : 0)) * s;
+      const tt = (e[3] >= 0 ? '+' : '−') + Math.abs(e[3]).toFixed(2).replace(/^0/, '');
+      c.strokeText(tt, tx, ty); c.fillStyle = e[3] < 0 ? PAL.ink : PAL.ink2; c.fillText(tt, tx, ty); } }
+  // labels, knocked out of the map with a paper outline
+  const fs = Math.max(10 * v.dpr, Math.min(15 * v.dpr, s * .14)); c.font = `500 ${fs}px "IBM Plex Mono", monospace`;
+  c.lineWidth = Math.max(3, fs * .28); c.strokeStyle = PAL.panel;
+  const label = (t, x, y, col) => { c.strokeText(t, x, y); c.fillStyle = col; c.fillText(t, x, y); };
+  label('HOME', v.ox + H.x * s, v.oy + (H.y + .48) * s, PAL.ink);
+  if (S.state === 'ready') label('START', v.ox + W.start.x * s, v.oy + (W.start.y + .38) * s, PAL.ink2);
+}
+// the edge nearest to a town point (its midpoint within 0.42 squares), as an index into L.edges
+function nearEdge(p) { let best = null, bd = .42;
+  L.edges.forEach((e, k) => { const a = centre(e[0]), b = centre(e[1]), d = Math.hypot((a[0] + b[0]) / 2 - p.x, (a[1] + b[1]) / 2 - p.y); if (d < bd) { bd = d; best = k; } });
+  return best; }
+function edgeNote() {
+  const el = $('dm-edge');
+  if (mapEdge == null || !L.edges[mapEdge]) { el.textContent = 'Point at the line between two squares to read the measured ⟨ZZ⟩ of that edge.'; return; }
+  const e = L.edges[mapEdge], open = e[3] >= 0, planned = e[2] > 0;
+  el.textContent = `qubits ${e[0]} and ${e[1]}: planned ${planned ? 'street' : 'hedge'} · measured ⟨ZZ⟩ = ${(open ? '+' : '−') + Math.abs(e[3]).toFixed(3)} → ${open ? 'open street' : 'hedge'}${open === planned ? ', as planned' : ', changed by the state'}`;
+}
+// Figure 2: the lamp map in ink (bit 1 = ink, bit 0 = white, start / home pale); the picked square framed in orange
+function drawDBits() {
+  const b = L.shotList[ui.shot][0]; dbits.width = L.cols * BC; dbits.height = L.rows * BC; dbits.style.aspectRatio = L.cols + ' / ' + L.rows;
+  for (let i = 0; i < L.qubits; i++) { const r = Math.floor(i / L.cols), c = i % L.cols;
+    dbctx.fillStyle = (i === L.start || i === L.home) ? PAL.ink3 : b[i] === '1' ? PAL.ink : PAL.panel; dbctx.fillRect(c * BC, r * BC, BC, BC); }
+  if (ui.pick != null) { const r = Math.floor(ui.pick / L.cols), c = ui.pick % L.cols;
+    dbctx.strokeStyle = PAL.warn; dbctx.lineWidth = 2; dbctx.strokeRect(c * BC + 1, r * BC + 1, BC - 2, BC - 2); }
+}
+// Figure 3: every level at a glance (the page's own copy of out/levels.png: shot 1 of each level, all changed edges in orange)
+const MINIS = LEVELS.map((lv, i) => { const b = document.createElement('button'); b.type = 'button';
+  b.innerHTML = `<img alt="" style="aspect-ratio:${lv.cols + .4} / ${lv.rows + .4}"><span class="mt">${lv.id} ${lv.name}: ${WHERE(lv)}, ${lv.qubits} qubits</span><span class="ms">job ${lv.job.slice(0, 8)} · hedges vs plan ${lv.match}/${lv.nEdges}</span>`;
+  // show it in Figures 1 and 2 (and the game): load the level and bring the top of The data into view
+  b.addEventListener('click', () => { load(i, 0); $('sec-data').scrollIntoView({block: 'start', behavior: reduce ? 'auto' : 'smooth'}); });
+  $('minis').appendChild(b); return {b, im: b.querySelector('img'), lv, w: 0}; });
+// each panel is drawn on a scratch canvas at the image's size and shown as a still picture
+function drawMini(m) {
+  const lv = m.lv, R = lv.rows, C = lv.cols, dpr = Math.min(2, window.devicePixelRatio || 1);
+  const cssW = m.im.getBoundingClientRect().width || 300, w = Math.max(1, Math.round(cssW * dpr)), h = Math.max(1, Math.round(w * (R + .4) / (C + .4)));
+  if (m.w === w && m.im.src) return; m.w = w;
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const x = c.getContext('2d'), s = Math.min(w / (C + .4), h / (R + .4)), ox = (w - C * s) / 2, oy = (h - R * s) / 2;
+  const k = cssW / 325 * dpr;   // matplotlib points -> device pixels (each panel of levels.png is about 325 pt wide)
+  const X = u => ox + u * s, Y = u => oy + u * s, bits = lv.shotList[0][0];
+  x.setTransform(1, 0, 0, 1, 0, 0); x.fillStyle = PAL.panel; x.fillRect(0, 0, w, h);
+  const ends = lv.role === 'comparison' ? [] : [lv.start, lv.home];   // a comparison run is not a level: no start or home
+  for (let i = 0; i < R * C; i++) { if (ends.includes(i)) continue;
+    const cx = X(i % C + .5), cy = Y(Math.floor(i / C) + .5);
+    if (bits[i] === '1') { x.fillStyle = '#E8E9F3'; x.beginPath(); x.arc(cx, cy, .42 * s, 0, 7); x.fill();
+      x.fillStyle = PAL.ink; x.beginPath(); x.arc(cx, cy, 2.5 * k, 0, 7); x.fill(); }
+    else { x.fillStyle = PAL.panel; x.strokeStyle = PAL.ink3; x.lineWidth = k; x.beginPath(); x.arc(cx, cy, 1.5 * k, 0, 7); x.fill(); x.stroke(); } }
+  // Figure 4: a soft ink band under every edge where the two runs disagree (hedge in one, street in the other)
+  if (m.mark) { x.lineCap = 'butt'; x.strokeStyle = inkA(.2); x.lineWidth = .34 * s;
+    for (const j of m.mark) { const g = edgeSegOf(lv.edges[j][0], lv.edges[j][1], C); x.beginPath(); x.moveTo(X(g[0]), Y(g[1])); x.lineTo(X(g[2]), Y(g[3])); x.stroke(); } }
+  x.lineCap = 'round';
+  for (const [a, b, sg, zz] of lv.edges) { const g = edgeSegOf(a, b, C), flipped = (zz >= 0) !== (sg > 0);
+    if (zz < 0) { x.strokeStyle = flipped ? PAL.warn : PAL.ink; x.lineWidth = (1.5 + 6 * Math.min(1, Math.abs(zz))) * k; x.setLineDash([]); }
+    else if (flipped) { x.strokeStyle = PAL.warn; x.lineWidth = 1.2 * k; x.setLineDash([2.4 * k, 2.4 * k]); }
+    else continue;
+    x.beginPath(); x.moveTo(X(g[0]), Y(g[1])); x.lineTo(X(g[2]), Y(g[3])); x.stroke(); }
+  x.setLineDash([]); x.lineCap = 'butt'; x.strokeStyle = PAL.ink; x.lineWidth = 5 * k; x.strokeRect(X(0), Y(0), C * s, R * s);
+  const fs = Math.max(9, Math.round(9 * k)); x.font = `500 ${fs}px "IBM Plex Mono", monospace`; x.textAlign = 'center'; x.textBaseline = 'middle';
+  x.lineJoin = 'round'; x.lineWidth = Math.max(2, fs * .3); x.strokeStyle = PAL.panel; x.fillStyle = PAL.ink;   // knocked out of the hedges
+  (ends.length ? [[lv.start, 'START'], [lv.home, 'HOME']] : []).forEach(([i, t]) => { const tx = Math.min(w - x.measureText(t).width / 2 - 2, Math.max(x.measureText(t).width / 2 + 2, X(i % C + .5))), ty = Y(Math.floor(i / C) + .5);
+    x.strokeText(t, tx, ty); x.fillText(t, tx, ty); });
+  m.im.src = c.toDataURL('image/png');
+}
+const drawMinis = () => MINIS.forEach(drawMini);
+// Figure 4: a level (IBM ibm_fez) beside an earlier run of the very same street plan on another backend.
+// The comparison runs are real, ledgered jobs too, but they are not levels: shown here and in the jobs table only.
+const cmpUI = {k: 0, diff: false};
+const CMPP = ['cmp-a', 'cmp-b'].map(id => ({b: $(id), im: $(id).querySelector('img'), lv: null, w: 0, mark: null}));
+const pctOf = lv => (100 * lv.match / lv.nEdges).toFixed(0) + '%';
+COMPARE.forEach((c, k) => { const b = document.createElement('button'); b.type = 'button';
+  const base = LEVELS.find(l => l.id === c.of);
+  b.textContent = `${base.name}: ${base.backend} vs ${c.mode === 'qpu' ? c.backend : 'Aer emulator'}`;
+  b.addEventListener('click', () => { cmpUI.k = k; drawCmp(true); });
+  $('cmp-seg').appendChild(b); });
+if (!COMPARE.length) $('fig-cmp').hidden = true;
+function drawCmp(force) {
+  if (!COMPARE.length) return;
+  const c = COMPARE[cmpUI.k], li = LEVELS.findIndex(l => l.id === c.of), lv = LEVELS[li];
+  const mark = cmpUI.diff ? c.edges.map((e, j) => ((e[3] >= 0) !== (lv.edges[j][3] >= 0) ? j : -1)).filter(j => j >= 0) : null;
+  [[CMPP[0], lv], [CMPP[1], c]].forEach(([m, x]) => { if (force || m.lv !== x) m.w = 0; m.lv = x; m.mark = mark; drawMini(m); });
+  const icon = x => { const [chip, tip] = CHIP(x); return `<img class="lvchip" src="${InkSprite.toDataURL(SPR[chip], 0, 2)}" width="20" height="20" alt="" title="${tip}">`; };
+  CMPP[0].b.querySelector('.mt').innerHTML = `${icon(lv)}${lv.id} ${lv.name}: ${WHERE(lv)}, ${lv.qubits} qubits`;
+  CMPP[0].b.querySelector('.ms').textContent = `job ${lv.job.slice(0, 8)} · hedges vs plan ${lv.match}/${lv.nEdges} · press to fly this level`;
+  CMPP[0].b.setAttribute('aria-label', `${lv.id} ${lv.name}, ${WHERE(lv)}, ${lv.qubits} qubits: show it in Figures 1 and 2 and in the game`);
+  CMPP[1].b.querySelector('.mt').innerHTML = `${icon(c)}Comparison run, not a level: ${WHERE(c)}, ${c.qubits} qubits`;
+  CMPP[1].b.querySelector('.ms').textContent = `job ${c.job.slice(0, 8)} · hedges vs plan ${c.match}/${c.nEdges} · same street plan as ${lv.id}`;
+  CMPP[1].im.alt = `${lv.name} as measured on the ${WHERE(c)}: a comparison run, not a level`;
+  [...$('cmp-seg').children].forEach((b, k) => b.setAttribute('aria-pressed', String(k === cmpUI.k)));
+  $('cmp-diff').setAttribute('aria-pressed', String(cmpUI.diff));
+  const code = t => t ? `<code>${t}</code>` : 'none (emulator)';
+  const row = (h, a, b) => `<tr><th scope="row">${h}</th><td>${a}</td><td>${b}</td></tr>`;
+  $('cmp-table').innerHTML = `<tr><th></th><th>${lv.id} ${lv.name} (the level)</th><th>Comparison run (not a level)</th></tr>`
+    + row('Ran on', lv.ranOn, c.ranOn) + row('Atlas job', code(lv.job), code(c.job)) + row('IBM job', code(lv.ibmJob), code(c.ibmJob))
+    + row('Qubits', `${lv.qubits} (${lv.rows} × ${lv.cols})`, `${c.qubits} (${c.rows} × ${c.cols})`)
+    + row('Distinct shots', `${lv.distinct} of ${lv.shots}`, `${c.distinct} of ${c.shots}`)
+    + row('Hedges matching the plan', `${lv.match} of ${lv.nEdges} (${pctOf(lv)})`, `${c.match} of ${c.nEdges} (${pctOf(c)})`)
+    + row('mean(plan sign × measured ⟨ZZ⟩)', lv.szMeas.toFixed(3), c.szMeas.toFixed(3))
+    + row('Reported QPU time', lv.qpuSeconds != null ? lv.qpuSeconds + ' s' : '–', c.qpuSeconds != null ? c.qpuSeconds + ' s' : '– (simulator)');
+  $('cmp-note').textContent = `The two runs of this town disagree on hedge vs street on ${c.diff} of ${c.nEdges} edges`
+    + (cmpUI.diff ? ', each marked with a soft ink band in both panels.' : '. Press "Mark where the two runs disagree" to see them.');
+}
+CMPP[0].b.addEventListener('click', () => { const li = LEVELS.findIndex(l => l.id === COMPARE[cmpUI.k].of);
+  load(li, 0); $('sec-data').scrollIntoView({block: 'start', behavior: reduce ? 'auto' : 'smooth'}); });
+$('cmp-diff').addEventListener('click', () => { cmpUI.diff = !cmpUI.diff; drawCmp(true); });
+// once the web fonts have arrived, redraw the labels in IBM Plex Mono
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { MINIS.forEach(m => { m.w = 0; }); drawMinis(); drawCmp(true); mapSig = ''; drawMap(); });
+
+// ---------- ui ----------
+const fmt = x => (x * 100).toFixed(0) + '%';
+function hud() {
+  $('h-bar').style.width = Math.max(0, S.energy).toFixed(1) + '%';
+  $('h-time').textContent = S.t.toFixed(1) + ' s';
+  $('h-orb').textContent = S.orbits + (S.orbits === 1 ? ' loop' : ' loops');
+  $('h-warn').textContent = S.state === 'fly' ? (ui.hands ? 'hands off' : Math.abs(S.dlr) > 1.6 ? 'a lamp has you' : '') : '';
+}
+function overlay(kind) {
+  const ov = $('overlay');
+  $('stage').classList.toggle('ov', !!kind);
+  if (!kind) { ov.hidden = true; return; }
+  ov.hidden = false; ovKind = kind; ov.classList.toggle('end', kind === 'home' || kind === 'spent'); ov.classList.toggle('look', kind === 'ready' && ui.pick != null); $('ov-share').hidden = !(kind === 'home' || kind === 'spent'); $('ov-hint').hidden = kind !== 'ready';
+  drawCard();
+  const src = L.mode === 'qpu' ? `IBM ${L.backend} hardware` : 'Aer emulator';
+  if (kind === 'ready') { $('ov-title').textContent = L.name;
+    $('ov-text').textContent = `${L.rows} × ${L.cols} squares, one qubit each: ${L.qubits} qubits on the ${src}. ${countLit()} lamps lit by shot ${ui.shot + 1}.`;
+    $('ov-go').textContent = 'Take off'; }
+  if (kind === 'paused') { $('ov-title').textContent = 'Paused'; $('ov-text').textContent = 'The lamps keep burning. The moth waits.'; $('ov-go').textContent = 'Resume'; }
+  if (kind === 'home') { $('ov-title').textContent = `Home in ${S.t.toFixed(1)} s`;
+    $('ov-text').textContent = `${S.orbits} ${S.orbits === 1 ? 'loop' : 'loops'} and ${S.glare.toFixed(1)} s in the glare, ${S.energy.toFixed(0)}% energy left${ui.hands ? ', flown hands off' : ''}. Send a friend the same town and lamps.`;
+    $('ov-go').textContent = 'Fly again'; }
+  if (kind === 'spent') { const held = S.glare > .3 * S.t;
+    $('ov-title').textContent = held ? 'Trapped by the light' : 'Out of energy';
+    $('ov-text').textContent = held
+      ? `The reflex kept the moth in the glare for ${S.glare.toFixed(1)} of ${S.t.toFixed(1)} s (${S.orbits} ${S.orbits === 1 ? 'loop' : 'loops'}) until its energy ran out. Steer harder, flap, or turn the pull down.`
+      : `The moth wandered for ${S.t.toFixed(1)} s and spent ${S.glare.toFixed(1)} s in the glare before its energy ran out. Follow the open streets toward home.`;
+    $('ov-go').textContent = 'Try again'; }
+}
+function countLit() { return W.lamps.filter(l => l.lit).length; }
+function sync() {
+  [...$('levels').children].forEach((b, i) => b.setAttribute('aria-pressed', String(i === ui.li)));
+  const sh = L.shotList[ui.shot];
+  const allOnce = L.shotList.every(x => x[1] === 1);
+  $('shot-top').textContent = allOnce ? 'First shot' : 'Most frequent';
+  $('shot-num').textContent = allOnce
+    ? `shot ${ui.shot + 1} of ${L.shotList.length} shown · all ${L.distinct} of ${L.shots} shots differ · ${countLit()} lamps lit`
+    : `shot ${ui.shot + 1} of ${L.shotList.length} · seen ${sh[1]}× in ${L.shots} · ${countLit()} lamps lit`;
+  $('shot-prev').disabled = ui.shot === 0; $('shot-next').disabled = ui.shot === L.shotList.length - 1;
+  $('shot-top').disabled = ui.shot === 0;          // already on shot 1
+  $('reset').disabled = S.state === 'ready';       // nothing to reset before take-off
+  $('pull-val').textContent = ui.pull.toFixed(1) + '×';
+  $('t-hands').setAttribute('aria-pressed', String(ui.hands)); $('t-plan').setAttribute('aria-pressed', String(ui.plan));
+  const big = Math.max(L.rows, L.cols) > 6; $('t-whole').disabled = !big; $('t-whole').setAttribute('aria-pressed', String(ui.whole || !big));
+  $('sound').setAttribute('aria-pressed', String(ui.sound)); $('sound').textContent = ui.sound ? 'Sound on' : 'Sound off';
+  const flying = S.state === 'fly';
+  $('stage').classList.toggle('fly', flying && !ui.paused);
+  $('go').textContent = flying ? (ui.paused ? 'Resume' : 'Pause') : S.state === 'ready' ? 'Take off' : 'Fly again';
+  $('pause').textContent = flying && !ui.paused ? 'Pause' : 'Play'; $('pause').setAttribute('aria-label', flying && !ui.paused ? 'Pause' : 'Play');
+  $('chip').innerHTML = `<b>${L.id}</b> ${L.name} · ${WHERE(L)} · ${L.qubits} qubits<br>job ${L.job.slice(0, 8)} · shot ${ui.shot + 1}`;
+  $('r-engine').textContent = `labyrinth-v1 · ZZ prep, ${L.steps} sweeps, fraction ${L.fraction.toFixed(3)}, k ${L.k}`;
+  $('r-ran').textContent = L.ranOn;
+  $('r-job').textContent = L.job; $('r-ibm').textContent = L.ibmJob || 'none (emulator)';
+  $('r-q').textContent = `${L.qubits} (${L.rows} × ${L.cols} squares, one qubit each; num_qubits reported by the engine)`;
+  $('r-shots').textContent = `${L.shots} measured · ${L.distinct} distinct bitstrings`;
+  $('r-hedge').textContent = `${L.match} of ${L.nEdges} edges match the plan (${L.nEdges - L.match} changed by the state)`;
+  $('r-score').textContent = `mean(plan sign × measured ⟨ZZ⟩) = ${L.szMeas.toFixed(3)} (engine sz_samp ${L.szSamp.toFixed(3)}; its classical tomography estimate sz_tomo ${L.szTomo.toFixed(3)})`;
+  // The data section mirrors the same level, shot and toggles
+  $('dm-level').textContent = `${L.id} ${L.name} · ${WHERE(L)} · ${L.qubits} qubits · shot ${ui.shot + 1}`;
+  $('dm-prev').disabled = $('shot-prev').disabled; $('dm-next').disabled = $('shot-next').disabled;
+  $('dm-plan').setAttribute('aria-pressed', String(ui.plan));
+  $('db-num').textContent = $('shot-num').textContent;
+  MINIS.forEach((m, i) => m.b.setAttribute('aria-pressed', String(i === ui.li)));
+  edgeNote(); drawBits(); pickNote();
+}
+const toast = msg => { const t = $('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 1900); };
+async function share() {
+  history.replaceState(null, '', '#' + Sim.encode({level: L.id, shot: ui.shot, pull: ui.pull}));
+  try { await navigator.clipboard.writeText(location.href); toast('Link copied: same town, same lamps'); }
+  catch (e) { toast('Copy failed: the link is in your address bar'); }
+}
+
+// level buttons
+LEVELS.forEach((lv, i) => { const b = document.createElement('button'); b.type = 'button';
+  const [chip, tip] = CHIP(lv), url = InkSprite.toDataURL(SPR[chip], 0, 2);
+  b.innerHTML = `<img class="lvchip" src="${url}" width="34" height="34" alt="" title="${tip}"><span class="lvtxt"><b>${lv.name}</b><span>${WHERE(lv)} · ${lv.qubits} qubits</span><span>job ${lv.job.slice(0, 8)}</span></span>`;
+  b.title = tip;
+  b.addEventListener('click', () => load(i, 0)); $('levels').appendChild(b); });
+$('shot-prev').addEventListener('click', () => load(ui.li, ui.shot - 1));
+$('shot-next').addEventListener('click', () => load(ui.li, ui.shot + 1));
+$('shot-top').addEventListener('click', () => load(ui.li, 0));
+$('pull').addEventListener('input', e => { ui.pull = +e.target.value; P.pull = ui.pull; sync(); });
+$('t-hands').addEventListener('click', () => { ui.hands = !ui.hands; ui.demo = false; sync(); hud(); });
+$('t-plan').addEventListener('click', () => { ui.plan = !ui.plan; sync(); draw(); });
+$('t-whole').addEventListener('click', () => { ui.whole = !ui.whole; cam.init = false; sync(); draw(); });
+function setView(data) { ui.data = data; $('v-scene').setAttribute('aria-pressed', String(!data)); $('v-data').setAttribute('aria-pressed', String(data));
+  $('leg-scene').hidden = data; $('leg-data').hidden = !data;
+  $('v-note').textContent = data ? 'Schematic · measured ⟨ZZ⟩ on every edge' : 'Pixel town · hedges and lamps read from the job';
+  draw(); }
+$('v-scene').addEventListener('click', () => setView(false));
+$('v-data').addEventListener('click', () => setView(true));
+$('sound').addEventListener('click', () => { ui.sound = !ui.sound; if (ui.sound && S.state === 'fly') Snd.init(); Snd.setOn(ui.sound); sync(); });
+$('go').addEventListener('click', () => S.state === 'fly' ? togglePause() : takeOff());
+$('ov-go').addEventListener('click', () => S.state === 'fly' ? togglePause() : takeOff());
+$('pause').addEventListener('click', () => (S.state === 'home' || S.state === 'spent') ? takeOff() : togglePause());   // Play after a flight = fly again
+$('ov-moth').addEventListener('click', () => $('ov-go').click());   // the card's moth is a shortcut for the card's main button
+// the dimmed town behind the start / pause card: press to take off (or resume) and keep dragging to steer
+$('overlay').addEventListener('pointerdown', e => {
+  if (e.target !== e.currentTarget || !(S.state === 'ready' || (S.state === 'fly' && ui.paused))) return;
+  e.preventDefault();
+  if (S.state === 'ready') takeOff(); else togglePause();
+  try { cv.setPointerCapture(e.pointerId); } catch (_) { /* capture is a nicety */ }
+  input.ptr = worldPt(e);
+});
+// lamp maps (the panel's and Figure 2's): pick a square to read its qubit and bit, and mark it in the town
+[bitsCv, dbits].forEach(pc => {
+  pc.addEventListener('pointerdown', e => {
+    const c = Math.max(0, Math.min(L.cols - 1, Math.floor(e.offsetX / Math.max(1, pc.clientWidth) * L.cols)));
+    const r = Math.max(0, Math.min(L.rows - 1, Math.floor(e.offsetY / Math.max(1, pc.clientHeight) * L.rows)));
+    const i = r * L.cols + c; setPick(i === ui.pick ? null : i);
+  });
+  pc.addEventListener('keydown', e => {
+    const mv = {ArrowLeft: [0, -1], ArrowRight: [0, 1], ArrowUp: [-1, 0], ArrowDown: [1, 0]}[e.key];
+    if (!mv && e.key !== 'Escape') return;
+    e.preventDefault(); e.stopPropagation();             // arrows move the pick here, they don't steer
+    if (e.key === 'Escape') { setPick(null); return; }
+    if (ui.pick == null) { setPick(L.start); return; }
+    const r = Math.max(0, Math.min(L.rows - 1, Math.floor(ui.pick / L.cols) + mv[0])), c = Math.max(0, Math.min(L.cols - 1, ui.pick % L.cols + mv[1]));
+    setPick(r * L.cols + c);
+  });
+});
+// Figure 1: in flight, press and drag to steer toward that point (like the town above); otherwise a press picks
+// the square under it and reads the nearest edge. Hovering with a mouse reads the edge under the pointer.
+dmap.addEventListener('pointerdown', e => {
+  const p = mapPt(e);
+  if (S.state === 'fly' && !ui.paused) { try { dmap.setPointerCapture(e.pointerId); } catch (_) { /* a nicety */ } input.ptr = p; mapDrag = true; return; }
+  mapEdge = nearEdge(p); edgeNote();
+  const c = Math.floor(p.x), r = Math.floor(p.y);
+  if (c >= 0 && r >= 0 && c < L.cols && r < L.rows) { const i = r * L.cols + c; setPick(i === ui.pick ? null : i); } else draw();
+});
+dmap.addEventListener('pointermove', e => {
+  const p = mapPt(e);
+  if (mapDrag) { input.ptr = p; return; }
+  if (e.pointerType !== 'mouse') return;
+  const k = nearEdge(p); if (k !== mapEdge) { mapEdge = k; edgeNote(); if (S.state !== 'fly' || ui.paused) drawMap(); }
+});
+['pointerup', 'pointercancel'].forEach(t => dmap.addEventListener(t, () => { if (mapDrag) { input.ptr = null; mapDrag = false; } }));
+dmap.addEventListener('pointerleave', e => { if (!mapDrag && e.pointerType === 'mouse' && mapEdge != null) { mapEdge = null; edgeNote(); drawMap(); } });
+dmap.addEventListener('keydown', e => { if (e.key === 'Escape' && ui.pick != null) { e.preventDefault(); setPick(null); } });
+if ('IntersectionObserver' in window) new IntersectionObserver(es => { mapSeen = es[0].isIntersecting; if (mapSeen) drawMap(); }).observe(dmap);
+new ResizeObserver(() => drawMap()).observe(dmap);
+new ResizeObserver(() => drawMinis()).observe($('minis'));
+new ResizeObserver(() => drawCmp(false)).observe($('cmp-minis'));
+$('dm-prev').addEventListener('click', () => load(ui.li, ui.shot - 1));
+$('dm-next').addEventListener('click', () => load(ui.li, ui.shot + 1));
+$('dm-plan').addEventListener('click', () => { ui.plan = !ui.plan; sync(); draw(); });
+// section buttons scroll; they leave the #share-token alone
+document.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => $(b.dataset.go).scrollIntoView({block: 'start', behavior: reduce ? 'auto' : 'smooth'})));
+// jobs table: fly that level in the game above
+document.querySelectorAll('[data-fly]').forEach(b => b.addEventListener('click', () => {
+  load(+b.dataset.fly, 0); $('stage').scrollIntoView({block: 'start', behavior: reduce ? 'auto' : 'smooth'}); }));
+$('reset').addEventListener('click', resetFlight);
+$('demo').addEventListener('click', demo);
+$('share').addEventListener('click', share); $('ov-share').addEventListener('click', share);
+
+// keyboard
+const KEYS = {ArrowLeft: 'left', a: 'left', A: 'left', ArrowRight: 'right', d: 'right', D: 'right', ArrowUp: 'flap', w: 'flap', W: 'flap', Shift: 'flap'};
+window.addEventListener('keydown', e => {
+  const tag = (e.target.tagName || '').toLowerCase();
+  if (tag === 'input' || tag === 'select' || tag === 'textarea') return;
+  const k = KEYS[e.key];
+  const town = e.target === cv || e.target === dmap;   // the game town or Figure 1, which flies the same moth
+  if (k && (S.state === 'fly' || town)) {
+    if (town && S.state === 'ready') takeOff();   // on the focused town, the first steer or flap takes off
+    input[k] = true; if (e.key.startsWith('Arrow')) e.preventDefault(); return; }
+  if ((e.key === ' ' || e.key === 'p' || e.key === 'P') && (tag !== 'button' || e.key !== ' ')) { e.preventDefault(); togglePause(); }
+  if (e.key === 'r' || e.key === 'R') resetFlight();
+  if (e.key === 'h' || e.key === 'H') { ui.hands = !ui.hands; ui.demo = false; sync(); }
+});
+window.addEventListener('keyup', e => { const k = KEYS[e.key]; if (k) input[k] = false; });
+window.addEventListener('blur', () => { input.left = input.right = input.flap = false; input.ptr = null; });
+// pointer: hold on the town to steer toward that point
+function worldPt(e) { const r = cv.getBoundingClientRect(), dpr = cv.width / r.width, v = view();
+  return {x: ((e.clientX - r.left) * dpr - v.ox) / v.s, y: ((e.clientY - r.top) * dpr - v.oy) / v.s}; }
+cv.addEventListener('pointerdown', e => { if (S.state !== 'fly') return; cv.setPointerCapture(e.pointerId); input.ptr = worldPt(e); });
+cv.addEventListener('pointermove', e => { if (input.ptr) input.ptr = worldPt(e); });
+['pointerup', 'pointercancel'].forEach(t => cv.addEventListener(t, () => { input.ptr = null; }));
+// touch pad: hold buttons
+[['p-left', 'left'], ['p-right', 'right'], ['p-flap', 'flap']].forEach(([id, k]) => { const b = $(id);
+  // a pad press always gets the moth flying: take off (or fly again after a flight), or resume from pause
+  const on = e => { e.preventDefault(); if (S.state !== 'fly') takeOff(); else if (ui.paused) togglePause(); input[k] = true; b.classList.add('on'); };
+  const off = () => { input[k] = false; b.classList.remove('on'); };
+  b.addEventListener('pointerdown', on); ['pointerup', 'pointerleave', 'pointercancel'].forEach(t => b.addEventListener(t, off));
+  b.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); on(e); } });
+  b.addEventListener('keyup', e => { if (e.key === 'Enter' || e.key === ' ') off(); }); });
+new ResizeObserver(() => { cam.init = false; draw(); }).observe(cv);
+
+// shared link: #L3.s12.p10, read on load and again when a different link is opened in this tab
+// (Copy link uses history.replaceState, which fires no hashchange, so a flight is never reset by its own link)
+function applyHash() {
+  const t = Sim.decode(location.hash.slice(1)), i = t ? LEVELS.findIndex(l => l.id === t.level) : -1;
+  if (i < 0) return false;
+  ui.pull = t.pull; $('pull').value = ui.pull; load(i, t.shot); return true;
+}
+if (!applyHash()) load(0, 0);
+window.addEventListener('hashchange', applyHash);
+</script>

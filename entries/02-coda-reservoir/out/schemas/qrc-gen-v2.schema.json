@@ -1,0 +1,144 @@
+{
+  "$schema": "https://api.mothquantum.com/schemas/Engine.json",
+  "engine_id": "qrc-gen-v2",
+  "name": "QRC Generate",
+  "description": "Generate a sequence from a trained QRC model, reused by reference (train once, generate many).",
+  "owner": "37eae1ca-66b4-46f8-aca3-0baa7b011987",
+  "owner_type": "user",
+  "created_by": "37eae1ca-66b4-46f8-aca3-0baa7b011987",
+  "visibility": "public",
+  "queue": "",
+  "input_type": "multipart/form-data",
+  "output_type": "application/json",
+  "input_files": [
+    {
+      "name": "state",
+      "mime_types": [
+        "application/json"
+      ],
+      "required": true,
+      "description": ""
+    }
+  ],
+  "output_files": [
+    {
+      "name": "state",
+      "content_types": [
+        "application/json"
+      ],
+      "required": true,
+      "description": "Updated reservoir state; chain into a further qrc-gen-v2 call via input_files.state."
+    }
+  ],
+  "is_multipart": true,
+  "is_async": false,
+  "execution_mode": "handler",
+  "run_policy": {
+    "timeout": 3600,
+    "max_retries": 1,
+    "heartbeat": 3000
+  },
+  "params_schema": {
+    "properties": {
+      "initial_events": {
+        "anyOf": [
+          {
+            "items": {},
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Warm up the reservoir on these events before generating, instead of the whole vocabulary (the default for a fresh model). Tokens must belong to the model's vocabulary. Ignored when continuing from a `state` that is itself a prior qrc-gen-v1 output, unless given explicitly to deliberately re-seed the trajectory.",
+        "title": "Initial Events"
+      },
+      "length": {
+        "default": 10,
+        "description": "Number of tokens to generate",
+        "exclusiveMinimum": 0,
+        "title": "Length",
+        "type": "integer"
+      },
+      "random_seed": {
+        "anyOf": [
+          {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "RNG seed for this call's own generation randomness (softmax sampling) \u2014 applied after the model is loaded, not the seed the QRC was trained with (that one is always reused exactly, to reconstruct the reservoir faithfully). None = keep whatever RNG state the model already has (deterministic given the same inputs); give a value to force a specific, reproducible sampling trajectory.",
+        "title": "Random Seed"
+      },
+      "shots": {
+        "anyOf": [
+          {
+            "maximum": 8192,
+            "minimum": 1,
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Measurement shots during generation (backend.shots). None = keep whatever shots the model was trained (or last generated) with.",
+        "title": "Shots"
+      },
+      "variation": {
+        "default": 1,
+        "description": "Sampling temperature: low = deterministic/repetitive, high = random",
+        "exclusiveMinimum": 0,
+        "title": "Variation",
+        "type": "number"
+      },
+      "vocabulary": {
+        "anyOf": [
+          {
+            "items": {},
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Relabel the model's output space: the trained reservoir/readout only depend on vocabulary *size*, not identity, so any vocabulary with the same number of distinct tokens as the model's own can be swapped in \u2014 generation then emits from this vocabulary instead. A different size raises `incompatible_model` (readout shape mismatch).",
+        "title": "Vocabulary"
+      }
+    },
+    "title": "Params",
+    "type": "object"
+  },
+  "credits_per_run": 1,
+  "enabled": true,
+  "registered_at": "2026-08-24T12:45:52Z",
+  "updated_at": "2026-08-25T12:35:19Z",
+  "description_md": "qrc-gen-v1 \u2014 generate a sequence from a trained QRC model.\n\nThe `state` input is qrc-train-v1's named binary output (or a prior qrc-gen-v1 call's own\n`state` output) \u2014 a plain dict of JSON-safe values (see `_to_native`) carrying `version`, the\nvocabulary, the training parameters, and the trained readout/reservoir weights. Accepted either\nalready as that dict (composing engines directly in Python, e.g. in a notebook) or as\nJSON-encoded bytes/str (a file upload or `job:<id>/state` named-output reference \u2014 see\nfeatures-0.6.md). Rebuilds the QRCGenerator the same way qrc-train-v1 does: load this engine's\nown copy of config.yaml and apply the state's training parameters over it \u2014 then restores the\ntrained readout and reservoir memory, and generates a new sequence.",
+  "code_samples": [
+    {
+      "lang": "Python",
+      "source": "import requests\n# Reuse a trained model's state by reference \u2014 no re-upload, no re-training.\nr = requests.post(\n    \"https://api.mothquantum.com/v1/generation/qrc-gen-v2/process\",\n    headers={\"Authorization\": \"Bearer YOUR_KEY\"},\n    data={\"length\": 10, \"state\": \"job:TRAIN_JOB_ID/state\"},\n)\nprint(r.json()[\"job_id\"])\n"
+    },
+    {
+      "lang": "curl",
+      "source": "curl -X POST https://api.mothquantum.com/v1/generation/qrc-gen-v2/process \\\n  -H \"Authorization: Bearer YOUR_KEY\" \\\n  -F length=10 \\\n  -F state=job:TRAIN_JOB_ID/state\n"
+    }
+  ],
+  "banner_image_id": null,
+  "card_image_id": null,
+  "banner_image_tag": null,
+  "card_image_tag": null,
+  "has_estimate": false,
+  "estimate": null,
+  "has_estimate_fn": false,
+  "estimate_needs_container": false,
+  "sidecar_endpoint": null,
+  "has_validate_fn": false
+}

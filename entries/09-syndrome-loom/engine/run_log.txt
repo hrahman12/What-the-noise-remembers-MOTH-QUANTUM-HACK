@@ -1,0 +1,85 @@
+  tamagotchi-v1: resuming 0833a836-e2f0-4b45-a4b9-c42ad31140e4
+  tamagotchi-v1: done 0833a836 in 3.2s
+256 0833a836-e2f0-4b45-a4b9-c42ad31140e4 3.2s n_out 256 mean LER 0.04284 synd/blk 0.31561
+x0_se_p1e-2_n2 a2ae2fd0-fc13-4f34-8004-d087494dd402 {"code": "steane", "corrections_applied": 4704, "logical_error_count": 706, "n_logical": 2, "noise": {"p_1q": 0.01, "p_gate": 0.01, "p_idle": 0.01, "p_meas": 0.01}, "shots": 4000, "simulator": {"method": "stabilizer", "transpiled": false}, "success_rate": 0.8235, "successful_shots": 3294, "syndromes_detected": 4704}
+   per_logical: [{"expected": 1, "logical_error_rate": 0.09175, "logical_qubit": 0, "success_rate": 0.90825}, {"expected": 0, "logical_error_rate": 0.09399999999999997, "logical_qubit": 1, "success_rate": 0.906}]
+x0_nose_p1e-2_n2 7d3ac067-83b7-40be-b29f-5f5ded1d9f05 {"code": "steane", "corrections_applied": 0, "logical_error_count": 351, "n_logical": 2, "noise": {"p_1q": 0.01, "p_gate": 0.01, "p_idle": 0.01, "p_meas": 0.01}, "shots": 4000, "simulator": {"method": "stabilizer", "transpiled": false}, "success_rate": 0.91225, "successful_shots": 3649, "syndromes_detected": 0}
+   per_logical: [{"expected": 1, "logical_error_rate": 0.04600000000000004, "logical_qubit": 0, "success_rate": 0.954}, {"expected": 0, "logical_error_rate": 0.044499999999999984, "logical_qubit": 1, "success_rate": 0.9555}]
+x0_se_p1e-2_n1 e09f1ad6-e02d-4538-9a2b-aa3e3f2a38fb {"code": "steane", "corrections_applied": 2435, "logical_error_count": 374, "n_logical": 1, "noise": {"p_1q": 0.01, "p_gate": 0.01, "p_idle": 0.01, "p_meas": 0.01}, "shots": 4000, "simulator": {"method": "stabilizer", "transpiled": false}, "success_rate": 0.9065, "successful_shots": 3626, "syndromes_detected": 2435}
+   per_logical: [{"expected": 1, "logical_error_rate": 0.09350000000000003, "logical_qubit": 0, "success_rate": 0.9065}]
+x0_se2_p1e-2_n1 5ff946b5-5b66-44e1-a3d5-f57f9dfc747d {"code": "steane", "corrections_applied": 4741, "logical_error_count": 540, "n_logical": 1, "noise": {"p_1q": 0.01, "p_gate": 0.01, "p_idle": 0.01, "p_meas": 0.01}, "shots": 4000, "simulator": {"method": "stabilizer", "transpiled": false}, "success_rate": 0.865, "successful_shots": 3460, "syndromes_detected": 4741}
+   per_logical: [{"expected": 1, "logical_error_rate": 0.135, "logical_qubit": 0, "success_rate": 0.865}]
+measonly_nose_n1 ec9d1a99-b0f1-4e1f-bd91-200809cf4c84 {"code": "steane", "corrections_applied": 0, "logical_error_count": 15, "n_logical": 1, "noise": {"p_1q": 0, "p_gate": 0, "p_idle": 0, "p_meas": 0.01}, "shots": 8000, "simulator": {"method": "stabilizer", "transpiled": false}, "success_rate": 0.998125, "successful_shots": 7985, "syndromes_detected": 0}
+   per_logical: [{"expected": 0, "logical_error_rate": 0.00187499999999996, "logical_qubit": 0, "success_rate": 0.998125}]
+measonly_se_n1 96752e57-f5e0-4c96-a9f0-757c77387b75 {"code": "steane", "corrections_applied": 501, "logical_error_count": 31, "n_logical": 1, "noise": {"p_1q": 0, "p_gate": 0, "p_idle": 0, "p_meas": 0.01}, "shots": 8000, "simulator": {"method": "stabilizer", "transpiled": false}, "success_rate": 0.996125, "successful_shots": 7969, "syndromes_detected": 501}
+   per_logical: [{"expected": 0, "logical_error_rate": 0.003874999999999962, "logical_qubit": 0, "success_rate": 0.996125}]
+idleonly_se_n1 adf02dfe-fa03-4827-b58f-9dc39a6b076e {"code": "steane", "corrections_applied": 480, "logical_error_count": 5, "n_logical": 1, "noise": {"p_1q": 0, "p_gate": 0, "p_idle": 0.01, "p_meas": 0}, "shots": 8000, "simulator": {"method": "stabilizer", "transpiled": false}, "success_rate": 0.999375, "successful_shots": 7995, "syndromes_detected": 480}
+   per_logical: [{"expected": 0, "logical_error_rate": 0.0006249999999999867, "logical_qubit": 0, "success_rate": 0.999375}]
+gateonly_se_n1 808484ff-c98e-4a50-b953-18e51a698445 {"code": "steane", "corrections_applied": 3528, "logical_error_count": 625, "n_logical": 1, "noise": {"p_1q": 0, "p_gate": 0.01, "p_idle": 0, "p_meas": 0}, "shots": 8000, "simulator": {"method": "stabilizer", "transpiled": false}, "success_rate": 0.921875, "successful_shots": 7375, "syndromes_detected": 3528}
+   per_logical: [{"expected": 0, "logical_error_rate": 0.078125, "logical_qubit": 0, "success_rate": 0.921875}]
+1qonly_nose_n1 8c38fc43-650c-4a97-942a-a3342d9a2c57 {"code": "steane", "corrections_applied": 0, "logical_error_count": 0, "n_logical": 1, "noise": {"p_1q": 0.01, "p_gate": 0, "p_idle": 0, "p_meas": 0}, "shots": 8000, "simulator": {"method": "stabilizer", "transpiled": false}, "success_rate": 1, "successful_shots": 8000, "syndromes_detected": 0}
+   per_logical: [{"expected": 0, "logical_error_rate": 0, "logical_qubit": 0, "success_rate": 1}]
+  tamagotchi-v1: resuming 185a6cc1-4eda-4566-ac04-82f2c91d4403
+  tamagotchi-v1: done 185a6cc1 in 2.9s
+storage_se_p1e-2_n2 185a6cc1-4eda-4566-ac04-82f2c91d4403 {"code": "steane", "corrections_applied": 1020, "logical_error_count": 47, "n_logical": 2, "noise": {"p_1q": 0, "p_gate": 0, "p_idle": 0.01, "p_meas": 0.01}, "shots": 4000, "simulator": {"method": "stabilizer", "transpiled": false}, "success_rate": 0.98825, "successful_shots": 3953, "syndromes_detected": 1020}
+   per_logical: [{"expected": 1, "logical_error_rate": 0.00649999999999995, "logical_qubit": 0, "success_rate": 0.9935}, {"expected": 0, "logical_error_rate": 0.005249999999999977, "logical_qubit": 1, "success_rate": 0.99475}]
+  tamagotchi-v1: submitted 4986e54c-ee57-403e-bb1c-ea99fb76ff1d
+  tamagotchi-v1: done 4986e54c in 7.1s
+storage_nose_p1e-2_n2 4986e54c-ee57-403e-bb1c-ea99fb76ff1d {"code": "steane", "corrections_applied": 0, "logical_error_count": 19, "n_logical": 2, "noise": {"p_1q": 0, "p_gate": 0, "p_idle": 0.01, "p_meas": 0.01}, "shots": 4000, "simulator": {"method": "stabilizer", "transpiled": false}, "success_rate": 0.99525, "successful_shots": 3981, "syndromes_detected": 0}
+   per_logical: [{"expected": 1, "logical_error_rate": 0.0022499999999999742, "logical_qubit": 0, "success_rate": 0.99775}, {"expected": 0, "logical_error_rate": 0.0024999999999999467, "logical_qubit": 1, "success_rate": 0.9975}]
+  tamagotchi-v1: submitted 4fdb76d3-6f61-43c0-8a12-f58923d21ba2
+  tamagotchi-v1: done 4fdb76d3 in 3.7s
+idleonly_nose_n1 4fdb76d3-6f61-43c0-8a12-f58923d21ba2 {"code": "steane", "corrections_applied": 0, "logical_error_count": 104, "n_logical": 1, "noise": {"p_1q": 0, "p_gate": 0, "p_idle": 0.05, "p_meas": 0}, "shots": 8000, "simulator": {"method": "stabilizer", "transpiled": false}, "success_rate": 0.987, "successful_shots": 7896, "syndromes_detected": 0}
+   per_logical: [{"expected": 0, "logical_error_rate": 0.013000000000000012, "logical_qubit": 0, "success_rate": 0.987}]
+  tamagotchi-v1: submitted 5ffa3912-3990-43dc-96c9-f4c9b69f16b2
+  tamagotchi-v1: done 5ffa3912 in 6.6s
+idleonly_nose3_n1 5ffa3912-3990-43dc-96c9-f4c9b69f16b2 {"code": "steane", "corrections_applied": 0, "logical_error_count": 587, "n_logical": 1, "noise": {"p_1q": 0, "p_gate": 0, "p_idle": 0.05, "p_meas": 0}, "shots": 8000, "simulator": {"method": "stabilizer", "transpiled": false}, "success_rate": 0.926625, "successful_shots": 7413, "syndromes_detected": 0}
+   per_logical: [{"expected": 0, "logical_error_rate": 0.07337499999999997, "logical_qubit": 0, "success_rate": 0.926625}]
+  tamagotchi-v1: submitted adb1f47e-203d-4b43-90bd-dbbb2514d71a
+  tamagotchi-v1: done adb1f47e in 3.7s
+measonly_se_p0.5_n1 adb1f47e-203d-4b43-90bd-dbbb2514d71a {"code": "steane", "corrections_applied": 3514, "logical_error_count": 998, "n_logical": 1, "noise": {"p_1q": 0, "p_gate": 0, "p_idle": 0, "p_meas": 0.5}, "shots": 2000, "simulator": {"method": "stabilizer", "transpiled": false}, "success_rate": 0.501, "successful_shots": 1002, "syndromes_detected": 3514}
+   per_logical: [{"expected": 0, "logical_error_rate": 0.499, "logical_qubit": 0, "success_rate": 0.501}]
+spent 0.0
+  tamagotchi-v1: submitted 00747c70-eaa2-400d-9b71-7f9d5ea2008d
+  tamagotchi-v1: done 00747c70 in 208.5s
+  loom p=0.001 se: 00747c70-eaa2-400d-9b71-7f9d5ea2008d  LER 0.00763  synd/blk 0.0656  (208.5s)
+  tamagotchi-v1: submitted 065612b5-7863-45f1-88a9-a918f5433297
+  tamagotchi-v1: done 065612b5 in 21.0s
+  loom p=0.001 bare: 065612b5-7863-45f1-88a9-a918f5433297  LER 0.00336  synd/blk 0.0000  (21.0s)
+  tamagotchi-v1: submitted 7a9ce534-2768-4c98-87b4-0c1ab4e939c3
+  tamagotchi-v1: done 7a9ce534 in 217.6s
+  loom p=0.005 se: 7a9ce534-2768-4c98-87b4-0c1ab4e939c3  LER 0.04059  synd/blk 0.3148  (217.6s)
+  tamagotchi-v1: submitted 38e46cd7-579a-4332-a9bd-810a5a2864df
+  tamagotchi-v1: done 38e46cd7 in 20.5s
+  loom p=0.005 bare: 38e46cd7-579a-4332-a9bd-810a5a2864df  LER 0.01996  synd/blk 0.0000  (20.5s)
+  tamagotchi-v1: submitted a5ca0dfd-dba3-48f7-a61c-ccdbf35cfc1d
+  tamagotchi-v1: done a5ca0dfd in 261.2s
+  loom p=0.01 se: a5ca0dfd-dba3-48f7-a61c-ccdbf35cfc1d  LER 0.08838  synd/blk 0.5773  (261.2s)
+  tamagotchi-v1: submitted 6ce56245-be91-49b5-9766-d5ccfa972187
+  tamagotchi-v1: done 6ce56245 in 23.8s
+  loom p=0.01 bare: 6ce56245-be91-49b5-9766-d5ccfa972187  LER 0.04492  synd/blk 0.0000  (23.8s)
+  tamagotchi-v1: submitted 2b720144-23fa-4eb6-a0c8-091b05f2c038
+  tamagotchi-v1: done 2b720144 in 252.0s
+  thread p=0.001 se: 2b720144-23fa-4eb6-a0c8-091b05f2c038  LER 0.00012  synd/blk 0.0109  (252.0s)
+  tamagotchi-v1: submitted fc6aa200-c7fa-4257-9d6a-b7c54028238d
+  tamagotchi-v1: done fc6aa200 in 24.6s
+  thread p=0.001 bare: fc6aa200-c7fa-4257-9d6a-b7c54028238d  LER 0.00000  synd/blk 0.0000  (24.6s)
+  tamagotchi-v1: submitted 7f22c6d3-c544-4f0c-a5bb-1f06bbc11677
+  tamagotchi-v1: done 7f22c6d3 in 216.6s
+  thread p=0.005 se: 7f22c6d3-c544-4f0c-a5bb-1f06bbc11677  LER 0.00153  synd/blk 0.0627  (216.6s)
+  tamagotchi-v1: submitted 4be3d79b-653f-458e-be93-563dd1751e13
+  tamagotchi-v1: done 4be3d79b in 24.5s
+  thread p=0.005 bare: 4be3d79b-653f-458e-be93-563dd1751e13  LER 0.00037  synd/blk 0.0000  (24.5s)
+  tamagotchi-v1: submitted 70161217-2606-4ee1-a43c-a042bd44b3c0
+  tamagotchi-v1: done 70161217 in 216.1s
+  thread p=0.01 se: 70161217-2606-4ee1-a43c-a042bd44b3c0  LER 0.00555  synd/blk 0.1247  (216.1s)
+  tamagotchi-v1: submitted 78350aec-f9a4-4ba7-bcd8-3e0674cec551
+  tamagotchi-v1: done 78350aec in 23.9s
+  thread p=0.01 bare: 78350aec-f9a4-4ba7-bcd8-3e0674cec551  LER 0.00183  synd/blk 0.0000  (23.9s)
+  ladder n=64 shots=1024: 97400f96-2c85-410a-b20f-2e8452eee025  LER 0.04301  (75.8s)
+  ladder n=128 shots=1024: 1dd2fd92-a57a-4dba-9918-bca80117cb0f  LER 0.04345  (474.7s)
+  ladder n=256 shots=1024: 0833a836-e2f0-4b45-a4b9-c42ad31140e4  LER 0.04284  (3.2s)
+  tamagotchi-v1: submitted 7ea460be-3e71-4511-bfda-e2740171662a
+  tamagotchi-v1: done 7ea460be in 234.2s
+  ladder n=512 shots=8: 7ea460be-3e71-4511-bfda-e2740171662a  LER 0.04321  (234.2s)
+  tamagotchi-v1: submitted 191803b3-afb4-4706-bfb6-0b5eea975c85

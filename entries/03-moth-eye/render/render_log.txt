@@ -1,0 +1,12 @@
+frame 0/1560  t=0.0s  layers=1  eye=0.358  slab=0.201  0s
+frame 150/1560  t=5.0s  layers=1  eye=0.350  slab=0.175  39s
+frame 300/1560  t=10.0s  layers=2  eye=0.426  slab=0.283  93s
+frame 450/1560  t=15.0s  layers=3  eye=0.430  slab=0.297  137s
+frame 600/1560  t=20.0s  layers=4  eye=0.434  slab=0.306  172s
+frame 750/1560  t=25.0s  layers=5  eye=0.434  slab=0.307  208s
+frame 900/1560  t=30.0s  layers=6  eye=0.436  slab=0.305  256s
+frame 1050/1560  t=35.0s  layers=6  eye=0.442  slab=0.307  300s
+frame 1200/1560  t=40.0s  layers=6  eye=0.402  slab=0.650  352s
+frame 1350/1560  t=45.0s  layers=6  eye=0.446  slab=0.314  392s
+frame 1500/1560  t=50.0s  layers=6  eye=0.389  slab=0.728  423s
+wrote C:\Users\Rahma\AppData\Local\Temp\claude\C--Users-Rahma-OneDrive-Desktop-MOTH-QUANTUM\abc1849e-0bb4-4519-a365-7fdd300b83b2\scratchpad\moth_eye_new.mp4

@@ -1,0 +1,30 @@
+3000 mass 70.85 centre [105.5  62.2]
+attempt-1 world (528, 528) 16x16 blocks 81
+world (528, 528) mass 459.6 nonzero cells 1243 16x16 blocks 26
+kernel bank s=0.5 reach=0.0: 535,725 bytes, 18 qubits
+  19d2ef47-9936-49b8-ac33-fdf3fd92ca60  max 1  sum/slice [ 96.261  94.189 101.912 120.929]
+kernel bank s=0.25 reach=0.0: 535,726 bytes, 18 qubits
+  45d63aa5-5a73-44db-85b2-13ca300fc302  max 1  sum/slice [158.757 155.341 168.077 199.44 ]
+kernel bank s=1.0 reach=0.0: 535,725 bytes, 18 qubits
+  511aa24c-205d-455e-ba12-ed0cb1a196fa  max 1  sum/slice [ 95.219  93.17  100.809 119.62 ]
+3/3 kernel jobs completed (+2 documented failures)
+snapshot s=0.5: 559,729 bytes, 20 qubits
+  392b15b3-7eb2-4a9f-9283-9fb09e75a55c  max 95.77  non-zero 16,384
+snapshot s=0.25: 559,730 bytes, 20 qubits
+  284645e7-6f9c-4f2c-b1f1-c22cb66bdf9b  max 95.52  non-zero 16,384
+2/2 snapshot jobs completed (+1 documented failure)
+[vost#0:0/libx264 @ 000002a8add82380] Multiple -pix_fmt options specified for stream 0, only the last option '-pix_fmt yuv420p' will be used.
+wrote C:\Users\Rahma\OneDrive\Desktop\MOTH QUANTUM\entries\17-quantum-lenia\quantum_lenia.mp4
+web/index.html written (267,918 bytes); page total 6.73 MB; files ['media/poster.webp', 'media/quantum_lenia.mp4']
+out/world.npy: OK
+out/world_attempt1.npy: OK
+orbium.npy: OK
+out/kernels/bank_input.npy: OK
+out/kernels/k_s0.25_r0.0.npy: OK
+out/kernels/k_s0.5_r0.0.npy: OK
+out/kernels/k_s1.0_r0.0.npy: OK
+out/snapshot/w_s0.25.npy: OK
+out/snapshot/w_s0.5.npy: OK
+out/dynamics.json: OK
+out/stamps.json: OK
+spent 8.0

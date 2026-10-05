@@ -1,0 +1,17 @@
+  s0.5_r0.mid  3ec2fa86-1e65-4f4d-a6cb-753e3aa40927  (385.8 s)
+  blur-midi-v1: submitted 3262bd95-e38d-48eb-80aa-6a38df940d6d
+  blur-midi-v1: done 3262bd95 in 382.9s
+  s1_r0.mid  3262bd95-e38d-48eb-80aa-6a38df940d6d  (382.9 s)
+  blur-midi-v1: submitted 1c641dc5-07ea-4d31-8866-a1cbb17c1aaf
+  blur-midi-v1: done 1c641dc5 in 394.2s
+  s0.5_r1.mid  1c641dc5-07ea-4d31-8866-a1cbb17c1aaf  (394.2 s)
+  blur-midi-v1: submitted 60c0f670-9281-4f31-978b-eae73e541b99
+  blur-midi-v1: done 60c0f670 in 300.2s
+  s1_r1.mid  60c0f670-9281-4f31-978b-eae73e541b99  (300.2 s)
+  blur-midi-v1: submitted 33527af0-db51-4800-ae9b-374f2b56e46e
+  blur-midi-v1: done 33527af0 in 389.6s
+  s0.25_r0.mid  33527af0-db51-4800-ae9b-374f2b56e46e  (389.6 s)
+  blur-midi-v1: submitted 97554219-5053-45ea-a4f8-39d7e7de6070
+  blur-midi-v1: done 97554219 in 382.0s
+  s0.25_r1.mid  97554219-5053-45ea-a4f8-39d7e7de6070  (382.0 s)
+6/6 planned jobs completed; ledgered spend for 21-quantum-nose: 6 of 10

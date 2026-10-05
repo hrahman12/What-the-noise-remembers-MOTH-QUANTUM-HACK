@@ -1,0 +1,34 @@
+train ca93fb54-f7d5-4b58-b540-de8137d57536  (2133.4 s)
+  qrc-gen-v2: submitted 846fdc41-fc8a-4ca8-9a3b-83468b7d38fc
+  qrc-gen-v2: done 846fdc41 in 40.4s
+var_0.25: 846fdc41-fc8a-4ca8-9a3b-83468b7d38fc  (40.4 s)
+  qrc-gen-v2: submitted 4821d6a8-cca9-42ba-8e2b-1b8c0db8d5c7
+  qrc-gen-v2: done 4821d6a8 in 40.6s
+var_0.5: 4821d6a8-cca9-42ba-8e2b-1b8c0db8d5c7  (40.6 s)
+var_1.0: 769be960-3778-4fbd-b6b8-6796b0ace191  (45.6 s)
+  qrc-gen-v2: submitted 512268a6-b73e-4727-ad36-138664689103
+  qrc-gen-v2: done 512268a6 in 42.0s
+var_2.0: 512268a6-b73e-4727-ad36-138664689103  (42.0 s)
+  qrc-gen-v2: submitted a12e224b-d7e0-412a-8047-6d975fd37723
+  qrc-gen-v2: done a12e224b in 51.0s
+var_4.0: a12e224b-d7e0-412a-8047-6d975fd37723  (51.0 s)
+  qrc-gen-v2: submitted d94c4495-fd40-4e98-81c9-8f3736edf66b
+  qrc-gen-v2: done d94c4495 in 41.6s
+handoff: d94c4495-fd40-4e98-81c9-8f3736edf66b  (41.6 s)
+  qrc-gen-v2: submitted 46a0d00e-6fcc-4adc-973e-fce98fcfad94
+  qrc-gen-v2: done 46a0d00e in 47.6s
+var_0.25_s2: 46a0d00e-6fcc-4adc-973e-fce98fcfad94  (47.6 s)
+  qrc-gen-v2: submitted b9887734-28cf-4035-a8f5-1236cdb4ad78
+  qrc-gen-v2: done b9887734 in 49.3s
+var_0.5_s2: b9887734-28cf-4035-a8f5-1236cdb4ad78  (49.3 s)
+  qrc-gen-v2: submitted d986b3df-2b06-44c8-80a3-9a0a357c8376
+  qrc-gen-v2: done d986b3df in 37.4s
+var_1.0_s2: d986b3df-2b06-44c8-80a3-9a0a357c8376  (37.4 s)
+  qrc-gen-v2: submitted ae686b6d-4014-4a35-883a-0b8dc8f3dee2
+  qrc-gen-v2: done ae686b6d in 46.8s
+var_2.0_s2: ae686b6d-4014-4a35-883a-0b8dc8f3dee2  (46.8 s)
+  qrc-gen-v2: submitted 66303d54-07ba-45fb-9ab5-7f8d24f7c0db
+  qrc-gen-v2: done 66303d54 in 49.7s
+var_4.0_s2: 66303d54-07ba-45fb-9ab5-7f8d24f7c0db  (49.7 s)
+ledgered spend for 02-coda-reservoir: 16 / 20
+EXIT 0

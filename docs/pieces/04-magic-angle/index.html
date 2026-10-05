@@ -97,8 +97,11 @@ details.drawer .body{padding-bottom:1.25rem;color:var(--ink-2);max-width:68ch;di
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 /* Layout: the turntable scene is the hero (Ay and Bee, the two honeycomb layers, twist on a dial; Lec the
-   electron rides the moire). The real engine frame sits on the record; the full frame and the charts are one
-   click away (Frame / Data). Look: brief-page style from common/brand.css. */
+   electron rides the moire). The real engine frame sits on the record; the full frame is one click away (Frame).
+   Below the hero, titled sections: How to play, The data (both charts, always visible; the stage's Data view
+   borrows the same two cards), The film, The science, How it was made, What this does not claim, Jobs and credits.
+   Look: brief-page style from common/brand.css. */
+[hidden]{display:none!important}
 .wrap{max-width:78rem;margin-inline:auto}
 .hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(1.25rem,3vw,2.5rem);align-items:start;padding-block:2rem 1rem}
 .col{display:grid;gap:1rem;min-width:0}
@@ -120,9 +123,11 @@ canvas{display:block;width:100%;height:auto}
 .say{margin:0;font-size:.9rem;line-height:1.45;color:var(--ink);max-width:none}
 .badge{display:none;font:500 .64rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);background:transparent;border:1px dashed var(--ink);border-radius:999px;padding:.38rem .6rem;margin-left:.6rem;vertical-align:middle}
 .badge.on{display:inline-block}
-.data{display:grid;gap:1.2rem;padding:1rem 1rem 1.1rem;background:var(--panel)}
-.dcard{display:grid;gap:.5rem;min-width:0}
-.dcard+.dcard{border-top:1px solid var(--rule);padding-top:1rem}
+/* the stage's Data view: the two chart cards from "The data" section, stacked */
+#v-data{padding:1rem 1rem 1.1rem;background:var(--panel)}
+#v-data .two{grid-template-columns:minmax(0,1fr);gap:1.2rem;margin-top:0}
+#v-data .card{border:0;padding:0;background:transparent}
+#v-data .card+.card{border-top:1px solid var(--rule);padding-top:1rem}
 .cap{font-size:.84rem;color:var(--ink-2);margin:0;max-width:none}
 .lens{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
 /* the twist scrubber */
@@ -135,6 +140,7 @@ canvas{display:block;width:100%;height:auto}
 .ticks i.null{background:var(--warn)}
 .ticks i.cur{background:var(--ink);height:18px;top:-1px;width:3px}
 .zone{position:absolute;top:-6px;bottom:-6px;background:repeating-linear-gradient(135deg,rgba(25,35,142,.16) 0 2px,transparent 2px 5px);border-inline:1px dashed var(--ink);pointer-events:none}
+.magicmark{position:absolute;top:-5px;bottom:-5px;width:0;border-left:2px dashed var(--ink);pointer-events:none}
 .scale{position:relative;height:1.1rem;margin-inline:10px;font:500 .68rem/1 var(--mono);color:var(--ink-2)}
 .scale span{position:absolute;transform:translateX(-50%);white-space:nowrap}
 .scale span.m{color:var(--ink)}
@@ -158,9 +164,26 @@ h1{font-size:clamp(2.2rem,4.8vw,4.1rem);line-height:1;letter-spacing:-.02em}
 .status.null{background:transparent;color:var(--warn);border-color:var(--warn)}
 .status.unresolved{background:transparent;color:var(--ink-2);border-color:var(--rule)}
 .sect{margin-top:2.5rem}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1rem;margin-top:1rem}
 .card{background:var(--panel);border:1px solid var(--rule);padding:1rem 1.1rem;display:grid;gap:.6rem;min-width:0;align-content:start}
+.card.wide{margin-top:1rem}
 .card h2{font-size:1.35rem}
 .card p{font-size:.88rem;color:var(--ink-2)}
+.card p.label{font-size:.7rem}
+.card p.probe-read{font-size:.74rem;color:var(--ink)}
+.card .steps li{font-size:.92rem;color:var(--ink)}
+.keys{margin:0;padding-left:1.1rem;display:grid;gap:.45rem;font-size:.88rem;color:var(--ink-2)}
+.keys b,.credits b{color:var(--ink);font-weight:500}
+kbd{font:500 .74rem/1 var(--mono);color:var(--ink);border:1px solid var(--rule);border-bottom-width:2px;border-radius:4px;padding:.12rem .32rem;background:var(--paper)}
+.credits{margin:0;padding:0;list-style:none;display:grid;gap:.6rem;font-size:.88rem;color:var(--ink-2)}
+.credits li{border-top:1px solid var(--rule);padding-top:.6rem}
+.honest-sect{margin-top:1rem;max-width:78ch}
+.honest-sect .honesty{font-size:.92rem}
+#jobs tr.cur td{background:var(--tint);color:var(--ink)}
+.two.top{align-items:start}
+details.drawer .body.wide-body{max-width:none}
+#jobs td:last-child{white-space:nowrap}
+#jobs a{color:var(--ink);font-weight:500}
 .legend{display:flex;flex-wrap:wrap;gap:.4rem 1rem;font:500 .68rem/1.3 var(--mono);letter-spacing:.04em;color:var(--ink-2)}
 .legend i{display:inline-block;width:.8rem;height:.8rem;border-radius:99px;vertical-align:-.1rem;margin-right:.35rem;box-sizing:border-box}
 .legend i.bar{height:3px;width:1rem;border-radius:0;vertical-align:.2rem}
@@ -183,15 +206,15 @@ h1{font-size:clamp(2.2rem,4.8vw,4.1rem);line-height:1;letter-spacing:-.02em}
 .drawer th{color:var(--ink);font-weight:500;text-transform:uppercase;letter-spacing:.08em;font-size:.66rem}
 .tablewrap{overflow-x:auto;max-width:100%}
 code{font-family:var(--mono);font-size:.9em;color:var(--ink)}
-@media (max-width:920px){.hero{grid-template-columns:minmax(0,1fr)}.film{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:920px){.hero{grid-template-columns:minmax(0,1fr)}.two,.film{grid-template-columns:minmax(0,1fr)}}
 .wtnr-bar .count{white-space:nowrap}
 @media (max-width:520px){.tag{display:none}.seg button{padding:.55rem .6rem;font-size:.72rem}.ink-bar{flex-wrap:wrap}
-  .meter .per{text-align:left;margin-left:0}.data{padding:.8rem .7rem}}
+  .meter .per{text-align:left;margin-left:0}#v-data{padding:.8rem .7rem}}
 @media (prefers-reduced-motion:reduce){.toast{transition:none}}
 </style>
 
 <div class="wrap">
-  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count"><b>04</b> / 11 &middot; Hide</span></nav>
+  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count"><b>Challenge 04</b> &middot; Hide</span></nav>
 
   <div class="hero">
     <div class="col">
@@ -211,24 +234,11 @@ code{font-family:var(--mono);font-size:.9em;color:var(--ink)}
           <canvas id="scene" width="1000" height="900" tabindex="0" aria-label="The twist turntable. Drag around the rim, or use the arrow keys, to twist the two honeycomb layers from 0 to 5 degrees. The record shows the real engine frame. Hold Space to peek at the other source."></canvas>
         </div>
         <div class="view" id="v-frame" hidden>
-          <canvas id="cv" width="1024" height="1024" tabindex="0" aria-label="The full real frame. Use the arrow keys to change the twist, hold Space to flip between original and morph. Click or drag on the picture to place a 3x magnifier; it stays put while you change the twist or source. Click inside it or press Escape to put it away."></canvas>
+          <canvas id="cv" width="1024" height="1024" tabindex="0" aria-label="Twisted honeycomb bilayer. Use the twist slider or the arrow keys to change the angle, hold Space to flip between original and morph, drag on the picture for a magnifier. This is the full real frame: the magnifier stays put while you change the twist or source. Click inside it or press Escape to put it away."></canvas>
           <span class="tag" id="tag">&ndash;</span>
         </div>
-        <div class="view data" id="v-data" hidden>
-          <section class="dcard">
-            <p class="label">The measurement &middot; this frame &middot; <span id="prof-st"></span></p>
-            <canvas id="prof" width="760" height="332" tabindex="0" aria-describedby="prof-read" aria-label="Angular power profile of the current frame, with the predicted layer positions and the pair the FFT found. Click or drag to read the power at any angle; left and right arrow keys move the reading, up and down change the twist, Escape clears it."></canvas>
-            <p class="cap probe-read" id="prof-read" aria-live="polite">Click or drag on the profile to read the power at any angle (arrow keys move it, Esc clears).</p>
-            <div class="legend"><span><i style="background:var(--tint);border:1.5px solid var(--ink)"></i>quantum morph</span><span><i class="bar" style="background:var(--ink-3)"></i>original, same method</span><span><i style="background:var(--ink);border-radius:0;clip-path:polygon(0 0,100% 0,50% 100%)"></i>pair found</span><span><i style="background:transparent;border:1.5px dashed var(--ink)"></i>predicted &plusmn;&theta;/2</span></div>
-            <p class="cap">Power around the Bragg ring of this frame's morph, near the bilayer's 15&deg; axis, averaged over five shells. Layer A should peak at &minus;&theta;/2 and layer B at +&theta;/2. The best symmetric pair of peaks gives the split.</p>
-          </section>
-          <section class="dcard">
-            <p class="label">Period against twist &middot; all 45 frames</p>
-            <svg id="plot" viewBox="0 0 640 330" role="img" aria-label="Moire period against twist angle: predicted curve, values read from the morph, and the method check on the original layers"></svg>
-            <div class="legend"><span><i class="bar" style="background:var(--ink-2)"></i>a / (2 sin &theta;/2)</span><span><i style="background:var(--ink)"></i>from the morph</span><span><i style="background:transparent;border:1.5px solid var(--warn);border-radius:0;transform:rotate(45deg) scale(.8)"></i>echo (null)</span><span><i style="background:transparent;border:1.5px solid var(--ink-3)"></i>original (check)</span></div>
-            <p class="cap">The period each frame's morph gives, against the prediction. Click anywhere to jump to that frame. Open orange diamonds are splits the untwisted frame shows too (the register's echo). Crosses are unresolved.</p>
-          </section>
-        </div>
+        <!-- the Data view borrows the two chart cards from "The data" section below (setView moves them in and back) -->
+        <div class="view" id="v-data" hidden></div>
         <div class="meter" aria-live="polite">
           <div class="mrow">
             <span><span class="ang" id="m-ang">1.10&deg;</span><span class="badge" id="m-badge">magic angle zone</span></span>
@@ -248,18 +258,18 @@ code{font-family:var(--mono);font-size:.9em;color:var(--ink)}
           </div>
         </div>
         <div class="track">
-          <div class="ticks" id="ticks"><span class="zone" id="zone"></span></div>
+          <div class="ticks" id="ticks"><span class="zone" id="zone"></span><span class="magicmark" id="magicmark"></span></div>
           <input type="range" id="twist" min="0" max="5" step="0.01" value="1.1" aria-labelledby="twist-label" aria-valuetext="1.10 degrees">
         </div>
         <div class="scale" id="scale"></div>
-        <div class="keyline" aria-hidden="true"><span><i style="background:var(--ink)"></i>tracks the twist</span><span><i style="background:var(--warn)"></i>register echo</span><span><i style="background:var(--ink-3)"></i>unresolved</span><span><i style="width:.9rem;background:repeating-linear-gradient(135deg,rgba(25,35,142,.35) 0 2px,transparent 2px 4px);border-inline:1px dashed var(--ink)"></i>magic angle zone</span></div>
+        <div class="keyline" aria-hidden="true"><span><i style="background:var(--ink)"></i>tracks the twist</span><span><i style="background:var(--warn)"></i>register echo</span><span><i style="background:var(--ink-3)"></i>unresolved</span><span><i style="width:0;border-left:2px dashed var(--ink)"></i>1.1&deg; magic</span><span><i style="width:.9rem;background:repeating-linear-gradient(135deg,rgba(25,35,142,.35) 0 2px,transparent 2px 4px);border-inline:1px dashed var(--ink)"></i>magic angle zone</span></div>
       </div>
     </div>
 
     <div class="copy col">
       <p class="kicker">Challenge 04 &middot; Moving image</p>
       <h1>Twist two honeycombs. Find the order hiding in the noise.</h1>
-      <p class="sub">A 21-qubit quantum morph scrambles two twisted lattices into speckle. Fourier analysis still pulls the twist back out from 1.5&deg; up. At the magic angle, the qubit register's own echo gets in the way. Spin through every real frame and see for yourself.</p>
+      <p class="sub">A 21-qubit quantum morph scrambles two twisted lattices into speckle. Fourier analysis still pulls the twist back out from 1.5&deg; up. At the magic angle, the qubit register's own echo gets in the way. Scrub through every real frame and see for yourself.</p>
       <div class="proof">
         <span class="hot"><b>21</b> qubits per morph</span>
         <span><b id="p-njobs">49</b> real Atlas jobs</span>
@@ -268,7 +278,7 @@ code{font-family:var(--mono);font-size:.9em;color:var(--ink)}
       <ol class="steps">
         <li><span><b>Spin the turntable.</b> Drag around its rim (or the slider) from 0&deg; to 5&deg;, and Ay and Bee, the two honeycomb layers, twist apart. The hatched arc is the magic angle zone.</span></li>
         <li><span><b>Flip</b> between the original layers and the quantum morph. Lec the electron hops at the period the FFT reads, naps when there is nothing to read, and gets dizzy on the register's echo.</span></li>
-        <li><span><b>Open Frame</b> to magnify the real engine pixels, or <b>Data</b> for the measurement behind every reading.</span></li>
+        <li><span><b>Open Frame</b> to magnify the real engine pixels, or <b>Data</b> for the measurement behind every reading. Both charts also sit under <a href="#data">The data</a> below.</span></li>
       </ol>
 
       <div class="panel">
@@ -290,6 +300,65 @@ code{font-family:var(--mono);font-size:.9em;color:var(--ink)}
     </div>
   </div>
 
+  <div class="ink-bar sect" id="how"><span>How to play</span><span>Turntable &middot; slider &middot; frame &middot; data</span></div>
+  <div class="two">
+    <section class="card">
+      <h2>Scrub, flip, read</h2>
+      <p class="cap">With the twist slider under the picture, and the Frame view for the magnifier:</p>
+      <ol class="steps">
+        <li><span><b>Drag the twist</b> from 0&deg; to 5&deg; and watch the superlattice shrink. The dashed notch is 1.1&deg;, the magic angle.</span></li>
+        <li><span><b>Flip</b> between the original layers and the quantum morph, and switch the lens to see raw pixels. Drag on the picture to magnify.</span></li>
+        <li><span><b>Read</b> the period the FFT pulls out of the morph, against a&nbsp;/&nbsp;(2&nbsp;sin&nbsp;&theta;/2).</span></li>
+      </ol>
+    </section>
+    <section class="card">
+      <h2>Keys, clicks and links</h2>
+      <ul class="keys">
+        <li><b>Turntable or full frame:</b> <kbd>&larr;</kbd> <kbd>&rarr;</kbd> (or <kbd>&uarr;</kbd> <kbd>&darr;</kbd>) step one real frame, <kbd>Home</kbd> and <kbd>End</kbd> jump to 0&deg; and 5&deg;, hold <kbd>Space</kbd> to peek at the other source.</li>
+        <li><b>Slider:</b> arrows step one frame, <kbd>Page Up</kbd> and <kbd>Page Down</kbd> step five.</li>
+        <li><b>Frame view:</b> click or drag to place the 3&times; magnifier; click inside it or press <kbd>Esc</kbd> to put it away.</li>
+        <li><b>The measurement:</b> click or drag on the profile to read the power at any angle; <kbd>&larr;</kbd> <kbd>&rarr;</kbd> move the reading, <kbd>&uarr;</kbd> <kbd>&darr;</kbd> change the twist, <kbd>Esc</kbd> clears it.</li>
+        <li><b>Period against twist:</b> click anywhere on the plot to jump to that frame.</li>
+        <li><b>Copy link to this view</b> puts the twist, source, lens and view in the address; opening the link restores them.</li>
+      </ul>
+    </section>
+  </div>
+  <section class="card wide" id="cast">
+    <h2>Meet the cast (and what drives them)</h2>
+    <ul class="cast">
+      <li><img data-sprite="sheet_a" data-face="face_happy" alt="Ay, a honeycomb sheet with a face" width="60" height="52"><span><b>Ay and Bee</b> are the two honeycomb layers, image1 and image2. Each turns by half the twist, the opposite way. Their tilt is drawn 8&times; larger so you can see it; the tags under them give the true angles.</span></li>
+      <li><img data-sprite="knob" alt="the rim grip" width="48" height="48"><span><b>The turntable rim</b> is the twist dial, 0&deg; to 5&deg;, one tick per real frame. The hatched arc is the magic angle zone (1.0&ndash;1.2&deg;). The record is the real frame you picked: original or morph, envelope or raw pixels.</span></li>
+      <li><img data-sprite="echo" alt="the register's echo, a little ghost" width="54" height="54"><span><b>The tone arm</b> is the classical FFT read-out. Needle down: a period was read. Skipping, with the <b>Echo</b> ghost: the frame is flagged null, its split matches the register's own echo. Lifted: unresolved.</span></li>
+      <li><img data-sprite="lec" alt="Lec, a smiling hexagon electron" width="90" height="72"><span><b>Lec</b> hops between AA spots, where the layers line up, on a lattice built from the period that was actually read: the FFT's on the morph, the method check's on the original. Nothing read: Lec naps. Echo: Lec gets dizzy. Lec is a cartoon; no electrons are simulated.</span></li>
+    </ul>
+    <p>Faces, needle and hops all follow the same per-frame reading in <code>out/measure.json</code>. Blinks, bobs and the timing of the hops are decoration.</p>
+  </section>
+
+  <div class="ink-bar sect" id="data"><span>The data &middot; How the twist is read</span><span>Classical FFT &middot; 45 real frames</span></div>
+  <section class="card wide" id="data-away" hidden>
+    <p>Both charts are open in the stage above, in its Data view, next to the twist slider.</p>
+    <div class="row"><button type="button" class="btn ghost" id="data-here">Show the charts here again</button></div>
+  </section>
+  <div id="data-home">
+    <div class="two" id="data-cards">
+      <section class="card">
+        <h2>The measurement</h2>
+        <p>Power around the Bragg ring of this frame's morph, near the bilayer's 15&deg; axis, averaged over five shells. Layer A should peak at &minus;&theta;/2 and layer B at +&theta;/2. The best symmetric pair of peaks gives the split.</p>
+        <p class="label">This frame &middot; <span id="prof-t">1.10&deg;</span> &middot; <span id="prof-st"></span></p>
+        <canvas id="prof" width="760" height="332" tabindex="0" aria-describedby="prof-read" aria-label="Angular power profile of the current frame, with the predicted layer positions and the pair the FFT found. Click or drag to read the power at any angle; left and right arrow keys move the reading, up and down change the twist, Escape clears it."></canvas>
+        <p class="cap probe-read" id="prof-read" aria-live="polite">Click or drag on the profile to read the power at any angle (arrow keys move it, Esc clears).</p>
+        <div class="legend"><span><i style="background:var(--tint);border:1.5px solid var(--ink)"></i>quantum morph</span><span><i class="bar" style="background:var(--ink-3)"></i>original, same method</span><span><i style="background:var(--ink);border-radius:0;clip-path:polygon(0 0,100% 0,50% 100%)"></i>pair found</span><span><i style="background:transparent;border:1.5px dashed var(--ink)"></i>predicted &plusmn;&theta;/2</span></div>
+      </section>
+      <section class="card">
+        <h2>Period against twist</h2>
+        <p>The period each frame's morph gives, against the prediction. Click anywhere to jump to that frame. Open orange diamonds are splits the untwisted frame shows too (the register's echo). Crosses are unresolved.</p>
+        <p class="label">All <span data-nframes>45</span> frames &middot; ring marks this frame</p>
+        <svg id="plot" viewBox="0 0 640 330" role="img" aria-label="Moire period against twist angle: predicted curve, values read from the morph, and the method check on the original layers"></svg>
+        <div class="legend"><span><i class="bar" style="background:var(--ink-2)"></i>a / (2 sin &theta;/2)</span><span><i style="background:var(--ink)"></i>from the morph</span><span><i style="background:transparent;border:1.5px solid var(--warn);border-radius:0;transform:rotate(45deg) scale(.8)"></i>echo (null)</span><span><i style="background:transparent;border:1.5px solid var(--ink-3)"></i>original (check)</span></div>
+      </section>
+    </div>
+  </div>
+
   <div class="ink-bar sect"><span>The film</span><span>magic_angle.mp4 &middot; 30 s</span></div>
   <div class="film">
     <video id="film" controls playsinline preload="metadata" poster="img/film-poster.webp" aria-label="Thirty-second film of the twist sweep: original and quantum-morph moire side by side, raw engine crops, and the period plot building up"><source data-src="video/magic_angle_web.mp4" type="video/mp4"></video>
@@ -301,22 +370,17 @@ code{font-family:var(--mono);font-size:.9em;color:var(--ink)}
     </section>
   </div>
 
-  <div class="ink-bar sect"><span>The science</span><span>Open a drawer</span></div>
+  <div class="ink-bar sect" id="science"><span>The science</span><span>Open a drawer</span></div>
   <section class="more">
-    <details class="drawer"><summary>Meet the cast (and what drives them)</summary><div class="body">
-      <ul class="cast">
-        <li><img data-sprite="sheet_a" data-face="face_happy" alt="Ay, a honeycomb sheet with a face" width="60" height="52"><span><b>Ay and Bee</b> are the two honeycomb layers, image1 and image2. Each turns by half the twist, the opposite way. Their tilt is drawn 8&times; larger so you can see it; the tags under them give the true angles.</span></li>
-        <li><img data-sprite="knob" alt="the rim grip" width="48" height="48"><span><b>The turntable rim</b> is the twist dial, 0&deg; to 5&deg;, one tick per real frame. The hatched arc is the magic angle zone (1.0&ndash;1.2&deg;). The record is the real frame you picked: original or morph, envelope or raw pixels.</span></li>
-        <li><img data-sprite="echo" alt="the register's echo, a little ghost" width="54" height="54"><span><b>The tone arm</b> is the classical FFT read-out. Needle down: a period was read. Skipping, with the <b>Echo</b> ghost: the frame is flagged null, its split matches the register's own echo. Lifted: unresolved.</span></li>
-        <li><img data-sprite="lec" alt="Lec, a smiling hexagon electron" width="90" height="72"><span><b>Lec</b> hops between AA spots, where the layers line up, on a lattice built from the period that was actually read: the FFT's on the morph, the method check's on the original. Nothing read: Lec naps. Echo: Lec gets dizzy. Lec is a cartoon; no electrons are simulated.</span></li>
-      </ul>
-      <p>Faces, needle and hops all follow the same per-frame reading in <code>out/measure.json</code>. Blinks, bobs and the timing of the hops are decoration.</p>
-    </div></details>
     <details class="drawer"><summary>Why twist graphene?</summary><div class="body">
       <p>Lay one honeycomb on another and turn it a little. Where the atoms line up (AA) and where they interleave (AB) alternate on a much larger lattice: a moir&eacute; superlattice with period L = a&nbsp;/&nbsp;(2&nbsp;sin&nbsp;&theta;/2). The smaller the twist, the larger the pattern. The &ldquo;Original&rdquo; envelope view shows it.</p>
       <p>Bistritzer and MacDonald (PNAS 108, 12233, 2011) predicted that at certain &ldquo;magic&rdquo; twists the electrons' lowest moir&eacute; band goes flat. Cao, Fatemi, Fang, Watanabe, Taniguchi, Kaxiras and Jarillo-Herrero (Nature 556, 43, 2018) found superconductivity in twisted bilayer graphene near 1.1&deg;. With graphene's a = 0.246 nm, the period there is about 12.8 nm.</p>
       <p>Nothing about the <em>geometry</em> is special at 1.1&deg;: the pattern simply keeps growing as &theta; shrinks. The magic is in the electrons, and this piece does not simulate them.</p>
     </div></details>
+  </section>
+
+  <div class="ink-bar sect" id="made"><span>How it was made</span><span>Open a drawer</span></div>
+  <section class="more">
     <details class="drawer"><summary>What the quantum engine did</summary><div class="body">
       <p>Atlas <b>telablur-v1</b> loads two images into one quantum state: 20 pixel qubits address a 1024 &times; 1024 frame (2<sup>20</sup> amplitudes), and one selector qubit says which image. Here image1 is layer A and image2 is layer B. Rotating the selector mixes the two layers at the amplitude level. That makes 21 qubits per job, worked out from the engine's documented rule; the engine reports only the image. Each frame took 11&ndash;30 s on Atlas's statevector simulator.</p>
       <p>The pixel qubits also get a blur rotation; the engine's <code>direction</code> parameter picks which ones. In our probes the scramble grew with <code>strength</code>, and we measured mirror-image copies of each layer. That is what a Gray-coded register does (as in Atlas blur-v1): each pixel is mixed with mirror partners within blocks. At strength 0.25 the output looks like speckle. The lattice survives only in the Fourier spectrum.</p>
@@ -325,13 +389,39 @@ code{font-family:var(--mono);font-size:.9em;color:var(--ink)}
       <div class="tablewrap"><table id="probes"></table></div>
     </div></details>
     <details class="drawer"><summary>How the period is measured (classical)</summary><div class="body">
-      <p>Each 1024 &times; 1024 morph is Hann-windowed and Fourier transformed (zero-padded to 4096). For the 18 Bragg vectors of the input lattice below 0.45 cycles/px, the power is read along an arc of radius |G| from 10&deg; to 20&deg;, then averaged within and across shells (the profile under <b>Data</b>). The bilayer is built symmetric about 15&deg;, so the rule scores every split 2&delta; by the profile at &minus;&delta; times the profile at +&delta;, and keeps the best. Splits narrower than the untwisted frame's own peak width (<span data-sum="delta_min_deg"></span>&deg; each side) are not searched. A best pair stuck on that limit is <b>unresolved</b>. The ring radius gives the lattice constant a<sub>m</sub>, and the period is L<sub>m</sub> = a<sub>m</sub>&nbsp;/&nbsp;(2&nbsp;sin&nbsp;&theta;<sub>m</sub>/2), the same as 4&pi;&nbsp;/&nbsp;(&radic;3&nbsp;|G<sub>B</sub>&nbsp;&minus;&nbsp;G<sub>A</sub>|). Nothing in the rule reads the frame's angle.</p>
+      <p>Each 1024 &times; 1024 morph is Hann-windowed and Fourier transformed (zero-padded to 4096). For the 18 Bragg vectors of the input lattice below 0.45 cycles/px, the power is read along an arc of radius |G| from 10&deg; to 20&deg;, then averaged within and across shells (the left card). The bilayer is built symmetric about 15&deg;, so the rule scores every split 2&delta; by the profile at &minus;&delta; times the profile at +&delta;, and keeps the best. Splits narrower than the untwisted frame's own peak width (<span data-sum="delta_min_deg"></span>&deg; each side) are not searched. A best pair stuck on that limit is <b>unresolved</b>. The ring radius gives the lattice constant a<sub>m</sub>, and the period is L<sub>m</sub> = a<sub>m</sub>&nbsp;/&nbsp;(2&nbsp;sin&nbsp;&theta;<sub>m</sub>/2), the same as 4&pi;&nbsp;/&nbsp;(&radic;3&nbsp;|G<sub>B</sub>&nbsp;&minus;&nbsp;G<sub>A</sub>|). Nothing in the rule reads the frame's angle.</p>
       <p><b>The register's echo.</b> The 0&deg; frame has no twist at all, yet the rule still finds a symmetric pair <span data-sum="null_split_deg"></span>&deg; apart there. That pair is made by the qubit register. By coincidence it sits almost exactly at the magic angle. Any frame whose split matches it is flagged <b>null</b>, because it can't be told apart from that echo. That covers the frames at <span data-sum="null_frames"></span>&deg;. Across 1.05&ndash;1.40&deg; the split hardly moves (slope <span data-sum="slope_1.05_1.40"></span>), while from 1.5&deg; to 5&deg; it follows the twist (slope <span data-sum="slope_1.5_5.0"></span>, ideal 1).</p>
       <p><b>Result.</b> From 1.5&deg; to 5&deg;, all <span data-sum="band_n"></span> frames give a period that tracks the twist. The median ratio to a&nbsp;/&nbsp;(2&nbsp;sin&nbsp;&theta;/2) is <span data-sum="band_median"></span> (range <span data-sum="band_min"></span>&ndash;<span data-sum="band_max"></span>). The read-out runs a little short between 1.6&deg; and 2.5&deg;. The 1.00&deg; frame passes the rule but reads 34&nbsp;% high. Below that, every frame is either the echo or unresolved, so <span data-sum="n_ok"></span> of <span data-sum="n_frames"></span> frames count in all. The method check runs a plain two-peak fit on the original layers, which the morph never touched, and agrees to within <span data-sum="ref_ratio_max_pct"></span>&nbsp;% from 0.4&deg; up. The first rule tried on the morph (a plain two-peak fit) was right to within 10&nbsp;% in only <span data-sum="naive_within_10pct"></span> frames. It is kept in <code>out/measure.json</code> for the record.</p>
       <p>The envelope lens is classical post-processing. The three first-shell Bragg directions are band-passed in a fixed band around 15&deg;, and their envelopes are summed. Deep ink means the two layers are in phase there (AA stacking). The same band is used for every frame and for both sources.</p>
     </div></details>
-    <details class="drawer"><summary>What this does not claim</summary><div class="body">
-      <p class="honesty">Geometry only. No band structure, electrons or superconductivity are simulated, and nothing here explains why 1.1&deg; is magic. Every morph frame is a real telablur-v1 job on Atlas's classical statevector simulator, not quantum hardware. The quantum step doesn't compute the moir&eacute; and has no advantage: it scrambles the bilayer, and classical Fourier analysis recovers what survives. Near the magic angle it recovers the register's echo, not the twist: the magic angle zone is marked, not resolved. The measurement rule was revised once after the first rule failed on the morph. Both rules' results are published. The Original raw view is drawn in your browser from the same formula as <code>lattice.py</code>. Raw views are the centre 384 &times; 384 px of each 1024 px frame at 1:1; the record shows the frame's central disc. The slider and the rim snap to the 45 computed angles. Lec, Ay, Bee and Echo are cartoons whose moods follow the published readings; Lec's AA spots come from a / (2 sin &theta;/2) geometry, scaled to the period that was read.</p>
+  </section>
+
+  <div class="ink-bar sect" id="claims"><span>What this does not claim</span><span>Honesty</span></div>
+  <section class="honest-sect">
+    <p class="honesty">Geometry only. No band structure, electrons or superconductivity are simulated, and nothing here explains why 1.1&deg; is magic. Every morph frame is a real telablur-v1 job on Atlas's classical statevector simulator, not quantum hardware. The quantum step doesn't compute the moir&eacute; and has no advantage: it scrambles the bilayer, and classical Fourier analysis recovers what survives. Near the magic angle it recovers the register's echo, not the twist. The magic angle zone is marked, not resolved. The measurement rule was revised once after the first rule failed on the morph. Both rules' results are published. The Original raw view is drawn in your browser from the same formula as <code>lattice.py</code>. Raw views are the centre 384 &times; 384 px of each 1024 px frame at 1:1. The record shows the frame's central disc. The slider snaps to the 45 computed angles. So does the turntable rim. Lec, Ay, Bee and Echo are cartoons whose moods follow the published readings; Lec's AA spots come from a / (2 sin &theta;/2) geometry, scaled to the period that was read.</p>
+  </section>
+
+  <div class="ink-bar sect" id="jobs-credits"><span>Jobs and credits</span><span><span data-njobs>49</span> Atlas jobs &middot; <span data-njobs>49</span> credits</span></div>
+  <div class="two top">
+    <section class="card">
+      <h2>Every job on this page</h2>
+      <p>Every morph here is one telablur-v1 job on Atlas's classical statevector simulator, 1 credit and 21 qubits each: <span data-nframes>45</span> sweep frames from 0&deg; to 5&deg; at strength 0.25, plus <span data-nprobes>5</span> probe jobs at 1.10&deg; that chose the setting (their table is under <a href="#made">How it was made</a>). The chosen probe is also the sweep's 1.10&deg; frame, so the page shows <b><span data-njobs>49</span></b> unique jobs. No job failed, and none ran on quantum hardware.</p>
+    </section>
+    <section class="card">
+      <h2>Credits</h2>
+      <ul class="credits">
+        <li><b>Engine:</b> Moth Quantum Atlas, telablur-v1 (Quantum Teleblur), on Atlas's classical statevector simulator.</li>
+        <li><b>Papers:</b> Y. Cao, V. Fatemi, S. Fang, K. Watanabe, T. Taniguchi, E. Kaxiras, P. Jarillo-Herrero, &ldquo;Unconventional superconductivity in magic-angle graphene superlattices&rdquo;, <i>Nature</i> 556, 43&ndash;50 (2018), <a href="https://doi.org/10.1038/nature26160">doi:10.1038/nature26160</a>. R. Bistritzer, A. H. MacDonald, &ldquo;Moir&eacute; bands in twisted double-layer graphene&rdquo;, <i>PNAS</i> 108, 12233&ndash;12237 (2011), <a href="https://doi.org/10.1073/pnas.1108174108">doi:10.1073/pnas.1108174108</a>.</li>
+        <li><b>Data:</b> no third-party data. The honeycomb layers are synthetic (<code>lattice.py</code>); the morphs are the jobs listed here; the maps, plot, film and page were made by <code>measure.py</code>, <code>make_video.py</code> and <code>build_web.py</code>.</li>
+        <li><b>Cast:</b> Ay, Bee, Lec, Echo and the rim grip were drawn in code for this piece (<code>make_sprites.py</code>) in the shared ink palette. No third-party art.</li>
+        <li><b>Fonts:</b> Geist and IBM Plex Mono from Google Fonts (SIL Open Font License).</li>
+      </ul>
+    </section>
+  </div>
+  <section class="more">
+    <details class="drawer" id="jobs-drawer"><summary><span>All <span data-nframes>45</span> sweep jobs</span></summary><div class="body wide-body">
+      <p>Click an angle to show that frame in the stage. The highlighted row is the frame on show now.</p>
+      <div class="tablewrap"><table id="jobs"></table></div>
     </div></details>
   </section>
   <style>
@@ -349,7 +439,7 @@ code{font-family:var(--mono);font-size:.9em;color:var(--ink)}
 .wtnr-nav ol a b{font:500 .78rem/1.6 var(--mono,monospace);min-width:1.6rem}
 .wtnr-nav ol a[aria-current="page"]{font-weight:600}
 .wtnr-nav ol a small{color:var(--ink-2,#545BA9);font-size:.72rem}
-</style><nav class="wtnr-nav" aria-label="All pieces"><div class="wn-row"><a class="wn-btn" href="../03-moth-eye/index.html" rel="prev">&larr; 03 Moth Eye</a><a class="wn-btn wn-hub" href="../../index.html">All 22 pieces</a><a class="wn-btn" href="../05-jam-the-bat/index.html" rel="next">05 Jam the Bat &rarr;</a></div><details><summary>Jump to any piece (22)</summary><ol><li><a href="../01-penrose-hole/index.html"><b>01</b><span>The Hole in the Penrose</span></a></li><li><a href="../02-coda-reservoir/index.html"><b>02</b><span>Coda Reservoir</span></a></li><li><a href="../03-moth-eye/index.html"><b>03</b><span>Moth Eye</span></a></li><li><a href="../04-magic-angle/index.html" aria-current="page"><b>04</b><span>Magic Angle</span></a></li><li><a href="../05-jam-the-bat/index.html"><b>05</b><span>Jam the Bat</span></a></li><li><a href="../06-tweezer/index.html"><b>06</b><span>Tweezer</span></a></li><li><a href="../07-flavour/index.html"><b>07</b><span>FLAVOUR</span></a></li><li><a href="../08-pbit-or-qubit/index.html"><b>08</b><span>p-bit or qubit?</span></a></li><li><a href="../09-syndrome-loom/index.html"><b>09</b><span>Syndrome Loom</span></a></li><li><a href="../10-squeezed-chirp/index.html"><b>10</b><span>Squeezed Chirp</span></a></li><li><a href="../11-maxwells-ribbon/index.html"><b>11</b><span>Maxwell&#x27;s Ribbon</span></a></li><li><a href="../12-chirp-instrument/index.html"><b>12</b><span>Chirp Instrument <small>bonus</small></span></a></li><li><a href="../13-moth-to-flame/index.html"><b>13</b><span>Moth to Flame <small>bonus</small></span></a></li><li><a href="../14-hemibrain-ising/index.html"><b>14</b><span>Fly Brain Metro <small>bonus</small></span></a></li><li><a href="../15-tissue-blur/index.html"><b>15</b><span>Tissue Blur <small>bonus</small></span></a></li><li><a href="../16-busy-beaver-score/index.html"><b>16</b><span>Busy Beaver Score <small>bonus</small></span></a></li><li><a href="../17-quantum-lenia/index.html"><b>17</b><span>Quantum Lenia <small>bonus</small></span></a></li><li><a href="../18-oldest-light/index.html"><b>18</b><span>Oldest Light <small>bonus</small></span></a></li><li><a href="../19-frog-chorus/index.html"><b>19</b><span>Frog Chorus <small>bonus</small></span></a></li><li><a href="../20-antimatter-drop/index.html"><b>20</b><span>Antimatter Drop <small>bonus</small></span></a></li><li><a href="../21-quantum-nose/index.html"><b>21</b><span>The Quantum Nose Test <small>bonus</small></span></a></li><li><a href="../22-scroll-unroll/index.html"><b>22</b><span>Scroll Unroll <small>bonus</small></span></a></li></ol></details></nav>
+</style><nav class="wtnr-nav" aria-label="All pieces"><div class="wn-row"><a class="wn-btn" href="../03-moth-eye/index.html" rel="prev">&larr; 03 Moth Eye</a><a class="wn-btn wn-hub" href="../../index.html">All 22 pieces</a><a class="wn-btn" href="../05-jam-the-bat/index.html" rel="next">05 Jam the Bat &rarr;</a></div><details><summary>Jump to any piece (22)</summary><ol><li><a href="../01-penrose-hole/index.html"><b>01</b><span>The Hole in the Penrose</span></a></li><li><a href="../02-coda-reservoir/index.html"><b>02</b><span>Coda Reservoir</span></a></li><li><a href="../03-moth-eye/index.html"><b>03</b><span>Moth Eye</span></a></li><li><a href="../04-magic-angle/index.html" aria-current="page"><b>04</b><span>Magic Angle</span></a></li><li><a href="../05-jam-the-bat/index.html"><b>05</b><span>Jam the Bat</span></a></li><li><a href="../06-tweezer/index.html"><b>06</b><span>Tweezer</span></a></li><li><a href="../07-flavour/index.html"><b>07</b><span>FLAVOUR</span></a></li><li><a href="../08-pbit-or-qubit/index.html"><b>08</b><span>p-bit or qubit?</span></a></li><li><a href="../09-syndrome-loom/index.html"><b>09</b><span>Syndrome Loom</span></a></li><li><a href="../10-squeezed-chirp/index.html"><b>10</b><span>Squeezed Chirp</span></a></li><li><a href="../11-maxwells-ribbon/index.html"><b>11</b><span>Maxwell&#x27;s Ribbon</span></a></li><li><a href="../12-chirp-instrument/index.html"><b>12</b><span>Chirp Instrument</span></a></li><li><a href="../13-moth-to-flame/index.html"><b>13</b><span>Moth to Flame</span></a></li><li><a href="../14-hemibrain-ising/index.html"><b>14</b><span>Fly Brain Metro</span></a></li><li><a href="../15-tissue-blur/index.html"><b>15</b><span>Tissue Blur</span></a></li><li><a href="../16-busy-beaver-score/index.html"><b>16</b><span>Busy Beaver Score</span></a></li><li><a href="../17-quantum-lenia/index.html"><b>17</b><span>Quantum Lenia</span></a></li><li><a href="../18-oldest-light/index.html"><b>18</b><span>Oldest Light</span></a></li><li><a href="../19-frog-chorus/index.html"><b>19</b><span>Frog Chorus</span></a></li><li><a href="../20-antimatter-drop/index.html"><b>20</b><span>Antimatter Drop</span></a></li><li><a href="../21-quantum-nose/index.html"><b>21</b><span>The Quantum Nose Test</span></a></li><li><a href="../22-scroll-unroll/index.html"><b>22</b><span>Scroll Unroll</span></a></li></ol></details></nav>
   <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -551,6 +641,7 @@ function readouts(){
   document.getElementById('tag').textContent=(src==='orig'?'original layers':'telablur output')+' \u00b7 '+lensTxt;
   const sl=document.getElementById('twist');sl.value=f.t;sl.setAttribute('aria-valuetext',f.t.toFixed(2)+' degrees, '+statusText(f)+(zone?', magic angle zone':''));
   document.querySelectorAll('#ticks i').forEach((t,k)=>t.classList.toggle('cur',k===st.i));
+  document.querySelectorAll('#jobs tr[data-i]').forEach(r=>{const on=+r.dataset.i===st.i;r.classList.toggle('cur',on);if(on)r.setAttribute('aria-current','true');else r.removeAttribute('aria-current');});
   drawProfile();drawPlotCursor();
 }
 
@@ -603,6 +694,7 @@ function drawProfile(){
     px.fillStyle=PAL.paper;px.fillRect(lx-4*k,ly-fs*0.85,tw+8*k,fs*1.3);px.fillStyle=PAL.ink;px.textAlign='left';px.fillText(lab,lx,ly);
     pr.textContent=probeText(f,st.probe);
   } else pr.textContent='Click or drag on the profile to read the power at any angle (arrow keys move it, Esc clears).';
+  document.getElementById('prof-t').textContent=f.t.toFixed(2)+'\u00b0';
   const ps=document.getElementById('prof-st');
   ps.textContent=f.st==='ok'?'pair '+f.tm.toFixed(2)+'\u00b0 apart':f.st==='null'?'pair '+f.tm.toFixed(2)+'\u00b0 = the register echo':'no pair beyond the limit';
   ps.style.color=f.st==='null'?'var(--warn)':'var(--ink)';
@@ -626,7 +718,8 @@ function buildPlot(){
   txt(P.l+6,P.t-4,'L (px)',{'font-size':sm});txt(P.w-P.r,P.h-6,'twist \u03b8',{'text-anchor':'end','font-size':sm});
   el('rect',{x:PX(1.0),y:P.t,width:PX(1.2)-PX(1.0),height:P.h-P.b-P.t,fill:'rgba(25,35,142,.07)'});
   el('line',{x1:PX(1.1),x2:PX(1.1),y1:P.t,y2:P.h-P.b,stroke:PAL.ink,'stroke-dasharray':'4 5','stroke-width':1.5});
-  txt(PX(1.2)+5,P.t+12*k,'magic angle zone',{fill:PAL.ink,'font-size':sm});
+  txt(PX(1.2)+5,P.t+12*k,'1.1\u00b0 magic',{fill:PAL.ink,'font-size':sm});
+  txt(PX(1.2)+5,P.t+25*k,'magic angle zone',{fill:PAL.ink2,'font-size':sm});
   let d='';for(let th=0.46;th<=5.0001;th+=0.02){d+=(d?'L':'M')+PX(th).toFixed(1)+' '+PY(predicted(th)).toFixed(1);}
   el('path',{d,fill:'none',stroke:PAL.ink2,'stroke-width':2.5});
   const m=Math.min(k,1.6);
@@ -642,7 +735,8 @@ function buildPlot(){
   drawPlotCursor();
 }
 svg.addEventListener('click',e=>{const r=svg.getBoundingClientRect(), th=((e.clientX-r.left)/r.width*P.w-P.l)/(P.w-P.l-P.r)*5;stop();go(nearestIndex(th));});
-if('ResizeObserver' in window){new ResizeObserver(()=>buildPlot()).observe(svg);new ResizeObserver(()=>{if(st.view==='data')drawProfile();}).observe(pc);}
+// both charts are always on the page (The data section, or the stage's Data view), so they redraw at any width
+if('ResizeObserver' in window){new ResizeObserver(()=>buildPlot()).observe(svg);new ResizeObserver(()=>drawProfile()).observe(pc);}
 function drawPlotCursor(){
   const f=cur();if(!window._cursor)return;
   window._cursor.setAttribute('x1',PX(f.t));window._cursor.setAttribute('x2',PX(f.t));
@@ -879,6 +973,7 @@ function buildScrubber(){
   const ticks=document.getElementById('ticks'), scale=document.getElementById('scale');
   FR.forEach(f=>{const i=document.createElement('i');i.style.left=(f.t/5*100)+'%';i.className=f.st==='ok'?'ok':f.st==='null'?'null':'';ticks.appendChild(i);});
   const z=document.getElementById('zone');z.style.left=(1.0/5*100)+'%';z.style.width=(0.2/5*100)+'%';
+  document.getElementById('magicmark').style.left=(1.1/5*100)+'%';
   [[0,'0\u00b0'],[1.1,'1.1\u00b0'],[2,'2\u00b0'],[3,'3\u00b0'],[4,'4\u00b0'],[5,'5\u00b0']].forEach(([v,t])=>{const s=document.createElement('span');s.style.left=(v/5*100)+'%';s.textContent=t;if(v===1.1)s.className='m';scale.appendChild(s);});
   const sl=document.getElementById('twist');
   sl.addEventListener('input',()=>{stop();go(nearestIndex(+sl.value));});
@@ -918,7 +1013,15 @@ function press(attr,val){document.querySelectorAll('[data-'+attr+']').forEach(b=
 function setSrc(v){st.src=v;press('src',v);go(st.i);}
 // the lens only changes the picture, so picking one from the Data view brings the last picture view back
 function setLens(v){st.lens=v;press('lens',v);if(st.view==='data')setView(st.pic);go(st.i);}
-function setView(v){st.view=v;if(v!=='data')st.pic=v;press('view',v);['scene','frame','data'].forEach(k=>{document.getElementById('v-'+k).hidden=k!==v;});if(v==='scene'){sizeScene();kick();}if(v==='data')buildPlot();draw();}
+// The two chart cards live in "The data" section; the Data view borrows them into the stage (next to the slider)
+// and the section says where they went, with a button to bring them back.
+function placeCharts(inStage){
+  const cards=document.getElementById('data-cards'), slot=document.getElementById(inStage?'v-data':'data-home');
+  if(cards.parentNode!==slot)slot.appendChild(cards);
+  document.getElementById('data-away').hidden=!inStage;
+}
+function setView(v){st.view=v;if(v!=='data')st.pic=v;press('view',v);['scene','frame','data'].forEach(k=>{document.getElementById('v-'+k).hidden=k!==v;});placeCharts(v==='data');if(v==='scene'){sizeScene();kick();}plotK=0;buildPlot();draw();}
+document.getElementById('data-here').addEventListener('click',()=>{setView(st.pic);document.getElementById('data').scrollIntoView({block:'start',behavior:reduce?'auto':'smooth'});});
 document.querySelectorAll('[data-src]').forEach(b=>b.addEventListener('click',()=>setSrc(b.dataset.src)));
 document.querySelectorAll('[data-lens]').forEach(b=>b.addEventListener('click',()=>setLens(b.dataset.lens)));
 document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
@@ -929,15 +1032,15 @@ playBtn.addEventListener('click',()=>{
   if(st.i>=FR.length-1)go(0);
   if(!film.paused)film.pause();
   playBtn.textContent='Pause';
-  const step=()=>{if(st.i>=FR.length-1){stop();toast('Sweep done. Spin back to 1.1\u00b0 to meet the echo.');return;}
+  const step=()=>{if(st.i>=FR.length-1){stop();toast('Sweep done. Drag back to 1.1\u00b0 to see the echo.');return;}
     go(st.i+1);const near=Math.abs(cur().t-1.1)<0.2;st.playing=setTimeout(step,(reduce?900:520)*(near?1.8:1));};
   st.playing=setTimeout(step,reduce?600:250);
 });
-document.getElementById('magic').addEventListener('click',()=>{stop();go(nearestIndex(1.1));toast('Magic angle zone: predicted L = '+fmtL(predicted(1.1))+' = '+nm(predicted(1.1))+' in graphene. The morph reads the register echo here.');});
+document.getElementById('magic').addEventListener('click',()=>{stop();go(nearestIndex(1.1));toast('1.1\u00b0: predicted L = '+fmtL(predicted(1.1))+' = '+nm(predicted(1.1))+' in graphene. Magic angle zone: the morph reads the register echo here.');});
 document.getElementById('share').addEventListener('click',async()=>{
   history.replaceState(null,'',makeHash(cur().t,st.src,st.lens,st.view));
   const what=cur().t.toFixed(2)+'\u00b0, '+(st.src==='orig'?'original':'morph')+', '+(st.lens==='env'?'envelope':'raw pixels')+', '+st.view;
-  try{await navigator.clipboard.writeText(location.href);toast('Link copied: '+what);}catch(e){toast('Copy failed: the link to '+what+' is in your address bar');}
+  try{await navigator.clipboard.writeText(location.href);toast('Link copied: '+what);}catch(e){toast('Copy failed: the link is in your address bar ('+what+')');}
 });
 // opening a shared link restores the twist, source, lens and view
 function applyHash(h){if(!h)return false;stop();st.i=nearestIndex(h.theta);st.src=h.src;st.lens=h.lens;press('src',st.src);press('lens',st.lens);setView(h.view);go(st.i);return true;}
@@ -954,6 +1057,18 @@ filmBtn.addEventListener('click',()=>{if(film.paused){stop();attachFilm();const 
 filmUI();
 (function(){const t=document.getElementById('probes');let h='<tr><th>strength</th><th>bilayer</th><th>what we saw</th><th>job</th></tr>';
   for(const p of META.probes)h+='<tr><td>'+p.s+'</td><td>'+p.r+'</td><td>'+p.note+'</td><td>'+p.j+'</td></tr>';t.innerHTML=h;})();
+// Jobs and credits: every sweep job, each angle a link to that frame (the same share-link format), and the counts
+(function(){const t=document.getElementById('jobs');
+  let h='<tr><th>twist</th><th>reading</th><th>period from the morph</th><th>job</th></tr>';
+  FR.forEach((f,i)=>{h+='<tr data-i="'+i+'"><td><a href="'+makeHash(f.t,'morph','env')+'" data-go="'+i+'">'+f.t.toFixed(2)+'\u00b0</a></td><td>'+statusText(f)+'</td><td>'+(f.lm!=null?fmtL(f.lm):'\u2013')+'</td><td>'+f.j+'</td></tr>';});
+  t.innerHTML=h;
+  t.addEventListener('click',e=>{const a=e.target.closest('a[data-go]');if(!a||e.ctrlKey||e.metaKey||e.shiftKey)return;e.preventDefault();stop();go(+a.dataset.go);
+    document.getElementById('stage').scrollIntoView({block:'start',behavior:reduce?'auto':'smooth'});});
+  const jobs=new Set(FR.map(f=>f.j).concat(META.probes.map(p=>p.j))).size;
+  document.querySelectorAll('[data-njobs]').forEach(s=>s.textContent=jobs);
+  document.querySelectorAll('[data-nframes]').forEach(s=>s.textContent=FR.length);
+  document.querySelectorAll('[data-nprobes]').forEach(s=>s.textContent=META.probes.length);
+  document.getElementById('p-njobs').textContent=jobs;})();
 document.querySelectorAll('[data-sum]').forEach(s=>{const k=s.dataset.sum, v=META.summary[k];
   s.textContent=Array.isArray(v)?v.map(x=>x.toFixed(2)).join(', '):(typeof v==='number'?String(v):'\u2013');});
 // the cast drawer shows the same sprites at a fixed integer scale

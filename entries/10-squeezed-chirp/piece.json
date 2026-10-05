@@ -1,0 +1,47 @@
+{
+ "slug": "10-squeezed-chirp",
+ "challenge": "10 Quantum-native 2",
+ "bonus": false,
+ "title": "Squeezed Chirp",
+ "hook": "Catch the first black-hole merger ever heard.",
+ "sub": "LIGO Night Shift: work the Livingston control room on 14 Sep 2015, set a squeezer dial across six real 18-qubit blur-core-v1 outputs (Atlas simulator) of the real GW150914 chirp, hit MERGER! at the peak and mark its pitch; each output's real measured blur caps the timing and pitch scores, the way LIGO's squeezed light trades one kind of quantum noise for another (an analogy, not a simulation).",
+ "you_control": [
+  "Set: turn the squeezer dial across the five constant-product ratios and the isotropic control; each is a real engine output",
+  "Listen: START RUN counts 3-2-1, then plays that output's real audio while the spectrogram scrolls in, the lensed black holes merge on the real chirp and the end test masses swing with the real signal",
+  "Catch: hit MERGER! at the loudest moment, then drag the pitch line to the peak; tolerances are 2x the output's real measured widths, so no setting can max both scores",
+  "Explore: tap the numbered parts of three engraved plates (the Livingston site, the O1 interferometer, the quadruple pendulum), or open the data room to cut the real grids by hand"
+ ],
+ "engines": [
+  "blur-core-v1"
+ ],
+ "qubits": 18,
+ "qubits_note": "257 x 257 grid padded by the engine to 512 x 512 = 9 + 9 qubits; engine status reports 'Recovered 18-qubit grid from measurement' for every job. 24 and 22 qubits were blocked by the API's 1 MiB request limit (413, measured); 20 qubits (640 x 640) ran but failed twice on Atlas's internal 2 MB result-payload limit (TMPRL1103). A 2-D grid cannot exceed 18 under these limits.",
+ "hardware": null,
+ "jobs": 6,
+ "credits_spent": 8,
+ "deliverables": [
+  "squeezed_chirp.ipynb",
+  "web/notebook.html",
+  "web/index.html",
+  "out/audio/original.wav",
+  "out/audio/r0p25.wav",
+  "out/audio/r0p5.wav",
+  "out/audio/r1.wav",
+  "out/audio/r2.wav",
+  "out/audio/r4.wav",
+  "out/widths.json",
+  "out/widths_vs_ratio.png",
+  "out/panels.png",
+  "hero.png",
+  "README.md",
+  "PARAMS.md",
+  "CREDITS.md",
+  "web/sprites.json",
+  "web/img/mascot.png"
+ ],
+ "web_entry": "web/index.html",
+ "status": "built",
+ "honesty": "An analogy to squeezed light, not a simulation of it: blur-core-v1 ran on Atlas's classical statevector simulator, a classical Gaussian blur shows the same trade, the game scores are rules built from real measured widths (not a detection statistic), and the drawings are illustrations driven by the real signal.",
+ "blockers": [],
+ "mascot": "web/img/mascot.png"
+}

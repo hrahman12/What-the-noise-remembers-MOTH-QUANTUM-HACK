@@ -1,0 +1,4 @@
+  comet-qrng-v1: submitted 6a60b547-a73d-4957-8c5e-3f643aa41022
+  comet-qrng-v1: done 6a60b547 in 100.5s
+  mar_148p8: 6a60b547-a73d-4957-8c5e-3f643aa41022 backend=ibm_marrakesh bytes=70444 S=2.7278 accounted=True grade=hardware-accounted
+spent for 05-jam-the-bat: 20 of 45 credits

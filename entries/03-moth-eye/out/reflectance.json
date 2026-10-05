@@ -1,0 +1,424 @@
+{
+ "engine": "entanglement-shader-v1",
+ "params_fixed": {
+  "reflectance": 0.2,
+  "absorption": 0.95,
+  "style": "peaked (default)",
+  "resolution": "60 (default)",
+  "thickness_nm_in_shader": 500.0
+ },
+ "geometry": {
+  "facet_R": 12.0,
+  "dome_sag": 6.0,
+  "pillar_h": 1.0,
+  "pillar_r": 0.5,
+  "sub": 8
+ },
+ "results": [
+  {
+   "tag": "L1_R6",
+   "series": "sweep",
+   "layers": 1,
+   "rays": 6,
+   "interaction": 1.0,
+   "job_id": "2ff303ed-dcc4-481d-b981-db2aa94de39e",
+   "lut_shape": [
+    60,
+    60
+   ],
+   "lut_mean_R": 0.4182587847113609,
+   "lut_mean_T": 0.4627146397199249,
+   "lut_min_R": 0.07998254150152206,
+   "lut_max_R": 1.3165407180786133,
+   "lut_R_theta0_mean": 0.20090519959727923,
+   "lut_R_above_1_frac": 0.02722222222222222,
+   "normal_R": 0.21831476455906995,
+   "normal_R_rgb": [
+    0.08220833310714135,
+    0.24300201265317078,
+    0.37454617023468095
+   ],
+   "normal_T": 0.6482774816220807,
+   "hemi_R": 0.3596277558551419,
+   "hemi_T": 0.4670946953645415,
+   "head_on": {
+    "eye": 0.40879585404004976,
+    "dome": 0.17849356643994638,
+    "slab": 0.21831476455907
+   },
+   "glsl_sha_prefix": "4ac8acd83bc0",
+   "view_avg": {
+    "eye": 0.32532318130463517,
+    "dome": 0.34377924587367725,
+    "slab": 0.4001010790389127
+   },
+   "gpu_head_on": {
+    "eye": 0.3501117794716137,
+    "dome": 0.27068114412318955,
+    "slab": 0.20728108826742792
+   },
+   "slab_overtakes_eye_at_deg": 55
+  },
+  {
+   "tag": "L2_R6",
+   "series": "sweep",
+   "layers": 2,
+   "rays": 6,
+   "interaction": 1.0,
+   "job_id": "761ee901-278b-4b78-982d-0c0ac87431e5",
+   "lut_shape": [
+    60,
+    60
+   ],
+   "lut_mean_R": 0.47292842945290936,
+   "lut_mean_T": 0.2187603114301308,
+   "lut_min_R": 0.1424533575773239,
+   "lut_max_R": 1.3603663444519043,
+   "lut_R_theta0_mean": 0.24078232795000076,
+   "lut_R_above_1_frac": 0.0375,
+   "normal_R": 0.3012343308662797,
+   "normal_R_rgb": [
+    0.1781538610274975,
+    0.33344221452497086,
+    0.3446114706866287
+   ],
+   "normal_T": 0.3485356921181294,
+   "hemi_R": 0.43451028889234616,
+   "hemi_T": 0.1951966277839819,
+   "head_on": {
+    "eye": 0.4770369866071955,
+    "dome": 0.2831429966727445,
+    "slab": 0.3012343308662797
+   },
+   "glsl_sha_prefix": "4ac8acd83bc0",
+   "view_avg": {
+    "eye": 0.40492598685238995,
+    "dome": 0.4192921256083573,
+    "slab": 0.4695675559658464
+   },
+   "gpu_head_on": {
+    "eye": 0.4263269652313206,
+    "dome": 0.3489417489449322,
+    "slab": 0.3053254050086811
+   },
+   "slab_overtakes_eye_at_deg": 55
+  },
+  {
+   "tag": "L3_R6",
+   "series": "sweep",
+   "layers": 3,
+   "rays": 6,
+   "interaction": 1.0,
+   "job_id": "3ba1f189-a5b0-485e-a6af-f83427e1fdfe",
+   "lut_shape": [
+    60,
+    60
+   ],
+   "lut_mean_R": 0.47673637124399343,
+   "lut_mean_T": 0.152663691375293,
+   "lut_min_R": 0.15742971003055573,
+   "lut_max_R": 1.3622015714645386,
+   "lut_R_theta0_mean": 0.24697258323431015,
+   "lut_R_above_1_frac": 0.03944444444444444,
+   "normal_R": 0.28292834320352334,
+   "normal_R_rgb": [
+    0.17783466439980722,
+    0.31028148560029156,
+    0.32143178740714495
+   ],
+   "normal_T": 0.24869565965544355,
+   "hemi_R": 0.4395302672826561,
+   "hemi_T": 0.12536600498321587,
+   "head_on": {
+    "eye": 0.48093190311441947,
+    "dome": 0.2920220855461214,
+    "slab": 0.28292834320352334
+   },
+   "glsl_sha_prefix": "4ac8acd83bc0",
+   "view_avg": {
+    "eye": 0.4109515816289848,
+    "dome": 0.4243631392171807,
+    "slab": 0.47305422372711853
+   },
+   "gpu_head_on": {
+    "eye": 0.4317092897548104,
+    "dome": 0.35550403164550404,
+    "slab": 0.3009929933195714
+   },
+   "slab_overtakes_eye_at_deg": 55
+  },
+  {
+   "tag": "L4_R6",
+   "series": "sweep",
+   "layers": 4,
+   "rays": 6,
+   "interaction": 1.0,
+   "job_id": "6b0fcb3c-a6c5-429a-8f6e-80cc43d4e88e",
+   "lut_shape": [
+    60,
+    60
+   ],
+   "lut_mean_R": 0.4788796263436476,
+   "lut_mean_T": 0.07266353967503762,
+   "lut_min_R": 0.1651764214038849,
+   "lut_max_R": 1.3623205423355103,
+   "lut_R_theta0_mean": 0.25019342402617134,
+   "lut_R_above_1_frac": 0.03972222222222222,
+   "normal_R": 0.2740846729438015,
+   "normal_R_rgb": [
+    0.1733306909982974,
+    0.2986667684788974,
+    0.3272589365852643
+   ],
+   "normal_T": 0.14489168871933236,
+   "hemi_R": 0.44327211017143087,
+   "hemi_T": 0.05613630409256952,
+   "head_on": {
+    "eye": 0.4845542908515795,
+    "dome": 0.2974937915333875,
+    "slab": 0.27408467294380157
+   },
+   "glsl_sha_prefix": "4ac8acd83bc0",
+   "view_avg": {
+    "eye": 0.4151774023745728,
+    "dome": 0.42817817230217114,
+    "slab": 0.4761391583232522
+   },
+   "gpu_head_on": {
+    "eye": 0.4356212672860434,
+    "dome": 0.36025535965059274,
+    "slab": 0.2905805066266417
+   },
+   "slab_overtakes_eye_at_deg": 60
+  },
+  {
+   "tag": "L5_R6",
+   "series": "sweep",
+   "layers": 5,
+   "rays": 6,
+   "interaction": 1.0,
+   "job_id": "20510fd1-5d75-4ca8-966f-83ab860029ca",
+   "lut_shape": [
+    60,
+    60
+   ],
+   "lut_mean_R": 0.478775946005351,
+   "lut_mean_T": 0.0501709674776949,
+   "lut_min_R": 0.16736027598381042,
+   "lut_max_R": 1.3623206615447998,
+   "lut_R_theta0_mean": 0.2499647448460261,
+   "lut_R_above_1_frac": 0.03972222222222222,
+   "normal_R": 0.27395777829102635,
+   "normal_R_rgb": [
+    0.17241125267285562,
+    0.298841082262543,
+    0.32648204901116984
+   ],
+   "normal_T": 0.11410542872349555,
+   "hemi_R": 0.44310265582986,
+   "hemi_T": 0.03659966120139419,
+   "head_on": {
+    "eye": 0.48452825236220765,
+    "dome": 0.2971941162338796,
+    "slab": 0.2739577782910263
+   },
+   "glsl_sha_prefix": "4ac8acd83bc0",
+   "view_avg": {
+    "eye": 0.4149906672726488,
+    "dome": 0.4279738125593273,
+    "slab": 0.47593712583434333
+   },
+   "gpu_head_on": {
+    "eye": 0.435428723259039,
+    "dome": 0.36007041644032406,
+    "slab": 0.28850263947928334
+   },
+   "slab_overtakes_eye_at_deg": 55
+  },
+  {
+   "tag": "L6_R6",
+   "series": "sweep",
+   "layers": 6,
+   "rays": 6,
+   "interaction": 1.0,
+   "job_id": "0dfd9339-f7f8-4fde-9b06-f3b5624bf888",
+   "lut_shape": [
+    60,
+    60
+   ],
+   "lut_mean_R": 0.4787519035281407,
+   "lut_mean_T": 0.014746261830377286,
+   "lut_min_R": 0.16739031672477722,
+   "lut_max_R": 1.3623206615447998,
+   "lut_R_theta0_mean": 0.2499024676779906,
+   "lut_R_above_1_frac": 0.03972222222222222,
+   "normal_R": 0.2740136777124119,
+   "normal_R_rgb": [
+    0.1723634050442622,
+    0.2989269292579507,
+    0.3265467866304076
+   ],
+   "normal_T": 0.04701296364124451,
+   "hemi_R": 0.4430641619903378,
+   "hemi_T": 0.011764776635517922,
+   "head_on": {
+    "eye": 0.4845040350050187,
+    "dome": 0.2971245095875569,
+    "slab": 0.2740136777124119
+   },
+   "glsl_sha_prefix": "4ac8acd83bc0",
+   "view_avg": {
+    "eye": 0.4149465533377412,
+    "dome": 0.4279308071071839,
+    "slab": 0.4759010054741189
+   },
+   "gpu_head_on": {
+    "eye": 0.435386925440916,
+    "dome": 0.3600226581693734,
+    "slab": 0.2883857431288309
+   },
+   "slab_overtakes_eye_at_deg": 55
+  },
+  {
+   "tag": "L1_R6_int0",
+   "series": "control",
+   "layers": 1,
+   "rays": 6,
+   "interaction": 0.0,
+   "job_id": "dd9c780f-5fe3-48c2-a436-a87cad9d5fce",
+   "lut_shape": [
+    60,
+    60
+   ],
+   "lut_mean_R": 0.6189272591885593,
+   "lut_mean_T": 0.23728787778521016,
+   "lut_min_R": 0.34432974457740784,
+   "lut_max_R": 1.3845186233520508,
+   "lut_R_theta0_mean": 0.4621721173326174,
+   "lut_R_above_1_frac": 0.06527777777777778,
+   "normal_R": 0.39208612795117914,
+   "normal_R_rgb": [
+    0.35086084329164946,
+    0.3897383277708629,
+    0.5367349119896581
+   ],
+   "normal_T": 0.2949831441309675,
+   "hemi_R": 0.5817944944889999,
+   "hemi_T": 0.24756540049555475,
+   "head_on": {
+    "eye": 0.6130343979374133,
+    "dome": 0.48024337597793976,
+    "slab": 0.39208612795117914
+   },
+   "glsl_sha_prefix": "4ac8acd83bc0",
+   "view_avg": {
+    "eye": 0.5664026881441585,
+    "dome": 0.5724357112564566,
+    "slab": 0.5873054882742011
+   },
+   "gpu_head_on": {
+    "eye": 0.5798903211111688,
+    "dome": 0.5707643726301941,
+    "slab": 0.39439685307731925
+   },
+   "slab_overtakes_eye_at_deg": 45
+  },
+  {
+   "tag": "L6_R6_int0",
+   "series": "control",
+   "layers": 6,
+   "rays": 6,
+   "interaction": 0.0,
+   "job_id": "49da4043-6974-46c2-8556-a74c3b1ea18f",
+   "lut_shape": [
+    60,
+    60
+   ],
+   "lut_mean_R": 0.6658675308194425,
+   "lut_mean_T": 0.003768587502875628,
+   "lut_min_R": 0.3973090946674347,
+   "lut_max_R": 1.4253888130187988,
+   "lut_R_theta0_mean": 0.5374889651934306,
+   "lut_R_above_1_frac": 0.051944444444444446,
+   "normal_R": 0.5122836017463489,
+   "normal_R_rgb": [
+    0.49544452589291765,
+    0.5094209437100392,
+    0.5902248836578204
+   ],
+   "normal_T": 0.01231589696103076,
+   "hemi_R": 0.6366271863415465,
+   "hemi_T": 0.003157488572052006,
+   "head_on": {
+    "eye": 0.6569293402777092,
+    "dome": 0.559896933299665,
+    "slab": 0.5122836017463488
+   },
+   "glsl_sha_prefix": "4ac8acd83bc0",
+   "view_avg": {
+    "eye": 0.6248140041428052,
+    "dome": 0.6283661899406129,
+    "slab": 0.6416280510298449
+   },
+   "gpu_head_on": {
+    "eye": 0.6357452292833683,
+    "dome": 0.6212487887526223,
+    "slab": 0.5157943884905699
+   },
+   "slab_overtakes_eye_at_deg": 50
+  }
+ ],
+ "probes": [
+  {
+   "job_id": "8285e98e-5ae7-4974-9898-696bb3ae2d14",
+   "layers": 21,
+   "incoming_rays": 30,
+   "status": "failed",
+   "error_type": "max_qubits_exceeded",
+   "message": "Configuration of(30 rays, 21 layers), exceeds the limit of 21 qubits. With 21 layers, incoming_rays must be at most -5.",
+   "max_rays_reported": -5,
+   "submitted_at": "2026-10-05T04:59:01Z"
+  },
+  {
+   "job_id": "aff508a9-2282-4f91-9328-4c9a413650a6",
+   "layers": 8,
+   "incoming_rays": 10,
+   "status": "failed",
+   "error_type": "max_qubits_exceeded",
+   "message": "Configuration of(10 rays, 8 layers), exceeds the limit of 21 qubits. With 8 layers, incoming_rays must be at most 5.",
+   "max_rays_reported": 5,
+   "submitted_at": "2026-10-05T04:59:32Z"
+  },
+  {
+   "job_id": "ea36ca02-1062-4d7c-92d1-025405e9824c",
+   "layers": 7,
+   "incoming_rays": 30,
+   "status": "failed",
+   "error_type": "max_qubits_exceeded",
+   "message": "Configuration of(30 rays, 7 layers), exceeds the limit of 21 qubits. With 7 layers, incoming_rays must be at most 5.",
+   "max_rays_reported": 5,
+   "submitted_at": "2026-10-05T05:02:29Z"
+  },
+  {
+   "job_id": "0dfd9339-f7f8-4fde-9b06-f3b5624bf888",
+   "layers": 6,
+   "incoming_rays": 6,
+   "status": "completed",
+   "error_type": null,
+   "message": null,
+   "max_rays_reported": null,
+   "submitted_at": "2026-10-05T05:03:14Z"
+  },
+  {
+   "job_id": "b0ec46ef-00d6-4c06-84c6-589d9432fd14",
+   "layers": 6,
+   "incoming_rays": 7,
+   "status": "failed",
+   "error_type": "max_qubits_exceeded",
+   "message": "Configuration of(7 rays, 6 layers), exceeds the limit of 21 qubits. With 6 layers, incoming_rays must be at most 6.",
+   "max_rays_reported": 6,
+   "submitted_at": "2026-10-05T05:05:44Z"
+  }
+ ],
+ "view_sweep_note": "Mean luminance of the engine shader R over covered pixels, 128x128 off-screen target, perspective camera (fov 32 deg, distance 40), azimuth 0, uThickness 500 nm."
+}

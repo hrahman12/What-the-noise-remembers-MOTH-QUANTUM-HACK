@@ -1,0 +1,197 @@
+{
+ "seed": 1592598537,
+ "noise_seed": "1000 + round",
+ "short": {
+  "rounds": 500,
+  "rows": [
+   {
+    "id": "none",
+    "label": "Metronome (no jitter)",
+    "n": 500,
+    "surv": 0,
+    "caught": 500,
+    "survival": 0,
+    "ci95": [
+     0,
+     0.0076
+    ],
+    "clicks": 13225,
+    "hits": 12225,
+    "bat_hit_rate": 0.9244,
+    "bank_slots_used": null,
+    "bank_slots": null,
+    "wrapped": null
+   },
+   {
+    "id": "prng_leaked",
+    "label": "PRNG, seed leaked to the bat",
+    "n": 500,
+    "surv": 0,
+    "caught": 500,
+    "survival": 0,
+    "ci95": [
+     0,
+     0.0076
+    ],
+    "clicks": 8104,
+    "hits": 7604,
+    "bat_hit_rate": 0.9383,
+    "bank_slots_used": null,
+    "bank_slots": null,
+    "wrapped": null
+   },
+   {
+    "id": "prng_hidden",
+    "label": "PRNG, seed kept secret",
+    "n": 500,
+    "surv": 318,
+    "caught": 182,
+    "survival": 0.636,
+    "ci95": [
+     0.5929,
+     0.677
+    ],
+    "clicks": 20554,
+    "hits": 2325,
+    "bat_hit_rate": 0.1131,
+    "bank_slots_used": null,
+    "bank_slots": null,
+    "wrapped": null
+   },
+   {
+    "id": "emu",
+    "label": "emu_20p0",
+    "n": 500,
+    "surv": 323,
+    "caught": 177,
+    "survival": 0.646,
+    "ci95": [
+     0.6031,
+     0.6867
+    ],
+    "clicks": 20505,
+    "hits": 2333,
+    "bat_hit_rate": 0.1138,
+    "bank_slots_used": 20806,
+    "bank_slots": 22882,
+    "wrapped": false
+   },
+   {
+    "id": "fez",
+    "label": "fez_148p8",
+    "n": 500,
+    "surv": 316,
+    "caught": 184,
+    "survival": 0.632,
+    "ci95": [
+     0.5889,
+     0.6731
+    ],
+    "clicks": 20512,
+    "hits": 2383,
+    "bat_hit_rate": 0.1162,
+    "bank_slots_used": 20789,
+    "bank_slots": 243586,
+    "wrapped": false
+   },
+   {
+    "id": "mar",
+    "label": "mar_148p8",
+    "n": 500,
+    "surv": 313,
+    "caught": 187,
+    "survival": 0.626,
+    "ci95": [
+     0.5828,
+     0.6673
+    ],
+    "clicks": 20543,
+    "hits": 2265,
+    "bat_hit_rate": 0.1103,
+    "bank_slots_used": 20828,
+    "bank_slots": 187850,
+    "wrapped": false
+   }
+  ],
+  "homogeneity": {
+   "sources": [
+    "prng_hidden",
+    "emu",
+    "fez",
+    "mar"
+   ],
+   "chi2": 0.457,
+   "df": 3,
+   "p": 0.9282
+  }
+ },
+ "long": {
+  "rounds": 4000,
+  "rows": [
+   {
+    "id": "prng_hidden",
+    "label": "PRNG, seed kept secret",
+    "n": 4000,
+    "surv": 2542,
+    "caught": 1458,
+    "survival": 0.6355,
+    "ci95": [
+     0.6205,
+     0.6503
+    ],
+    "clicks": 164357,
+    "hits": 18667,
+    "bat_hit_rate": 0.1136,
+    "bank_slots_used": null,
+    "bank_slots": null,
+    "wrapped": null
+   },
+   {
+    "id": "fez",
+    "label": "fez_148p8",
+    "n": 4000,
+    "surv": 2590,
+    "caught": 1410,
+    "survival": 0.6475,
+    "ci95": [
+     0.6326,
+     0.6622
+    ],
+    "clicks": 164269,
+    "hits": 18501,
+    "bat_hit_rate": 0.1126,
+    "bank_slots_used": 166590,
+    "bank_slots": 243586,
+    "wrapped": false
+   },
+   {
+    "id": "mar",
+    "label": "mar_148p8",
+    "n": 4000,
+    "surv": 2588,
+    "caught": 1412,
+    "survival": 0.647,
+    "ci95": [
+     0.6321,
+     0.6617
+    ],
+    "clicks": 164247,
+    "hits": 18327,
+    "bat_hit_rate": 0.1116,
+    "bank_slots_used": 166585,
+    "bank_slots": 187850,
+    "wrapped": false
+   }
+  ],
+  "homogeneity": {
+   "sources": [
+    "prng_hidden",
+    "fez",
+    "mar"
+   ],
+   "chi2": 1.607,
+   "df": 2,
+   "p": 0.4478
+  }
+ }
+}

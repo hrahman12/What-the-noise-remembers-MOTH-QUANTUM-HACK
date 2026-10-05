@@ -1,0 +1,48 @@
+{
+ "slug": "21-quantum-nose",
+ "challenge": "02 Make it audible",
+ "bonus": true,
+ "title": "The Quantum Nose Test",
+ "hook": "Swap hydrogen for deuterium. Hear the molecule fall.",
+ "sub": "A contested theory says your nose reads molecular vibrations. We slowed three odorants' vibrations 120 billion times into hearing range and ran them through a 20-qubit quantum blur. You get to smell by ear.",
+ "you_control": [
+  "Pick a molecule (acetophenone, cyclopentadecanone, muscone): it rides a sniff up the nose on an anatomy plate, and a loupe shows it on the mucus at molecular scale",
+  "Sniff: hear a sniff, watch the puffs ride the airflow, and the odorant land and bind (the neuron fires, the bulb flashes)",
+  "Play its vibrational chord: the magnified atoms wobble with the notes, and the caption names the loudest line",
+  "Swap H for D while it sounds: the hydrogen lines glide down 5.35 semitones and a neutron flies into every hydrogen",
+  "Blur the chord through blur-midi-v1: strength 0.25/0.5/1 x reach local/halfway/global (9 real jobs)",
+  "Play the WAV deliverable for the current molecule, isotope and blur setting, and stop it, from the instrument",
+  "Drag the hypothetical receptor gap in Fig. d: when it matches a line the electron tunnels and kicks that mode",
+  "Take the blind test: pick the deuterated sample, optionally with pitch disguised, scored against chance; the pixel nose sniffs along",
+  "Open evidence-for and evidence-against drawers that load molecules and shade bands on the instrument"
+ ],
+ "engines": [
+  "blur-midi-v1"
+ ],
+ "qubits": 20,
+ "qubits_note": "Computed, not reported by the engine: each of the 6 tracks is a piano roll of 77-111 pitch rows (7 qubits) x 6,720 time steps (13 qubits) = 20 qubits per pass, the engine maximum (qubits param 20). Quantum Blur grid rule ceil(log2 w)+ceil(log2 h).",
+ "hardware": null,
+ "jobs": 9,
+ "credits_spent": 9,
+ "deliverables": [
+  "wav/quantum_nose_demo.wav",
+  "wav/<setting>/<molecule>_<H|D>.wav (60 files: input score + 9 blur settings x 6 chords)",
+  "midi/nose_input.mid",
+  "midi/blurred/ (9 engine outputs)",
+  "hero.png",
+  "web/index.html",
+  "web/sprites.json",
+  "make_sprites.py",
+  "web/img/mascot.png",
+  "web/audio/quantum_nose_demo.mp3",
+  "web/audio/chords/<setting>/<molecule>_<H|D>.mp3 (60 files: every chord WAV, played on the page)",
+  "README.md",
+  "PARAMS.md",
+  "CREDITS.md"
+ ],
+ "web_entry": "web/index.html",
+ "status": "built",
+ "honesty": "The vibration theory of olfaction is stated as unproven and contested; vibrational lines are approximate textbook values with harmonic H->D estimates; the quantum blur ran on Atlas's classical statevector simulator and is a sound effect, not a model of tunnelling or a nose; qubit count is computed from the grid rule.",
+ "blockers": [],
+ "mascot": "web/img/mascot.png"
+}

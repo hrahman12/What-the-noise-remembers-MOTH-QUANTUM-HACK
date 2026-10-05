@@ -1,0 +1,200 @@
+[
+ {
+  "x": 300,
+  "y": 300,
+  "r": 270,
+  "setting": "scrambled",
+  "strength": 1.0,
+  "style": "rx",
+  "reach": 1.0,
+  "job_id": "1c3d8cd2-a733-41be-b851-6c9a7d6576eb",
+  "file": "out/positions/pos_300_300_scrambled.png"
+ },
+ {
+  "x": 300,
+  "y": 300,
+  "r": 270,
+  "setting": "memory",
+  "strength": 0.3,
+  "style": "rx",
+  "reach": 0.0,
+  "job_id": "8bf80a51-a4e8-4800-b67e-dd47bf31431c",
+  "file": "out/positions/pos_300_300_memory.png"
+ },
+ {
+  "x": 512,
+  "y": 300,
+  "r": 270,
+  "setting": "scrambled",
+  "strength": 1.0,
+  "style": "rx",
+  "reach": 1.0,
+  "job_id": "94fae1e1-e565-4c86-ae86-a6bb0e8211a5",
+  "file": "out/positions/pos_512_300_scrambled.png"
+ },
+ {
+  "x": 512,
+  "y": 300,
+  "r": 270,
+  "setting": "memory",
+  "strength": 0.3,
+  "style": "rx",
+  "reach": 0.0,
+  "job_id": "31505e69-375a-482d-84e5-2e23c502aa94",
+  "file": "out/positions/pos_512_300_memory.png"
+ },
+ {
+  "x": 724,
+  "y": 300,
+  "r": 270,
+  "setting": "scrambled",
+  "strength": 1.0,
+  "style": "rx",
+  "reach": 1.0,
+  "job_id": "d6e5cc43-31c0-4ccd-8e9f-0529db92b3d2",
+  "file": "out/positions/pos_724_300_scrambled.png"
+ },
+ {
+  "x": 724,
+  "y": 300,
+  "r": 270,
+  "setting": "memory",
+  "strength": 0.3,
+  "style": "rx",
+  "reach": 0.0,
+  "job_id": "bedaf3b0-8038-4b5a-b056-cd2101eb186d",
+  "file": "out/positions/pos_724_300_memory.png"
+ },
+ {
+  "x": 300,
+  "y": 512,
+  "r": 270,
+  "setting": "scrambled",
+  "strength": 1.0,
+  "style": "rx",
+  "reach": 1.0,
+  "job_id": "2af80ca8-e2f0-48ee-8dbf-304c60182b59",
+  "file": "out/positions/pos_300_512_scrambled.png"
+ },
+ {
+  "x": 300,
+  "y": 512,
+  "r": 270,
+  "setting": "memory",
+  "strength": 0.3,
+  "style": "rx",
+  "reach": 0.0,
+  "job_id": "b127de92-c5f0-457a-9abc-2159435f33df",
+  "file": "out/positions/pos_300_512_memory.png"
+ },
+ {
+  "x": 512,
+  "y": 512,
+  "r": 270,
+  "setting": "scrambled",
+  "strength": 1.0,
+  "style": "rx",
+  "reach": 1.0,
+  "job_id": "30eddfc5-1db4-42d2-b373-b89a0bbdb8fe",
+  "file": "out/positions/pos_512_512_scrambled.png"
+ },
+ {
+  "x": 512,
+  "y": 512,
+  "r": 270,
+  "setting": "memory",
+  "strength": 0.3,
+  "style": "rx",
+  "reach": 0.0,
+  "job_id": "6b3c10bf-a4f1-4c18-b325-5d7fcfb07be0",
+  "file": "out/positions/pos_512_512_memory.png"
+ },
+ {
+  "x": 724,
+  "y": 512,
+  "r": 270,
+  "setting": "scrambled",
+  "strength": 1.0,
+  "style": "rx",
+  "reach": 1.0,
+  "job_id": "90a84ee0-8fe1-4e19-84ae-3667fe49b134",
+  "file": "out/positions/pos_724_512_scrambled.png"
+ },
+ {
+  "x": 724,
+  "y": 512,
+  "r": 270,
+  "setting": "memory",
+  "strength": 0.3,
+  "style": "rx",
+  "reach": 0.0,
+  "job_id": "ae04b564-7f49-410b-b4d6-06f915419beb",
+  "file": "out/positions/pos_724_512_memory.png"
+ },
+ {
+  "x": 300,
+  "y": 724,
+  "r": 270,
+  "setting": "scrambled",
+  "strength": 1.0,
+  "style": "rx",
+  "reach": 1.0,
+  "job_id": "64202b7f-543b-44ec-9088-bfe50ad66c37",
+  "file": "out/positions/pos_300_724_scrambled.png"
+ },
+ {
+  "x": 300,
+  "y": 724,
+  "r": 270,
+  "setting": "memory",
+  "strength": 0.3,
+  "style": "rx",
+  "reach": 0.0,
+  "job_id": "09765451-683d-4a0e-89be-37297bd9f986",
+  "file": "out/positions/pos_300_724_memory.png"
+ },
+ {
+  "x": 512,
+  "y": 724,
+  "r": 270,
+  "setting": "scrambled",
+  "strength": 1.0,
+  "style": "rx",
+  "reach": 1.0,
+  "job_id": "93dd0828-e092-4082-a13f-1c305211d3d6",
+  "file": "out/positions/pos_512_724_scrambled.png"
+ },
+ {
+  "x": 512,
+  "y": 724,
+  "r": 270,
+  "setting": "memory",
+  "strength": 0.3,
+  "style": "rx",
+  "reach": 0.0,
+  "job_id": "e284d3fe-7e14-450b-bafb-95ea707c69b6",
+  "file": "out/positions/pos_512_724_memory.png"
+ },
+ {
+  "x": 724,
+  "y": 724,
+  "r": 270,
+  "setting": "scrambled",
+  "strength": 1.0,
+  "style": "rx",
+  "reach": 1.0,
+  "job_id": "3241d420-144b-4171-83dc-ecad2d113b07",
+  "file": "out/positions/pos_724_724_scrambled.png"
+ },
+ {
+  "x": 724,
+  "y": 724,
+  "r": 270,
+  "setting": "memory",
+  "strength": 0.3,
+  "style": "rx",
+  "reach": 0.0,
+  "job_id": "aaf05f21-c45f-4bea-b958-9882e39425a1",
+  "file": "out/positions/pos_724_724_memory.png"
+ }
+]

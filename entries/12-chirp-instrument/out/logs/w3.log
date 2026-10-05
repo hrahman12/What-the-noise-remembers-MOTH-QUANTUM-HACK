@@ -1,0 +1,10 @@
+  blur-midi-v1: resuming 886a934a-8704-4031-9733-5a341d3f9bd1
+  GW150914 {'qubits': 20, 'resolution': 2, 'strength': 1.0, 'reach': 0.0} attempt 1 failed: blur-midi-v1 886a934a-8704-4031-9733-5a341d3f9bd1 failed: {"$schema": "https://api.mothquantum.com/schemas/JobStatusOutputBody.json", "job_id": "886a934a-8704-4031-9733-5a341d3f9bd1", "engine_id": "blur-midi-v1", "status": "failed", "progress": {}, "error": {"message": "The engine did not respond in
+  blur-midi-v1: submitted 7e0eb695-789f-4779-80fb-f6903cbaaf21
+  GW150914 {'qubits': 20, 'resolution': 2, 'strength': 1.0, 'reach': 0.0} attempt 2 failed: blur-midi-v1 7e0eb695-789f-4779-80fb-f6903cbaaf21 failed: {"$schema": "https://api.mothquantum.com/schemas/JobStatusOutputBody.json", "job_id": "7e0eb695-789f-4779-80fb-f6903cbaaf21", "engine_id": "blur-midi-v1", "status": "failed", "progress": {}, "error": {"message": "The engine did not respond in
+0/1 jobs completed; ledgered spend for 12-chirp-instrument: 11 of 10 credits
+
+  GW150914 {'qubits': 20, 'resolution': 2, 'strength': 1.0, 'reach': 0.5} attempt 1 failed: credit cap reached for 12-chirp-instrument: spent 11 of 10, next blur-midi-v1 job costs 1
+0/1 jobs completed; ledgered spend for 12-chirp-instrument: 11 of 10 credits
+  GW150914 {'qubits': 20, 'resolution': 2, 'strength': 1.0, 'reach': 0.5} attempt 1 failed: credit cap reached for 12-chirp-instrument: spent 11 of 10, next blur-midi-v1 job costs 1
+0/1 jobs completed; ledgered spend for 12-chirp-instrument: 11 of 10 credits

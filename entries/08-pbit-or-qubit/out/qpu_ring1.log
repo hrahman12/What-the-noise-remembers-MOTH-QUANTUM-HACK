@@ -1,0 +1,3 @@
+  graph-v1: submitted 5d5ac18d-4f24-4c07-b448-b2d78c6ee6a2
+  ring J=1.0 qpu attempt 1 failed: graph-v1 5d5ac18d-4f24-4c07-b448-b2d78c6ee6a2 failed: {"$schema": "https://api.mothquantum.com/schemas/JobStatusOutputBody.json", "job_id": "5d5ac18d-4f24-4c07-b448-b2d78c6ee6a2", "engine_id": "graph-v1", "status": "failed", "progress": {"detail": "Polling mothbackend for QPU status", "step": "collect"}, "steps": [{"extra": {"backend_name": "ibm_fez", "coupling_map": [[0, 1], [0, 19], [1, 2], [18,
+6 jobs in out/jobs.json; ledgered spend for this piece: 50 credits

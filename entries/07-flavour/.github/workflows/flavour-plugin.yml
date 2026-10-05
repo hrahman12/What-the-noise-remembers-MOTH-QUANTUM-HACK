@@ -1,0 +1,75 @@
+# Builds the FLAVOUR plugin and validates it with pluginval.
+# Assumes this folder (entries/07-flavour) is the repository root, so the plugin lives in ./plugin.
+# macOS: VST3 + AU (universal arm64/x86_64), validated with pluginval and auval.
+# Windows: VST3, validated with pluginval.
+name: FLAVOUR plugin
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  macos:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: cmake -S plugin -B build -G Xcode -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0
+
+      - name: Build VST3 + AU + Standalone
+        run: cmake --build build --config Release --parallel 4
+
+      - name: Install AU for auval
+        run: |
+          mkdir -p ~/Library/Audio/Plug-Ins/Components
+          cp -R "build/Flavour_artefacts/Release/AU/FLAVOUR.component" ~/Library/Audio/Plug-Ins/Components/
+          killall -9 AudioComponentRegistrar || true
+          auval -a | grep -i flvr || true
+          auval -v aumu Flvr Wtnr
+
+      - name: pluginval (VST3 + AU)
+        run: |
+          curl -fsSL -o pluginval.zip https://github.com/Tracktion/pluginval/releases/latest/download/pluginval_macOS.zip
+          unzip -q pluginval.zip
+          ./pluginval.app/Contents/MacOS/pluginval --strictness-level 5 --validate-in-process --skip-gui-tests \
+            --output-dir pluginval-logs "build/Flavour_artefacts/Release/VST3/FLAVOUR.vst3"
+          ./pluginval.app/Contents/MacOS/pluginval --strictness-level 5 --validate-in-process --skip-gui-tests \
+            --output-dir pluginval-logs ~/Library/Audio/Plug-Ins/Components/FLAVOUR.component
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FLAVOUR-macOS-VST3-AU
+          path: |
+            build/Flavour_artefacts/Release/VST3/FLAVOUR.vst3
+            build/Flavour_artefacts/Release/AU/FLAVOUR.component
+            build/Flavour_artefacts/Release/Standalone/FLAVOUR.app
+            pluginval-logs
+
+  windows:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: cmake -S plugin -B build -G "Visual Studio 17 2022" -A x64
+
+      - name: Build VST3 + Standalone
+        run: cmake --build build --config Release --parallel 4
+
+      - name: pluginval (VST3)
+        shell: bash
+        run: |
+          curl -fsSL -o pluginval.zip https://github.com/Tracktion/pluginval/releases/latest/download/pluginval_Windows.zip
+          unzip -q pluginval.zip
+          ./pluginval.exe --strictness-level 5 --validate-in-process --skip-gui-tests \
+            --output-dir pluginval-logs "build/Flavour_artefacts/Release/VST3/FLAVOUR.vst3"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FLAVOUR-Windows-VST3
+          path: |
+            build/Flavour_artefacts/Release/VST3/FLAVOUR.vst3
+            build/Flavour_artefacts/Release/Standalone/FLAVOUR.exe
+            pluginval-logs

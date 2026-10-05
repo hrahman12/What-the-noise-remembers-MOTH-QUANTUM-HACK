@@ -1,0 +1,1869 @@
+<title>Fly Brain Metro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+/*BRAND*/
+/* Layout: the scene is the hero. A scientific-plate fruit fly whose head opens into a transit map of 20 real
+   hemibrain neurons. Charts (departures board, correlation matrix) sit behind the Scene / Data toggle.
+   Paper/ink brief-page look; warm accent only for lit station lamps, the steam engine's fire and lantern light. */
+[hidden]{display:none!important}
+.wrap{max-width:80rem;margin-inline:auto}
+.hero{display:grid;grid-template-columns:minmax(0,1.34fr) minmax(0,.66fr);gap:1.1rem clamp(1.25rem,2.6vw,2.25rem);align-items:start;padding-block:1.5rem 1rem}
+.col{display:grid;gap:1rem;min-width:0;align-content:start}
+.intro,.lede{display:grid;gap:.8rem}
+.kicker{font:500 .74rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+h1{font-size:clamp(2.1rem,3.7vw,3.4rem);line-height:.98;letter-spacing:-.025em}
+.sub{font-size:1rem;color:var(--ink-2);max-width:46ch}
+.stagewrap{display:grid;gap:.55rem;min-width:0}
+.strip{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:space-between;align-items:center}
+.stage{position:relative;border:1px solid var(--ink);background:var(--panel);min-width:0}
+#scene{display:block;width:100%;height:auto;touch-action:manipulation;cursor:pointer}
+#scene:focus-visible{outline:2px solid var(--ink);outline-offset:-4px}
+.status{display:flex;flex-wrap:wrap;gap:.3rem .85rem;align-items:center;font:500 .72rem/1.35 var(--mono);color:var(--ink-2);border:1px solid var(--ink);background:var(--paper);padding:.5rem .8rem}
+.status b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+.status .svc{background:var(--ink);color:var(--on-ink);padding:.18rem .5rem;letter-spacing:.06em;text-transform:uppercase}
+.status .moodbox{display:inline-flex;align-items:center;gap:.4rem}
+.status canvas{image-rendering:pixelated}
+#moodfly,#cond{cursor:pointer}
+.stat .hov{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#heat-stat,#e-heat-stat{grid-template-columns:minmax(0,1fr) 13ch}   /* fixed value column: pointing at a pair never reflows the card */
+.status .svc.bad{background:transparent;color:var(--ink);outline:1px dashed var(--ink);outline-offset:-1px}
+.conductor{display:grid;grid-template-columns:auto auto minmax(0,1fr);grid-template-areas:'who go slide' 'who route cap';gap:.45rem .8rem;align-items:center;border:1px solid var(--rule);background:var(--panel);padding:.6rem .8rem}
+.conductor .who{grid-area:who;display:grid;justify-items:center;gap:.15rem}
+.conductor .who canvas{display:block;image-rendering:pixelated}
+.conductor .who span{font:500 .6rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.conductor #play{grid-area:go;justify-content:center;min-width:7.2rem}
+.conductor .slide{grid-area:slide;display:grid;gap:.2rem;min-width:0}
+.conductor .cap{grid-area:cap;display:flex;flex-wrap:wrap;gap:.4rem .8rem;justify-content:space-between;align-items:center;min-width:0}
+.conductor .route{grid-area:route}
+.conductor .route.off{visibility:hidden}
+.seg.small button{padding:.42rem .7rem;font-size:.7rem}
+.key{display:flex;flex-wrap:wrap;gap:.35rem 1.1rem;font:500 .66rem/1.3 var(--mono);letter-spacing:.04em;color:var(--ink-2);margin:0;padding:0;list-style:none}
+.key li{display:flex;align-items:center;gap:.4rem}
+.key i{display:inline-block;flex:none}
+.key .lit{width:.8rem;height:.8rem;border-radius:99px;background:var(--warn);border:2px solid var(--ink)}
+.key .dark{width:.8rem;height:.8rem;border-radius:99px;background:var(--paper);border:2px solid var(--ink)}
+.key .thick{width:1.6rem;height:0;border-top:6px solid var(--ink)}
+.key .thin{width:1.6rem;height:0;border-top:2px solid var(--ink)}
+.key .dash{width:1.6rem;height:0;border-top:4px dashed var(--ink-2)}
+.key .dbl{width:1.6rem;height:7px;border-top:2.5px solid var(--ink);border-bottom:2.5px solid var(--ink)}
+.key .dot{width:1.6rem;height:0;border-top:2px dotted var(--ink-2)}
+.key .np{width:1.3rem;height:.8rem;border:1px solid var(--ink-2);background:#E6E6F1}
+.key .home{width:1.3rem;height:.8rem;border:2px dashed var(--ink);border-radius:99px}
+.honesty-top{margin-top:.1rem}
+.panel{display:grid;gap:.8rem;background:var(--panel);border:1px solid var(--rule);padding:1rem 1.1rem;min-width:0}
+.row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.row.split{justify-content:space-between}
+.trains{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.4rem}
+.trains.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.trains button{display:grid;justify-items:center;gap:.35rem;border:1px solid var(--ink);background:var(--panel);color:var(--ink);padding:.6rem .35rem .55rem;cursor:pointer;text-align:center;min-width:0}
+.trains button:hover{background:var(--tint)}
+.trains button[aria-pressed="true"]{background:var(--ink);color:var(--on-ink)}
+.trains button[data-off="true"]{opacity:.35;cursor:not-allowed}
+.seg button[data-off="true"]{color:var(--ink-3);cursor:not-allowed;background:transparent}
+.trains .chip{display:grid;place-items:center;height:26px;padding:0 7px;background:var(--paper);border-radius:999px}
+.trains img{display:block;image-rendering:pixelated}
+.trains b{font:500 .8rem/1.1 var(--mono)}
+.trains small{font:400 .64rem/1.25 var(--mono);opacity:.85}
+.readout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.25rem .9rem;font:400 .74rem/1.5 var(--mono);color:var(--ink-2);margin:0;border-top:1px solid var(--rule);padding-top:.8rem}
+.readout dd{margin:0;min-width:0}
+.readout b{color:var(--ink);font-weight:500;overflow-wrap:anywhere}
+.note{font-size:.8rem;color:var(--ink-2)}
+.steps{display:grid;gap:.5rem;counter-reset:s;margin:0;padding:0;list-style:none}
+.steps li{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:.55rem;align-items:baseline;font-size:.92rem}
+.steps li::before{counter-increment:s;content:counter(s);font:500 .78rem/1.6 var(--mono);color:var(--on-ink);background:var(--ink);border-radius:99px;width:1.55rem;height:1.55rem;display:grid;place-items:center}
+.steps b{font-weight:500}
+.card{background:var(--panel);border:1px solid var(--rule);padding:1rem 1.1rem;display:grid;gap:.7rem;align-content:start;min-width:0}
+.card h2{font-size:1.45rem;overflow-wrap:anywhere}
+.card .row.split{border-bottom:1px solid var(--rule);padding-bottom:.55rem}
+.station-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1rem}
+.stat{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.2rem .8rem;font:400 .74rem/1.5 var(--mono);color:var(--ink-2)}
+.stat b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums;text-align:right;overflow-wrap:anywhere}
+.partners{display:grid;gap:.25rem;font:400 .74rem/1.4 var(--mono);color:var(--ink-2)}
+.partners button{all:unset;cursor:pointer;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.6rem;padding:.3rem .4rem;border-bottom:1px solid var(--rule)}
+.partners button:hover,.partners button:focus-visible{background:var(--tint);color:var(--ink)}
+.partners button:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+.partners span{overflow-wrap:anywhere}
+.partners b{color:var(--ink);font-weight:500}
+/* data view: departures board + correlation matrix */
+.dataview{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:1rem;padding:1rem}
+.board{display:grid;gap:0;align-content:start;min-width:0}
+.board-head{display:flex;justify-content:space-between;gap:.6rem;background:var(--ink);color:var(--on-ink);padding:.55rem .7rem;font:500 .7rem/1.25 var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.pats{display:grid;gap:2px;max-height:30rem;overflow:auto;border:1px solid var(--ink);border-top:0;padding:4px}
+.pat{display:grid;grid-template-columns:1.7rem minmax(0,1fr) 4.1rem;gap:.5rem;align-items:center;border:1px solid transparent;background:transparent;padding:.3rem .35rem;cursor:pointer;text-align:left;color:var(--ink-2);font:500 .7rem/1 var(--mono)}
+.pat:hover{border-color:var(--rule);background:var(--paper)}
+.pat[aria-pressed="true"]{border-color:var(--ink);background:var(--tint)}
+.pat .viz{display:block;min-width:0}
+.pat .cells{display:grid;grid-template-columns:repeat(20,minmax(0,1fr));gap:2px}
+.pat .cells i{display:block;aspect-ratio:1/1;border-radius:99px;background:var(--paper);box-shadow:inset 0 0 0 1.5px var(--ink-3)}
+.pat .cells i.u{background:var(--warn);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.pat .bar{display:block;position:relative;height:.38rem;background:var(--panel-2);margin-top:4px}
+.pat .bar s{position:absolute;left:0;top:0;bottom:0;background:var(--ink-3);text-decoration:none}
+.pat .bar u{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);text-decoration:none}
+.pat .pp{text-align:right;color:var(--ink);font-variant-numeric:tabular-nums}
+.heatcard{display:grid;gap:.6rem;align-content:start;min-width:0}
+#h{display:block;width:100%;height:auto;aspect-ratio:1/1;cursor:crosshair;border:1px solid var(--rule)}
+.legend{display:flex;justify-content:space-between;gap:.5rem;font:500 .66rem/1.2 var(--mono);color:var(--ink-2)}
+.scale{display:flex;height:.55rem;border:1px solid var(--rule)}
+.scale i{flex:1}
+.live{border:1px dashed var(--ink);padding:.8rem}
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 2rem);text-align:center;background:var(--ink);color:var(--on-ink);font:500 .85rem/1.25 var(--mono);padding:.8rem 1.1rem;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:5}
+.toast.on{opacity:1}
+.more{margin-top:2.25rem}
+.more .ink-bar{margin-bottom:.25rem}
+code{font:400 .9em var(--mono);color:var(--ink)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* below the scene: every text and graph sits in a visible, titled section */
+.toc{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.9rem}
+.toc button{border:1px solid var(--rule);background:var(--panel);color:var(--ink);border-radius:999px;padding:.5rem .8rem;font:500 .68rem/1.1 var(--mono);letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+.toc button:hover{border-color:var(--ink);background:var(--tint)}
+.sec{margin-top:2.6rem;display:grid;gap:1rem;scroll-margin-top:1rem;min-width:0}
+.sec-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem .9rem;border-top:1px solid var(--ink);padding-top:1rem}
+.sec-head .label{color:var(--ink);font-size:.82rem}
+.sec-head .hint{margin-left:auto;color:var(--ink-2);font-size:.68rem}
+.sec-head h2{font-size:clamp(1.6rem,3.2vw,2.3rem);line-height:1.05}
+.sec-sub{color:var(--ink-2);max-width:72ch}
+.sec-sub b{color:var(--ink);font-weight:500}
+.sec .honesty{max-width:72ch;font-size:.92rem}
+.playgrid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:1.5rem;align-items:start}
+.lead{display:grid;gap:.9rem;min-width:0}
+.lead h3{font-size:clamp(1.6rem,2.8vw,2.3rem);line-height:1.02;letter-spacing:-.02em}
+table.map{border-collapse:collapse;width:100%;font-size:.86rem;color:var(--ink-2)}
+table.map td,table.map th{border-bottom:1px solid var(--rule);padding:.45rem .5rem .45rem 0;text-align:left;vertical-align:top}
+table.map th{font:500 .64rem/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);border-bottom-color:var(--ink)}
+table.ctl td:first-child{font-weight:500;color:var(--ink);width:28%}
+.kb{font:500 .7rem/1 var(--mono);border:1px solid var(--ink-3);border-radius:3px;padding:.15rem .35rem;color:var(--ink);background:var(--panel)}
+.bench-bar{margin-top:.2rem}
+.dgrid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:1rem;align-items:start}
+.fig{margin:0;display:grid;gap:.7rem;align-content:start;background:var(--panel);border:1px solid var(--rule);padding:1rem;min-width:0}
+.fnum{font:500 .7rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
+.fig figcaption{display:grid;gap:.4rem;font-size:.84rem;color:var(--ink-2)}
+.fig h3,.card h3{font-size:1.4rem;overflow-wrap:anywhere}
+/* Figure 1: the wiring graph (the earlier page's hero, restored) */
+.gstage{position:relative;overflow:hidden;border:1px solid var(--ink);background:var(--panel);touch-action:manipulation;user-select:none}
+#eg{display:block;width:100%;height:auto;aspect-ratio:1/1;cursor:pointer}
+#eg:focus-visible{outline:2px solid var(--ink);outline-offset:-4px}
+.gmeter{position:absolute;left:.75rem;bottom:.75rem;right:.75rem;display:flex;flex-wrap:wrap;align-items:center;gap:.35rem .9rem;background:rgba(251,250,249,.95);border:1px solid var(--ink);border-radius:999px;padding:.55rem .95rem;font:500 .74rem/1.3 var(--mono);color:var(--ink-2)}
+.gmeter b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+.gmeter .hot{background:var(--ink);color:var(--on-ink);padding:.1rem .45rem;border-radius:999px}
+.gtag{position:absolute;left:.75rem;top:.75rem;font:500 .68rem/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);background:var(--paper);border:1px solid var(--rule);padding:.42rem .6rem;max-width:calc(100% - 1.5rem)}
+.gtag b{color:var(--ink);font-weight:500}
+.gkey{position:absolute;right:.75rem;top:.75rem;display:flex;flex-direction:column;gap:.3rem;font:500 .64rem/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);background:var(--paper);border:1px solid var(--rule);padding:.45rem .6rem}
+.gkey span{display:flex;align-items:center;gap:.45rem}
+.gkey i{display:inline-block;width:1.4rem;height:0;border-top:3px solid var(--ink)}
+.gkey i.off{border-top:3px dashed var(--ink-2)}
+.gkey i.pick{border-top-color:var(--warn)}
+.dpanel{align-content:start}
+.dpanel .seg{max-width:100%}
+.chain{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:.6rem;align-items:center}
+/* the results bench: spin patterns, correlations, neuron */
+.bench{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,.8fr);gap:1rem}
+.bench .card .row.split{border-bottom:1px solid var(--rule);padding-bottom:.6rem}
+.epats{display:grid;gap:3px;max-height:31rem;overflow:auto;padding-right:2px}
+.epat{display:grid;grid-template-columns:1.6rem minmax(0,1fr) 4.2rem;gap:.5rem;align-items:center;border:1px solid transparent;background:transparent;padding:.3rem .4rem;cursor:pointer;text-align:left;color:var(--ink-2);font:500 .7rem/1 var(--mono)}
+.epat:hover{border-color:var(--rule);background:var(--paper)}
+.epat[aria-pressed="true"]{border-color:var(--ink);background:var(--tint)}
+.epat .viz{display:block;min-width:0}
+.epat .cells{display:grid;grid-template-columns:repeat(20,minmax(0,1fr));gap:2px}
+.epat .cells i{display:block;aspect-ratio:1/1.6;background:var(--panel-2);outline:1px solid var(--rule);outline-offset:-1px}
+.epat .cells i.u{background:var(--ink);outline-color:var(--ink)}
+.epat .bar{display:block;position:relative;height:.4rem;background:var(--panel-2);margin-top:4px}
+.epat .bar s{position:absolute;left:0;top:0;bottom:0;background:var(--ink);text-decoration:none}
+.epat .bar u{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--warn);text-decoration:none}
+.epat .pp{text-align:right;color:var(--ink);font-variant-numeric:tabular-nums}
+#eh{display:block;width:100%;height:auto;aspect-ratio:1/1;cursor:crosshair;border:1px solid var(--rule)}
+.tablewrap{overflow-x:auto;border:1px solid var(--rule);background:var(--panel)}
+table.jobs{border-collapse:collapse;width:100%;min-width:52rem;font-size:.8rem;color:var(--ink)}
+table.jobs th,table.jobs td{border-bottom:1px solid var(--rule);padding:.55rem .6rem;text-align:left;vertical-align:top}
+table.jobs th{font:500 .6rem/1.25 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);border-bottom-color:var(--ink)}
+table.jobs code{font:400 .74rem/1.4 var(--mono);overflow-wrap:anywhere}
+table.jobs .btn{white-space:nowrap;padding:.5rem .85rem;font-size:.8rem}
+table.jobs tr.tot td{font-weight:500;border-bottom:0}
+table.jobs td:nth-child(7),table.jobs td:nth-child(4),table.jobs td:nth-child(5){white-space:nowrap}
+.credits{display:grid;gap:.5rem;margin:0;padding:0;list-style:none;color:var(--ink-2);max-width:78ch;font-size:.9rem}
+.credits li{border-top:1px solid var(--rule);padding-top:.5rem}
+.credits b{color:var(--ink);font-weight:500}
+@media (max-width:1100px){.bench{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.bench .card:last-child{grid-column:1/-1}}
+@media (max-width:900px){.dgrid,.playgrid{grid-template-columns:minmax(0,1fr)}.bench{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:600px){.gtag,.gkey,.gmeter{position:static;max-width:none}.gtag{margin:.6rem .6rem 0}.gkey{flex-direction:row;flex-wrap:wrap;gap:.3rem .9rem;margin:.4rem .6rem 0;border:0;padding:0;background:transparent}.gmeter{margin:0 .6rem .6rem}}
+@media (max-width:480px){.dpanel .seg{border-radius:18px}.dpanel .seg button{padding:.5rem .55rem;font-size:.68rem;letter-spacing:0}.gmeter{font-size:.66rem;border-radius:0;gap:.25rem .6rem}.chain{grid-template-columns:minmax(0,1fr) auto}.chain .btn{grid-column:1/-1;justify-content:center}.more .ink-bar span+span{display:none}.sec-head .hint{margin-left:0}}
+@media (max-width:1100px){.dataview{grid-template-columns:minmax(0,1fr)}.station-grid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:900px){
+  .hero{grid-template-columns:minmax(0,1fr)}
+  .col{display:contents}
+  .intro{order:1}.stagewrap{order:2}.lede{order:3}.cab{order:4}.station{order:5}.howto{order:6}
+}
+@media (max-width:520px){
+  h1{font-size:2rem}
+  .conductor{grid-template-columns:auto minmax(0,1fr);grid-template-areas:'who slide' 'who go' 'route route' 'cap cap'}
+  .conductor .route.off{display:none}
+  .trains small{display:none}
+  .trains.four{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .strip{flex-wrap:nowrap;gap:.35rem}
+  .strip .seg{display:flex;flex:1 1 auto;min-width:0}
+  .strip #seg-view{flex:0 0 auto}
+  .strip .seg button{flex:1 1 auto;padding:.5rem .45rem;font-size:.68rem;letter-spacing:0;white-space:nowrap}
+  .status{font-size:.66rem;gap:.25rem .6rem}
+  .dataview{padding:.6rem}
+}
+</style>
+
+<div class="wrap">
+  <nav class="wtnr-bar"><a href="https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa">What the Noise Remembers</a><span class="count">Challenge <b>08</b></span></nav>
+
+  <div class="hero">
+    <div class="col">
+      <section class="stagewrap" aria-label="The fly brain metro">
+        <div class="strip">
+          <div class="seg" role="group" aria-label="Brain circuit (metro network)" id="seg-circuit"></div>
+          <div class="seg" role="group" aria-label="View" id="seg-view">
+            <button type="button" data-v="scene" aria-pressed="true">Scene</button>
+            <button type="button" data-v="data" aria-pressed="false">Data</button>
+          </div>
+        </div>
+        <div class="stage" id="stage">
+          <canvas id="scene" width="900" height="660" tabindex="0" aria-describedby="scene-desc"></canvas>
+          <p class="sr" id="scene-desc">Three linked scientific plates. Figure 1A: a male fruit fly, Drosophila melanogaster, seen from above, with numbered parts: 1 compound eye, 2 the three ocelli, 3 arista, 4 the brain inside the head, 5 dorsocentral bristles, 6 scutellar bristles, 7 wing vein L3, 8 the anterior and posterior crossveins, 9 haltere, 10 the male sex comb, 11 the male's dark abdominal segments A5 and A6. Figure 1B: the whole brain seen from the front, with the part the hemibrain imaged and a box around the region enlarged in Figure 1C. Figure 1C: a transit map of 20 real hemibrain neurons drawn over the brain regions they live in. Stations are neurons, each placed in or next to the region that holds most of its synapses; lines are their strongest synaptic connections, thicker lines carry more synapses. A lit station lamp is spin up, a dark lamp is spin down. Arrow keys move the train between stations; Space steps to the next sample.</p>
+          <div class="dataview" id="dataview" hidden>
+            <div class="board">
+              <div class="board-head"><span>Departures · <span id="pat-cap">&ndash;</span></span><span>p</span></div>
+              <div class="pats" id="pats" role="group" aria-label="Most frequent light patterns"></div>
+              <p class="note" id="pat-note" style="margin-top:.5rem">&ndash;</p>
+            </div>
+            <div class="heatcard">
+              <div class="row split"><span class="label">Correlations &lang;s<sub>i</sub>s<sub>j</sub>&rang;</span><span class="label" id="heat-cap">&ndash;</span></div>
+              <canvas id="h" width="600" height="600" aria-label="20 by 20 correlation matrix. Lower triangle: chosen train. Upper triangle: reference."></canvas>
+              <div class="scale" id="scale" aria-hidden="true"></div>
+              <div class="legend"><span>&minus;1</span><span>0</span><span>+1 in step</span></div>
+              <p class="note" id="heat-note">&ndash;</p>
+              <div class="stat" id="heat-stat"></div>
+            </div>
+          </div>
+        </div>
+        <div class="status" id="status" aria-live="polite">
+          <span class="svc" id="m-svc">&ndash;</span>
+          <span>lines in step <b id="m-agree">&ndash;</b></span>
+          <span>lamps lit <b id="m-up">&ndash;</b></span>
+          <span>p <b id="m-p">&ndash;</b></span>
+          <span class="moodbox"><canvas id="moodfly" width="26" height="26" aria-hidden="true" title="Tap the fly: it buzzes (decoration)"></canvas>fly mood <b id="m-mood">&ndash;</b> <small>(decoration)</small></span>
+        </div>
+        <div class="conductor">
+          <div class="who"><canvas id="cond" width="44" height="80" aria-hidden="true" title="Tap the signal to depart or hold (same as the Depart button)"></canvas><span>signal</span></div>
+          <button type="button" class="btn" id="play" aria-pressed="false">Depart &#9654;</button>
+          <div class="slide">
+            <input type="range" id="scrub" min="0" max="19" value="0" aria-label="Step through the real samples">
+          </div>
+          <div class="seg small route" role="group" aria-label="Gibbs route" id="seg-route">
+            <button type="button" data-r="top" aria-pressed="true">Timetable &middot; top 20</button>
+            <button type="button" data-r="chain" aria-pressed="false">Journey &middot; 160</button>
+          </div>
+          <div class="cap"><span class="label" id="scrub-val">&ndash;</span><button type="button" class="btn ghost" id="chime" aria-pressed="false" style="padding:.5rem .9rem;font-size:.8rem">Chimes: off</button></div>
+        </div>
+        <ul class="key" aria-label="Map key">
+          <li><i class="lit"></i>lamp lit = spin up (+1)</li>
+          <li><i class="dark"></i>dark = spin down (&minus;1)</li>
+          <li><i class="thin"></i><i class="thick"></i>more synapses, thicker line</li>
+          <li><i class="dbl"></i>loop bond</li>
+          <li><i class="dash"></i>spins out of step</li>
+          <li><i class="dot"></i>real link left out of the model</li>
+          <li><i class="np"></i>neuropil (brain region), schematic outline</li>
+          <li><i class="home"></i>selected station&rsquo;s home region</li>
+        </ul>
+      </section>
+
+      <section class="card station" aria-label="Station card">
+        <div class="row split"><h2 id="n-title">Station</h2><span class="label" id="n-type">&ndash;</span></div>
+        <div class="station-grid">
+          <div class="stat" id="n-stat"></div>
+          <div class="partners-box">
+            <span class="label">Strongest connections (synapses out &rarr; / in &larr;)</span>
+            <div class="partners" id="n-partners"></div>
+          </div>
+        </div>
+        <p class="note">Synapse counts and brain regions (ROIs) from the hemibrain v1.2 export (Janelia FlyEM, CC BY 4.0). Region shares count every synapse the cell makes or receives, with all its partners. Tap a station or a connection: the train takes the lines there.</p>
+      </section>
+    </div>
+
+    <div class="col">
+      <header class="intro">
+        <p class="kicker">Challenge 08 · Make a web app</p>
+        <h1>Ride the metro inside a fly&rsquo;s head.</h1>
+      </header>
+      <div class="lede">
+        <p class="sub">Twenty real neurons from the hemibrain connectome are the stations, drawn over the brain regions they live in, and their strongest synapses are the lines. A classical Gibbs steam train and a 20-qubit Atlas maglev bring real samples of an Ising toy that switch the station lamps, and for the memory network an IBM train brings real samples from the ibm_fez quantum chip.</p>
+        <p class="honesty honesty-top">An Ising toy on a connectome graph, not a brain simulation. Lamps are spins, not neurons firing. The trains, the signal, the light wave and the fly&rsquo;s mood are decoration; every lamp pattern you stop on is a real sample, and every station sits in or next to the brain region that holds most of its synapses.</p>
+      </div>
+
+      <div class="panel cab">
+        <div class="row split"><span class="label">Choose your train (sampler)</span><span class="label" id="r-train">&ndash;</span></div>
+        <div class="trains" role="group" aria-label="Sampler" id="seg-sampler"></div>
+        <div class="row split"><span class="label">Inverse temperature &beta;</span><span class="label" id="beta-val">0.7</span></div>
+        <input type="range" id="beta" min="1" max="15" step="1" value="7" aria-label="Inverse temperature beta (Gibbs train only)">
+        <p class="note" id="beta-note">The Gibbs train runs at every &beta; from 0.1 to 1.5. The quantum runs were made at &beta; = 0.7.</p>
+        <dl class="readout">
+          <dt>Train</dt><dd><b id="r-sampler">&ndash;</b></dd>
+          <dt>Runs on</dt><dd><b id="r-where">&ndash;</b></dd>
+          <dt>Qubits</dt><dd><b id="r-qubits">&ndash;</b></dd>
+          <dt>Samples</dt><dd><b id="r-shots">&ndash;</b></dd>
+          <dt>Job</dt><dd><b id="r-job">&ndash;</b></dd>
+          <dt>vs exact</dt><dd><b id="r-vs">&ndash;</b></dd>
+        </dl>
+        <div class="row"><button type="button" class="btn ghost" id="share">Copy a ticket to this view</button></div>
+        <!--LIVE-START--><div class="live" id="live" hidden>
+          <div class="row split"><span class="label">Live: Atlas via this app&rsquo;s server</span><button type="button" class="btn ghost" id="live-run">Fetch this run from the server</button></div>
+          <p class="note" id="live-msg">The server holds the API key; this page never sees it.</p>
+        </div><!--LIVE-END-->
+      </div>
+
+      <div class="howto">
+        <div class="proof" id="proof" style="margin-bottom:1rem"></div>
+        <ol class="steps">
+          <li><span><b>Pick</b> a network: the compass, memory or smell neurons.</span></li>
+          <li><span><b>Choose</b> a train: Gibbs steam (classical), the IBM train (20 qubits on ibm_fez hardware, memory network), the Atlas maglev (20 qubits, emulator) or the exact blueprint.</span></li>
+          <li><span><b>Drag</b> the slider through real samples and watch the lamps switch; press Depart to ride.</span></li>
+          <li><span><b>Tap</b> a station for its synapses, or open Data for the departures board and correlations.</span></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <section class="more" aria-label="Behind the metro">
+    <div class="ink-bar"><span>Fly Brain Ising</span><span>The bench behind the metro</span></div>
+    <nav class="toc" aria-label="Sections on this page">
+      <button type="button" data-go="sec-play">01 How to play</button>
+      <button type="button" data-go="sec-data">02 The data</button>
+      <button type="button" data-go="sec-made">03 How it was made</button>
+      <button type="button" data-go="sec-science">04 The science</button>
+      <button type="button" data-go="sec-claims">05 What this does not claim</button>
+      <button type="button" data-go="sec-jobs">06 Jobs and credits</button>
+    </nav>
+
+    <section class="sec" id="sec-play" aria-labelledby="h-play">
+      <div class="sec-head"><span class="label">01</span><h2 id="h-play">How to play</h2></div>
+      <div class="playgrid">
+        <div class="lead">
+          <h3>Pull 20 spins into line with a fly&rsquo;s own synapses.</h3>
+          <p class="sub">Real wiring from the hemibrain connectome sets the couplings of an Ising toy. A classical Gibbs sampler and a 20-qubit Atlas circuit each show which spins fall into step, and where they disagree.</p>
+          <ol class="steps">
+            <li><span><b>Pick</b> a circuit: the compass, memory or smell neurons.</span></li>
+            <li><span><b>Explore</b> the wiring: tap a neuron to see its partners and synapse counts.</span></li>
+            <li><span><b>Switch</b> sampler and temperature, then step through the spin patterns each one returns.</span></li>
+            <li><span><b>Compare</b> correlations: tap any cell to light up that pair on the wiring.</span></li>
+          </ol>
+          <p class="note">These four steps work on the metro above and on the results bench in <b>The data</b> below: both show the same circuit, sampler, sample and neuron, so a change in one moves the other.</p>
+        </div>
+        <table class="map ctl">
+          <tr><th>You</th><th>How</th></tr>
+          <tr><td>Pick a network (circuit)</td><td>Compass, Memory or Smell, above the scene or in The data. Each is 20 real hemibrain neurons; the map, Figure 1 and every chart switch with it.</td></tr>
+          <tr><td>Choose a train (sampler)</td><td>Gibbs steam = THRML Gibbs (classical, every &beta;). Atlas maglev = graph-v1 on the Atlas emulator (20 qubits, &beta; = 0.7; compass and memory only, the credits ran out before smell). Exact blueprint = our exact statevector of that circuit (classical). IBM = the same graph-v1 circuit run on IBM ibm_fez hardware (20 of the chip&rsquo;s 156 qubits, &beta; = 0.7, 4,096 shots; memory only: both compass jobs and the first memory job ended cancelled or failed on the IBM side, and the credits ran out before smell). The data names the same three Gibbs &middot; THRML, Atlas emulator and Exact state, plus IBM ibm_fez. You can also tap a parked train in the depot under the map.</td></tr>
+          <tr><td>Inverse temperature &beta;</td><td>slider from 0.1 to 1.5, Gibbs only; the quantum runs are fixed at 0.7</td></tr>
+          <tr><td>Step through samples</td><td>the slider under the scene; <span class="kb">Space</span> or <span class="kb">Enter</span> on the focused map (<span class="kb">Shift</span> steps back); <b>&larr; Pattern</b> / <b>Pattern &rarr;</b> in The data; or click a row of the departures board or of Figure 2</td></tr>
+          <tr><td>Ride</td><td><b>Depart</b> (or a tap on the signal beside it) plays the samples one by one and <b>Hold</b> stops. With the Gibbs train, <b>Timetable</b> steps the 20 most frequent patterns and <b>Journey &middot; 160</b> replays 160 consecutive samples of one Gibbs chain, as <b>Play Gibbs chain</b> does in The data.</td></tr>
+          <tr><td>Pick a station (neuron)</td><td>tap a station on the map, a node of Figure 1, or a row of the station card or the Neuron card; <span class="kb">&larr;</span> <span class="kb">&rarr;</span> on the focused map or Figure 1 walk the 20. The train rides the lines there.</td></tr>
+          <tr><td>Read a pair</td><td>point at a cell of a correlation matrix (Data view or Figure 3): the pair lights up on the map and on Figure 1; click to select its first neuron</td></tr>
+          <tr><td>Scene / Data</td><td>swap the plates for the departures board and correlation matrix, in the metro&rsquo;s words</td></tr>
+          <tr><td>Fly and chimes</td><td>tap the fly on FIG. 1A, or the small fly in the status line, and it buzzes; <b>Chimes</b> plays two notes per sample, off until pressed (both decoration)</td></tr>
+          <tr><td>Share</td><td><b>Copy a ticket to this view</b> or <b>Copy link to this view</b> puts the circuit, sampler, &beta;, pattern and neuron in the URL; opening the link restores them</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <section class="sec" id="sec-data" aria-labelledby="h-data">
+      <div class="sec-head"><span class="label">02</span><h2 id="h-data">The data</h2></div>
+      <p class="sec-sub">The results bench, drawn from the same cached runs as the metro and sharing its state. <b>Figure 1</b> is the wiring graph of the chosen circuit with the spins of the sample on show, <b>Figure 2</b> the spin patterns the chosen sampler returned, <b>Figure 3</b> its pair correlations against a reference, and the <b>Neuron</b> card the selected cell&rsquo;s real synapse counts.</p>
+      <div class="ink-bar bench-bar"><span>Results bench</span><span id="e-bench-cap">&ndash;</span></div>
+      <div class="dgrid">
+        <figure class="fig">
+          <span class="fnum">Figure 1</span>
+          <h3>Wiring graph</h3>
+          <div class="gstage">
+            <canvas id="eg" width="1000" height="1000" tabindex="0" aria-label="Wiring graph of 20 fly neurons. Each node is a spin; solid ink is up, hollow is down. Arrow keys move between neurons, Space steps to the next pattern."></canvas>
+            <div class="gtag" id="e-tag">&ndash;</div>
+            <div class="gkey" aria-hidden="true"><span><i></i>bond in step</span><span><i class="off"></i>out of step</span><span><i class="pick"></i>picked pair</span></div>
+            <div class="gmeter" aria-live="polite">
+              <span>pattern <b id="e-m-rank">&ndash;</b></span>
+              <span>p <b id="e-m-p">&ndash;</b></span>
+              <span>bonds in step <b id="e-m-agree" class="hot">&ndash;</b></span>
+              <span>spins up <b id="e-m-up">&ndash;</b></span>
+            </div>
+          </div>
+          <figcaption><span>Wiring graph of 20 fly neurons. Each node is a spin; solid ink is up, hollow is down. The faint thin lines on the graph are real connections that were left out of the model.</span><span>Thick lines are the 30 modelled bonds, wider for more synapses. Nodes sit where the circuit file places them; the metro map above places the same 20 cells over their brain regions.</span></figcaption>
+        </figure>
+        <div class="panel dpanel">
+          <div class="row"><div class="seg" role="group" aria-label="Brain circuit" id="e-seg-circuit"></div></div>
+          <div class="row"><div class="seg" role="group" aria-label="Sampler" id="e-seg-sampler"></div></div>
+          <div class="row split"><span class="label">Inverse temperature &beta;</span><span class="label" id="e-beta-val">0.7</span></div>
+          <input type="range" id="e-beta" min="1" max="15" step="1" value="7" aria-label="Inverse temperature beta (THRML Gibbs only)">
+          <p class="note" id="e-beta-note">Gibbs runs at every &beta; from 0.1 to 1.5. The quantum runs were made at &beta; = 0.7.</p>
+          <div class="row">
+            <button type="button" class="btn ghost" id="e-prev" aria-label="Previous pattern">&larr; Pattern</button>
+            <button type="button" class="btn ghost" id="e-next" aria-label="Next pattern">Pattern &rarr;</button>
+            <button type="button" class="btn" id="e-share">Copy link to this view</button>
+          </div>
+          <div class="chain" id="e-chain">
+            <button type="button" class="btn ghost" id="e-play" aria-pressed="false">Play Gibbs chain</button>
+            <input type="range" id="e-scrub" min="0" max="159" value="0" aria-label="Gibbs chain sample">
+            <span class="label" id="e-scrub-val">0 / 159</span>
+          </div>
+          <dl class="readout">
+            <dt>Sampler</dt><dd><b id="e-r-sampler">&ndash;</b></dd>
+            <dt>Runs on</dt><dd><b id="e-r-where">&ndash;</b></dd>
+            <dt>Qubits</dt><dd><b id="e-r-qubits">&ndash;</b></dd>
+            <dt>Samples</dt><dd><b id="e-r-shots">&ndash;</b></dd>
+            <dt>Job</dt><dd><b id="e-r-job">&ndash;</b></dd>
+            <dt>vs exact</dt><dd><b id="e-r-vs">&ndash;</b></dd>
+          </dl>
+        </div>
+      </div>
+      <div class="bench" aria-label="Results bench">
+        <figure class="card fig">
+          <span class="fnum">Figure 2</span>
+          <div class="row split"><h3>Spin patterns</h3><span class="label" id="e-pat-cap">&ndash;</span></div>
+          <p class="note" id="e-pat-note">&ndash;</p>
+          <div class="epats" id="e-pats" role="group" aria-label="Most frequent spin patterns"></div>
+        </figure>
+        <figure class="card fig">
+          <span class="fnum">Figure 3</span>
+          <div class="row split"><h3>Correlations</h3><span class="label" id="e-heat-cap">&lang;s<sub>i</sub>s<sub>j</sub>&rang;</span></div>
+          <canvas id="eh" width="600" height="600" aria-label="20 by 20 correlation matrix. Lower triangle: chosen sampler. Upper triangle: reference."></canvas>
+          <div class="scale" id="e-scale" aria-hidden="true"></div>
+          <div class="legend"><span>&minus;1</span><span>0</span><span>+1 in step</span></div>
+          <p class="note" id="e-heat-note">&ndash;</p>
+          <div class="stat" id="e-heat-stat"></div>
+        </figure>
+        <div class="card">
+          <div class="row split"><h3 id="e-n-title">Neuron</h3><span class="label" id="e-n-type">&ndash;</span></div>
+          <div class="stat" id="e-n-stat"></div>
+          <span class="label">Strongest partners in this circuit</span>
+          <div class="partners" id="e-n-partners"></div>
+          <p class="note" id="e-n-note">Synapse counts from the hemibrain v1.2 export (Janelia FlyEM, CC BY 4.0).</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="sec-made" aria-labelledby="h-made">
+      <div class="sec-head"><span class="label">03</span><h2 id="h-made">How it was made</h2></div>
+      <details class="drawer" open><summary>What the quantum engine did</summary><div class="body">
+        <p>Atlas graph-v1 (built on QuantumGraph) prepares a 20-qubit state from targets and samples it. Every qubit starts at |+&rang; (spin up or down with equal odds). Then each bond, strongest first, gets a two-qubit target &lang;ZZ&rang; = +1 applied as a partial rotation. The fraction is chosen so that, acting alone on two fresh qubits, it would give exactly the thermal value tanh(&beta;J). Inside a loopy graph the rotations act on qubits that are already entangled, so the prepared state is not the Boltzmann distribution. That gap is what you see when you switch samplers.</p>
+        <p id="d-quantum">&ndash;</p>
+        <p>We rebuilt each circuit classically as an exact 2<sup>20</sup>-amplitude statevector using the same rule (the "Exact state" sampler, labelled classical). The emulator's sampled patterns match it. graph-v1 also reports a "tomography" of the state; its pairwise &lang;ZZ&rang; values are far weaker than the exact state and the samples, so we treat that report as an approximation and do not use it for the correlations.</p>
+        <p id="d-hwcmp"></p>
+        <p>In the metro scene the emulator's samples ride the Atlas maglev, and the "Exact state" sampler is the Exact blueprint train. The ibm_fez hardware samples ride the solid-ink IBM train.</p>
+      </div></details>
+      <details class="drawer" open><summary>What the classical sampler did</summary><div class="body">
+        <p id="d-thrml">&ndash;</p>
+        <p>In the metro scene this sampler is the Gibbs steam train.</p>
+      </div></details>
+      <details class="drawer" open><summary>How to read the plates, the map and the fly</summary><div class="body">
+        <p>The scene is three linked plates, like a page of an anatomy atlas. <b>FIG. 1A</b> is a male <i>Drosophila melanogaster</i> seen from above, about 2.2 mm long with a 1.9 mm wing (the scale bar is 1 mm). <b>FIG. 1B</b> is its brain seen from the front, about 630 &times; 290 &micro;m like the JRC2018 template brain, with the fly&rsquo;s right on your left. The hemibrain imaged most of the right half of the central brain and part of the left; the pale bands lie outside it. The box shows the region <b>FIG. 1C</b> enlarges, and the dots in it are the 20 stations, lit or dark like the lamps.</p>
+        <p>In FIG. 1C each station is one real neuron, named by its hemibrain cell type plus the side or column from its instance name (the station card gives the full instance and body ID). Behind the map are the neuropils (brain regions) of that part of the brain: the protocerebral bridge, fan-shaped body, ellipsoid body and noduli of the central complex; the calyx, peduncle and the &alpha;, &alpha;&prime;, &beta;, &beta;&prime; and &gamma; lobes of the mushroom body; the antennal lobe with its glomeruli and the lateral horn. Each station sits in or next to its <b>home region</b>: the region holding the most of its synapses, counted over all its partners in the hemibrain v1.2 ROI table (<code>roi_profile.py</code>). Where the cell-type name pins a finer place, the station is pulled towards it: a bridge glomerulus (PEG L3 sits at glomerulus L3 and &Delta;7 L2R7 between L2 and R7; R9 to R1 run on your left, L1 to L9 on your right), a mushroom-body compartment (MBON09(&gamma;3&beta;&prime;1) sits at &gamma;3), or an antennal-lobe glomerulus (DP1m adPN, VM7d adPN). Tap a station: its home region gets a dashed outline, and the card lists its next regions and where each bond&rsquo;s synapses lie.</p>
+        <p>The neuropil outlines are our own schematic of a frontal view (<code>anatomy.py</code>), drawn from published descriptions with approximate proportions and depth flattened; they are not a mesh from the data. Stations snap to an octilinear grid (<code>metro_layout.py</code>, seeded simulated annealing) so the lines run at 0, 45 or 90 degrees like a transit map, and no line runs through a station it does not serve. That is why some sit just outside their home region: in each network at least 10 of the 20 are inside it or on its edge, and the farthest is 46 &micro;m out (the station card gives each distance). Grid steps are true micrometres on the plate (see the scale bar), but a line&rsquo;s length means nothing.</p>
+        <p>Each metro line is one of the 30 bonds in the model, and its weight follows the synapse count between the two cells (square-root scale, thinnest to thickest within each network). Single lines are the maximum spanning tree; double lines are the 11 extra strongest pairs that close loops. When you pick a station, faint dotted lines show its real connections that the model leaves out. A lit lamp is spin +1 and a dark lamp is spin &minus;1 in the sample on show. When you step, the lamps switch in a wave that spreads from the train along the lines: that timing is decoration, and the pattern it settles on is the real sample.</p>
+        <p>The fly follows the real anatomy: compound eyes of about 700 hexagonal facets each in a male, three ocelli in a triangle on the vertex, antennae with plumose aristae, the orbital, ocellar, postvertical and vertical bristles of the head, all 26 large bristles of the dorsal thorax (humerals, presutural, notopleurals, supra-alars, postalars, two pairs of dorsocentrals, and the basal and crossing apical scutellars), rows of acrostichal hairs, wings with the costa and its breaks, veins L1 to L6 and the anterior and posterior crossveins, halteres (the hind wings, reduced to balancers), six legs with five tarsal segments and claws, the sex comb on each male foreleg, and the banded abdomen with the male&rsquo;s dark A5 and A6. Its mood is decoration: when at least 29 of 30 lines are in step it buzzes its wings as each new sample arrives, it grooms when 22 or fewer are, and otherwise it stands. Flies do not do this. The semaphore beside the controls raises its arm as a sample departs and lights its lamp while you ride. The optional chime plays two notes per sample; the interval widens as more lines run in step.</p>
+      </div></details>
+      <details class="drawer" open><summary>The web app</summary><div class="body">
+        <p>This page replays cached runs. The piece also ships a small Node server (<code>app/server.js</code>, no dependencies) that serves this page and proxies graph-v1 calls to Atlas from the server side. The API key stays in the project's <code>.env</code> on the server and is never sent to the browser. It is not deployed. New jobs are off unless the operator sets <code>ALLOW_NEW_JOBS=1</code>, and the piece's 40-credit cap still applies.</p>
+      </div></details>
+    </section>
+
+    <section class="sec" id="sec-science" aria-labelledby="h-science">
+      <div class="sec-head"><span class="label">04</span><h2 id="h-science">The science</h2><span class="label hint">Open a drawer</span></div>
+      <details class="drawer" open><summary>Why a fly brain?</summary><div class="body">
+        <p>The hemibrain is an electron-microscopy reconstruction of a large part of one fruit fly's central brain, published by Janelia's FlyEM team and Google (Scheffer et al., eLife 2020). The openly downloadable v1.2 adjacency export lists <span id="d-neurons">21,739</span> traced neurons and <span id="d-pairs">3,550,403</span> directed neuron-to-neuron connections, each with a synapse count.</p>
+        <p>We grew three densely wired 20-neuron sets from it: the head-direction <b>compass</b> of the central complex, the hubs of the mushroom body's <b>memory</b> circuit, and the lateral-horn <b>smell</b> pathway. Twenty is the most qubits Atlas graph-v1 accepts.</p>
+      </div></details>
+      <details class="drawer" open><summary>How synapses become couplings</summary><div class="body">
+        <p>For each pair, w = synapses one way + synapses the other way. The modelled graph is the maximum spanning tree (19 bonds) plus the next 11 strongest pairs: 30 bonds per circuit. Each bond gets J = w / (median w of the 30 bonds), so a typical bond has J = 1. All couplings are ferromagnetic: the export has no sign (excitatory or inhibitory), so the toy only asks which neurons are wired strongly enough to pull their spins into step.</p>
+        <p>The Gibbs sampler targets p(s) &prop; exp(&beta; &Sigma; J<sub>ij</sub> s<sub>i</sub> s<sub>j</sub>). The faint thin lines on the graph are real connections that were left out of the model.</p>
+      </div></details>
+    </section>
+
+    <section class="sec" id="sec-claims" aria-labelledby="h-claims">
+      <div class="sec-head"><span class="label">05</span><h2 id="h-claims">What this does not claim</h2></div>
+      <p class="honesty">An Ising toy on a connectome graph, not a brain simulation. Spins are not neurons firing.</p>
+      <p class="honesty">This is an Ising toy on a connectome graph, not a simulation of a brain. Spins are not neurons firing, and &beta; is not a biological temperature. Couplings ignore synapse sign, neurotransmitter, timing and every neuron outside the 20. The quantum circuit is a state-preparation recipe, not a quantum Gibbs sampler, and nothing here shows a quantum advantage. <span id="hw-honesty">There is no hardware data.</span> The emulator and "Exact state" are classical simulations of a quantum circuit. The brief asked for hemibrain v1.2.1, which is only reachable through neuPrint with a sign-in token, so this uses the openly downloadable v1.2 export.</p>
+      <p class="honesty">In the metro scene the "Exact state" sampler is the "Exact" blueprint train. The trains, the semaphore, the light wave, the fly's mood and the chime are decoration, not measurements. The fly and the neuropil outlines are our own drawings from published descriptions, with approximate proportions; they are not renderings of the hemibrain data. What is data on the plates: which region each station sits in or next to (the hemibrain ROI table), the lines and their weights, and the lamps.</p>
+    </section>
+
+    <section class="sec" id="sec-jobs" aria-labelledby="h-jobs">
+      <div class="sec-head"><span class="label">06</span><h2 id="h-jobs">Jobs and credits</h2></div>
+      <p class="sec-sub">Every Atlas job this piece submitted, from <code>out/atlas_jobs.json</code>. <span id="jobs-count">Two completed and feed the page; three failed and returned no data, but their credits were still spent.</span> Press <b>Ride this run</b> to put that run on the metro.</p>
+      <div class="tablewrap" tabindex="0" role="region" aria-label="Jobs table (scrolls sideways on small screens)">
+        <table class="jobs" id="jobs"></table>
+      </div>
+      <ul class="credits">
+        <li><b>Data:</b> Janelia FlyEM hemibrain v1.2, exported traced adjacencies (<code>traced-neurons.csv</code>, <code>traced-total-connections.csv</code>, and the per-region <code>traced-roi-connections.csv</code> for the station placement), CC BY 4.0. Scheffer, L. K., Xu, C. S., Januszewski, M., et al., &ldquo;A connectome and analysis of the adult <i>Drosophila</i> central brain&rdquo;, <i>eLife</i> 9:e57443 (2020). We selected 60 neurons in three sets of 20 and summed synapse counts in both directions.</li>
+        <li><b>Quantum engine:</b> Moth Quantum Atlas graph-v1, built on QuantumGraph (Apache-2.0). <code>qg_replica.py</code> adapts its rule to the exact statevector behind the &ldquo;Exact state&rdquo; sampler.</li>
+        <li><b>Hardware:</b> <span id="d-hw">IBM Quantum ibm_fez (Heron), reached through Atlas.</span></li>
+        <li><b>Classical sampler:</b> THRML 0.1.4 by Extropic AI (block Gibbs sampling), on JAX (Apache-2.0); numpy and scipy for the exact enumeration and the replica.</li>
+        <li><b>Artwork:</b> drawn for this piece: the ink plates FIG. 1A&ndash;1C, the neuropil schematic (<code>anatomy.py</code>), the pixel sprites (<code>web/sprites.json</code>) and the mascot. No photograph, figure or mesh was traced; the written anatomy sources are listed in <code>CREDITS.md</code>.</li>
+        <li><b>Fonts:</b> Geist and IBM Plex Mono via Google Fonts. <b>Server:</b> Node.js standard library only (<code>app/server.js</code>).</li>
+      </ul>
+    </section>
+  </section>
+  <!--NAV-->
+  <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>/*INKSPRITE*/</script>
+<script>
+const D = /*DATA*/{};
+const LIVE = /*LIVE*/false;
+const SPR = /*SPRITES*/{};
+
+/*PURE-START*/
+const NQ = 20;
+const PAIRS = []; for (let i = 0; i < NQ; i++) for (let j = i + 1; j < NQ; j++) PAIRS.push([i, j]);
+const pairIndex = (i, j) => { if (i > j) [i, j] = [j, i]; return i * NQ - (i * (i + 1)) / 2 + (j - i - 1); };
+const spinsOf = b => Array.from(b, ch => (ch === '0' ? 1 : -1));            // '0' = |0> = spin up = lamp lit
+const agreeCount = (b, edges) => edges.reduce((n, e) => n + (b[e.i] === b[e.j] ? 1 : 0), 0);
+const upCount = b => Array.from(b).filter(ch => ch === '0').length;
+function corrFromPatterns(list) {                 // count-weighted <s_i s_j> over the returned patterns only
+  const tot = list.reduce((a, m) => a + m.w, 0), out = new Array(PAIRS.length).fill(0);
+  if (!tot) return out;
+  for (const m of list) { const s = spinsOf(m.b); PAIRS.forEach(([i, j], k) => { out[k] += m.w * s[i] * s[j]; }); }
+  return out.map(v => v / tot);
+}
+const meanAbsDiff = (a, b) => a.reduce((s, v, k) => s + Math.abs(v - b[k]), 0) / a.length;
+const edgeMean = (corr, edges) => edges.reduce((s, e) => s + corr[pairIndex(e.i, e.j)], 0) / edges.length;
+const betaKey = v => (Math.round(v * 10) / 10).toFixed(1);
+function makeToken(st) {                           // letters, digits . _ ~ - only
+  return ['c', st.circuit, 's', st.sampler, 'b', String(Math.round(st.beta * 10)), 'p', String(st.pat), 'n', String(st.neuron)].join('.');
+}
+function parseToken(tok, circuits, samplers) {
+  const p = (tok || '').replace(/^#/, '').split('.'); const o = {};
+  for (let k = 0; k + 1 < p.length; k += 2) o[p[k]] = p[k + 1];
+  const st = {};
+  if (circuits.includes(o.c)) st.circuit = o.c;
+  if (samplers.includes(o.s)) st.sampler = o.s;
+  const b = parseInt(o.b, 10); if (b >= 1 && b <= 15) st.beta = b / 10;
+  const pt = parseInt(o.p, 10); if (pt >= 0 && pt < 160) st.pat = pt;
+  const n = parseInt(o.n, 10); if (n >= 0 && n < NQ) st.neuron = n;
+  return st;
+}
+function colorFor(v) {                             // diverging: rust (-1) -> paper (0) -> ink (+1)
+  const lo = [180, 84, 26], mid = [251, 250, 249], hi = [25, 35, 142];
+  const t = Math.max(-1, Math.min(1, v)), c = t < 0 ? lo : hi, a = Math.abs(t);
+  return `rgb(${Math.round(mid[0] + (c[0] - mid[0]) * a)},${Math.round(mid[1] + (c[1] - mid[1]) * a)},${Math.round(mid[2] + (c[2] - mid[2]) * a)})`;
+}
+// decoration rules, written down so they can be tested: the fly's mood and the chime follow the lines in step
+function moodFor(agree, total) { return agree >= total - 1 ? 'buzz' : agree <= Math.floor(total * 0.74) ? 'groom' : 'stand'; }
+function chimeSemis(agree, total) { return 1 + Math.round(6 * Math.max(0, Math.min(1, agree / total))); }   // 1 (sour) .. 7 (a fifth)
+function bfs(n, edges, src) {                      // hop distance and predecessor over the modelled bonds
+  const adj = Array.from({length: n}, () => []);
+  edges.forEach((e, k) => { adj[e.i].push([e.j, k]); adj[e.j].push([e.i, k]); });
+  const dist = new Array(n).fill(-1), prev = new Array(n).fill(null); dist[src] = 0; const q = [src];
+  while (q.length) { const u = q.shift(); for (const [v, k] of adj[u]) if (dist[v] < 0) { dist[v] = dist[u] + 1; prev[v] = [u, k]; q.push(v); } }
+  return {dist, prev};
+}
+function hopPath(prev, dst) { const out = []; let v = dst; while (prev[v]) { out.unshift({from: prev[v][0], to: v, edge: prev[v][1]}); v = prev[v][0]; } return out; }
+function sqrtScale(w, wmin, wmax) { const a = Math.sqrt(wmin), b = Math.sqrt(wmax); return b > a ? (Math.sqrt(w) - a) / (b - a) : 1; }
+/*PURE-END*/
+
+// paper / ink palette (mirrors the brand tokens) for canvas drawing
+const C_PAPER = '#FBFAF9', C_PANEL = '#FFFFFF', C_PANEL2 = '#F0F0F4', C_RULE = '#D3D3E6', C_INK = '#19238E', C_INK2 = '#545BA9', C_INK3 = '#A1A4CE', C_TINT = '#D3D3E6', C_WARN = '#B4541A';
+const inkA = a => `rgba(25,35,142,${a})`;
+const SP = {}; for (const k in SPR) SP[k] = InkSprite.make(SPR[k]);
+const TRAIN = {gibbs: 'steam', emu: 'maglev', fez: 'hardware', exact: 'blueprint'};
+const SAMPLERS = [
+  {id: 'gibbs', label: 'Gibbs', sub: 'steam · classical THRML', name: 'Gibbs steam train (THRML)'},
+  {id: 'fez', label: 'IBM', sub: 'ibm_fez · 20-qubit hardware', name: 'IBM ibm_fez hardware (graph-v1, 20 qubits)'},
+  {id: 'emu', label: 'Atlas', sub: 'maglev · 20-qubit emulator', name: 'Atlas maglev (graph-v1, emulator)'},
+  {id: 'exact', label: 'Exact', sub: 'blueprint · classical replica', name: 'Exact blueprint (classical statevector)'},
+].filter(s => s.id !== 'fez' || D.runs.some(r => r.mode === 'qpu' && r.status === 'completed'));  // no hardware data, no hardware train
+const CIRC = D.circuits, byId = Object.fromEntries(CIRC.map(c => [c.id, c]));
+const RUN = (cid, mode) => D.runs.find(r => r.circuit === cid && r.mode === mode && r.status === 'completed');
+const HAS_HW = SAMPLERS.some(s => s.id === 'fez');  // true when at least one network has real ibm_fez samples
+// why a train has no run for a network, from the ledgered jobs (failed hardware jobs, or no credits left to submit)
+function whyMissing(cid, sid) {
+  if (sid === 'exact') return 'the exact replica is only built for networks with a graph-v1 run';
+  const mode = sid === 'fez' ? 'qpu' : 'emu', js = D.jobs.filter(j => j.circuit === cid && j.mode === mode);
+  if (!js.length) return mode === 'qpu' ? 'the credit allowance ran out before this network reached ibm_fez' : 'the credit budget ran out';
+  return mode === 'qpu' ? `its ibm_fez job${js.length > 1 ? 's' : ''} ended ${js.map(j => (j.why || j.status).replace(/^QPU job ended as /, '')).join(', then ')} on the IBM side, with no counts`
+    : 'its emulator jobs failed inside Atlas';
+}
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const st = {circuit: 'compass', sampler: 'gibbs', beta: 0.7, pat: 0, neuron: 3, chain: false, chainIdx: 0, hoverPair: null, view: 'scene'};
+const $ = id => document.getElementById(id);
+const now = () => performance.now() / 1000;
+
+function available(cid, s) {
+  if (s === 'gibbs') return true;
+  if (s === 'emu') return !!RUN(cid, 'emu');
+  if (s === 'fez') return !!RUN(cid, 'qpu');
+  if (s === 'exact') return !!(D.replica[cid]);
+  return false;
+}
+function thrml() { return D.thrml.circuits[st.circuit].betas[betaKey(st.beta)]; }
+
+// ---- what the current train brought ---------------------------------------------------------------
+function current() {
+  const c = byId[st.circuit], rep = D.replica[st.circuit];
+  if (st.sampler === 'gibbs') {
+    const t = thrml();
+    return {pats: t.top20.map(m => ({b: m.b, p: m.p})), corr: t.corr, refCorr: t.exact_corr,
+      corrNote: `Lower: THRML estimate from ${t.n.toLocaleString()} Gibbs samples. Upper: exact enumeration of all 2^20 states. Mean gap ${t.err_mean.toFixed(3)}.`,
+      where: 'Classical: THRML block Gibbs on a CPU', qubits: '– (classical)', shots: `${t.n.toLocaleString()} samples (64 chains)`, job: '– (classical, no Atlas job)',
+      vs: `against exact enumeration of the Ising model: mean pair gap ${t.err_mean.toFixed(3)}`,
+      patNote: `The 20 most frequent lamp patterns among ${t.n.toLocaleString()} Gibbs samples at β = ${betaKey(st.beta)}. The ink tick is the exact probability.`,
+      patNoteE: `The 20 most frequent states among ${t.n.toLocaleString()} samples at β = ${betaKey(st.beta)}. The orange tick is the exact probability.`,
+      ticks: t.top20.map(m => { const e = t.exact_top20.find(x => x.b === m.b); return e ? e.p : null; })};
+  }
+  if (st.sampler === 'exact') {
+    const t = D.thrml.circuits[st.circuit].betas['0.7'];
+    return {pats: rep.top20.map(m => ({b: m.b, p: m.p})), corr: rep.zz, refCorr: t.corr,
+      corrNote: `Lower: exact ⟨ZZ⟩ of the circuit's state (classical statevector). Upper: THRML Gibbs at β = 0.7. On the 30 bonds: ${edgeMean(rep.zz, c.edges).toFixed(2)} vs ${edgeMean(t.corr, c.edges).toFixed(2)}.`,
+      where: 'Classical: exact statevector of the graph-v1 circuit (our replica)', qubits: '20 (simulated exactly, 2^20 amplitudes)', shots: 'exact probabilities', job: '– (classical check, no Atlas job)',
+      vs: 'this is the reference the quantum trains are compared with',
+      patNote: 'The 20 most likely outcomes of the prepared quantum state, computed exactly. Not an engine output.', ticks: null};
+    // (the earlier page's Figure 2 note is the same sentence: patNoteE falls back to patNote)
+  }
+  const mode = st.sampler === 'fez' ? 'qpu' : 'emu', r = RUN(st.circuit, mode), t = D.thrml.circuits[st.circuit].betas['0.7'];
+  const chk = rep && rep.runs[mode];
+  const corr = corrFromPatterns(r.top20.map(m => ({b: m.b, w: m.count})));
+  const repTop = rep ? corrFromPatterns(rep.top20.map(m => ({b: m.b, w: m.p}))) : t.corr;
+  return {pats: r.top20.map(m => ({b: m.b, p: m.p})), corr, refCorr: repTop,
+    corrNote: `Both triangles use only the 20 most frequent patterns, so they lean towards aligned states. Lower: ${mode === 'qpu' ? `IBM ${r.backend} hardware` : 'emulator'} (${(100 * r.top20_mass).toFixed(1)}% of ${r.shots.toLocaleString()} shots). Upper: exact state's 20 likeliest outcomes.`,
+    where: mode === 'qpu' ? `IBM quantum hardware: ${r.backend} (Heron, 156-qubit chip; this circuit uses ${r.num_qubits})` : 'Atlas emulator: Aer statevector simulator (noiseless baseline)',
+    qubits: `${r.num_qubits} (graph-v1 num_qubits, engine-reported)`, shots: `${r.shots.toLocaleString()} shots, top 20 returned`,
+    job: r.job_id + (r.ibm_job_id ? ` · IBM ${r.ibm_job_id}` : ''),
+    vs: chk ? `TVD ${chk.tvd_top20.toFixed(3)} on its top 20 · those 20 hold ${(100 * r.top20_mass).toFixed(1)}% of shots vs ${(100 * chk.top20_mass_replica_same_strings).toFixed(1)}% exact · all-aligned ${(100 * chk.p_aligned_engine).toFixed(1)}% vs ${(100 * rep.p_aligned).toFixed(1)}% exact` : '–',
+    patNote: (mode === 'qpu' ? `The 20 most frequent bitstrings IBM ${r.backend} returned (${(100 * r.top20_mass).toFixed(1)}% of shots; the noiseless circuit gives these 20 patterns ${chk ? (100 * chk.top20_mass_replica_same_strings).toFixed(1) + '%' : '?'} together).` : `The 20 most frequent bitstrings graph-v1 returned (${(100 * r.top20_mass).toFixed(1)}% of shots).`) + ` The ink tick is how often the noiseless circuit would give each one.` + (chk ? ` Total variation on these 20: ${chk.tvd_top20.toFixed(3)}.` : ''),
+    patNoteE: (mode === 'qpu' ? `The 20 most frequent bitstrings IBM ${r.backend} returned (${(100 * r.top20_mass).toFixed(1)}% of shots; the noiseless circuit gives these 20 patterns ${chk ? (100 * chk.top20_mass_replica_same_strings).toFixed(1) + '%' : '?'} together).` : `The 20 most frequent bitstrings graph-v1 returned (${(100 * r.top20_mass).toFixed(1)}% of shots).`) + ` The orange tick is how often the noiseless circuit would give each one.` + (chk ? ` Total variation on these 20: ${chk.tvd_top20.toFixed(3)}.` : ''),
+    ticks: chk ? chk.replica_p_of_returned : null};
+}
+function currentPattern(cur) {
+  if (st.sampler === 'gibbs' && st.chain) { const tr = thrml().trace; return {b: tr[st.chainIdx], p: null, chain: true}; }
+  return cur.pats[Math.min(st.pat, cur.pats.length - 1)];
+}
+
+// ---- the scene: three linked plates ------------------------------------------------------------------
+// FIG. 1A a male Drosophila melanogaster (dorsal view); FIG. 1B its brain (frontal view, whole); FIG. 1C the transit
+// map of the 20 neurons drawn over the neuropils of the region they live in. The neuropil outlines are our own
+// schematic (anatomy.py). Each station sits in or next to the region that holds most of its synapses in the hemibrain
+// v1.2 ROI table (roi_profile.py), snapped to the transit grid (metro_layout.py).
+const cv = $('scene'), cx = cv.getContext('2d');
+const PL = D.plate, BB = PL.bbox;
+let DPR = 1, LAY = null, LABELS = [], RLABELS = [], lampShown = new Array(NQ).fill(1), flips = [], sparks = [], puffs = [];
+let trainAt = st.neuron, trainRun = null, trainFace = 1, poke = -9;
+function lay() { return D.layout[st.circuit]; }
+function zoom() { return PL.zoom[st.circuit]; }
+function anchorOf(i, cid) { return PL.anchors[cid || st.circuit][i]; }
+const RNAME = {EB: 'ellipsoid body', FB: 'fan-shaped body', PB: 'protocerebral bridge', NO: 'nodulus', BU: 'bulb', GA: 'gall',
+  LAL: 'lateral accessory lobe', CRE: 'crepine', SMP: 'superior medial protocerebrum', SIP: 'superior intermediate protocerebrum',
+  SLP: 'superior lateral protocerebrum', LH: 'lateral horn', AL: 'antennal lobe', CA: 'calyx', PED: 'peduncle', gL: 'γ lobe',
+  bL: 'β lobe', "b'L": 'β′ lobe', aL: 'α lobe', "a'L": 'α′ lobe', LA: 'lamina', ME: 'medulla', LO: 'lobula', LOP: 'lobula plate',
+  PLP: 'posterior lateral protocerebrum', SCL: 'superior clamp', ATL: 'antler'};
+const RSHORT = {gL: 'γ', bL: 'β', "b'L": 'β′', aL: 'α', "a'L": 'α′'};
+const roiText = r => { const m = /^(.*?)\((L|R)\)$/.exec(r), b = m ? m[1] : r; return (RNAME[b] ? `${RSHORT[b] ? RSHORT[b] + 'L' : b} · ${RNAME[b]}` : b) + (m ? ` (${m[2] === 'R' ? 'fly’s right' : 'fly’s left'})` : ''); };
+const roiCode = r => { const m = /^(.*?)\((L|R)\)$/.exec(r), b = m ? m[1] : r; return (RSHORT[b] ? RSHORT[b] + 'L' : b) + (m ? `(${m[2]})` : ''); };
+
+// geometry helpers (micrometres)
+function inPoly(p, P) { let hit = false; for (let a = 0, b = P.length - 1; a < P.length; b = a++) { const [x1, y1] = P[a], [x2, y2] = P[b]; if ((y1 > p[1]) !== (y2 > p[1]) && p[0] < x1 + (p[1] - y1) * (x2 - x1) / (y2 - y1)) hit = !hit; } return hit; }
+for (const s of PL.shapes) { let a = 1e9, b = 1e9, c = -1e9, d = -1e9; for (const [x, y] of s.pts) { a = Math.min(a, x); b = Math.min(b, y); c = Math.max(c, x); d = Math.max(d, y); } s.bb = [a, b, c, d]; }
+const SHAPE = Object.fromEntries(PL.shapes.map(s => [s.id, s]));
+const segDist = (p, a, b) => { const ax = b[0] - a[0], ay = b[1] - a[1], L = ax * ax + ay * ay || 1e-9, u = Math.max(0, Math.min(1, ((p[0] - a[0]) * ax + (p[1] - a[1]) * ay) / L)); return Math.hypot(p[0] - a[0] - u * ax, p[1] - a[1] - u * ay); };
+const distToShape = (p, s) => inPoly(p, s.pts) ? 0 : Math.min(...s.pts.map((q, k) => segDist(p, q, s.pts[(k + 1) % s.pts.length])));   // micrometres
+const inShape = (p, s) => p[0] >= s.bb[0] && p[0] <= s.bb[2] && p[1] >= s.bb[1] && p[1] <= s.bb[3] && inPoly(p, s.pts);
+const STIP = (() => {                               // cortex stipple: the cell-body rind around the neuropils (seeded)
+  let q = 11; const r = () => (q = (q * 16807) % 2147483647) / 2147483647;
+  const brain = SHAPE.brain, solid = PL.shapes.filter(s => s.tone === 'front' || s.tone === 'back' || s.tone === 'hole'), out = [];
+  for (let y = BB[1]; y < BB[3]; y += 4.6) for (let x = BB[0]; x < BB[2]; x += 4.6) {
+    const p = [x + r() * 4.6, y + r() * 4.6];
+    if (inShape(p, brain) && !solid.some(s => inShape(p, s))) out.push(p);
+  }
+  return out; })();
+function shapePath(g, pts, T) { g.beginPath(); pts.forEach((p, i) => i ? g.lineTo(T.X(p[0]), T.Y(p[1])) : g.moveTo(T.X(p[0]), T.Y(p[1]))); g.closePath(); }
+function hatch(g, T, s, sp, ang, col, lw) {          // engraved hatching, clipped to a neuropil
+  const xs = [T.X(s.bb[0]), T.X(s.bb[2])], ys = [T.Y(s.bb[1]), T.Y(s.bb[3])];
+  const mx = (xs[0] + xs[1]) / 2, my = (ys[0] + ys[1]) / 2, R = Math.hypot(xs[1] - xs[0], ys[1] - ys[0]) / 2 + 2, c = Math.cos(ang), n = Math.sin(ang);
+  g.save(); shapePath(g, s.pts, T); g.clip(); g.beginPath();
+  for (let d = -R; d <= R; d += sp) { g.moveTo(mx - c * R - n * d, my - n * R + c * d); g.lineTo(mx + c * R - n * d, my + n * R + c * d); }
+  g.strokeStyle = col; g.lineWidth = lw; g.stroke(); g.restore();
+}
+function paintBrain(g, T, o) {                       // the frontal-view plate: cortex stipple, hatched neuropils, outlines
+  const brain = SHAPE.brain;
+  shapePath(g, brain.pts, T); g.fillStyle = C_PAPER; g.fill();
+  g.fillStyle = inkA(.38); const dr = o.dot;
+  for (let i = 0; i < STIP.length; i += o.every) { const p = STIP[i]; if (!o.vis || o.vis(p)) g.fillRect(T.X(p[0]) - dr / 2, T.Y(p[1]) - dr / 2, dr, dr); }
+  for (const pass of ['soft', 'back', 'front', 'hole']) for (const s of PL.shapes) {
+    if (s.tone !== pass || (o.visShape && !o.visShape(s))) continue;
+    if (pass === 'soft') { shapePath(g, s.pts, T); g.setLineDash([1, o.lw * 2.6]); g.strokeStyle = inkA(.55); g.lineWidth = o.lw * .8; g.stroke(); g.setLineDash([]); continue; }
+    shapePath(g, s.pts, T); g.fillStyle = pass === 'front' ? '#E6E6F1' : pass === 'back' ? '#F2F2F7' : C_PAPER; g.fill();
+    if (pass !== 'hole') hatch(g, T, s, pass === 'front' ? o.hatch : o.hatch * 1.45, pass === 'front' ? -0.62 : 0.62, inkA(pass === 'front' ? .2 : .12), o.lw * .5);
+    if (s.det.length && o.det) {
+      g.beginPath();
+      for (const l of s.det) { l.forEach((p, i) => i ? g.lineTo(T.X(p[0]), T.Y(p[1])) : g.moveTo(T.X(p[0]), T.Y(p[1]))); const a = l[0], b = l[l.length - 1]; if (l.length > 8 && Math.hypot(a[0] - b[0], a[1] - b[1]) < 3) g.closePath(); }
+      g.strokeStyle = inkA(.4); g.lineWidth = o.lw * .55; g.stroke();
+    }
+    shapePath(g, s.pts, T); g.strokeStyle = pass === 'front' ? C_INK2 : pass === 'back' ? C_INK3 : C_INK2; g.lineWidth = o.lw * (pass === 'back' ? .85 : 1); g.stroke();
+  }
+  shapePath(g, brain.pts, T); g.strokeStyle = C_INK; g.lineWidth = o.lw * 1.35; g.stroke();
+}
+
+// ---- layout ------------------------------------------------------------------------------------------------
+function layoutScene() {
+  DPR = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
+  const w = Math.max(280, Math.round(cv.clientWidth || cv.parentElement.clientWidth || 640));
+  const narrow = w < 560, pad = narrow ? 10 : 16, AR = (BB[3] - BB[1]) / (BB[2] - BB[0]), fs = narrow ? 9 : 9.5;
+  let h, inset, brain, fly, cap, key, depot = null, note1c = null;
+  if (!narrow) {
+    const side = Math.round(w * 0.6);
+    inset = {x: w - pad - side, y: pad, w: side, h: side};
+    const colW = inset.x - pad - 24, tight = colW < 240;
+    brain = {x: pad, y: pad + (tight ? 42 : 30), w: colW, h: colW * AR, tight};
+    const keyCols = colW >= 232 ? 2 : 1, keyH = Math.ceil(11 / keyCols) * fs * 1.32;
+    const top = brain.y + brain.h + (tight ? 38 : 26), s = Math.min(colW / 124, 2.6);
+    fly = {cx: pad + colW / 2, cy: top + 62 * s, s};
+    cap = {x: pad, y: top + 132 * s + 6, w: colW};
+    key = {x: pad, y: cap.y + 3 * fs * 1.5 + 6, w: colW, cols: keyCols};
+    const cpl = Math.max(20, Math.floor(inset.w / (fs * 0.6))), nl = Math.ceil(70 / cpl) + Math.ceil(80 / cpl);
+    note1c = {x: inset.x, y: inset.y + inset.h + 9, w: inset.w, lines: nl};
+    const dy = note1c.y + nl * fs * 1.4 + 12;
+    depot = {x0: inset.x, x1: inset.x + inset.w, y: dy};
+    h = Math.round(Math.max(key.y + keyH, dy + 64) + pad);
+  } else {
+    const side = w - 2 * pad;
+    inset = {x: pad, y: pad, w: side, h: side};
+    brain = {x: pad, y: inset.y + side + 58, w: side, h: side * AR};
+    const top = brain.y + brain.h + 40, fw = side * 0.5, s = fw / 124;
+    fly = {cx: pad + fw / 2, cy: top + 62 * s, s};
+    cap = {x: pad + side * 0.53, y: top - 4, w: side * 0.47, stack: true};
+    key = {x: cap.x, y: cap.y + 5 * fs * 1.5 + 6, w: cap.w, cols: 1};
+    h = Math.round(Math.max(top + 132 * s, key.y + 11 * fs * 1.32) + pad);
+  }
+  const L0 = lay(), cols = L0.cols, rows = L0.rows, titleH = narrow ? 34 : 40, m = inset.w * (narrow ? 0.07 : 0.085);
+  const cell = Math.min((inset.w - 2 * m) / (cols - 1), (inset.h - titleH - 1.5 * m) / (rows - 1));
+  const ox = inset.x + (inset.w - cell * (cols - 1)) / 2, oy = inset.y + titleH + Math.max(m * 0.55, (inset.h - titleH - m * 0.9 - cell * (rows - 1)) / 2);
+  const font = narrow ? 10 : (cell >= 64 ? 12 : 11);
+  const lampK = narrow ? Math.max(1, Math.round(cell * DPR * 0.3 / 9)) : Math.max(Math.round(cell * DPR * 0.32 / 9), Math.round(DPR * 1.6));
+  const trainK = Math.max(1, Math.round(cell * DPR * 1.15 / 36));
+  brain.k = brain.w / (BB[2] - BB[0]);
+  LAY = {w, h, narrow, pad, fs, inset, brain, fly, cap, key, depot, note1c, cell, ox, oy, titleH, font, lampK, lampR: 9 * lampK / DPR / 2, trainK};
+  cv.style.height = h + 'px';
+  cv.width = Math.round(w * DPR); cv.height = Math.round(h * DPR);
+  placeLabels(); placeRegionLabels(); plateCache = null; brainCache = null; flyCache = null;
+}
+const SP_XY = (i) => { const p = lay().pos[i]; return [LAY.ox + p[0] * LAY.cell, LAY.oy + p[1] * LAY.cell]; };
+const G_XY = (g) => [LAY.ox + g[0] * LAY.cell, LAY.oy + g[1] * LAY.cell];
+function zT() {                                      // micrometres <-> FIG. 1C pixels (the transit grid IS the plate's scale)
+  const z = zoom(), k = LAY.cell / z.c;
+  return {k, X: x => LAY.ox + (x - z.x0) * k, Y: y => LAY.oy + (z.y1 - y) * k, ix: X => z.x0 + (X - LAY.ox) / k, iy: Y => z.y1 - (Y - LAY.oy) / k};
+}
+function bT() { const B = LAY.brain; return {k: B.k, X: x => B.x + (x - BB[0]) * B.k, Y: y => B.y + (BB[3] - y) * B.k}; }
+const stationUm = i => { const z = zoom(), p = lay().pos[i]; return [z.x0 + p[0] * z.c, z.y1 - p[1] * z.c]; };
+function plateView() {                               // the micrometre rectangle FIG. 1C shows
+  const T = zT(), I = LAY.inset;
+  return {x0: T.ix(I.x), x1: T.ix(I.x + I.w), y1: T.iy(I.y + LAY.titleH - 12), y0: T.iy(I.y + I.h)};
+}
+
+function placeLabels() {                           // greedy label placement: keep names off lamps, lines and each other
+  const c = byId[st.circuit], L0 = lay(), f = LAY.font, cw = f * 0.6, lh = f * 1.2, r = LAYR();
+  const pts = routePoints();
+  const boxes = c.neurons.map((_, i) => { const [x, y] = SP_XY(i); return {x: x - r - 2, y: y - r - 2, w: 2 * r + 4, h: 2 * r + 4}; });
+  const deg = c.neurons.map((_, i) => c.edges.filter(e => e.i === i || e.j === i).length);
+  const order = c.neurons.map((_, i) => i).sort((a, b) => deg[b] - deg[a]);
+  const cands = [[1, 0], [-1, 0], [0, 1], [0, -1], [.8, .8], [-.8, .8], [.8, -.8], [-.8, -.8]], pen = [0, .4, .6, .7, 1, 1.2, 1, 1.2];
+  const inner = {x: LAY.inset.x + 4, y: LAY.inset.y + LAY.titleH - 4, w: LAY.inset.w - 8, h: LAY.inset.h - LAY.titleH - 2};
+  const placed = [];
+  LABELS = new Array(NQ);
+  for (const i of order) {
+    const txt = c.neurons[i].label, tw = txt.length * cw + 2, [sx, sy] = SP_XY(i);
+    let best = null;
+    cands.forEach(([dx, dy], k) => {
+      const d = r + 6, ax = sx + dx * d, ay = sy + dy * d;
+      const x0 = dx > 0.1 ? ax : dx < -0.1 ? ax - tw : ax - tw / 2;
+      const y0 = dy > 0.1 ? ay - (dx ? lh * 0.3 : 0) : dy < -0.1 ? ay - lh + (dx ? lh * 0.3 : 0) : ay - lh / 2;
+      const R = {x: x0, y: y0, w: tw, h: lh};
+      let s = pen[k] + outside(R, inner) * 8;
+      for (const P of placed) s += ov(R, P) * 0.08;
+      boxes.forEach((B, j) => { if (j !== i) s += ov(R, B) * 0.08; });
+      for (const [px, py] of pts) if (px > R.x && px < R.x + R.w && py > R.y && py < R.y + R.h) s += 0.7;
+      if (!best || s < best.s) best = {s, ...R};
+    });
+    placed.push(best); LABELS[i] = best;
+  }
+}
+const ov = (a, b) => Math.max(0, Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x)) * Math.max(0, Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y));
+const outside = (R, I) => (R.x < I.x ? I.x - R.x : 0) + (R.x + R.w > I.x + I.w ? R.x + R.w - I.x - I.w : 0) + (R.y < I.y ? I.y - R.y : 0) + (R.y + R.h > I.y + I.h ? R.y + R.h - I.y - I.h : 0);
+function routePoints() {
+  const out = [];
+  for (const route of lay().routes) for (let k = 0; k + 1 < route.length; k++) {
+    const [x1, y1] = G_XY(route[k]), [x2, y2] = G_XY(route[k + 1]), n = Math.max(1, Math.ceil(Math.hypot(x2 - x1, y2 - y1) / (LAY.cell * 0.2)));
+    for (let t = 1; t < n; t++) out.push([x1 + (x2 - x1) * t / n, y1 + (y2 - y1) * t / n]);
+  }
+  return out;
+}
+function placeRegionLabels() {                     // name the neuropils on FIG. 1C where they clear the stations and lines
+  const T = zT(), V = plateView(), I = LAY.inset, f = LAY.narrow ? 9.5 : 10.5, lh = f * 1.25, cw = f * 0.56;
+  const inner = {x: I.x + 4, y: I.y + LAY.titleH - 6, w: I.w - 8, h: I.h - LAY.titleH};
+  const homes = new Set(PL.anchors[st.circuit].map(a => a.shape));
+  const pts = routePoints(), r = LAYR();
+  const lamps = byId[st.circuit].neurons.map((_, i) => { const [x, y] = SP_XY(i); return {x: x - r - 3, y: y - r - 3, w: 2 * r + 6, h: 2 * r + 6}; });
+  const vis = s => s.bb[2] > V.x0 && s.bb[0] < V.x1 && s.bb[3] > V.y0 && s.bb[1] < V.y1;
+  const area = s => (Math.min(s.bb[2], V.x1) - Math.max(s.bb[0], V.x0)) * (Math.min(s.bb[3], V.y1) - Math.max(s.bb[1], V.y0));
+  const best = {};
+  for (const s of PL.shapes) {                       // one label per region: the copy with the most on the plate
+    if (!s.lab || s.tone === 'hole' || !vis(s)) continue;
+    const a = area(s) * T.k * T.k; if (a < 260) continue;
+    if (!best[s.lab] || a > best[s.lab].a || homes.has(s.id)) if (!best[s.lab] || !homes.has(best[s.lab].s.id)) best[s.lab] = {s, a};
+  }
+  const order = Object.values(best).sort((p, q) => (homes.has(q.s.id) - homes.has(p.s.id)) || (q.a - p.a));
+  RLABELS = [];
+  for (const {s} of order) {
+    const home = homes.has(s.id), names = [RNAME[s.lab] || s.lab, s.lab === 'NO' ? 'NO' : (RSHORT[s.lab] ? RSHORT[s.lab] + ' lobe' : s.lab)];
+    const bx0 = Math.max(T.X(s.bb[0]), inner.x), bx1 = Math.min(T.X(s.bb[2]), inner.x + inner.w), by0 = Math.max(T.Y(s.bb[3]), inner.y), by1 = Math.min(T.Y(s.bb[1]), inner.y + inner.h);
+    const ccx = (bx0 + bx1) / 2, ccy = (by0 + by1) / 2;
+    let pick = null;
+    for (const txt of names) {
+      const tw = txt.length * cw + 4, prev = pick;
+      if (tw > (bx1 - bx0) * 1.9 + 30 && txt !== names[names.length - 1]) continue;
+      for (let y = by0 + lh / 2; y <= by1 - lh / 2; y += Math.max(6, lh * .6)) for (let x = bx0 + tw / 2; x <= bx1 - tw / 2 || x === bx0 + tw / 2; x += 8) {
+        const R = {x: x - tw / 2, y: y - lh / 2, w: tw, h: lh};
+        if (!inShape([T.ix(x), T.iy(y)], s)) continue;
+        let sc = outside(R, inner) * 9 + Math.hypot(x - ccx, y - ccy) * 0.006;
+        for (const L of LABELS) if (L) sc += ov(R, L) * 0.12;
+        for (const B of lamps) sc += ov(R, B) * 0.12;
+        for (const P of RLABELS) sc += ov(R, P) * 0.2;
+        for (const [px, py] of pts) if (px > R.x - 2 && px < R.x + R.w + 2 && py > R.y - 1 && py < R.y + R.h + 1) sc += 1.1;
+        if (!pick || sc < pick.sc - (prev && pick === prev ? .4 : 0)) pick = {sc, ...R, txt, id: s.id, f};
+      }
+      if (pick && pick.sc < 1.2) break;
+    }
+    if (pick && pick.sc < (home ? 4.5 : 1.6)) RLABELS.push(pick);
+  }
+}
+function LAYR() { return LAY.lampR; }
+
+// sprites are drawn in device pixels at integer scale so they stay crisp
+function spr(sp, f, x, y, k, o) { cx.save(); cx.setTransform(1, 0, 0, 1, 0, 0); InkSprite.draw(cx, sp, f, Math.round(x * DPR), Math.round(y * DPR), k, o); cx.restore(); }
+function polyPath(ctx, pts) { ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]); for (let k = 1; k < pts.length; k++) ctx.lineTo(pts[k][0], pts[k][1]); }
+function offscreen(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(w * DPR)); c.height = Math.max(1, Math.round(h * DPR)); return c; }
+function niceBar(k, minPx, maxPx) { for (const um of [1, 2, 5, 10, 20, 25, 50, 100, 200]) if (um * k >= minPx && um * k <= maxPx) return um; return 50; }
+
+// ---- FIG. 1C: the transit map over the neuropils -------------------------------------------------------------
+let plateCache = null;
+function plateImage() {
+  const I = LAY.inset;
+  if (plateCache && plateCache.key === st.circuit) return plateCache.c;
+  const c = offscreen(I.w, I.h), g = c.getContext('2d'), T = zT(), V = plateView();
+  g.setTransform(DPR, 0, 0, DPR, -I.x * DPR, -I.y * DPR);
+  g.fillStyle = C_PAPER; g.fillRect(I.x, I.y, I.w, I.h);
+  g.save(); g.beginPath(); g.rect(I.x, I.y + LAY.titleH - 12, I.w, I.h - LAY.titleH + 12); g.clip();
+  const pad = 30 / T.k;
+  paintBrain(g, T, {dot: Math.max(1.1, T.k * .34), every: 1, hatch: 4, lw: 1.15, det: true,
+    vis: p => p[0] > V.x0 - pad && p[0] < V.x1 + pad && p[1] > V.y0 - pad && p[1] < V.y1 + pad,
+    visShape: s => s.bb[2] > V.x0 - pad && s.bb[0] < V.x1 + pad && s.bb[3] > V.y0 - pad && s.bb[1] < V.y1 + pad});
+  g.textBaseline = 'middle'; g.textAlign = 'center'; g.lineJoin = 'round';
+  for (const R of RLABELS) {
+    g.font = `italic 400 ${R.f}px Geist, Arial, sans-serif`;
+    g.lineWidth = 3.2; g.strokeStyle = C_PAPER; g.strokeText(R.txt, R.x + R.w / 2, R.y + R.h / 2 + .5);
+    g.fillStyle = C_INK2; g.fillText(R.txt, R.x + R.w / 2, R.y + R.h / 2 + .5);
+  }
+  g.restore();
+  plateCache = {key: st.circuit, c};
+  return c;
+}
+function drawMap(t, spins) {
+  const c = byId[st.circuit], L0 = lay(), {inset, cell} = LAY, sel = st.neuron, T = zT();
+  cx.save(); cx.setTransform(1, 0, 0, 1, 0, 0); cx.drawImage(plateImage(), Math.round(inset.x * DPR), Math.round(inset.y * DPR)); cx.restore();
+  // the selected station's home region, outlined (hemibrain ROI table)
+  const A = anchorOf(sel), hs = SHAPE[A.shape];
+  if (hs) { cx.save(); cx.beginPath(); cx.rect(inset.x, inset.y + LAY.titleH - 12, inset.w, inset.h - LAY.titleH + 12); cx.clip();
+    shapePath(cx, hs.pts, T); cx.strokeStyle = C_INK; cx.lineWidth = 2.2; cx.setLineDash([7, 4]); cx.stroke(); cx.setLineDash([]); cx.restore(); }
+  cx.strokeStyle = C_INK; cx.lineWidth = 1.5; cx.strokeRect(inset.x + .75, inset.y + .75, inset.w - 1.5, inset.h - 1.5);
+  cx.fillStyle = C_INK; cx.fillRect(inset.x, inset.y, inset.w, LAY.titleH - 12);
+  cx.font = `500 ${LAY.narrow ? 10 : 11}px "IBM Plex Mono", monospace`; cx.textBaseline = 'middle'; cx.textAlign = 'left'; cx.fillStyle = C_PAPER;
+  const um = LAY.narrow ? niceBar(T.k, 22, 52) : niceBar(T.k, 34, 80), bl = um * T.k, ty = inset.y + (LAY.titleH - 12) / 2 + 1, bx1 = inset.x + inset.w - 10, bx0 = bx1 - bl;
+  const room = bx0 - cx.measureText(`${um} µm`).width - 16 - (inset.x + 10), full = `FIG. 1C  ${c.name.toUpperCase()} · ${zoom().title.toUpperCase()}`;
+  cx.fillText(cx.measureText(full).width <= room ? full : fitText(`FIG. 1C  ${c.name.toUpperCase()}`, room), inset.x + 10, ty);
+  cx.strokeStyle = C_PAPER; cx.lineWidth = 1.5; cx.beginPath(); cx.moveTo(bx0, ty + 4); cx.lineTo(bx1, ty + 4); cx.moveTo(bx0, ty); cx.lineTo(bx0, ty + 7); cx.moveTo(bx1, ty); cx.lineTo(bx1, ty + 7); cx.stroke();
+  cx.textAlign = 'right'; cx.fillText(`${um} µm`, bx0 - 6, ty);
+  const wv = c.edges.map(e => e.w), wmin = Math.min(...wv), wmax = Math.max(...wv);
+  const lw = k => cell * (0.045 + 0.12 * sqrtScale(c.edges[k].w, wmin, wmax));
+  cx.lineJoin = 'round'; cx.lineCap = 'round';
+  // real links left out of the model: dotted, selected station only
+  cx.setLineDash([1.5, 4]); cx.strokeStyle = inkA(.6); cx.lineWidth = 1.3;
+  c.neurons.map((_, j) => ({j, w: j === sel ? 0 : c.synapses[sel][j] + c.synapses[j][sel]}))
+    .filter(o => o.w > 0 && !c.edges.some(e => (e.i === sel && e.j === o.j) || (e.j === sel && e.i === o.j)))
+    .sort((a, b) => b.w - a.w).slice(0, 4).forEach(({j}) => {
+      const [x1, y1] = SP_XY(sel), [x2, y2] = SP_XY(j); cx.beginPath(); cx.moveTo(x1, y1); cx.lineTo(x2, y2); cx.stroke();
+    });
+  cx.setLineDash([]);
+  // casing pass so the lines and crossings read clearly over the drawing
+  L0.routes.forEach((r, k) => { polyPath(cx, r.map(G_XY)); cx.strokeStyle = C_PAPER; cx.lineWidth = lw(k) + 5; cx.stroke(); });
+  const hp = st.hoverPair;
+  L0.routes.forEach((r, k) => {
+    const e = c.edges[k], P = r.map(G_XY), agree = spins ? spins[e.i] === spins[e.j] : true, W = lw(k);
+    const hot = hp && ((hp[0] === e.i && hp[1] === e.j) || (hp[0] === e.j && hp[1] === e.i));
+    if (hot) { polyPath(cx, P); cx.strokeStyle = C_TINT; cx.lineWidth = W + 12; cx.stroke(); }
+    polyPath(cx, P);
+    if (agree) { cx.strokeStyle = (e.i === sel || e.j === sel || hot) ? C_INK : inkA(.88); cx.lineWidth = W; cx.stroke();
+      if (!e.tree) { polyPath(cx, P); cx.strokeStyle = C_PAPER; cx.lineWidth = Math.max(1.2, W * 0.38); cx.stroke(); } }
+    else { cx.setLineDash([Math.max(4, W * 1.4), Math.max(4, W * 1.2)]); cx.lineCap = 'butt'; cx.strokeStyle = C_INK2; cx.lineWidth = Math.max(1.8, W * 0.6); cx.stroke(); cx.setLineDash([]); cx.lineCap = 'round'; }
+  });
+  if (hp && !c.edges.some(e => (e.i === hp[0] && e.j === hp[1]) || (e.i === hp[1] && e.j === hp[0]))) {
+    const [x1, y1] = SP_XY(hp[0]), [x2, y2] = SP_XY(hp[1]); cx.setLineDash([2, 5]); cx.strokeStyle = C_INK; cx.lineWidth = 2.5; cx.beginPath(); cx.moveTo(x1, y1); cx.lineTo(x2, y2); cx.stroke(); cx.setLineDash([]);
+  }
+  // stations: lamps (lit = spin up, dark = spin down)
+  const tw = Math.floor(t * 1.5) % 2;
+  c.neurons.forEach((_, i) => {
+    const [x, y] = SP_XY(i);
+    if (i === sel) { cx.fillStyle = C_PAPER; cx.beginPath(); cx.arc(x, y, LAY.lampR + 7.5, 0, 7); cx.fill(); cx.strokeStyle = C_INK; cx.lineWidth = 1.6; cx.setLineDash([3, 3]); cx.beginPath(); cx.arc(x, y, LAY.lampR + 6, 0, 7); cx.stroke(); cx.setLineDash([]); }
+    spr(lampShown[i] === 1 ? SP.lampOn : SP.lampOff, lampShown[i] === 1 ? (REDUCED ? 0 : (tw + i) % 2) : 0, x, y, LAY.lampK);
+  });
+  for (const s of sparks) { const age = t - s.t0; if (age < 0 || age > .32) continue; const [x, y] = SP_XY(s.i); spr(SP.spark, age < .14 ? 0 : 1, x, y, LAY.lampK); }
+  // station names with a paper halo
+  cx.textBaseline = 'top'; cx.textAlign = 'left'; cx.lineJoin = 'round';
+  c.neurons.forEach((n, i) => {
+    const R = LABELS[i]; if (!R) return;
+    cx.font = `${i === sel ? 600 : 500} ${LAY.font}px "IBM Plex Mono", monospace`;
+    cx.lineWidth = 4; cx.strokeStyle = C_PAPER; cx.strokeText(n.label, R.x + 1, R.y + 1);
+    cx.fillStyle = i === sel ? C_INK : C_INK2; cx.fillText(n.label, R.x + 1, R.y + 1);
+  });
+}
+function fitMono(s, w, f) { const cw = f * 0.6; return s.length * cw <= w ? s : s.slice(0, Math.max(4, Math.floor(w / cw) - 1)) + '…'; }
+function fitText(s, w) { const cw = (LAY.narrow ? 10 : 11) * 0.6; return s.length * cw <= w ? s : s.slice(0, Math.max(4, Math.floor(w / cw) - 1)) + '…'; }
+function drawNote1C() {                              // caption under FIG. 1C (wide layout)
+  const N = LAY.note1c; if (!N) return;
+  const fs = LAY.fs; cx.font = `400 ${fs}px "IBM Plex Mono", monospace`; cx.fillStyle = C_INK2; cx.textAlign = 'left'; cx.textBaseline = 'top';
+  const a = anchorOf(st.neuron), lines = ['Frontal view, dorsal up, fly’s right on the left; outlines schematic.',
+    `Dashed outline: ${byId[st.circuit].neurons[st.neuron].label}’s home region, ${roiCode(a.roi)} (${a.pct}% of its synapses).`];
+  const out = [];
+  for (const s of lines) { let cur = ''; for (const wd of s.split(' ')) { const nx = cur ? cur + ' ' + wd : wd; if (cx.measureText(nx).width > N.w && cur) { out.push(cur); cur = wd; } else cur = nx; } out.push(cur); }
+  out.slice(0, N.lines).forEach((s, k) => cx.fillText(s, N.x, N.y + k * fs * 1.4));
+}
+
+// ---- FIG. 1B: the whole brain, frontal view ------------------------------------------------------------------
+let brainCache = null;
+const OVERVIEW_LABELS = [   // [text, anchor (um), row, x as a fraction of the plate width, align]
+  ['mushroom body', [-63, 94], 'top', .31, 'right'], ['central complex', [0, 80], 'top', .5, 'center'], ['lateral horn', [160, 60], 'top', .69, 'left'],
+  ['antennal lobe', [46, -70], 'bot', .52, 'left'], ['optic lobe', [262, -40], 'bot', 1, 'right']];
+function brainImage() {
+  const B = LAY.brain;
+  if (brainCache) return brainCache;
+  const padY = 34, c = offscreen(B.w, B.h + 2 * padY), g = c.getContext('2d'), T = bT();
+  g.setTransform(DPR, 0, 0, DPR, -B.x * DPR, -(B.y - padY) * DPR);
+  paintBrain(g, T, {dot: Math.max(.8, LAY.narrow ? 1 : .9), every: LAY.narrow ? 3 : 4, hatch: 2.4, lw: .8, det: B.k > .45});
+  // the hemibrain imaged most of the right half: wash out what lies outside it
+  const H = PL.hemibrain, y0 = B.y - 4, y1 = B.y + B.h + 4;
+  g.fillStyle = 'rgba(251,250,249,.58)'; g.fillRect(B.x - 2, y0, T.X(H.x0) - B.x + 2, y1 - y0); g.fillRect(T.X(H.x1), y0, B.x + B.w - T.X(H.x1) + 2, y1 - y0);
+  g.setLineDash([2, 2]); g.strokeStyle = C_INK2; g.lineWidth = .8; g.beginPath();
+  for (const x of [H.x0, H.x1]) { g.moveTo(T.X(x), y0); g.lineTo(T.X(x), y1); } g.stroke(); g.setLineDash([]);
+  // labels with hairline leaders
+  const fs = LAY.narrow ? 9 : 8.2; g.font = `400 ${fs}px "IBM Plex Mono", monospace`; g.textBaseline = 'middle';
+  const lift = {'mushroom body': 0, 'central complex': 1, 'lateral horn': 0, 'antennal lobe': 0, 'optic lobe': 1};
+  for (const [txt, [ax, ay], row, fx0, al0] of OVERVIEW_LABELS) {
+    const r2 = B.tight ? lift[txt] : 0, fx = B.tight && txt === 'optic lobe' ? 1 : fx0, al = al0;
+    const X = B.x + fx * B.w, Y = row === 'top' ? B.y - 9 - r2 * 11 : B.y + B.h + 9 + r2 * 11, tw = g.measureText(txt).width;
+    const lx = al === 'right' ? X - tw : al === 'center' ? X - tw / 2 : X, ex = Math.max(lx + 4, Math.min(lx + tw - 4, T.X(ax)));
+    g.strokeStyle = C_INK2; g.lineWidth = .6; g.beginPath(); g.moveTo(ex, Y + (row === 'top' ? 5 : -5)); g.lineTo(T.X(ax), T.Y(ay)); g.stroke();
+    g.fillStyle = C_INK; g.beginPath(); g.arc(T.X(ax), T.Y(ay), 1.3, 0, 7); g.fill();
+    g.textAlign = 'left'; g.fillStyle = C_INK2; g.fillText(txt, lx, Y);
+  }
+  g.font = `italic 400 ${fs}px "IBM Plex Mono", monospace`; g.fillStyle = C_INK2; g.textAlign = 'left';
+  g.fillText(B.w > 300 ? 'pale: outside the hemibrain' : 'pale: not in hemibrain', B.x, B.y + B.h + 9 + (B.tight ? 11 : 0));
+  brainCache = c; return c;
+}
+function drawBrainFig(spins) {
+  const B = LAY.brain, T = bT(), padY = 34;
+  cx.save(); cx.setTransform(1, 0, 0, 1, 0, 0); cx.drawImage(brainImage(), Math.round(B.x * DPR), Math.round((B.y - padY) * DPR)); cx.restore();
+  const fs = LAY.fs; cx.font = `500 ${fs}px "IBM Plex Mono", monospace`; cx.textBaseline = 'alphabetic'; cx.textAlign = 'left'; cx.fillStyle = C_INK;
+  const ty = B.y - (LAY.narrow ? 26 : B.tight ? 34 : 23);
+  cx.fillText('FIG. 1B  BRAIN, FRONTAL VIEW', B.x, ty);
+  // the 20 stations, at their map positions, lit or dark like the lamps
+  byId[st.circuit].neurons.forEach((_, i) => { const [x, y] = stationUm(i); cx.beginPath(); cx.arc(T.X(x), T.Y(y), LAY.narrow ? 1.6 : 1.4, 0, 7);
+    cx.fillStyle = spins[i] === 1 ? C_WARN : C_PAPER; cx.fill(); cx.lineWidth = .7; cx.strokeStyle = C_INK; cx.stroke(); });
+  // the region FIG. 1C enlarges
+  const V = plateView(), r = [T.X(V.x0), T.Y(V.y1), T.X(V.x1), T.Y(V.y0)];
+  cx.strokeStyle = C_INK; cx.lineWidth = 1.4; cx.strokeRect(r[0], r[1], r[2] - r[0], r[3] - r[1]);
+  const I = LAY.inset;
+  if (LAY.narrow) {                                  // a magnifier cone up to the map
+    const ay = I.y + I.h;
+    cx.beginPath(); cx.moveTo(r[0], r[1]); cx.lineTo(I.x, ay); cx.lineTo(I.x + I.w, ay); cx.lineTo(r[2], r[1]); cx.closePath(); cx.fillStyle = 'rgba(211,211,230,.32)'; cx.fill();
+    cx.strokeStyle = C_INK2; cx.lineWidth = 1; cx.beginPath(); cx.moveTo(r[0], r[1]); cx.lineTo(I.x, ay); cx.moveTo(r[2], r[1]); cx.lineTo(I.x + I.w, ay); cx.stroke();
+  } else {                                           // a leader to the map
+    const y = (r[1] + r[3]) / 2, x2 = I.x - 3;
+    cx.strokeStyle = C_INK; cx.lineWidth = .9; cx.setLineDash([3, 2.5]); cx.beginPath(); cx.moveTo(r[2], y); cx.lineTo(x2 - 4, y); cx.stroke(); cx.setLineDash([]);
+    cx.fillStyle = C_INK; cx.beginPath(); cx.moveTo(x2, y); cx.lineTo(x2 - 6, y - 3.5); cx.lineTo(x2 - 6, y + 3.5); cx.closePath(); cx.fill();
+  }
+}
+
+// ---- the train ------------------------------------------------------------------------------------
+function trainPos(t) {
+  if (trainRun) {
+    const u = Math.min(1, (t - trainRun.t0) / trainRun.dur), d = (u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2) * trainRun.len;
+    let acc = 0;
+    for (let k = 0; k + 1 < trainRun.pts.length; k++) {
+      const [x1, y1] = trainRun.pts[k], [x2, y2] = trainRun.pts[k + 1], sl = Math.hypot(x2 - x1, y2 - y1);
+      if (acc + sl >= d || k + 2 === trainRun.pts.length) { const f = sl ? Math.min(1, (d - acc) / sl) : 1; if (Math.abs(x2 - x1) > .5) trainFace = x2 > x1 ? 1 : -1; return [x1 + (x2 - x1) * f, y1 + (y2 - y1) * f, u >= 1]; }
+      acc += sl;
+    }
+  }
+  const [x, y] = SP_XY(trainAt); return [x, y, true];
+}
+function sendTrain(to) {
+  if (to === trainAt && !trainRun) return;
+  const c = byId[st.circuit], from = trainRun ? trainRun.to : trainAt, {prev} = bfs(NQ, c.edges, from), hops = hopPath(prev, to);
+  trainAt = to;
+  if (REDUCED || !hops.length) { trainRun = null; return; }
+  const pts = [];
+  for (const h of hops) {
+    let r = lay().routes[h.edge].map(G_XY); if (c.edges[h.edge].i !== h.from) r = r.slice().reverse();
+    if (pts.length) r = r.slice(1); pts.push(...r);
+  }
+  let len = 0; for (let k = 0; k + 1 < pts.length; k++) len += Math.hypot(pts[k + 1][0] - pts[k][0], pts[k + 1][1] - pts[k][1]);
+  trainRun = {pts, len, t0: now(), dur: Math.max(.45, Math.min(2.2, len / (LAY.cell * 4.2))), to};
+  kick();
+}
+function drawTrain(t) {
+  const sp = SP[TRAIN[st.sampler]], [x, y, parked] = trainPos(t), k = LAY.trainK;
+  const hh = sp.h * k / DPR, ww = sp.w * k / DPR;
+  const tx = Math.max(LAY.inset.x + ww / 2 + 2, Math.min(LAY.inset.x + LAY.inset.w - ww / 2 - 2, x));
+  const up = y - LAY.lampR - hh / 2 - 3, dn = y + LAY.lampR + hh / 2 + 3, Lb = parked ? LABELS[trainAt] : null;
+  const hits = yy => Lb && Lb.x < tx + ww / 2 && Lb.x + Lb.w > tx - ww / 2 && Lb.y < yy + hh / 2 && Lb.y + Lb.h > yy - hh / 2;
+  let ty = (up - hh / 2 < LAY.inset.y + LAY.titleH - 10 || (hits(up) && !hits(dn))) ? dn : up;
+  if (trainRun && parked) trainRun = null;
+  const moving = !!trainRun, f = REDUCED ? 0 : (moving || TRAIN[st.sampler] !== 'steam' ? InkSprite.frameAt(sp, t) : 0);
+  if (TRAIN[st.sampler] === 'steam' && !REDUCED && moving && (!puffs.length || t - puffs[puffs.length - 1].t0 > .16)) puffs.push({x: tx + trainFace * ww * 0.18, y: ty - hh * 0.5, t0: t});
+  puffs = puffs.filter(p => t - p.t0 < .75);
+  for (const p of puffs) { const a = t - p.t0; spr(SP.puff, a < .2 ? 0 : a < .45 ? 1 : 2, p.x - trainFace * a * 10, p.y - a * 26, k); }
+  spr(sp, f, tx, ty, k, {flipX: trainFace < 0});
+}
+
+// ---- FIG. 1A: Drosophila melanogaster, male, dorsal view --------------------------------------------------
+// Drawing units: 40 = 1 mm. A male is about 2.2 mm from the frons to the tip of the abdomen and its wing about 1.9 mm.
+// Origin: middle of the scutum; +y is posterior. Chaetotaxy: 4 dorsocentrals, 4 scutellars (apicals cross), and the
+// humeral, presutural, notopleural, supra-alar and postalar pairs: the 26 macrochaetae of the dorsal thorax.
+const FW = {L: 76, H: [13.2, -5], rest: 0.36};
+const WING = [[0, -.02], [.06, -.06], [.18, -.1], [.36, -.135], [.56, -.155], [.74, -.16], [.87, -.145], [.96, -.105], [1, -.04], [1, .03], [.97, .1], [.9, .18], [.79, .25], [.64, .29], [.48, .29], [.34, .255], [.23, .205], [.15, .15], [.12, .185], [.08, .175], [.05, .12], [.02, .05]];
+const VEINS = {Sc: [[.04, -.045], [.16, -.085], [.29, -.118]], L1: [[.05, -.04], [.25, -.105], [.44, -.146]], L2: [[.16, -.055], [.45, -.105], [.79, -.157]],
+  L3: [[.1, -.03], [.55, -.045], [.995, -.03]], L4: [[.08, 0], [.5, .05], [.99, .07]], L5: [[.07, .03], [.38, .14], [.7, .275]], L6: [[.05, .07], [.14, .12], [.25, .165]],
+  ACV: [[.4, -.041], [.4, .041]], PCV: [[.62, .057], [.572, .222]]};
+const LEGS = {fore: [[-4.5, -20], [-16, -28], [-24.5, -41], [-31, -53]], mid: [[-7, -9], [-24, -13], [-37, -3], [-46, 9]], hind: [[-7, 1], [-21, 14], [-29, 30], [-34, 45]]};
+const FLYSTIP = (() => { let q = 7; const r = () => (q = (q * 16807) % 2147483647) / 2147483647; const th = [], ab = [], ey = [];
+  for (let k = 0; k < 900; k++) { const x = (r() * 2 - 1) * 15.5, y = -25 + r() * 31, e = Math.abs(x) / 15.5; if (r() < .12 + .75 * e * e) th.push([x, y]); }
+  for (let k = 0; k < 500; k++) { const x = (r() * 2 - 1) * 13.6, y = 9 + r() * 40; if (r() < .25 + .7 * Math.pow(Math.abs(x) / 13.6, 2)) ab.push([x, y]); }
+  return {th, ab}; })();
+function fpath(g, P, closed) {                       // smooth path through control points
+  g.beginPath(); const n = P.length;
+  if (!closed) { g.moveTo(P[0][0], P[0][1]); for (let k = 1; k < n - 1; k++) g.quadraticCurveTo(P[k][0], P[k][1], (P[k][0] + P[k + 1][0]) / 2, (P[k][1] + P[k + 1][1]) / 2); g.lineTo(P[n - 1][0], P[n - 1][1]); return; }
+  g.moveTo((P[0][0] + P[1][0]) / 2, (P[0][1] + P[1][1]) / 2);
+  for (let k = 1; k <= n; k++) { const a = P[k % n], b = P[(k + 1) % n]; g.quadraticCurveTo(a[0], a[1], (a[0] + b[0]) / 2, (a[1] + b[1]) / 2); }
+  g.closePath();
+}
+const mirrorX = P => P.map(([x, y]) => [-x, y]);
+const sym = half => half.concat(mirrorX(half.slice(1, -1)).reverse());      // right half (x >= 0, front to back) -> closed outline
+function seta(g, x1, y1, x2, y2, w, bend) {           // a tapered bristle (macrochaeta), curved slightly
+  const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L, b = (bend == null ? .1 : bend) * L;
+  const mx = (x1 + x2) / 2 + nx * b, my = (y1 + y2) / 2 + ny * b;
+  g.beginPath(); g.moveTo(x1 + nx * w / 2, y1 + ny * w / 2); g.quadraticCurveTo(mx, my, x2, y2); g.quadraticCurveTo(mx, my, x1 - nx * w / 2, y1 - ny * w / 2); g.closePath();
+  g.fillStyle = C_INK; g.fill();
+}
+function tube(g, a, b, w0, w1, fill, s) {             // a tapered leg segment
+  const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L;
+  g.beginPath(); g.moveTo(a[0] + nx * w0 / 2, a[1] + ny * w0 / 2); g.lineTo(b[0] + nx * w1 / 2, b[1] + ny * w1 / 2); g.lineTo(b[0] - nx * w1 / 2, b[1] - ny * w1 / 2); g.lineTo(a[0] - nx * w0 / 2, a[1] - ny * w0 / 2); g.closePath();
+  g.fillStyle = fill; g.fill(); g.lineWidth = .9 / s; g.strokeStyle = C_INK; g.stroke();
+}
+function drawLeg(g, P, s, comb) {
+  const [c0, k1, k2, tip] = P;
+  tube(g, c0, k1, 3, 2.5, C_TINT, s);                 // femur
+  tube(g, k1, k2, 2.1, 1.6, C_TINT, s);               // tibia
+  const tl = [.32, .18, .16, .14, .2], dx = tip[0] - k2[0], dy = tip[1] - k2[1], L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L;
+  let p = k2.slice(), acc = 0;
+  tl.forEach((f, i) => { const q = [p[0] + dx * f, p[1] + dy * f]; tube(g, p, q, i ? 1.15 : 1.35, i ? 1 : 1.15, i === 0 && comb ? C_INK3 : C_PANEL, s); p = q; acc += f; });   // five tarsomeres
+  g.lineWidth = .8 / s; g.strokeStyle = C_INK;
+  for (const sg of [-1, 1]) { g.beginPath(); g.moveTo(tip[0], tip[1]); g.quadraticCurveTo(tip[0] + ux * 1.4, tip[1] + uy * 1.4, tip[0] + ux * 1.6 + sg * uy * 1.4, tip[1] + uy * 1.6 - sg * ux * 1.4); g.stroke(); }   // claws
+  const tx = k2[0] - k1[0], ty = k2[1] - k1[1], tL = Math.hypot(tx, ty);
+  for (let k = 1; k <= 4; k++) { const f = k / 5, x = k1[0] + tx * f, y = k1[1] + ty * f, o = (k % 2 ? 1 : -1); seta(g, x + o * (-ty / tL) * .9, y + o * (tx / tL) * .9, x + o * (-ty / tL) * 2.4 + tx / tL * 1.6, y + o * (tx / tL) * 2.4 + ty / tL * 1.6, .35, 0); }   // tibial bristles
+  if (comb) {                                        // the male sex comb: a row of dark teeth on the first tarsal segment
+    for (let k = 0; k < 10; k++) { const f = .04 + k * .026, x = k2[0] + dx * f, y = k2[1] + dy * f; seta(g, x - uy * .5, y + ux * .5, x - uy * 1.9 + ux * .5, y + ux * 1.9 + uy * .5, .42, 0); }
+  }
+}
+function wingT(sg, th, Ls) { const L = FW.L * (Ls || 1), d = [sg * Math.sin(th), Math.cos(th)], n = [-sg * Math.cos(th), Math.sin(th)]; return [L * d[0], L * d[1], L * n[0], L * n[1], sg * FW.H[0], FW.H[1]]; }
+const wingPt = (T, u, v) => [T[0] * u + T[2] * v + T[4], T[1] * u + T[3] * v + T[5]];
+function drawWing(g, sg, th, s, alpha, Ls) {
+  const T = wingT(sg, th, Ls), L = FW.L * (Ls || 1);
+  g.save(); g.globalAlpha *= alpha; g.transform(...T);
+  fpath(g, WING, true); g.fillStyle = 'rgba(251,250,249,.36)'; g.fill();      // the membrane is clear: what lies under it shows
+  g.lineWidth = 1.05 / (s * L); g.strokeStyle = C_INK; fpath(g, WING, true); g.stroke();
+  g.lineWidth = .5 / (s * L); g.strokeStyle = inkA(.55); g.beginPath();        // marginal fringe on the hind margin
+  for (let k = 9; k <= 17; k++) { const [u1, v1] = WING[k], [u2, v2] = WING[k + 1]; for (let q = 0; q < 4; q++) { const u = u1 + (u2 - u1) * q / 4, v = v1 + (v2 - v1) * q / 4; g.moveTo(u, v); g.lineTo(u - .006, v + .022); } }
+  g.stroke();
+  const vein = (P, w, col) => { g.beginPath(); g.moveTo(P[0][0], P[0][1]); if (P.length === 3) g.quadraticCurveTo(P[1][0], P[1][1], P[2][0], P[2][1]); else g.lineTo(P[1][0], P[1][1]); g.lineWidth = w / (s * L); g.strokeStyle = col; g.stroke(); };
+  vein(VEINS.Sc, .7, inkA(.5)); vein(VEINS.L6, .8, inkA(.55));
+  for (const k of ['L1', 'L2', 'L3', 'L4', 'L5', 'ACV', 'PCV']) vein(VEINS[k], 1.05, C_INK2);
+  const lead = WING.slice(0, 10).concat([[.99, .07]]);   // costa along the front margin to the end of L4, with the humeral and subcostal breaks
+  g.lineWidth = 1.6 / (s * L); g.strokeStyle = C_INK; g.beginPath(); let started = false;
+  lead.forEach(([u, v]) => { const brk = (u > .07 && u < .1) || (u > .28 && u < .31); if (brk) { started = false; return; } started ? g.lineTo(u, v) : g.moveTo(u, v); started = true; });
+  g.stroke();
+  g.restore();
+}
+function headOutline() { return sym([[0, -41.2], [3, -41.6], [9, -41.9], [15, -40.6], [18, -37.6], [18.7, -32.6], [16.8, -28.6], [12, -26.9], [6, -26.7], [0, -26.3]]); }
+function drawFlyBody(g, s, layer) {                  // static parts, cached: 'back' (abdomen, halteres) or 'front' (thorax, head)
+  if (layer === 'back') {
+    const ab = sym([[0, 8], [8, 9], [12.5, 15], [13.6, 24], [12.7, 33.5], [10.2, 41.5], [6.2, 47.4], [0, 49.6]]);
+    fpath(g, ab, true); g.fillStyle = C_PAPER; g.fill();
+    g.save(); fpath(g, ab, true); g.clip();
+    const mg = [14.2, 21.2, 28, 34.6, 40.8, 46.4];                // posterior margins of tergites 1-6 (midline)
+    const arc = (y, d) => { g.moveTo(-15, y + d); g.quadraticCurveTo(0, y + 2.6, 15, y + d); };
+    g.fillStyle = C_TINT; g.fillRect(-15, 8, 30, 44);
+    for (const k of [1, 2, 3]) { g.beginPath(); arc(mg[k] - 3.4, 0); g.lineTo(15, mg[k] + 0); g.quadraticCurveTo(0, mg[k] + 2.6, -15, mg[k]); g.closePath(); g.fillStyle = C_INK2; g.fill(); }   // dark posterior bands, A2-A4
+    g.beginPath(); arc(mg[3], 0); g.lineTo(15, 52); g.lineTo(-15, 52); g.closePath(); g.fillStyle = C_INK2; g.fill();            // the male's dark A5 and A6
+    g.beginPath(); for (let x = -15; x < 15; x += 1.1) { g.moveTo(x, mg[3] + 2); g.lineTo(x + 4, 52); } g.lineWidth = .55 / s; g.strokeStyle = C_INK; g.stroke();
+    g.fillStyle = C_INK; for (const [x, y] of FLYSTIP.ab) g.fillRect(x - .25, y - .25, .5 + .5 / s, .5 + .5 / s);
+    g.beginPath(); for (const y of mg) arc(y, 0); g.lineWidth = .8 / s; g.strokeStyle = C_INK; g.stroke();
+    for (const y of mg.slice(1, 5)) for (let x = -11; x <= 11; x += 2.2) seta(g, x, y + 1.4 - Math.abs(x) * .06, x * 1.04, y + 3.4 - Math.abs(x) * .06, .32, 0);   // marginal bristles
+    g.restore();
+    fpath(g, ab, true); g.lineWidth = 1.3 / s; g.strokeStyle = C_INK; g.stroke();
+    for (const sg of [-1, 1]) {                       // halteres: the hind wings, reduced to knobbed balancers
+      g.beginPath(); g.moveTo(sg * 10.6, 3.6); g.quadraticCurveTo(sg * 12.8, 5.5, sg * 14.4, 8.4); g.lineWidth = 1.1 / s; g.strokeStyle = C_INK; g.stroke();
+      g.beginPath(); g.ellipse(sg * 15.5, 10.2, 1.9, 2.4, sg * .6, 0, 6.2832); g.fillStyle = C_INK3; g.fill(); g.lineWidth = .9 / s; g.stroke();
+    }
+    return;
+  }
+  // thorax: scutum with humeral calli, then the scutellum
+  const sc = sym([[0, -25.6], [6.5, -25.2], [11.2, -23.3], [14.1, -19.4], [15.5, -13], [15.7, -6.5], [14.7, -.8], [12.3, 3.4], [8.6, 6.1], [4, 6.6], [0, 6.7]]);
+  fpath(g, sc, true); g.fillStyle = C_PAPER; g.fill();
+  g.save(); fpath(g, sc, true); g.clip();
+  g.fillStyle = 'rgba(211,211,230,.55)'; for (const sg of [-1, 1]) { g.beginPath(); g.ellipse(sg * 6.2, -9, 1.6, 15, 0, 0, 6.2832); g.fill(); }   // faint dorsocentral stripes
+  g.fillStyle = C_INK2; for (const [x, y] of FLYSTIP.th) g.fillRect(x - .25, y - .25, .5 + .55 / s, .5 + .55 / s);
+  g.lineWidth = .5 / s; g.strokeStyle = C_INK; g.beginPath();                 // acrostichal microchaetae, eight rows
+  for (const x of [-4.2, -3, -1.8, -.6, .6, 1.8, 3, 4.2]) for (let y = -22.5 + (Math.abs(x * 10) % 2) * .8; y < 1.5; y += 2.3) { g.moveTo(x, y); g.lineTo(x * 1.02, y + .95); }
+  for (const sg of [-1, 1]) for (let k = 0; k < 26; k++) { const x = sg * (7.6 + (k % 4) * 1.7), y = -21 + Math.floor(k / 4) * 3.4 + (k % 2) * 1.1; g.moveTo(x, y); g.lineTo(x * 1.03, y + .95); }
+  g.stroke(); g.restore();
+  fpath(g, sc, true); g.lineWidth = 1.35 / s; g.strokeStyle = C_INK; g.stroke();
+  for (const sg of [-1, 1]) { g.beginPath(); g.ellipse(sg * 12.4, -20.6, 3.1, 2.5, sg * .5, 0, 6.2832); g.fillStyle = C_PAPER; g.fill(); g.lineWidth = .9 / s; g.stroke(); }   // humeral (postpronotal) lobes
+  const scl = [[-8.6, 6], [-7.6, 10.4], [-4.6, 13.7], [0, 15.1], [4.6, 13.7], [7.6, 10.4], [8.6, 6]];
+  g.beginPath(); g.moveTo(-8.6, 6); g.bezierCurveTo(-8.2, 12.5, -3.6, 15.2, 0, 15.2); g.bezierCurveTo(3.6, 15.2, 8.2, 12.5, 8.6, 6); g.quadraticCurveTo(0, 7.4, -8.6, 6); g.closePath();
+  g.fillStyle = C_PAPER; g.fill(); g.save(); g.clip(); g.fillStyle = C_INK2; for (const [x, y] of FLYSTIP.th) if (Math.abs(x) < 9) g.fillRect(x * .58 - .25, 10.2 + (y + 9) * .17, .5 + .55 / s, .5 + .55 / s); g.restore();
+  g.lineWidth = 1.25 / s; g.strokeStyle = C_INK; g.stroke();
+  for (const sg of [-1, 1]) {                          // thoracic macrochaetae (per side): humeral x2, presutural, notopleural x2, supra-alar x2, postalar x2, dorsocentral x2
+    const S = (a, b, c, d, w) => seta(g, sg * a, b, sg * c, d, w || .62, sg * .08);
+    S(12.6, -21.3, 16.9, -24.9); S(11.5, -18.8, 16.3, -19.4); S(13.6, -14.8, 17.7, -12.5);
+    S(14.9, -11.6, 19.4, -10); S(15.2, -8.6, 19.7, -6); S(13.6, -5, 17.6, -.8); S(12.4, -1.8, 15.9, 3.4);
+    S(11.2, 1.4, 14.1, 6.8); S(9.8, 3.4, 11.7, 9.2);
+    S(6.2, -6, 6.9, 3, .72); S(5.8, .8, 6.4, 10.2, .72);                       // dorsocentrals point back
+    S(7.4, 7.6, 12.6, 15.2, .66); S(3, 12.6, -5.6, 24.2, .7);                     // basal and (crossing) apical scutellars
+  }
+  // head
+  const hd = headOutline();
+  fpath(g, hd, true); g.fillStyle = C_PAPER; g.fill(); g.lineWidth = 1.35 / s; g.strokeStyle = C_INK; g.stroke();
+  g.beginPath(); g.moveTo(-5.6, -40.9); g.lineTo(5.6, -40.9); g.lineTo(4.4, -31); g.lineTo(-4.4, -31); g.closePath(); g.fillStyle = 'rgba(211,211,230,.6)'; g.fill();   // frontal vitta
+  g.beginPath(); g.moveTo(0, -33.4); g.lineTo(3, -28.2); g.lineTo(-3, -28.2); g.closePath(); g.fillStyle = C_INK3; g.fill(); g.lineWidth = .6 / s; g.strokeStyle = C_INK2; g.stroke();   // ocellar triangle
+  g.fillStyle = C_INK; g.beginPath(); for (let k = 0; k < 40; k++) { const x = -3.8 + (k % 8) * 1.08, y = -40 + Math.floor(k / 8) * 1.7; g.moveTo(x + .3, y); g.arc(x, y, .26, 0, 6.2832); } g.fill();   // frontal setulae
+  for (const sg of [-1, 1]) {
+    g.save(); g.scale(sg, 1);
+    g.beginPath(); g.ellipse(12.6, -34.1, 6.25, 7.65, .18, 0, 6.2832); g.fillStyle = C_TINT; g.fill();
+    g.save(); g.clip();                               // ommatidia: hexagonally packed facets (about 700 per eye in a male; the dorsal half shows)
+    g.lineWidth = .32 / s * 1.5; g.strokeStyle = C_INK2; g.beginPath();
+    const fr = .5, dxh = fr * 1.73;
+    for (let row = 0; row < 34; row++) for (let col = 0; col < 16; col++) { const x = 5.9 + col * dxh + (row % 2) * dxh / 2, y = -42.4 + row * fr * 1.5; g.moveTo(x + fr * .84, y); g.arc(x, y, fr * .84, 0, 6.2832); }
+    g.stroke();
+    g.beginPath(); g.ellipse(15.6, -33.4, 4.3, 7.6, .18, -1.2, 2.2); g.lineWidth = 3.2; g.strokeStyle = 'rgba(84,91,169,.32)'; g.stroke();   // shading on the outer curve
+    g.restore();
+    g.beginPath(); g.ellipse(12.6, -34.1, 6.25, 7.65, .18, 0, 6.2832); g.lineWidth = 1.25 / s; g.strokeStyle = C_INK; g.stroke();
+    g.beginPath(); g.moveTo(6.2, -40); g.quadraticCurveTo(5.1, -34, 6.6, -27.8); g.lineWidth = .55 / s; g.strokeStyle = C_INK2; g.stroke();   // orbital plate margin
+    // head bristles: three orbitals (one proclinate, two reclinate), ocellar, postvertical, inner and outer verticals
+    seta(g, 5.4, -37.6, 4.1, -44.2, .5, -.1); seta(g, 5.6, -36, 6.4, -29.4, .5, .1); seta(g, 5.9, -33.2, 6.8, -26.4, .5, .1);
+    seta(g, 1.2, -30.8, 4.4, -37.4, .45, .12); seta(g, 1.4, -27.6, -1.6, -22.6, .45, -.1);
+    seta(g, 5, -27.4, 2.6, -21.2, .58, .08); seta(g, 8.2, -27.2, 11.8, -21.6, .58, -.08);
+    // antenna: pedicel, the third segment (funiculus) and the plumose arista
+    g.beginPath(); g.ellipse(2.2, -42.3, 1.5, 1.15, 0, 0, 6.2832); g.fillStyle = C_INK3; g.fill(); g.lineWidth = .8 / s; g.strokeStyle = C_INK; g.stroke();
+    g.beginPath(); g.ellipse(2.75, -45.1, 1.55, 2.6, .25, 0, 6.2832); g.fillStyle = C_TINT; g.fill(); g.stroke();
+    const a0 = [3.4, -45.6], ad = [.55, -.835], aL = 12.5;
+    g.beginPath(); g.moveTo(a0[0], a0[1]); g.lineTo(a0[0] + ad[0] * aL, a0[1] + ad[1] * aL); g.lineWidth = .7 / s; g.stroke();
+    g.lineWidth = .5 / s; g.beginPath();
+    for (let k = 0; k < 7; k++) { const f = .22 + k * .1, x = a0[0] + ad[0] * aL * f, y = a0[1] + ad[1] * aL * f, l = 2.9 - k * .25; g.moveTo(x, y); g.lineTo(x + (ad[0] * .5 + -ad[1] * .87) * l, y + (ad[1] * .5 + ad[0] * .87) * l); }   // dorsal branches
+    for (let k = 0; k < 4; k++) { const f = .36 + k * .13, x = a0[0] + ad[0] * aL * f, y = a0[1] + ad[1] * aL * f, l = 2.1 - k * .2; g.moveTo(x, y); g.lineTo(x + (ad[0] * .5 + ad[1] * .87) * l, y + (ad[1] * .5 - ad[0] * .87) * l); }    // ventral branches
+    const e = [a0[0] + ad[0] * aL, a0[1] + ad[1] * aL]; g.moveTo(e[0], e[1]); g.lineTo(e[0] + .9, e[1] - 1.1); g.moveTo(e[0], e[1]); g.lineTo(e[0] - .3, e[1] - 1.4);   // terminal fork
+    g.stroke();
+    g.restore();
+  }
+  g.fillStyle = C_INK; for (const [x, y] of [[0, -31.7], [-1.75, -29.3], [1.75, -29.3]]) { g.beginPath(); g.arc(x, y, .82, 0, 6.2832); g.fill(); }   // three ocelli
+  // the brain inside the head capsule (dorsal outline, cut-away): optic lobes under the eyes, the central brain between
+  const br = sym([[0, -37.6], [4, -37.9], [7.2, -38.8], [10.8, -39.7], [14.8, -39], [16.9, -35.6], [16.7, -31.4], [14.1, -28.8], [10.2, -28.7], [7, -30], [3.6, -29.3], [0, -28.8]]);
+  fpath(g, br, true); g.fillStyle = 'rgba(251,250,249,.72)'; g.fill(); g.setLineDash([1.6, 1.1]); g.lineWidth = .95 / s; g.strokeStyle = C_INK; g.stroke(); g.setLineDash([]);
+}
+// numbered callouts (FIG. 1A key); anchors in drawing units
+const CALL = [
+  {n: 1, t: 'compound eye', a: () => [[16.2, -36]], side: 1},
+  {n: 2, t: 'ocelli (3)', a: () => [[-1.75, -29.3]], side: -1},
+  {n: 3, t: 'arista', a: () => [[-7.3, -51.3]], side: -1},
+  {n: 4, t: 'brain (FIG. 1B)', a: () => [[10, -38.6]], side: 1},
+  {n: 5, t: 'dorsocentral setae', a: () => [[-6.4, -3]], side: -1},
+  {n: 6, t: 'scutellar setae', a: () => [[0, 16.6]], side: 1},
+  {n: 7, t: 'wing vein L3', a: () => [wingPt(wingT(1, FW.rest), .8, -.035)], side: 1},
+  {n: 8, t: 'crossveins', a: () => [wingPt(wingT(1, FW.rest), .4, 0), wingPt(wingT(1, FW.rest), .596, .14)], side: 1},
+  {n: 9, t: 'haltere', a: () => [[-15.5, 10.2]], side: -1},
+  {n: 10, t: 'sex comb (male)', a: () => { const [a, b] = [LEGS.fore[2], LEGS.fore[3]]; return [[a[0] + (b[0] - a[0]) * .16 - 1.2, a[1] + (b[1] - a[1]) * .16 + .6]]; }, side: -1},
+  {n: 11, t: 'dark A5-A6 (male)', a: () => [[-5, 43]], side: -1}];
+function calloutLayout() {
+  const out = [];
+  for (const side of [-1, 1]) {
+    const items = CALL.filter(c => c.side === side).map(c => { const A = c.a(); return {c, A, y: A.reduce((s, p) => s + p[1], 0) / A.length}; }).sort((p, q) => p.y - q.y);
+    for (let k = 1; k < items.length; k++) items[k].y = Math.max(items[k].y, items[k - 1].y + 9.5);
+    for (let k = items.length - 1; k >= 0; k--) { items[k].y = Math.min(items[k].y, k === items.length - 1 ? 66 : items[k + 1].y - 9.5); }
+    for (const it of items) out.push({...it, x: side * 57, side});
+  }
+  return out;
+}
+let flyCache = null;
+function flyLayers() {
+  const s = LAY.fly.s, key = s + ':' + DPR;
+  if (flyCache && flyCache.key === key) return flyCache;
+  const W = 124 * s, H = 140 * s, mk = layer => { const c = offscreen(W, H), g = c.getContext('2d'); g.setTransform(s * DPR, 0, 0, s * DPR, 62 * s * DPR, 68 * s * DPR); g.lineJoin = 'round'; g.lineCap = 'round'; drawFlyBody(g, s, layer); return c; };
+  flyCache = {key, back: mk('back'), front: mk('front')};
+  return flyCache;
+}
+function drawFly(t, mood) {
+  const F = LAY.fly, s = F.s, g = cx, poked = t - poke < .9, Lr = flyLayers();
+  const m = poked || (mood === 'buzz' && t - lastSampleAt < 1.3) ? 'buzz' : mood === 'buzz' ? 'stand' : mood;   // a short buzz per new sample
+  const blit = c => { g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.drawImage(c, Math.round((F.cx - 62 * s) * DPR), Math.round((F.cy - 68 * s) * DPR)); g.restore(); };
+  const beat = REDUCED ? 0 : Math.floor(t * 18) % 2, rub = REDUCED ? 0 : Math.sin(t * 9);
+  g.save(); g.translate(F.cx, F.cy); g.scale(s, s); g.lineJoin = 'round'; g.lineCap = 'round';
+  for (const sg of [-1, 1]) { g.save(); g.scale(sg, 1); if (m !== 'groom') drawLeg(g, LEGS.fore, s, true); drawLeg(g, LEGS.mid, s); drawLeg(g, LEGS.hind, s); g.restore(); }
+  g.restore(); blit(Lr.back);
+  g.save(); g.translate(F.cx, F.cy); g.scale(s, s); g.lineJoin = 'round'; g.lineCap = 'round';
+  for (const sg of [-1, 1]) {
+    if (m === 'buzz') {                              // in flight the raised wing is foreshortened seen from above
+      const P0 = [.5, 1], P1 = [1.38, .55], A = beat ? P1 : P0, Bq = beat ? P0 : P1;
+      drawWing(g, sg, Bq[0], s, .3, Bq[1]); drawWing(g, sg, A[0], s, 1, A[1]);
+      g.strokeStyle = inkA(.45); g.lineWidth = .8 / s; g.beginPath(); g.arc(sg * FW.H[0], FW.H[1], 62, Math.PI / 2 - sg * .55, Math.PI / 2 - sg * 1.2, sg > 0); g.stroke();   // stroke arc
+    } else drawWing(g, sg, FW.rest, s, 1);
+  }
+  g.restore(); blit(Lr.front);
+  g.save(); g.translate(F.cx, F.cy); g.scale(s, s); g.lineJoin = 'round'; g.lineCap = 'round';
+  if (m === 'groom') for (const sg of [-1, 1]) {      // fore legs raised, tarsi rubbing over the eyes
+    const r = rub * sg; g.save(); g.scale(sg, 1);
+    drawLeg(g, [[-4.5, -20], [-15.5, -31], [-12.5 - r * 1.6, -46], [-4 + r * 2.4, -43.5 - r * 1.4]], s, true); g.restore();
+  }
+  // callouts
+  g.lineWidth = .6 / s; g.strokeStyle = C_INK2; g.fillStyle = C_INK;
+  const CL = calloutLayout();
+  for (const o of CL) for (const p of o.A) { g.beginPath(); g.moveTo(p[0], p[1]); g.lineTo(o.x - o.side * 3.2, o.y); g.stroke(); g.beginPath(); g.arc(p[0], p[1], 1.1 / s * 1.3, 0, 6.2832); g.fill(); }
+  g.restore();
+  g.font = `500 ${LAY.fs}px "IBM Plex Mono", monospace`; g.textBaseline = 'middle'; g.fillStyle = C_INK;
+  for (const o of CL) { g.textAlign = o.side < 0 ? 'right' : 'left'; g.fillText(String(o.c.n), F.cx + o.x * s, F.cy + o.y * s); }
+  // the brain leader: from the head's cut-away up to FIG. 1B (wide layout, the brain plate sits right above)
+  if (!LAY.narrow) {
+    const B = LAY.brain, x = F.cx, y1 = F.cy - 38.2 * s, y0 = B.y + B.h + (B.tight ? 27 : 15);
+    g.setLineDash([2, 2]); g.strokeStyle = C_INK2; g.lineWidth = .8; g.beginPath(); g.moveTo(x, y1); g.lineTo(x, y0); g.stroke(); g.setLineDash([]);
+  }
+}
+const MOOD_TXT = {buzz: 'wing buzz', groom: 'grooming', stand: 'standing'};
+function drawCaption(mood) {
+  const C = LAY.cap, K = LAY.key, fs = LAY.fs, g = cx, lh = fs * 1.5;
+  g.textBaseline = 'top'; g.textAlign = 'left';
+  g.font = `500 ${fs}px "IBM Plex Mono", monospace`; g.fillStyle = C_INK; g.fillText('FIG. 1A', C.x, C.y);
+  const w0 = C.stack ? 0 : g.measureText('FIG. 1A  ').width, l1 = C.stack ? 1 : 0;
+  g.font = `italic 400 ${fs + 1.5}px Geist, Arial, sans-serif`; g.fillText('Drosophila melanogaster', C.x + w0, C.y - 1 + l1 * lh);
+  g.font = `400 ${fs}px "IBM Plex Mono", monospace`; g.fillStyle = C_INK2;
+  const t2 = 'male, dorsal view', w2 = C.stack ? 0 : g.measureText(t2 + '  ').width; g.fillText(t2, C.x, C.y + (1 + l1) * lh);
+  const mm = 40 * LAY.fly.s, bx = C.x + w2 + 1, ly = C.y + (1 + 2 * l1) * lh, by = ly + fs * .55;          // scale bar: 1 mm
+  g.strokeStyle = C_INK; g.lineWidth = 1.4; g.beginPath(); g.moveTo(bx, by); g.lineTo(bx + mm, by); g.moveTo(bx, by - 3.5); g.lineTo(bx, by + 3.5); g.moveTo(bx + mm, by - 3.5); g.lineTo(bx + mm, by + 3.5); g.stroke();
+  g.fillText('1 mm', bx + mm + 5, ly);
+  g.fillText(fitMono(C.stack ? `${MOOD_TXT[mood]} (decoration)` : `mood: ${MOOD_TXT[mood]} · decoration`, C.w, fs), C.x, C.y + (C.stack ? 4 : 2) * lh);
+  const rows = Math.ceil(CALL.length / K.cols), cw = K.w / K.cols;
+  CALL.forEach((c, k) => {
+    const col = Math.floor(k / rows), row = k % rows, x = K.x + col * cw, y = K.y + row * fs * 1.32;
+    g.font = `500 ${fs}px "IBM Plex Mono", monospace`; g.fillStyle = C_INK; g.textAlign = 'right'; g.fillText(String(c.n), x + fs * 1.25, y);
+    g.font = `400 ${fs}px "IBM Plex Mono", monospace`; g.fillStyle = C_INK2; g.textAlign = 'left'; g.fillText(c.t, x + fs * 1.85, y);
+  });
+}
+
+// ---- the depot: the trains not in service, parked on a siding under the map (wide layout only) --------------
+function depotSlots() {
+  const B = LAY.depot; if (!B) return [];
+  const ids = SAMPLERS.map(x => x.id).filter(id => id !== st.sampler), k = LAY.trainK;
+  const ws = ids.map(id => SP[TRAIN[id]].w * k / DPR), gap = 26, tot = ws.reduce((a, b) => a + b, 0) + gap * (ids.length - 1);
+  if (tot > B.x1 - B.x0) return [];
+  let x = B.x0 + (B.x1 - B.x0 - tot) / 2; const ry = depotRail();
+  return ids.map((id, n) => { const sp = SP[TRAIN[id]], hh = sp.h * k / DPR, o = {id, x: x + ws[n] / 2, y: ry - hh / 2 - 1, w: ws[n], h: hh}; x += ws[n] + gap; return o; });
+}
+function depotRail() { return LAY.depot.y + 18 + Math.max(...['steam', 'maglev'].map(n => SP[n].h)) * LAY.trainK / DPR; }
+function drawDepot() {
+  const B = LAY.depot, slots = depotSlots(); if (!B || !slots.length) return;
+  const ry = depotRail(), fs = LAY.fs, a = B.x0, b = B.x1;
+  cx.font = `500 ${fs}px "IBM Plex Mono", monospace`; cx.textAlign = 'left'; cx.textBaseline = 'top'; cx.fillStyle = C_INK;
+  cx.fillText('DEPOT · TAP A TRAIN TO SWITCH SAMPLER', B.x0, B.y);
+  cx.strokeStyle = C_INK3; cx.lineWidth = 1;
+  for (let x = a + 2; x < b; x += 7) { cx.beginPath(); cx.moveTo(x, ry + 1); cx.lineTo(x, ry + 5); cx.stroke(); }   // sleepers
+  cx.strokeStyle = C_INK2; cx.beginPath(); cx.moveTo(a, ry + 2); cx.lineTo(b, ry + 2); cx.moveTo(a, ry + 5); cx.lineTo(b, ry + 5); cx.stroke();
+  let missing = false;
+  for (const o of slots) {
+    const ok = available(st.circuit, o.id), S = SAMPLERS.find(x => x.id === o.id); if (!ok) missing = true;
+    cx.save(); cx.globalAlpha = ok ? 1 : .3; spr(SP[TRAIN[o.id]], 0, o.x, o.y, LAY.trainK); cx.restore();
+    cx.font = `400 ${fs}px "IBM Plex Mono", monospace`; cx.fillStyle = ok ? C_INK2 : C_INK3; cx.textAlign = 'center';
+    cx.fillText(S.label, o.x, ry + 10);
+  }
+  if (missing) { cx.fillStyle = C_INK2; cx.textAlign = 'right'; cx.fillText('no quantum run for this network', b, B.y); }
+}
+function depotHit(x, y) { for (const o of depotSlots()) if (Math.abs(x - o.x) < o.w / 2 + 4 && Math.abs(y - o.y) < o.h / 2 + 10) return o.id; return null; }
+
+// ---- lamps, the light wave, and the frame loop ----------------------------------------------------
+let targetSpins = null, targetKey = '', lastSampleAt = -9;
+function setTarget(spins, wave) {
+  const c = byId[st.circuit], t = now();
+  const key = st.circuit + ':' + spins.join('');
+  if (key === targetKey) return;
+  if (targetKey) lastSampleAt = t;
+  targetKey = key; targetSpins = spins; flips = [];
+  if (!wave || REDUCED) { lampShown = spins.slice(); return; }
+  const {dist} = bfs(NQ, c.edges, trainAt);
+  spins.forEach((v, i) => { if (lampShown[i] !== v) flips.push({i, at: t + .05 + Math.max(0, dist[i]) * .075, to: v}); });
+  kick();
+}
+function stepFlips(t) {
+  flips = flips.filter(f => { if (f.at <= t) { lampShown[f.i] = f.to; sparks.push({i: f.i, t0: f.at}); return false; } return true; });
+  sparks = sparks.filter(s => t - s.t0 < .4);
+}
+let raf = 0, lastDraw = 0, inView = true;
+function animating(t) { return !REDUCED && st.view === 'scene' && inView && !document.hidden; }
+function drawScene() {
+  if (!LAY) return;
+  const t = now(), cur = current(), pat = currentPattern(cur), c = byId[st.circuit];
+  stepFlips(t);
+  cx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  cx.fillStyle = C_PANEL; cx.fillRect(0, 0, LAY.w, LAY.h);
+  const agree = pat ? agreeCount(pat.b, c.edges) : c.edges.length, mood = moodFor(agree, c.edges.length);
+  drawBrainFig(lampShown);
+  drawMap(t, lampShown);
+  drawTrain(t);
+  drawNote1C();
+  drawFly(t, mood);
+  drawCaption(t - poke < .9 ? 'buzz' : mood);
+  drawDepot();
+}
+function loop() {
+  raf = 0; const t = now();
+  if (t - lastDraw >= 1 / 30 - 0.002) { lastDraw = t; drawScene(); }
+  if (animating(t)) raf = requestAnimationFrame(loop);
+}
+function kick() { if (!raf && st.view === 'scene') raf = requestAnimationFrame(loop); if (REDUCED) drawScene(); }
+if ('IntersectionObserver' in window) new IntersectionObserver(es => { inView = es[0].isIntersecting; if (inView) kick(); }).observe(cv);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) kick(); });
+
+function nearestStation(px, py) {
+  let best = -1, bd = 1e9; byId[st.circuit].neurons.forEach((n, i) => { const [x, y] = SP_XY(i), d = Math.hypot(x - px, y - py); if (d < bd) { bd = d; best = i; } });
+  return bd < LAY.cell * 0.55 ? best : -1;
+}
+cv.addEventListener('click', e => {
+  const r = cv.getBoundingClientRect(), x = (e.clientX - r.left) * LAY.w / r.width, y = (e.clientY - r.top) * LAY.h / r.height;
+  const i = nearestStation(x, y);
+  if (i >= 0) { selectStation(i); return; }
+  const dep = depotHit(x, y); if (dep && available(st.circuit, dep)) { pickTrain(dep); return; }
+  const F = LAY.fly; if (Math.abs(x - F.cx) < 50 * F.s && y > F.cy - 60 * F.s && y < F.cy + 66 * F.s) { poke = now(); kick(); render(false); setTimeout(() => render(false), 950); }
+});
+cv.addEventListener('keydown', e => {
+  const k = {ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1}[e.key];
+  if (k) { e.preventDefault(); selectStation((st.neuron + k + NQ) % NQ); }
+  if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); stopPlay(); step(e.shiftKey ? -1 : 1); }
+});
+function selectStation(i) { st.neuron = i; sendTrain(i); render(); }
+
+// ---- the departure signal: a semaphore beside the controls --------------------------------------------------
+// frames: 0 arm level (stop), 1 arm raised (clear), 2 level with the lamp lit, 3 raised with the lamp lit
+const cond = $('cond'), condX = cond.getContext('2d');
+let condPose = 0, condT = null;
+function drawConductor() {
+  const d = Math.max(1, Math.round(window.devicePixelRatio || 1)), sp = SP.signal, k = 2 * d;
+  if (cond.width !== sp.w * k) { cond.width = sp.w * k; cond.height = sp.h * k; cond.style.width = sp.w * 2 + 'px'; cond.style.height = sp.h * 2 + 'px'; }
+  condX.clearRect(0, 0, cond.width, cond.height); InkSprite.draw(condX, sp, condPose, cond.width / 2, cond.height / 2, k);
+}
+cond.addEventListener('click', () => $('play').click());
+function conductorDo(pose, ms) { condPose = pose; drawConductor(); clearTimeout(condT); if (ms) condT = setTimeout(() => { condPose = timer ? 3 : 0; drawConductor(); }, ms); }
+
+// the fly in the status line mirrors the pose (wing-beat frames only while buzzing)
+const mf = $('moodfly'), mfx = mf.getContext('2d');
+let moodNow = 'stand', mfFrame = 0, mfPoke = -9;
+function drawMoodFly() {
+  const k = Math.max(1, Math.round(window.devicePixelRatio || 1)), sp = SP.flyIcon;
+  if (mf.width !== sp.w * k) { mf.width = sp.w * k; mf.height = sp.h * k; mf.style.width = sp.w + 'px'; mf.style.height = sp.h + 'px'; }
+  mfx.clearRect(0, 0, mf.width, mf.height); const buzz = moodNow === 'buzz' || now() - mfPoke < .9;
+  InkSprite.draw(mfx, sp, buzz ? 1 + (mfFrame % 2) : moodNow === 'groom' ? 3 : 0, mf.width / 2, mf.height / 2, k);
+}
+// tapping the little fly makes it (and the big one) buzz briefly
+if (!REDUCED) setInterval(() => { if ((moodNow === 'buzz' || now() - mfPoke < .9) && !document.hidden) { mfFrame++; drawMoodFly(); } }, 90);
+mf.addEventListener('click', () => { mfPoke = poke = now(); mfFrame++; drawMoodFly(); kick(); render(false); setTimeout(() => { drawMoodFly(); render(false); }, 950); });
+
+// ---- data view: departures board + correlation matrix -----------------------------------------------
+const h = $('h'), hx = h.getContext('2d'), HW = 600, cellH = HW / NQ;
+function drawHeat(cur) {
+  hx.clearRect(0, 0, HW, HW);
+  hx.fillStyle = C_RULE; hx.fillRect(0, 0, HW, HW);
+  for (let i = 0; i < NQ; i++) for (let j = 0; j < NQ; j++) {
+    let v = 1;
+    if (i !== j) { const k = pairIndex(i, j); v = i > j ? cur.corr[k] : cur.refCorr[k]; }
+    hx.fillStyle = i === j ? C_PANEL2 : colorFor(v);
+    hx.fillRect(j * cellH, i * cellH, cellH - 1, cellH - 1);
+  }
+  hx.strokeStyle = inkA(.45); hx.lineWidth = 1.5; hx.beginPath(); hx.moveTo(0, 0); hx.lineTo(HW, HW); hx.stroke();
+  const c = byId[st.circuit];
+  for (const e of c.edges) for (const [a, b] of [[e.j, e.i], [e.i, e.j]]) {
+    hx.strokeStyle = C_PAPER; hx.lineWidth = 3; hx.strokeRect(a * cellH + 3, b * cellH + 3, cellH - 7, cellH - 7);
+    hx.strokeStyle = C_INK; hx.lineWidth = 1.2; hx.strokeRect(a * cellH + 5, b * cellH + 5, cellH - 11, cellH - 11);
+  }
+  const sN = st.neuron; hx.strokeStyle = C_INK; hx.setLineDash([6, 4]); hx.lineWidth = 2.5; hx.strokeRect(1, sN * cellH, HW - 2, cellH); hx.strokeRect(sN * cellH, 1, cellH, HW - 2); hx.setLineDash([]);
+  if (st.hoverPair) { const [a, b] = st.hoverPair; hx.strokeStyle = C_INK; hx.lineWidth = 4; hx.strokeRect(b * cellH + 1, a * cellH + 1, cellH - 2, cellH - 2); }
+  hx.font = '500 15px "IBM Plex Mono", monospace'; hx.textBaseline = 'middle';
+  const tagText = (txt, x, y, align) => {
+    const w = hx.measureText(txt).width + 12, x0 = align === 'right' ? x - w : x;
+    hx.fillStyle = C_PAPER; hx.fillRect(x0, y - 11, w, 22); hx.strokeStyle = C_INK; hx.lineWidth = 1; hx.strokeRect(x0 + .5, y - 10.5, w - 1, 21);
+    hx.fillStyle = C_INK; hx.textAlign = 'left'; hx.fillText(txt, x0 + 6, y + 1);
+  };
+  tagText('reference', HW - 4, 15, 'right'); tagText('chosen train', 4, HW - 15, 'left');
+}
+function heatPick(e) {
+  const r = h.getBoundingClientRect(), j = Math.floor((e.clientX - r.left) / r.width * NQ), i = Math.floor((e.clientY - r.top) / r.height * NQ);
+  st.hoverPair = (i < 0 || j < 0 || i >= NQ || j >= NQ || i === j) ? null : [i, j];
+  render(false);
+}
+h.addEventListener('pointermove', heatPick);
+h.addEventListener('click', e => { heatPick(e); if (st.hoverPair) { selectStation(st.hoverPair[0]); } });
+h.addEventListener('pointerleave', () => { st.hoverPair = null; render(false); });
+function renderPatterns(cur) {
+  const box = $('pats'); box.textContent = '';
+  const maxp = Math.max(...cur.pats.map(m => m.p), ...(cur.ticks || []).filter(x => x != null), 1e-9);
+  cur.pats.forEach((m, k) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'pat';
+    b.setAttribute('aria-pressed', String(!st.chain && k === st.pat));
+    b.setAttribute('aria-label', `Departure ${k + 1}: ${upCount(m.b)} lamps lit, probability ${(100 * m.p).toFixed(2)} percent`);
+    const cells = Array.from(m.b, ch => `<i class="${ch === '0' ? 'u' : ''}"></i>`).join('');
+    const tick = cur.ticks && cur.ticks[k] != null ? `<u style="left:${(100 * cur.ticks[k] / maxp).toFixed(1)}%"></u>` : '';
+    b.innerHTML = `<span>${String(k + 1).padStart(2, '0')}</span><span class="viz"><span class="cells">${cells}</span><span class="bar"><s style="width:${(100 * m.p / maxp).toFixed(1)}%"></s>${tick}</span></span><span class="pp">${(100 * m.p).toFixed(2)}%</span>`;
+    b.addEventListener('click', () => { stopPlay(); st.chain = false; st.pat = k; render(); conductorDo(1, 450); });
+    box.appendChild(b);
+  });
+  $('pat-note').textContent = cur.patNote;
+  $('pat-cap').textContent = SAMPLERS.find(s => s.id === st.sampler).name.split(' (')[0];
+}
+function renderHeatText(cur) {
+  const c = byId[st.circuit];
+  $('heat-note').textContent = cur.corrNote;
+  $('heat-cap').textContent = c.name;
+  let txt = `<span>bond ⟨s s⟩, chosen train (30 bonds)</span><b>${edgeMean(cur.corr, c.edges).toFixed(3)}</b><span>bond ⟨s s⟩, reference</span><b>${edgeMean(cur.refCorr, c.edges).toFixed(3)}</b><span>mean |Δ| over 190 pairs</span><b>${meanAbsDiff(cur.corr, cur.refCorr).toFixed(3)}</b>`;
+  if (st.hoverPair) {
+    const [a, b] = st.hoverPair, k = pairIndex(a, b), w = c.synapses[a][b] + c.synapses[b][a], t = `${c.neurons[a].label} · ${c.neurons[b].label} (${w} synapses)`;
+    txt += `<span class="hov" title="${t}">${t}</span><b>${cur.corr[k].toFixed(2)} / ${cur.refCorr[k].toFixed(2)}</b>`;
+  } else txt += `<span class="hov">point at a cell for its pair</span><b>–</b>`;
+  $('heat-stat').innerHTML = txt;
+}
+function renderStation(cur) {
+  const c = byId[st.circuit], n = c.neurons[st.neuron], syn = c.synapses;
+  $('n-title').textContent = n.label; $('n-type').textContent = n.type;
+  const out = syn[st.neuron].reduce((a, v) => a + v, 0), inn = syn.reduce((a, r) => a + r[st.neuron], 0);
+  const bonds = c.edges.filter(e => e.i === st.neuron || e.j === st.neuron).length;
+  const pat = currentPattern(cur), lamp = pat ? (pat.b[st.neuron] === '0' ? 'lit (spin +1)' : 'dark (spin −1)') : '–';
+  const meanC = PAIRS.reduce((acc, [i, j], k) => (i === st.neuron || j === st.neuron) ? acc + cur.corr[k] : acc, 0) / (NQ - 1);
+  const A = anchorOf(st.neuron), hs = SHAPE[A.shape], dU = hs ? distToShape(stationUm(st.neuron), hs) : 0;
+  const onMap = dU === 0 ? 'inside its home region' : dU <= 6 ? 'on the edge of its home region (within 6 µm)' : `${Math.round(dU)} µm outside its home region (the map snaps to a grid)`;
+  const refTxt = A.ref ? (A.how.split('; ')[1] || '') : '';
+  $('n-stat').innerHTML = `<span>instance</span><b>${n.instance}</b><span>bodyId</span><b>${n.bodyId}</b>`
+    + `<span>home region (most of its synapses, all partners)</span><b>${roiText(A.roi)} · ${A.pct}%</b>`
+    + `<span>its next regions</span><b>${A.top.slice(1, 4).filter(([, q]) => q >= 1).map(([r, q]) => `${roiCode(r)} ${q}%`).join(' · ') || '–'}</b>`
+    + `<span>on the map</span><b>${onMap}${refTxt ? '; ' + refTxt : ''}</b>`
+    + `<span>synapses out / in (within these 20)</span><b>${out} / ${inn}</b><span>lines at this station</span><b>${bonds}</b><span>lamp in this sample</span><b>${lamp}</b><span>mean ⟨s s⟩ with the other 19</span><b>${meanC.toFixed(2)}</b>`;
+  const partners = c.neurons.map((m, j) => ({j, w: syn[st.neuron][j] + syn[j][st.neuron], o: syn[st.neuron][j], i: syn[j][st.neuron]}))
+    .filter(x => x.j !== st.neuron && x.w > 0).sort((a, b) => b.w - a.w).slice(0, 5);
+  const box = $('n-partners'); box.textContent = '';
+  partners.forEach(p => {
+    const b = document.createElement('button'); b.type = 'button';
+    const k = pairIndex(st.neuron, p.j), modelled = c.edges.some(e => (e.i === Math.min(st.neuron, p.j) && e.j === Math.max(st.neuron, p.j)));
+    const where = modelled ? (PL.bonds[`${st.circuit}:${Math.min(st.neuron, p.j)}:${Math.max(st.neuron, p.j)}`] || [])[0] : null;
+    b.innerHTML = `<span>${c.neurons[p.j].label}${modelled ? (where ? ` · synapses mostly in ${roiCode(where[0])} (${where[1]}%)` : '') : ' (not modelled)'}</span><b>${p.o}&rarr; ${p.i}&larr; · ⟨ss⟩ ${cur.corr[k].toFixed(2)}</b>`;
+    b.addEventListener('click', () => { st.hoverPair = null; selectStation(p.j); });
+    b.addEventListener('mouseenter', () => { st.hoverPair = [Math.min(st.neuron, p.j), Math.max(st.neuron, p.j)]; render(false); });
+    b.addEventListener('mouseleave', () => { st.hoverPair = null; render(false); });
+    box.appendChild(b);
+  });
+}
+
+// ---- The data (section 02): the results bench, as the page drew it before the metro scene ----------------
+// Figure 1 wiring graph, Figure 2 spin patterns, Figure 3 correlations and the Neuron card. They read the same
+// state (st) and the same runs as the scene, so every control on the page moves both.
+const E_SAMPLER = {gibbs: 'Gibbs · THRML', emu: 'Atlas emulator', fez: 'IBM ibm_fez', exact: 'Exact state'};
+const eg = $('eg'), egx = eg.getContext('2d'), GW = 1000;
+const GP = n => [GW / 2 + n.x * GW * 0.39, GW / 2 + n.y * GW * 0.37 - 30];
+function shortType(t) { return (t || '?').replace(/\(.*?\)/g, '').replace('PEN_a', 'PEN-a').replace('PEN_b', 'PEN-b'); }
+function drawGraphE(cur) {
+  const c = byId[st.circuit], pat = currentPattern(cur), s = pat ? spinsOf(pat.b) : null;
+  egx.clearRect(0, 0, GW, GW);
+  egx.fillStyle = C_PANEL; egx.fillRect(0, 0, GW, GW);
+  const syn = c.synapses, wmax = c.w_max, sel = st.neuron;
+  const fpx = Math.round(Math.min(30, Math.max(21, 9.5 * GW / (eg.clientWidth || GW))));   // labels stay legible on a phone
+  egx.lineWidth = 1;                                 // all real connections (faint)
+  for (let i = 0; i < NQ; i++) for (let j = i + 1; j < NQ; j++) {
+    const w = syn[i][j] + syn[j][i]; if (!w) continue;
+    const [x1, y1] = GP(c.neurons[i]), [x2, y2] = GP(c.neurons[j]);
+    egx.strokeStyle = (i === sel || j === sel) ? inkA(.28) : inkA(.08);
+    egx.beginPath(); egx.moveTo(x1, y1); egx.lineTo(x2, y2); egx.stroke();
+  }
+  let hotEdge = null;                                // modelled bonds: solid ink when the two spins agree, dashed lighter ink when not
+  for (const e of c.edges) {
+    const [x1, y1] = GP(c.neurons[e.i]), [x2, y2] = GP(c.neurons[e.j]);
+    const agree = s ? s[e.i] === s[e.j] : true, hot = st.hoverPair && ((st.hoverPair[0] === e.i && st.hoverPair[1] === e.j) || (st.hoverPair[0] === e.j && st.hoverPair[1] === e.i));
+    if (hot) hotEdge = e;
+    egx.lineWidth = 1.5 + 9 * Math.min(1, Math.log1p(e.w) / Math.log1p(wmax));
+    egx.strokeStyle = agree ? inkA((e.i === sel || e.j === sel) ? .95 : .62) : 'rgba(84,91,169,.8)';
+    egx.setLineDash(agree ? [] : [10, 9]);
+    egx.beginPath(); egx.moveTo(x1, y1); egx.lineTo(x2, y2); egx.stroke();
+  }
+  egx.setLineDash([]);
+  if (st.hoverPair) {                                // the picked pair, drawn on top in the accent colour
+    const [a, b] = st.hoverPair, [x1, y1] = GP(c.neurons[a]), [x2, y2] = GP(c.neurons[b]);
+    egx.strokeStyle = C_WARN;
+    if (hotEdge) { egx.lineWidth = 2 + 9 * Math.min(1, Math.log1p(hotEdge.w) / Math.log1p(wmax)); }
+    else { egx.lineWidth = 3; egx.setLineDash([5, 6]); }
+    egx.beginPath(); egx.moveTo(x1, y1); egx.lineTo(x2, y2); egx.stroke(); egx.setLineDash([]);
+  }
+  c.neurons.forEach((n, i) => {                      // nodes: spin up = solid ink disc with a paper arrow; down = hollow disc, ink arrow
+    const [x, y] = GP(n), up = s ? s[i] === 1 : true, r = i === sel ? 30 : 23;
+    egx.beginPath(); egx.arc(x, y, r, 0, 2 * Math.PI);
+    egx.fillStyle = up ? C_INK : C_PANEL; egx.fill();
+    egx.lineWidth = up ? 2 : 3; egx.strokeStyle = up ? C_INK : C_INK2; egx.stroke();
+    egx.strokeStyle = up ? C_PAPER : C_INK; egx.lineWidth = 3.5; egx.beginPath();
+    const d = up ? -1 : 1; egx.moveTo(x, y - d * 11); egx.lineTo(x, y + d * 11); egx.moveTo(x - 7, y + d * 4); egx.lineTo(x, y + d * 11); egx.lineTo(x + 7, y + d * 4); egx.stroke();
+    if (i === sel) { egx.strokeStyle = C_INK; egx.lineWidth = 2; egx.setLineDash([6, 6]); egx.beginPath(); egx.arc(x, y, r + 9, 0, 2 * Math.PI); egx.stroke(); egx.setLineDash([]); }
+    egx.font = `${i === sel ? 600 : 500} ${fpx}px "IBM Plex Mono", monospace`; egx.textAlign = 'center'; egx.textBaseline = 'top';
+    const lab = shortType(n.type), ly = y + r + 7;
+    egx.lineJoin = 'round'; egx.lineWidth = 6; egx.strokeStyle = C_PANEL; egx.strokeText(lab, x, ly);   // paper halo keeps labels readable over lines
+    egx.fillStyle = i === sel ? C_INK : C_INK2; egx.fillText(lab, x, ly);
+  });
+}
+function nearestNodeE(px, py) {
+  const c = byId[st.circuit]; let best = -1, bd = 1e9;
+  c.neurons.forEach((n, i) => { const [x, y] = GP(n), d = Math.hypot(x - px, y - py); if (d < bd) { bd = d; best = i; } });
+  return bd < 70 ? best : -1;
+}
+eg.addEventListener('click', e => {
+  const r = eg.getBoundingClientRect(), i = nearestNodeE((e.clientX - r.left) / r.width * GW, (e.clientY - r.top) / r.height * GW);
+  if (i >= 0) selectStation(i);
+});
+eg.addEventListener('keydown', e => {
+  const k = {ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1}[e.key];
+  if (k) { e.preventDefault(); selectStation((st.neuron + k + NQ) % NQ); }
+  if (e.key === ' ') { e.preventDefault(); stepPatternE(1); }
+});
+function stepPatternE(d) { stopPlay(); st.chain = false; const n = current().pats.length; st.pat = (st.pat + d + n) % n; render(); }
+
+const ehc = $('eh'), ehx = ehc.getContext('2d'), EHW = 600, ecell = EHW / NQ;
+function drawHeatE(cur) {
+  ehx.clearRect(0, 0, EHW, EHW);
+  ehx.fillStyle = C_RULE; ehx.fillRect(0, 0, EHW, EHW);          // 1 px hairline grid between cells
+  for (let i = 0; i < NQ; i++) for (let j = 0; j < NQ; j++) {
+    let v = 1;
+    if (i !== j) { const k = pairIndex(i, j); v = i > j ? cur.corr[k] : cur.refCorr[k]; }
+    ehx.fillStyle = i === j ? C_PANEL2 : colorFor(v);
+    ehx.fillRect(j * ecell, i * ecell, ecell - 1, ecell - 1);
+  }
+  ehx.strokeStyle = inkA(.45); ehx.lineWidth = 1.5;
+  ehx.beginPath(); ehx.moveTo(0, 0); ehx.lineTo(EHW, EHW); ehx.stroke();
+  const c = byId[st.circuit];
+  for (const e of c.edges) for (const [a, b] of [[e.j, e.i], [e.i, e.j]]) {   // modelled bonds: paper frame, ink line inside
+    ehx.strokeStyle = C_PAPER; ehx.lineWidth = 3; ehx.strokeRect(a * ecell + 3, b * ecell + 3, ecell - 7, ecell - 7);
+    ehx.strokeStyle = C_INK; ehx.lineWidth = 1.2; ehx.strokeRect(a * ecell + 5, b * ecell + 5, ecell - 11, ecell - 11);
+  }
+  const sN = st.neuron; ehx.strokeStyle = C_WARN; ehx.lineWidth = 2.5; ehx.strokeRect(1, sN * ecell, EHW - 2, ecell); ehx.strokeRect(sN * ecell, 1, ecell, EHW - 2);
+  if (st.hoverPair) { const [a, b] = st.hoverPair; ehx.lineWidth = 4; ehx.strokeRect(b * ecell + 1, a * ecell + 1, ecell - 2, ecell - 2); }
+  ehx.font = '500 15px "IBM Plex Mono", monospace'; ehx.textBaseline = 'middle';
+  const tagText = (txt, x, y, align) => {
+    const w = ehx.measureText(txt).width + 12, x0 = align === 'right' ? x - w : x;
+    ehx.fillStyle = C_PAPER; ehx.fillRect(x0, y - 11, w, 22); ehx.strokeStyle = C_INK; ehx.lineWidth = 1; ehx.strokeRect(x0 + .5, y - 10.5, w - 1, 21);
+    ehx.fillStyle = C_INK; ehx.textAlign = 'left'; ehx.fillText(txt, x0 + 6, y + 1);
+  };
+  tagText('reference', EHW - 4, 15, 'right'); tagText('chosen', 4, EHW - 15, 'left');
+}
+function heatPickE(e) {
+  const r = ehc.getBoundingClientRect(), j = Math.floor((e.clientX - r.left) / r.width * NQ), i = Math.floor((e.clientY - r.top) / r.height * NQ);
+  st.hoverPair = (i < 0 || j < 0 || i >= NQ || j >= NQ || i === j) ? null : [i, j];
+  render(false);
+}
+ehc.addEventListener('pointermove', heatPickE);
+ehc.addEventListener('click', e => { heatPickE(e); if (st.hoverPair) selectStation(st.hoverPair[0]); });
+ehc.addEventListener('pointerleave', () => { st.hoverPair = null; render(false); });
+
+function renderPatternsE(cur) {
+  const box = $('e-pats'); box.textContent = '';
+  const maxp = Math.max(...cur.pats.map(m => m.p), ...(cur.ticks || []).filter(x => x != null), 1e-9);
+  cur.pats.forEach((m, k) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'epat';
+    b.setAttribute('aria-pressed', String(!st.chain && k === st.pat));
+    const up = upCount(m.b);
+    b.setAttribute('aria-label', `Pattern ${k + 1}: ${up} spins up, probability ${(100 * m.p).toFixed(2)} percent`);
+    const cells = Array.from(m.b, ch => `<i class="${ch === '0' ? 'u' : ''}"></i>`).join('');
+    const tick = cur.ticks && cur.ticks[k] != null ? `<u style="left:${(100 * cur.ticks[k] / maxp).toFixed(1)}%"></u>` : '';
+    b.innerHTML = `<span>${k + 1}</span><span class="viz"><span class="cells">${cells}</span><span class="bar"><s style="width:${(100 * m.p / maxp).toFixed(1)}%"></s>${tick}</span></span><span class="pp">${(100 * m.p).toFixed(2)}%</span>`;
+    b.addEventListener('click', () => { stopPlay(); st.chain = false; st.pat = k; render(); });
+    box.appendChild(b);
+  });
+  $('e-pat-note').textContent = cur.patNoteE || cur.patNote;
+  $('e-pat-cap').textContent = E_SAMPLER[st.sampler];
+}
+function renderNeuronE(cur) {
+  const c = byId[st.circuit], n = c.neurons[st.neuron], syn = c.synapses;
+  $('e-n-title').textContent = n.instance; $('e-n-type').textContent = n.type;
+  const out = syn[st.neuron].reduce((a, v) => a + v, 0), inn = syn.reduce((a, r) => a + r[st.neuron], 0);
+  const bonds = c.edges.filter(e => e.i === st.neuron || e.j === st.neuron).length;
+  const corrTo = cur.corr, pat = currentPattern(cur), spin = pat ? (pat.b[st.neuron] === '0' ? 'up' : 'down') : '–';
+  const meanC = PAIRS.reduce((acc, [i, j], k) => (i === st.neuron || j === st.neuron) ? acc + corrTo[k] : acc, 0) / (NQ - 1);
+  $('e-n-stat').innerHTML = `<span>bodyId</span><b>${n.bodyId}</b><span>synapses out / in (within these 20)</span><b>${out} / ${inn}</b><span>modelled bonds</span><b>${bonds}</b><span>spin in this pattern</span><b>${spin}</b><span>mean ⟨s s⟩ with the other 19</span><b>${meanC.toFixed(2)}</b>`;
+  const partners = c.neurons.map((m, j) => ({j, w: syn[st.neuron][j] + syn[j][st.neuron], o: syn[st.neuron][j], i: syn[j][st.neuron]}))
+    .filter(x => x.j !== st.neuron && x.w > 0).sort((a, b) => b.w - a.w).slice(0, 5);
+  const box = $('e-n-partners'); box.textContent = '';
+  partners.forEach(p => {
+    const b = document.createElement('button'); b.type = 'button';
+    const k = pairIndex(st.neuron, p.j), modelled = c.edges.some(e => (e.i === Math.min(st.neuron, p.j) && e.j === Math.max(st.neuron, p.j)));
+    b.innerHTML = `<span>${c.neurons[p.j].instance}${modelled ? '' : ' (not modelled)'}</span><b>${p.o}&rarr; ${p.i}&larr; · ⟨ss⟩ ${corrTo[k].toFixed(2)}</b>`;
+    b.addEventListener('click', () => { st.hoverPair = null; selectStation(p.j); });
+    b.addEventListener('mouseenter', () => { st.hoverPair = [Math.min(st.neuron, p.j), Math.max(st.neuron, p.j)]; render(false); });
+    b.addEventListener('mouseleave', () => { st.hoverPair = null; render(false); });
+    box.appendChild(b);
+  });
+}
+function renderHeatTextE(cur) {
+  const c = byId[st.circuit];
+  $('e-heat-note').textContent = cur.corrNote;
+  let txt = `<span>bond ⟨s s⟩, chosen (30 bonds)</span><b>${edgeMean(cur.corr, c.edges).toFixed(3)}</b><span>bond ⟨s s⟩, reference</span><b>${edgeMean(cur.refCorr, c.edges).toFixed(3)}</b><span>mean |Δ| over 190 pairs</span><b>${meanAbsDiff(cur.corr, cur.refCorr).toFixed(3)}</b>`;
+  if (st.hoverPair) {
+    const [a, b] = st.hoverPair, k = pairIndex(a, b), w = c.synapses[a][b] + c.synapses[b][a], t = `${shortType(c.neurons[a].type)} ${a} · ${shortType(c.neurons[b].type)} ${b} (${w} synapses)`;
+    txt += `<span class="hov" title="${t}">${t}</span><b>${cur.corr[k].toFixed(2)} / ${cur.refCorr[k].toFixed(2)}</b>`;
+  } else txt += `<span class="hov">point at a cell for its pair</span><b>–</b>`;
+  $('e-heat-stat').innerHTML = txt;
+}
+function renderE(cur, full) {
+  drawGraphE(cur); drawHeatE(cur); renderHeatTextE(cur);
+  if (!full) return;
+  renderPatternsE(cur); renderNeuronE(cur);
+  const c = byId[st.circuit], pat = currentPattern(cur), lab = E_SAMPLER[st.sampler];
+  $('e-m-rank').textContent = pat && pat.chain ? `chain ${st.chainIdx + 1}/160` : `${st.pat + 1} / ${cur.pats.length}`;
+  $('e-m-p').textContent = pat && pat.p != null ? `${(100 * pat.p).toFixed(2)}%` : '–';
+  $('e-m-agree').textContent = pat ? `${agreeCount(pat.b, c.edges)} / ${c.edges.length}` : '–';
+  $('e-m-up').textContent = pat ? `${upCount(pat.b)} / 20` : '–';
+  $('e-tag').innerHTML = `<b>${c.name}</b> · ${c.region}`;
+  $('e-bench-cap').textContent = `${c.name} · ${lab}`;
+  $('e-r-sampler').textContent = lab + (st.sampler === 'gibbs' ? ` at β = ${betaKey(st.beta)}` : ' at β = 0.7');
+  $('e-r-where').textContent = cur.where; $('e-r-qubits').textContent = cur.qubits; $('e-r-shots').textContent = cur.shots; $('e-r-job').textContent = cur.job; $('e-r-vs').textContent = cur.vs;
+  document.querySelectorAll('#e-seg-circuit button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.c === st.circuit)));
+  document.querySelectorAll('#e-seg-sampler button').forEach(b => { b.setAttribute('aria-pressed', String(b.dataset.s === st.sampler)); const off = !available(st.circuit, b.dataset.s);
+    b.dataset.off = String(off); b.title = off ? `No run for this circuit: ${whyMissing(st.circuit, b.dataset.s)}.` : ''; });
+  const beta = $('e-beta'); beta.disabled = st.sampler !== 'gibbs'; beta.value = String(Math.round(st.beta * 10)); $('e-beta-val').textContent = betaKey(st.beta);
+  $('e-beta-note').textContent = st.sampler === 'gibbs' ? 'Gibbs runs at every β from 0.1 to 1.5. The quantum runs were made at β = 0.7.' : 'Locked at β = 0.7: the quantum circuits were built for this temperature.';
+  $('e-chain').hidden = st.sampler !== 'gibbs';
+  $('e-scrub').value = String(st.chainIdx); $('e-scrub-val').textContent = `${st.chainIdx} / 159`;
+}
+
+// ---- render -----------------------------------------------------------------------------------------
+function render(full = true) {
+  const cur = current(), c = byId[st.circuit], pat = currentPattern(cur);
+  if (pat) setTarget(spinsOf(pat.b), full);
+  if (st.view === 'data') { drawHeat(cur); renderHeatText(cur); }
+  kick(); if (!raf) drawScene();
+  renderE(cur, full);                                 // The data (section 02) follows the same state
+  if (!full) return;
+  if (st.view === 'data') renderPatterns(cur);
+  renderStation(cur);
+  const agree = pat ? agreeCount(pat.b, c.edges) : 0, tot = c.edges.length, mood = moodFor(agree, tot);
+  $('m-svc').textContent = agree === tot ? 'Good service' : `${tot - agree} line${tot - agree > 1 ? 's' : ''} out of step`;
+  $('m-svc').classList.toggle('bad', agree !== tot);
+  $('m-agree').textContent = `${agree} / ${tot}`;
+  $('m-up').textContent = pat ? `${upCount(pat.b)} / 20` : '–';
+  $('m-p').textContent = pat && pat.p != null ? `${(100 * pat.p).toFixed(2)}%` : '– (chain step)';
+  $('m-mood').textContent = MOOD_TXT[mood];
+  if (mood !== moodNow) { moodNow = mood; drawMoodFly(); }
+  const S = SAMPLERS.find(s => s.id === st.sampler);
+  $('r-train').textContent = S.label;
+  $('r-sampler').textContent = S.name + (st.sampler === 'gibbs' ? ` at β = ${betaKey(st.beta)}` : ' at β = 0.7');
+  $('r-where').textContent = cur.where; $('r-qubits').textContent = cur.qubits; $('r-shots').textContent = cur.shots; $('r-job').textContent = cur.job; $('r-vs').textContent = cur.vs;
+  document.querySelectorAll('#seg-circuit button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.c === st.circuit)));
+  document.querySelectorAll('#seg-sampler button').forEach(b => { b.setAttribute('aria-pressed', String(b.dataset.s === st.sampler)); const off = !available(st.circuit, b.dataset.s);
+    b.dataset.off = String(off); b.title = off ? `No run for this network: ${whyMissing(st.circuit, b.dataset.s)}.` : ''; });
+  document.querySelectorAll('#seg-view button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === st.view)));
+  const beta = $('beta'); beta.disabled = st.sampler !== 'gibbs'; beta.value = String(Math.round(st.beta * 10)); $('beta-val').textContent = betaKey(st.beta);
+  $('beta-note').textContent = st.sampler === 'gibbs' ? 'The Gibbs train runs at every β from 0.1 to 1.5. The quantum runs were made at β = 0.7.' : 'Locked at β = 0.7: the quantum circuits were built for this temperature.';
+  const gib = st.sampler === 'gibbs';
+  $('seg-route').classList.toggle('off', !gib);
+  document.querySelectorAll('#seg-route button').forEach(b => b.setAttribute('aria-pressed', String((b.dataset.r === 'chain') === (gib && st.chain))));
+  const sc = $('scrub'), N = gib && st.chain ? 160 : cur.pats.length;
+  sc.max = String(N - 1); sc.value = String(gib && st.chain ? st.chainIdx : st.pat);
+  $('scrub-val').textContent = gib && st.chain ? `journey sample ${st.chainIdx + 1} of 160` : `departure ${st.pat + 1} of ${cur.pats.length}${pat && pat.p != null ? ` · p ${(100 * pat.p).toFixed(2)}%` : ''}`;
+  if (LIVE && $('live')) { $('live').hidden = st.sampler !== 'emu' && st.sampler !== 'fez'; }
+  chime(agree, tot);
+}
+
+// ---- controls ---------------------------------------------------------------------------------------
+function pickTrain(id) { stopPlay(); st.sampler = id; if (id !== 'gibbs') { st.beta = 0.7; st.chain = false; } st.pat = 0; render(); conductorDo(1, 500); }
+function pickCircuit(id) {                          // one circuit switch for the scene and The data
+  if (st.circuit === id) return; stopPlay(); st.circuit = id; if (!available(id, st.sampler)) st.sampler = 'gibbs'; st.pat = 0; st.hoverPair = null;
+  trainRun = null; trainAt = st.neuron; flips = []; targetKey = ''; const p = currentPattern(current()); if (p) lampShown = spinsOf(p.b); layoutScene(); render();
+}
+CIRC.forEach(c => { for (const box of ['seg-circuit', 'e-seg-circuit']) { const b = document.createElement('button'); b.type = 'button'; b.textContent = c.name; b.dataset.c = c.id;
+  b.addEventListener('click', () => pickCircuit(c.id)); $(box).appendChild(b); } });
+SAMPLERS.forEach(s => { const b = document.createElement('button'); b.type = 'button'; b.dataset.s = s.id;
+  const tsp = SP[TRAIN[s.id]];
+  b.innerHTML = `<span class="chip"><img alt="" width="${tsp.w}" height="${tsp.h}" src="${InkSprite.toDataURL(tsp, 0, 1)}"></span><b>${s.label}</b><small>${s.sub}</small>`;
+  b.setAttribute('aria-label', s.name);
+  b.addEventListener('click', () => { if (!available(st.circuit, s.id)) { toast(`No ${s.label} run for the ${byId[st.circuit].name.toLowerCase()} network: ${whyMissing(st.circuit, s.id)}`); return; } pickTrain(s.id); });
+  $('seg-sampler').appendChild(b); });
+$('seg-sampler').classList.toggle('four', SAMPLERS.length === 4);
+SAMPLERS.forEach(s => { const b = document.createElement('button'); b.type = 'button'; b.textContent = E_SAMPLER[s.id]; b.dataset.s = s.id;   // The data's sampler switch
+  b.addEventListener('click', () => { if (!available(st.circuit, s.id)) { toast(`No ${E_SAMPLER[s.id]} run for the ${byId[st.circuit].name.toLowerCase()} circuit: ${whyMissing(st.circuit, s.id)}`); return; } st.chain = false; pickTrain(s.id); });
+  $('e-seg-sampler').appendChild(b); });
+document.querySelectorAll('#seg-view button').forEach(b => b.addEventListener('click', () => {
+  st.view = b.dataset.v; $('scene').hidden = st.view !== 'scene'; $('dataview').hidden = st.view !== 'data';
+  if (st.view === 'scene') { layoutScene(); } render();
+}));
+document.querySelectorAll('#seg-route button').forEach(b => b.addEventListener('click', () => { stopPlay(); st.chain = b.dataset.r === 'chain'; render(); }));
+for (const id of ['beta', 'e-beta']) $(id).addEventListener('input', e => { st.beta = +e.target.value / 10; st.pat = 0; render(); });
+$('e-prev').addEventListener('click', () => stepPatternE(-1));
+$('e-next').addEventListener('click', () => stepPatternE(1));
+$('e-scrub').addEventListener('input', e => { stopPlay(); st.chain = true; st.chainIdx = +e.target.value; render(); });
+function step(d) {
+  const cur = current();
+  if (st.sampler === 'gibbs' && st.chain) st.chainIdx = (st.chainIdx + d + 160) % 160;
+  else { const n = cur.pats.length; st.pat = (st.pat + d + n) % n; }
+  render(); if (!timer) conductorDo(1, 380);
+}
+$('scrub').addEventListener('input', e => { stopPlay(); const v = +e.target.value; if (st.sampler === 'gibbs' && st.chain) st.chainIdx = v; else st.pat = v; render(); conductorDo(1, 380); });
+let timer = null;
+function stopPlay() { if (timer) { clearInterval(timer); timer = null; } $('play').setAttribute('aria-pressed', 'false'); $('play').innerHTML = 'Depart &#9654;'; if (condPose === 3) conductorDo(0);
+  $('e-play').setAttribute('aria-pressed', 'false'); $('e-play').textContent = 'Play Gibbs chain'; }
+function startPlay() {                               // Depart (scene) and Play Gibbs chain (The data) share one timer
+  $('play').setAttribute('aria-pressed', 'true'); $('play').innerHTML = 'Hold &#10074;&#10074;'; conductorDo(3);
+  if (st.sampler === 'gibbs' && st.chain) { $('e-play').setAttribute('aria-pressed', 'true'); $('e-play').textContent = 'Pause'; }
+  const ms = st.sampler === 'gibbs' && st.chain ? (REDUCED ? 800 : 260) : (REDUCED ? 1400 : 1000);
+  step(1); timer = setInterval(() => step(1), ms);
+}
+$('play').addEventListener('click', () => { if (timer) { stopPlay(); return; } startPlay(); });
+$('e-play').addEventListener('click', () => { if (timer) { stopPlay(); render(); return; } st.chain = true; startPlay(); });
+const toast = msg => { const t = $('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 1800); };
+$('share').addEventListener('click', async () => {
+  history.replaceState(null, '', '#' + makeToken(st));
+  try { await navigator.clipboard.writeText(location.href); toast('Ticket copied: the link opens this view'); } catch (e) { toast('Copy blocked: see the address bar'); }
+});
+$('e-share').addEventListener('click', async () => {
+  history.replaceState(null, '', '#' + makeToken(st));
+  try { await navigator.clipboard.writeText(location.href); toast('Link copied'); } catch (e) { toast('Copy blocked: see address bar'); }
+});
+
+// ---- optional chime (Web Audio, off until clicked) --------------------------------------------------
+let AC = null, chimeOn = false, voices = [], lastChime = 0, lastChimeKey = '';
+function chime(agree, total, force) {
+  if (!chimeOn || !AC) return;
+  const key = targetKey; if (!force && key === lastChimeKey) return; lastChimeKey = key;
+  const t0 = AC.currentTime; if (!force && t0 - lastChime < .55) return; lastChime = t0;
+  const f1 = 783.99, f2 = f1 * Math.pow(2, -chimeSemis(agree, total) / 12);   // ding-dong: the interval widens as lines fall into step
+  [[f1, 0], [f2, .26]].forEach(([f, dt]) => {
+    const o = AC.createOscillator(), g = AC.createGain(); o.type = 'sine'; o.frequency.value = f;
+    g.gain.setValueAtTime(0, t0 + dt); g.gain.linearRampToValueAtTime(.12, t0 + dt + .015); g.gain.exponentialRampToValueAtTime(.0008, t0 + dt + .9);
+    o.connect(g).connect(AC.destination); o.start(t0 + dt); o.stop(t0 + dt + .95); voices.push(o); o.onended = () => { voices = voices.filter(v => v !== o); };
+  });
+}
+$('chime').addEventListener('click', async () => {
+  chimeOn = !chimeOn;
+  $('chime').setAttribute('aria-pressed', String(chimeOn)); $('chime').textContent = chimeOn ? 'Chimes: on (stop)' : 'Chimes: off';
+  if (chimeOn) {
+    try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') await AC.resume(); } catch (e) { chimeOn = false; return; }
+    const c = byId[st.circuit], p = currentPattern(current()); chime(p ? agreeCount(p.b, c.edges) : 0, c.edges.length, true);
+  } else { voices.forEach(o => { try { o.stop(); } catch (e) {} }); voices = []; if (AC) AC.suspend(); }
+});
+
+// ---- live mode (only in the Node app build) ---------------------------------------------------------
+/*LIVE-START*/if (LIVE) {
+  $('live-run').addEventListener('click', async () => {
+    const mode = st.sampler === 'fez' ? 'qpu' : 'emu';
+    $('live-msg').textContent = 'Asking the server…';
+    try {
+      const r = await fetch('/api/sample', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({circuit: st.circuit, mode, beta: 0.7})});
+      const j = await r.json();
+      if (!r.ok) { $('live-msg').textContent = j.error || ('Server said ' + r.status); return; }
+      const i = D.runs.findIndex(x => x.circuit === j.run.circuit && x.mode === j.run.mode);
+      if (i >= 0) D.runs[i] = j.run; else D.runs.push(j.run);
+      $('live-msg').textContent = `${j.source === 'cache' ? 'Served from the job cache (no credits)' : 'New Atlas job'}: ${j.run.job_id}`;
+      render();
+    } catch (e) { $('live-msg').textContent = 'Server unreachable: start it with node app/server.js'; }
+  });
+}/*LIVE-END*/
+
+// ---- proof chips and drawer numbers -----------------------------------------------------------------
+(function () {
+  const done = D.runs.filter(r => r.status === 'completed'), q = done.filter(r => r.mode === 'qpu');
+  const chips = [`<span class="hot"><b>20</b> qubits per run</span>`, `<span><b>${done.length}</b> real Atlas jobs</span>`];
+  if (q.length) chips.push(`<span class="hot">IBM <b>${q[0].backend}</b> hardware · ${q.length} run${q.length > 1 ? 's' : ''}</span>`);
+  chips.push(`<span><b>60</b> real neurons · hemibrain</span>`);
+  $('proof').innerHTML = chips.join('');
+  for (const id of ['scale', 'e-scale']) $(id).innerHTML = Array.from({length: 21}, (_, k) => `<i style="background:${colorFor(-1 + k / 10)}"></i>`).join('');
+  $('d-quantum').textContent = D.meta.quantum_text;
+  // hardware lines, from the ledgered jobs: what ran on ibm_fez and what did not
+  const W = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'], w = n => W[n] || String(n);
+  const okJ = D.jobs.filter(j => j.status === 'completed'), badJ = D.jobs.filter(j => j.status === 'failed'), waitJ = D.jobs.filter(j => j.status !== 'completed' && j.status !== 'failed');
+  $('jobs-count').textContent = `${w(okJ.length)} completed and feed the page; ${w(badJ.length).toLowerCase()} failed and returned no data, but their credits were still spent`
+    + (waitJ.length ? `; ${w(waitJ.length).toLowerCase()} ${waitJ.length > 1 ? 'were' : 'was'} still waiting in the IBM queue when the page was built.` : '.');
+  const qj = D.jobs.filter(j => j.mode === 'qpu'), qbad = qj.filter(j => j.status === 'failed'), qwait = qj.filter(j => j.status !== 'completed' && j.status !== 'failed');
+  const nets = js => [...new Set(js.map(j => j.circuit))].join(', '), ends = js => [...new Set(js.map(j => (j.why || j.status).replace(/^QPU job ended as /, '')))].join(' or ');
+  const badTxt = [qbad.length ? `${w(qbad.length).toLowerCase()} submission${qbad.length > 1 ? 's' : ''} (${nets(qbad)}) ended ${ends(qbad)} on the IBM side before returning counts` : '',
+    qwait.length ? `${w(qwait.length).toLowerCase()} (${nets(qwait)}) was still waiting in the IBM queue when the page was built` : ''].filter(Boolean).join('; ');
+  $('d-hw').textContent = q.length
+    ? `IBM Quantum ibm_fez (Heron, 156 qubits), reached through Atlas: ${w(q.length).toLowerCase()} 20-qubit run${q.length > 1 ? 's' : ''} returned real samples (${q.map(r => `${r.circuit}, job ${r.job_id}, IBM job ${r.ibm_job_id}`).join('; ')})${badTxt ? '; ' + badTxt : ''}.`
+    : `IBM Quantum ibm_fez (Heron, 156 qubits), reached through Atlas: ${badTxt || 'no submissions'}.`;
+  $('hw-honesty').textContent = q.length
+    ? `The IBM train carries real ibm_fez hardware samples for ${q.map(r => r.circuit).join(' and ')}: 20 qubits, ${q[0].shots.toLocaleString()} shots, only the 20 most frequent patterns returned by the engine, shown uncorrected (no error mitigation) and compared with the exact blueprint, not with the brain.${badTxt ? ` Other hardware attempts returned nothing: ${badTxt}.` : ''}`
+    : `There is no hardware data: of ${w(qj.length).toLowerCase()} ibm_fez submissions, ${badTxt}.`;
+  $('d-hwcmp').textContent = q.map(r => {
+    const rp = D.replica[r.circuit], ck = rp && rp.runs.qpu, em = rp && rp.runs.emu, ex = rp ? new Set(rp.top20.map(m => m.b)) : new Set();
+    if (!ck) return '';
+    const top = r.top20[0].b, lit = upCount(top), name = lit === 0 ? 'all lamps dark' : lit === NQ ? 'all lamps lit' : `${lit} lamps lit`;
+    return `On IBM ibm_fez hardware (${r.circuit}, job ${r.job_id}, IBM job ${r.ibm_job_id}) the most frequent pattern is ${name}` +
+      (rp.top20[0].b === top ? ', which is also the exact state’s likeliest outcome' : '') +
+      `, and ${r.top20.filter(m => ex.has(m.b)).length} of its 20 most frequent patterns are among the exact state’s 20 likeliest` +
+      (em ? ` (the emulator’s: ${(RUN(r.circuit, 'emu') || {top20: []}).top20.filter(m => ex.has(m.b)).length})` : '') +
+      `. Noise spreads the shots: those 20 patterns hold ${(100 * r.top20_mass).toFixed(1)}% of the hardware shots, where the noiseless circuit gives them ${(100 * ck.top20_mass_replica_same_strings).toFixed(1)}%, and the two all-aligned patterns took ${(100 * ck.p_aligned_engine).toFixed(1)}% against ${(100 * rp.p_aligned).toFixed(1)}% exact. ` +
+      `Total variation on the 20 is ${ck.tvd_top20.toFixed(3)}` + (em ? ` (emulator ${em.tvd_top20.toFixed(3)})` : '') + '. The page shows the hardware counts as returned, with no error mitigation.';
+  }).filter(Boolean).join(' ');
+  $('d-hwcmp').hidden = !$('d-hwcmp').textContent;
+  $('d-thrml').textContent = D.meta.thrml_text;
+})();
+
+// ---- Jobs and credits (section 06): every Atlas job from out/atlas_jobs.json -----------------------------
+(function () {
+  const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const rows = D.jobs.map(j => {
+    const ran = j.mode === 'qpu' ? `IBM ${esc(j.backend || 'hardware')} (hardware)` : 'Atlas emulator (Aer, noiseless)';
+    const net = j.circuit ? byId[j.circuit].name : '–';
+    const status = j.status === 'completed' ? 'completed' : j.status === 'failed' ? `failed at ${esc(j.failed_step || '?')}: ${esc(j.why || '')}`
+      : `still waiting in the IBM queue when this page was built (Atlas status ${esc(j.status)}); no counts`;
+    const use = j.status === 'completed' && j.circuit
+      ? `<button type="button" class="btn ghost" data-ride="${j.circuit}" data-mode="${j.mode}">Ride this run</button>`
+      : `no data (credits still spent)${j.at ? ` · sent ${esc(j.at)} UTC` : ''}`;
+    return `<tr><td><code>${esc(j.job_id)}</code></td><td>${net}</td><td>${ran}</td><td>${j.num_qubits}</td><td>${j.shots.toLocaleString()}</td><td>${status}</td><td>${j.credits}</td><td>${use}</td></tr>`;
+  });
+  const tot = D.jobs.reduce((a, j) => a + j.credits, 0), ok = D.jobs.filter(j => j.status === 'completed').length;
+  $('jobs').innerHTML = '<tr><th>Atlas job (graph-v1)</th><th>Network</th><th>Ran on</th><th>Qubits</th><th>Shots</th><th>Status</th><th>Credits</th><th>On this page</th></tr>'
+    + rows.join('') + `<tr class="tot"><td>${D.jobs.length} jobs, ${ok} completed</td><td></td><td></td><td></td><td></td><td>all at β = 0.7</td><td>${tot} of ${D.meta.cap}</td><td></td></tr>`;
+  document.querySelectorAll('[data-ride]').forEach(b => b.addEventListener('click', () => {
+    pickCircuit(b.dataset.ride);
+    const want = b.dataset.mode === 'qpu' ? 'fez' : 'emu';
+    if (st.sampler !== want && available(st.circuit, want)) pickTrain(want);
+    $('stage').scrollIntoView({block: 'start', behavior: REDUCED ? 'auto' : 'smooth'});
+  }));
+  // section buttons scroll; they leave the #share token alone
+  document.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => $(b.dataset.go).scrollIntoView({block: 'start', behavior: REDUCED ? 'auto' : 'smooth'})));
+})();
+
+// ---- restore a shared view, then draw ---------------------------------------------------------------
+(function () {
+  const hw0 = CIRC.find(c => RUN(c.id, 'qpu'));     // the primary result: open on ibm_fez hardware samples if any returned
+  if (HAS_HW && hw0) { st.circuit = hw0.id; st.sampler = 'fez'; }
+  const s = parseToken(location.hash, CIRC.map(c => c.id), SAMPLERS.map(s => s.id));
+  Object.assign(st, s);
+  if (!available(st.circuit, st.sampler)) st.sampler = 'gibbs';
+  if (st.sampler !== 'gibbs') st.beta = 0.7;
+  st.pat = Math.min(st.pat, 19);
+  trainAt = st.neuron;
+  const p = currentPattern(current()); if (p) lampShown = spinsOf(p.b);
+})();
+layoutScene(); drawConductor(); render(); drawMoodFly();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (st.view === 'scene') { placeLabels(); drawScene(); } drawGraphE(current()); drawHeatE(current()); });   // redraw canvas labels in the brand mono
+let rsz = null; addEventListener('resize', () => { clearTimeout(rsz); rsz = setTimeout(() => { if (st.view === 'scene') { layoutScene(); drawScene(); } drawConductor(); drawGraphE(current()); }, 120); });
+</script>

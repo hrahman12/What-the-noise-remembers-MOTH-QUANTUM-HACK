@@ -1,0 +1,73 @@
+[
+ {
+  "title": "Sweep",
+  "file": "audio/flavour_sweep.mp3",
+  "text": "One held A3 while L/E sweeps from 20 to 50,000 km/GeV over 24 s, on the curves measured on ibm_fez. You hear nu-mu (A3) fade into nu-tau (an octave down) at the first atmospheric maximum, beat back and forth through the fast atmospheric wiggles, then nu-e (a fifth up) swell near the solar maximum.",
+  "settings": "chip ibm_fez (real hardware) / mix 1 / 3 flavours / L/E 20 -> 50,000 km/GeV",
+  "wav": "audio/flavour_sweep.wav",
+  "seconds": 26.0,
+  "peak": 0.89
+ },
+ {
+  "title": "Chip compare",
+  "file": "audio/flavour_chip_compare.mp3",
+  "text": "The same A3 + E4 phrase, flying outward from L/E 2,500 km/GeV, played 7 times: exact, aer, fake_fez, fake_torino, fake_brisbane, fake_kyoto, ibm_fez. Same physics every time; what changes is each machine's noise in the measured curves.",
+  "settings": "every 3.4 s: exact / aer / fake_fez / fake_torino / fake_brisbane / fake_kyoto / ibm_fez / flight 0.18 dec/s",
+  "cues": [
+   {
+    "t": 0.0,
+    "label": "exact",
+    "chip": "aer",
+    "mix": 0.0
+   },
+   {
+    "t": 3.4,
+    "label": "aer",
+    "chip": "aer",
+    "mix": 1.0
+   },
+   {
+    "t": 6.8,
+    "label": "fake_fez",
+    "chip": "fake_fez",
+    "mix": 1.0
+   },
+   {
+    "t": 10.2,
+    "label": "fake_torino",
+    "chip": "fake_torino",
+    "mix": 1.0
+   },
+   {
+    "t": 13.6,
+    "label": "fake_brisbane",
+    "chip": "fake_brisbane",
+    "mix": 1.0
+   },
+   {
+    "t": 17.0,
+    "label": "fake_kyoto",
+    "chip": "fake_kyoto",
+    "mix": 1.0
+   },
+   {
+    "t": 20.4,
+    "label": "ibm_fez",
+    "chip": "ibm_fez",
+    "mix": 1.0
+   }
+  ],
+  "wav": "audio/flavour_chip_compare.wav",
+  "seconds": 24.4,
+  "peak": 0.89
+ },
+ {
+  "title": "Pad",
+  "file": "audio/flavour_pad.mp3",
+  "text": "Am, F, C, G with slow attacks. Every chord starts at L/E 300 km/GeV and flies outward while held, so each chord drifts from muon-flavoured into tau-flavoured. Curves measured on ibm_fez.",
+  "settings": "chip ibm_fez (real hardware) / mix 1 / 3 flavours / L/E 300 km/GeV / flight 0.12 dec/s",
+  "wav": "audio/flavour_pad.wav",
+  "seconds": 21.0,
+  "peak": 0.89
+ }
+]

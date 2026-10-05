@@ -1,0 +1,10 @@
+strength,style,reach,job_id,status,file,seconds
+0.5,rx,0.0,e3de765a-0d60-459e-8d60-88b87589bff2,completed,ink_s0.50_r0.0.png,8.9
+0.25,rx,0.0,4a8c15c6-cea0-4133-b8eb-2c2845e657ff,completed,ink_s0.25_r0.0.png,8.3
+0.75,rx,0.0,f019131c-62b4-4638-ae64-2b177c9430b9,completed,ink_s0.75_r0.0.png,7.4
+1.0,rx,0.0,90ccfce7-74ea-44d9-898d-1cd2661bccc0,completed,ink_s1.00_r0.0.png,8.6
+0.25,rx,1.0,dffc66de-5587-4110-99b8-c07fd38a282b,completed,ink_s0.25_r1.0.png,7.5
+0.5,rx,1.0,b5894864-e463-44df-9292-95aafd25080f,completed,ink_s0.50_r1.0.png,8.6
+1.0,rx,1.0,a257d715-991d-41e7-853f-6594e70c811d,completed,ink_s1.00_r1.0.png,8.8
+0.1,rx,1.0,81c74d15-0fd3-4a8a-93bf-b3b06c34b72e,completed,ink_s0.10_r1.0.png,7.5
+0.5,rx,0.5,fae87570-6918-4b57-898d-bae1ea107953,completed,ink_s0.50_r0.5.png,7.3

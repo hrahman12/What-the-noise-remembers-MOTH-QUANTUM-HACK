@@ -1,0 +1,4 @@
+strength,job_id,status,file,qubits,seconds,nonzero
+0.5,392b15b3-7eb2-4a9f-9283-9fb09e75a55c,completed,w_s0.5.npy,20,15.6,16384
+0.25,284645e7-6f9c-4f2c-b1f1-c22cb66bdf9b,completed,w_s0.25.npy,20,20.3,16384
+0.5,a8a739fb-daa2-4675-99e6-2447c32a179a,"failed: TMPRL1103 payload (attempt 1, world_attempt1.npy)",,20,,

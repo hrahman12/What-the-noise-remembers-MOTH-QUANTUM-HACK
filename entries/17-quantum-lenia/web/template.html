@@ -1,0 +1,904 @@
+<title>Quantum Lenia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+/*BRAND*/
+/* Layout: the petri dish is the hero (the sprite scene), with How to play and the kernel lab beside it. Below it, titled
+   sections: The data (kernel heatmap, radial profile, table of measured fates), What the noise remembers (snapshot
+   plates), The film, The science, How it was made, What this does not claim, Jobs and credits.
+   Look: Moth Hack brief-page style from common/brand.css, plus the shared ink pixel-art cast (common/inksprite.js,
+   web/sprites.json), drawn at integer scales with smoothing off. */
+[hidden]{display:none!important}
+.wrap{max-width:78rem;margin-inline:auto}
+.hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);grid-template-areas:"stage intro" "stage howto" "stage lab";grid-template-rows:auto auto 1fr;gap:1.25rem clamp(1.25rem,3vw,2.5rem);align-items:start;padding-block:2rem 1rem}
+.intro{grid-area:intro;display:grid;gap:1rem;min-width:0}
+.howto{grid-area:howto}
+.keys{font:400 .72rem/1.45 var(--mono);color:var(--ink-2);border-top:1px solid var(--rule);padding-top:.7rem}
+.stagecol{grid-area:stage;display:grid;gap:.75rem;min-width:0}
+@media (min-width:961px) and (min-height:780px){.stagecol{position:sticky;top:1rem}}
+#lab{grid-area:lab;align-self:start}
+.kick-row{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem}
+.mascot{border:0;background:none;padding:0;cursor:pointer;line-height:0;flex:none;border-radius:8px}
+.mascot canvas{display:block;image-rendering:pixelated}
+.mascot:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+/* the petri dish */
+.dish{position:relative;padding:12px;background:var(--panel-2);border:1px solid var(--ink);border-radius:30px;margin-bottom:12px;touch-action:none;user-select:none}
+.dish::before{content:"";position:absolute;inset:5px;border:1px dashed var(--ink-3);border-radius:25px;pointer-events:none}
+.glass{position:relative;border:1px solid var(--ink);border-radius:18px;overflow:hidden;background:var(--paper)}
+#cv{display:block;width:100%;height:auto;aspect-ratio:1/1;cursor:crosshair}
+#cv.spr{cursor:none}
+#cv:focus-visible{outline:2px solid var(--ink);outline-offset:-5px}
+.tape{position:absolute;left:30px;bottom:-12px;max-width:calc(100% - 60px);background:var(--rule);color:var(--ink);font:500 .66rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:.42rem .9rem;transform:rotate(-1.2deg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;clip-path:polygon(0 0,100% 0,98.5% 25%,100% 50%,98.5% 75%,100% 100%,0 100%,1.5% 75%,0 50%,1.5% 25%)}
+.toolbar{position:absolute;left:.6rem;top:.6rem;right:.6rem;display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap;pointer-events:none}
+.toolbar>*{pointer-events:auto}
+.toolbar .seg button{display:inline-flex;align-items:center;gap:.45rem}
+.ico{image-rendering:pixelated;display:inline-block;flex:none}
+.hint{font:500 .72rem/1.4 var(--mono);letter-spacing:.03em;color:var(--ink);border-bottom:1px solid var(--rule);padding-bottom:.65rem}
+.transport{display:grid;gap:.8rem;background:var(--panel);border:1px solid var(--rule);padding:.8rem .9rem}
+.transport .btn{padding:.65rem 1.05rem}
+.sliders{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem 1.2rem}
+.transport .grow{display:grid;gap:.35rem;min-width:0}
+.live{display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;border-top:1px solid var(--rule);padding-top:.65rem;font:400 .74rem/1.2 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.live b{color:var(--ink);font-weight:500}
+.legend{display:flex;flex-wrap:wrap;gap:.35rem 1rem;align-items:center;font:400 .68rem/1.35 var(--mono);color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:.4rem}
+.kicker{font:500 .74rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+h1{font-size:clamp(2.1rem,4.2vw,3.5rem);line-height:1.02;letter-spacing:-.02em}
+.sub{font-size:1.05rem;color:var(--ink-2);max-width:46ch}
+.steps{display:grid;gap:.55rem;counter-reset:s;margin:0;padding:0;list-style:none}
+.steps li{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:.6rem;align-items:baseline;font-size:.95rem}
+.steps li::before{counter-increment:s;content:counter(s);font:500 .8rem/1.6 var(--mono);color:var(--on-ink);background:var(--ink);border-radius:99px;width:1.6rem;height:1.6rem;display:grid;place-items:center}
+/* kernel lenses */
+.panel{display:grid;gap:.9rem;background:var(--panel);border:1px solid var(--rule);padding:0 1.1rem 1.1rem;min-width:0}
+.panel>.ink-bar:first-child{margin-inline:-1.1rem}
+.row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.row.split{justify-content:space-between}
+#lab .seg button{padding:.55rem .72rem}
+.lenses{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.4rem}
+.lens{display:grid;justify-items:center;align-content:start;gap:.2rem;padding:.35rem 3px .55rem;border:1px solid var(--rule);background:var(--panel);cursor:pointer;color:var(--ink);font:inherit;min-width:0}
+.lens:hover{border-color:var(--ink-2)}
+.lens[aria-pressed="true"]{border-color:var(--ink);background:var(--panel-2)}
+.lens canvas{display:block;image-rendering:pixelated}
+.lens .ln{font:500 .7rem/1.15 var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.lens .ls{font:400 .64rem/1.15 var(--mono);color:var(--ink-2)}
+.lens.pick canvas{animation:wob .5s ease-out}
+@keyframes wob{0%{transform:rotate(-9deg) scale(.94)}55%{transform:rotate(5deg)}100%{transform:none}}
+.strip{display:grid;gap:0;width:100%;padding:0;border:1px solid var(--rule);background:var(--paper);cursor:pointer;color:var(--ink);font:inherit;text-align:left}
+.strip:hover{border-color:var(--ink-2)}
+.strip canvas{display:block;image-rendering:pixelated;max-width:100%}
+.strip .cap{display:flex;justify-content:space-between;gap:.6rem;flex-wrap:wrap;border-top:1px solid var(--rule);padding:.45rem .6rem;font:400 .66rem/1.35 var(--mono);color:var(--ink-2);letter-spacing:.03em}
+.strip .cap b{color:var(--ink);font-weight:500}
+.fate{font-size:.95rem;color:var(--ink);border-inline-start:2px solid var(--ink);padding-inline-start:.8rem}
+.fate small{display:block;color:var(--ink-2);font:400 .72rem/1.4 var(--mono);letter-spacing:.03em;margin-top:.3rem}
+.btn.small{padding:.55rem .9rem;font-size:.8rem}
+/* the sections under the scene: the data (graphs), the snapshots, the film, the science, honesty, jobs and credits */
+.sec{margin-top:2.5rem;display:grid;gap:1rem}
+.sec:focus{outline:none}
+.secbody{display:grid;gap:.75rem;max-width:72ch}
+.dgrid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:1rem;align-items:start}
+.dfig{margin:0;display:grid;gap:.75rem;background:var(--panel);border:1px solid var(--rule);padding:.9rem;min-width:0}
+.dtitle{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.3rem 1rem;font:500 .72rem/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);border-bottom:1px solid var(--rule);padding-bottom:.55rem}
+.dtitle span+span{color:var(--ink-2);letter-spacing:.04em;text-transform:none;font-weight:400}
+.dtitle b{font-weight:500;letter-spacing:.04em}
+.kfig{display:grid;grid-template-columns:minmax(0,.48fr) minmax(0,1fr);gap:.9rem;align-items:center}
+#kprev{width:100%;height:auto;aspect-ratio:1/1;image-rendering:pixelated;border:1px solid var(--ink);background:var(--paper);display:block}
+#kprof{width:100%;height:auto;aspect-ratio:480/224;display:block;border:1px solid var(--rule)}
+.dcap{font:400 .7rem/1.4 var(--mono);color:var(--ink-2)}
+table.jobs.fates td{padding:0;vertical-align:middle}
+table.jobs.fates td:first-child,table.jobs.fates th{padding:.4rem .45rem}
+.fcell{display:block;width:100%;border:0;background:transparent;padding:.4rem .45rem;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.fcell:hover{background:var(--tint);color:var(--ink)}
+table.fates td.cur{background:var(--panel-2);color:var(--ink);font-weight:500;outline:1px solid var(--ink);outline-offset:-1px}
+.credits{margin:0;padding-inline-start:1.1rem;display:grid;gap:.45rem;font-size:.86rem;color:var(--ink-2);max-width:78ch}
+.credits b{color:var(--ink);font-weight:500}
+.readout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.3rem 1rem;font:400 .76rem/1.5 var(--mono);color:var(--ink-2);margin:0;border-top:1px solid var(--rule);padding-top:.8rem}
+.readout dd{margin:0}
+.readout b{color:var(--ink);font-weight:500;overflow-wrap:anywhere}
+.sl{display:grid;grid-template-columns:5.5rem minmax(0,1fr) 3.6rem;gap:.6rem;align-items:center}
+.sl output{font:500 .76rem/1 var(--mono);color:var(--ink);text-align:right;font-variant-numeric:tabular-nums}
+#growth{border-bottom:1px solid var(--rule)}
+#growth summary{font-size:1.05rem;padding:.8rem 0}
+/* snapshot plates */
+.snaps{margin-top:2.5rem;display:grid;gap:1.1rem}
+.snaps h2,.filmsec h2{font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.08}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+.tile{position:relative;display:grid;gap:.7rem;background:var(--panel);border:1px solid var(--rule);border-radius:0;padding:1.3rem .75rem .8rem;cursor:pointer;text-align:left;color:var(--ink);font:inherit;align-content:start}
+.tile:hover{border-color:var(--ink-2)}
+.tile[aria-pressed="true"]{border-color:var(--ink);background:var(--panel-2)}
+.plate{padding:8px;background:var(--panel-2);border:1px solid var(--ink);border-radius:22px}
+.tile[aria-pressed="true"] .plate{background:var(--panel)}
+.plate canvas{width:100%;height:auto;aspect-ratio:1/1;background:var(--paper);border:1px solid var(--ink-3);border-radius:14px;display:block;image-rendering:pixelated}
+.ptape{position:absolute;top:.55rem;left:1.4rem;z-index:1;background:var(--rule);color:var(--ink);font:500 .64rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;padding:.38rem .75rem;transform:rotate(-2deg);clip-path:polygon(0 0,100% 0,96% 50%,100% 100%,0 100%,4% 50%)}
+.tile .t1{font:500 .74rem/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
+.tile .t2{font:400 .72rem/1.4 var(--mono);color:var(--ink-2);overflow-wrap:anywhere}
+.regrow{display:flex;flex-wrap:wrap;align-items:center;gap:.25rem .35rem;font:400 .7rem/1.3 var(--mono);color:var(--ink-2)}
+.regrow b{color:var(--ink);font-weight:500}
+.filmsec{margin-top:2.5rem;display:grid;gap:1rem}
+.film{margin:0;display:grid;gap:0;background:var(--panel);border:1px solid var(--rule);max-width:56rem}
+.film video{display:block;width:100%;height:auto;aspect-ratio:16/9;background:var(--panel-2)}
+.film figcaption{font-size:.84rem;color:var(--ink-2);padding:.75rem .9rem .85rem;border-top:1px solid var(--rule)}
+.film figcaption b{color:var(--ink);font-weight:500}
+.more{margin-top:2.75rem;display:grid;gap:0}
+.more>.ink-bar{margin-bottom:.25rem}
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:var(--ink);color:var(--on-ink);font:500 .82rem/1.35 var(--mono);padding:.8rem 1.1rem;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:min(36rem,calc(100vw - 32px));text-align:center}
+.toast.on{opacity:1}
+table.jobs{border-collapse:collapse;font:400 .74rem/1.4 var(--mono);width:100%;color:var(--ink-2)}
+table.jobs td,table.jobs th{border-bottom:1px solid var(--rule);padding:.4rem .45rem;text-align:left;vertical-align:top}
+table.jobs th{color:var(--ink);font-weight:500;letter-spacing:.06em;text-transform:uppercase;font-size:.68rem;border-bottom-color:var(--ink)}
+.scroll{overflow-x:auto}
+@media (prefers-reduced-motion:reduce){.lens.pick canvas{animation:none}}
+@media (max-width:960px){.hero{grid-template-columns:minmax(0,1fr);grid-template-areas:"intro" "stage" "howto" "lab";grid-template-rows:auto}.dgrid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:560px){.sliders{grid-template-columns:minmax(0,1fr)}.transport .btn{padding:.6rem .85rem;font-size:.86rem}.panel .seg button{padding:.55rem .55rem;font-size:.7rem}.toolbar .seg button{padding:.5rem .65rem;gap:.35rem}.lenses{grid-template-columns:repeat(2,minmax(0,1fr))}.tiles{grid-template-columns:minmax(0,1fr)}.tile{grid-template-columns:120px minmax(0,1fr);align-items:center}.kfig{grid-template-columns:minmax(0,1fr)}#kprev{width:140px}.dfig{padding:.7rem}table.jobs.fates{font-size:.68rem}.fcell,table.jobs.fates td:first-child,table.jobs.fates th{padding:.38rem .3rem}.ink-bar{font-size:.68rem;padding:.75rem .85rem}.panel{padding:0 .9rem .9rem}.panel>.ink-bar:first-child{margin-inline:-.9rem}.dish{padding:9px;border-radius:24px}.dish::before{inset:4px;border-radius:20px}.glass{border-radius:14px}.tape{left:20px;max-width:calc(100% - 40px)}.kick-row{align-items:center}}
+</style>
+
+<div class="wrap">
+  <nav class="wtnr-bar"><a href="https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa">What the Noise Remembers</a><span class="count">Challenge 04</span></nav>
+
+  <div class="hero">
+    <header class="intro">
+      <div class="kick-row">
+        <p class="kicker">Challenge 04 &middot; Moving image</p>
+        <button type="button" class="mascot" id="mascot" aria-label="Orbi, an Orbium with a face. Tap for a measured fact." title="Tap me"><canvas id="mascot-c" width="96" height="90"></canvas></button>
+      </div>
+      <h1>Paint creatures, then blur their sense of touch with quantum noise.</h1>
+      <p class="sub">Lenia is a smooth Game of Life. Every cell feels its neighbours through a ring-shaped kernel. We sent that kernel through a quantum blur on an 18-qubit register. Swap it in and watch Orbium slow down, break up or flood the world.</p>
+      <div class="proof">
+        <span class="hot"><b>20</b> qubits per snapshot blur</span>
+        <span><b>18</b> qubits per kernel blur</span>
+        <span><b>5</b> completed Atlas jobs</span>
+        <span>Atlas <b>simulator</b> &middot; no QPU</span>
+      </div>
+    </header>
+
+    <div class="stagecol">
+      <div class="dish" id="stage">
+        <div class="glass">
+          <canvas id="cv" width="768" height="768" tabindex="0" aria-label="Live Lenia world, 256 by 256 cells. Pointer: paint with the selected tool. Keyboard: arrow keys move the cursor, Enter paints, Space plays or pauses, period steps, R resets."></canvas>
+          <div class="toolbar">
+            <div class="seg" role="group" aria-label="Painting tool">
+              <button type="button" data-tool="creature" aria-pressed="true"><img class="ico" data-ico="pipette" alt="">Orbium</button>
+              <button type="button" data-tool="soup" aria-pressed="false"><img class="ico" data-ico="brush" alt="">Soup</button>
+              <button type="button" data-tool="erase" aria-pressed="false"><img class="ico" data-ico="eraser" alt="">Erase</button>
+            </div>
+          </div>
+        </div>
+        <span class="tape" id="tape" aria-hidden="true">QL-17</span>
+      </div>
+      <div class="transport" role="group" aria-label="Playback">
+        <p class="hint" id="hint">Press and drag to aim, release to drop an Orbium.</p>
+        <div class="row">
+          <button type="button" class="btn" id="play" aria-pressed="false">Play</button>
+          <button type="button" class="btn ghost" id="stepb">Step</button>
+          <button type="button" class="btn ghost" id="reset">Reset</button>
+          <button type="button" class="btn ghost" id="clear">Clear</button>
+        </div>
+        <div class="sliders">
+          <label class="grow"><span class="label">Speed <span id="spd-v">2</span> steps/frame</span><input type="range" id="spd" min="1" max="8" value="2"></label>
+          <label class="grow"><span class="label">Brush <span id="br-v">14</span> cells</span><input type="range" id="br" min="4" max="40" value="14"></label>
+        </div>
+        <div class="live" aria-live="off"><span>t <b id="l-t">0</b></span><span>mass <b id="l-m">0</b></span><span>Orbium-sized blobs <b id="l-c">0</b></span><span><b id="l-r">paused</b></span></div>
+        <p class="legend"><span><img class="ico" data-ico="eyes" data-x="2" alt="">eyes: an Orbium-sized blob (mass 55 to 95, the counter's rule)</span><span><img class="ico" data-ico="ghost" data-x="2" alt="">one that had lasted 30+ steps stopped counting (broke up, merged or grew)</span><span><img class="ico" data-ico="sparkle" data-x="2" alt="">one you dropped, or a new one that lasted 30 steps</span></p>
+      </div>
+    </div>
+
+    <section class="panel howto" aria-labelledby="howto-h">
+      <div class="ink-bar"><span id="howto-h">How to play</span><span>4 steps</span></div>
+      <ol class="steps">
+        <li><span><b>Paint</b> on the world: drag to aim an Orbium, spray random soup, or erase.</span></li>
+        <li><span><b>Swap the kernel</b>: the original, or one of three real quantum-blurred ones.</span></li>
+        <li><span><b>Play, pause, step</b> or reset. Nothing moves until you press Play.</span></li>
+        <li><span><b>Seed</b> the world from a quantum-blurred snapshot and see what regrows.</span></li>
+      </ol>
+      <p class="keys">Pointer: paint with the selected tool. Keyboard: arrow keys move the cursor, Enter paints, Space plays or pauses, period steps, R resets.</p>
+    </section>
+
+    <div class="panel" id="lab">
+      <div class="ink-bar"><span>Kernel lab</span><span id="k-name">Original</span></div>
+      <div class="lenses" id="g-set" role="group" aria-label="Kernel"></div>
+      <div class="row split">
+        <div class="seg" role="group" aria-label="Kernel shell" id="g-shell"></div>
+        <button type="button" class="btn ghost small" id="to-data" aria-controls="data">See the graphs &darr;</button>
+      </div>
+      <div id="v-scene">
+        <button type="button" class="strip" id="strip" aria-label="The measured fate of one Orbium under this kernel. Press to replay."><canvas id="strip-c" width="10" height="68"></canvas><span class="cap"><span id="strip-tag">&ndash;</span><span>tap to replay</span></span></button>
+      </div>
+      <p class="fate" id="fate">&ndash;</p>
+      <dl class="readout">
+        <dt>Engine</dt><dd><b id="r-eng">&ndash;</b></dd>
+        <dt>Job</dt><dd><b id="r-job">&ndash;</b></dd>
+        <dt>Params</dt><dd><b id="r-par">&ndash;</b></dd>
+        <dt>Register</dt><dd><b id="r-q">&ndash;</b></dd>
+        <dt>Dynamics</dt><dd><b>classical Lenia in your browser</b></dd>
+      </dl>
+      <details class="drawer" id="growth"><summary>Growth settings</summary><div class="body">
+        <div class="sl"><label for="mu" class="label">Centre &mu;</label><input type="range" id="mu" min="0.10" max="0.25" step="0.001" value="0.15"><output id="mu-v">0.150</output></div>
+        <div class="sl"><label for="sg" class="label">Width &sigma;</label><input type="range" id="sg" min="0.005" max="0.040" step="0.0005" value="0.015"><output id="sg-v">0.0150</output></div>
+        <div class="row"><button type="button" class="btn ghost" id="orbium">Back to Orbium (0.15, 0.015)</button></div>
+        <p>The measured fates in the kernel panel are for &mu; 0.15, &sigma; 0.015 only.</p>
+      </div></details>
+      <div class="row">
+        <button type="button" class="btn" id="share">Copy link to this setup</button>
+      </div>
+    </div>
+  </div>
+
+  <section class="sec" id="data" aria-labelledby="data-h" tabindex="-1">
+    <div class="ink-bar"><span id="data-h">The data</span><span>engine + our runs</span></div>
+    <div class="dgrid">
+      <figure class="dfig">
+        <p class="dtitle"><span>The kernel</span><b id="d-name">Original &middot; Ring</b></p>
+        <div class="kfig">
+          <canvas id="kprev" width="32" height="32" aria-label="The current kernel, 32 by 32 cells"></canvas>
+          <canvas id="kprof" width="960" height="448" aria-label="Radial profile of the current kernel against the original"></canvas>
+        </div>
+        <figcaption class="dcap">Left: the engine's 32 &times; 32 kernel block, each cell one pixel. Right: its radial profile against the original.</figcaption>
+      </figure>
+      <figure class="dfig">
+        <p class="dtitle"><span>Measured fates</span><span>press a cell to load that kernel</span></p>
+        <div class="scroll"><table class="jobs fates" id="fates"></table></div>
+        <figcaption class="dcap">Measured fate of one Orbium after 2,000 steps (&mu; 0.15, &sigma; 0.015, analyze.py). Numbers are glide speeds in cells per step.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="snaps" aria-labelledby="snap-h">
+    <div class="ink-bar"><span>What the noise remembers</span><span>3 snapshots &middot; 20 qubits</span></div>
+    <h2 id="snap-h">Seed the world from a quantum-blurred snapshot.</h2>
+    <p class="sub" style="max-width:70ch">A 528 &times; 528 Lenia world with a colony of Orbium went through blur-core-v1 on a 20-qubit register. Pick one to load its 128 &times; 128 colony into the live world, paused, then press Play.</p>
+    <div class="tiles" id="tiles"></div>
+  </section>
+
+  <section class="filmsec" aria-labelledby="film-h">
+    <div class="ink-bar"><span>The film</span><span>30 s &middot; no sound</span></div>
+    <h2 id="film-h">Five Orbium, four kernels, one film.</h2>
+    <figure class="film">
+      <video controls preload="none" playsinline poster="media/poster.webp" src="media/quantum_lenia_720p.mp4" aria-label="Quantum Lenia, 30 second film. Press play to watch; nothing plays on its own."></video>
+      <figcaption><b>The moving-image deliverable</b>, rendered offline from the same engine outputs. Act 1: five Orbium in four worlds, one per kernel. Act 2: what regrows from the blurred snapshots. Classical dynamics, no soundtrack. This is a 1280 &times; 720 web copy of the 1920 &times; 1080 film, quantum_lenia.mp4.</figcaption>
+    </figure>
+  </section>
+
+  <section class="more" aria-label="The science">
+    <div class="ink-bar"><span>The science</span><span>Atlas simulator &middot; no QPU</span></div>
+    <details class="drawer"><summary>Why Lenia?</summary><div class="body">
+      <p>Lenia (Bert Wang-Chak Chan, <i>Complex Systems</i> 28(3), 2019) makes the Game of Life continuous in space, time and state. Each step, every cell sums its neighbourhood through a smooth ring-shaped kernel, and a bell-shaped growth curve turns that sum into growth or decay. Hundreds of creature-like patterns live in it. Orbium unicaudatus is the classic glider.</p>
+      <p>The kernel is the creature's sense of touch: it decides how far, and how strongly, each cell feels the others. Change only the kernel and the same creature lives a different life.</p>
+    </div></details>
+  </section>
+
+  <section class="more" aria-label="How it was made">
+    <div class="ink-bar"><span>How it was made</span><span>blur-core-v1 &middot; 18 + 20 qubits</span></div>
+    <details class="drawer"><summary>What the quantum engine did</summary><div class="body">
+      <p><b>Engine:</b> Atlas blur-core-v1, run on Atlas's classical statevector simulator (exact probabilities, no shots). It amplitude-encodes a grid onto a Gray-coded qubit register, applies Rx rotations to the register's qubits (strength sets the angle, reach sets how far up the register they go), and reads the probabilities back out, rescaled to the input's maximum. Neighbouring cells differ by one bit, so the rotations spread each value onto its neighbours: a blur made of interference.</p>
+      <p>The engine's own job status reports the register: "Recovered 18-qubit grid from measurement" for the kernels and "Recovered 20-qubit grid" for the snapshot.</p>
+      <p><b>Kernels:</b> four kernel shells (ring, Gaussian, polynomial and step), each on the full 256 &times; 256 grid the browser convolves with, stacked into one [4, 256, 256] grid. That is 2 + 8 + 8 = <b>18 qubits</b>, with axes [1, 2] so the four never mix. Three jobs: strength 0.25, 0.5 and 1.0, reach 0, style x.</p>
+      <p><b>Snapshot:</b> a 528 &times; 528 classical Lenia world. 528 is over 512 per side, so the engine pads each axis to 1024: 10 + 10 = <b>20 qubits</b> (about 27% of the register holds the world, the rest is padding). Two jobs: strength 0.5 and 0.25, reach 0.</p>
+      <p><b>Why not 24 qubits:</b> the Atlas API rejects request bodies over 1 MiB (HTTP 413, measured with free invalid-parameter probes), and a 1024 &times; 1024 grid is 2.1 MB even as zeros. Results are capped too. Three of our eight paid jobs failed after the simulation finished with a result-payload error (TMPRL1103): reach 1 on the kernels (twice), because a fully non-local blur makes every one of 262,144 outputs a non-zero float, and a first snapshot with creatures spread over the whole world. The colony now sits in the top-left 128 &times; 128 corner so the output stays small.</p>
+      <p><b>Measured locality:</b> at reach 0 the outputs are exactly zero outside aligned Gray-code blocks: 16 cells wide on the 256-cell kernel axes (so each kernel stays inside a 32 &times; 32 window) and 64 to 128 cells wide on the 1024-cell snapshot axes. So reach 0 rotates only the lower qubits of each axis, not the whole register.</p>
+      <p class="dcap">Every job these paragraphs mention is listed under <a href="#jobs-sec">Jobs and credits</a>.</p>
+    </div></details>
+    <details class="drawer"><summary>About the characters</summary><div class="body">
+      <p>Orbi, the eyes, the pipette, the brush, the eraser and the lenses are pixel art in the shared ink palette (web/sprites.json). They never invent data. Eyes sit on every live blob that counts as Orbium-sized by the same rule as the counter (mass 55 to 95, as in analyze.py), and look the way that blob actually moves. A ghost rises when a blob that had counted for at least 30 steps stops counting (or when you erase or overpaint one). A sparkle marks one you dropped, or a new one once it has counted for 30 steps. The 30-step wait only keeps flickering soup from spawning ghosts; the counter itself uses no wait. Their blinking is decoration.</p>
+      <p>The fate strip under the lenses replays the measured result for the chosen kernel and shell: Orbi glides at the measured speed (0.61 cells per step becomes a fixed on-screen pace), the pale outline keeps the original kernel's pace, and the break-up and flood scenes stand for the measured fates, not for their timing. Orbi in the corner pulls a dizzy face when the live dish floods (mass over 4,000).</p>
+    </div></details>
+  </section>
+
+  <section class="sec" id="claims" aria-labelledby="claims-h">
+    <div class="ink-bar"><span id="claims-h">What this does not claim</span><span>honesty</span></div>
+    <div class="secbody">
+      <p class="honesty">The dynamics are classical Lenia, computed in your browser (and in Python for the film). Only the kernels and the snapshots went through the quantum blur, and that blur ran on a classical statevector simulator, not quantum hardware. This is not a quantum cellular automaton, shows no quantum advantage, and "Quantum Lenia" is just the name of this pipeline.</p>
+      <p class="honesty">The fates shown in the kernel panel were measured in our own runs (one Orbium, 2,000 steps, &mu; 0.15, &sigma; 0.015). Other seeds or settings can behave differently. Snapshot values are shown and seeded at 16-bit precision. The Orbium pattern is from Bert Chan's MIT-licensed Lenia repository.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="jobs-sec" aria-labelledby="jobs-h">
+    <div class="ink-bar"><span id="jobs-h">Jobs and credits</span><span>5 completed jobs</span></div>
+    <div class="scroll"><table class="jobs" id="jobs"></table></div>
+    <ul class="credits">
+      <li><b>Lenia</b>: Bert Wang-Chak Chan, "Lenia: Biology of Artificial Life", <i>Complex Systems</i> 28(3), 251&ndash;286 (2019), <a href="https://arxiv.org/abs/1812.05433">arXiv:1812.05433</a>. The rule and Orbium's settings (R 13, T 10, &mu; 0.15, &sigma; 0.015).</li>
+      <li><b>Orbium unicaudatus</b> pattern: Bert Chan's <a href="https://github.com/Chakazul/Lenia">Lenia repository</a>, MIT License, Copyright (c) 2018 Bert Chan.</li>
+      <li><b>Engine</b>: Moth Quantum Atlas, blur-core-v1 (Quantum Blur Core), run on the Atlas classical statevector simulator.</li>
+      <li><b>Everything else</b> (kernel shells, worlds, snapshots, film frames and the pixel-art sprites) was generated by this project's code. Fonts: Geist and IBM Plex Mono (SIL Open Font License).</li>
+    </ul>
+  </section>
+  <!--NAV-->
+  <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const KERNELS = /*KERNELS*/{};
+const KJOBS = /*KJOBS*/{};
+const SNAP = /*SNAP*/{};
+const SJOBS = /*SJOBS*/{};
+const STAMPS = /*STAMPS*/[];
+const DYN = /*DYN*/{};
+const SCENE = /*SCENE*/[];
+const SPRITES = /*SPRITES*/{};
+/*INKSPRITE*/
+
+// ---------- pure logic (unit-tested with node) ----------
+const N = 256, T = 10, B0 = 112, BS = 32;
+const SETS = [["o", "Original"], ["q25", "Blur 0.25"], ["q50", "Blur 0.5"], ["q100", "Blur 1.0"]];
+const SHELLS = [["ring", "Ring"], ["bell", "Gaussian"], ["poly", "Polynomial"], ["step", "Step"]];
+const DYNKEY = {o: "orig", q25: "s0.25", q50: "s0.5", q100: "s1.0"};
+function bytes(s) { const bin = atob(s), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u; }
+const f32 = s => new Float32Array(bytes(s).buffer);
+const u16 = s => new Uint16Array(bytes(s).buffer);
+
+// radix-2 FFT on N = 256, in place on strided rows/columns of (re, im)
+const LOG = 8, REV = new Uint16Array(N), COS = new Float64Array(N / 2), SIN = new Float64Array(N / 2);
+for (let i = 0; i < N; i++) { let r = 0; for (let b = 0; b < LOG; b++) r |= ((i >> b) & 1) << (LOG - 1 - b); REV[i] = r; }
+for (let i = 0; i < N / 2; i++) { COS[i] = Math.cos(2 * Math.PI * i / N); SIN[i] = Math.sin(2 * Math.PI * i / N); }
+const TR = new Float64Array(N), TI = new Float64Array(N);
+function fft1(re, im, off, stride, inv) {
+  for (let i = 0; i < N; i++) { const j = off + REV[i] * stride; TR[i] = re[j]; TI[i] = im[j]; }
+  for (let size = 2; size <= N; size <<= 1) {
+    const half = size >> 1, st = N / size;
+    for (let i = 0; i < N; i += size) for (let j = 0; j < half; j++) {
+      const k = j * st, wr = COS[k], wi = inv ? SIN[k] : -SIN[k], a = i + j, b = a + half;
+      const xr = TR[b] * wr - TI[b] * wi, xi = TR[b] * wi + TI[b] * wr;
+      TR[b] = TR[a] - xr; TI[b] = TI[a] - xi; TR[a] += xr; TI[a] += xi;
+    }
+  }
+  for (let i = 0; i < N; i++) { const j = off + i * stride; re[j] = TR[i]; im[j] = TI[i]; }
+}
+function fft2(re, im, inv) { for (let y = 0; y < N; y++) fft1(re, im, y * N, 1, inv); for (let x = 0; x < N; x++) fft1(re, im, x, N, inv); }
+
+// kernel: the engine's 32x32 block placed back at [112,144) of the 256 grid, normalised, centre moved to the origin
+function kernelBlock(shell, set) { return f32(KERNELS[shell][set]); }
+function kernelFFT(block) {
+  const re = new Float64Array(N * N), im = new Float64Array(N * N);
+  let sum = 0; for (let i = 0; i < BS * BS; i++) sum += block[i];
+  for (let y = 0; y < BS; y++) for (let x = 0; x < BS; x++) {
+    const yy = (B0 + y - N / 2 + N) % N, xx = (B0 + x - N / 2 + N) % N;
+    re[yy * N + xx] = block[y * BS + x] / sum;
+  }
+  fft2(re, im, false);
+  return {re, im};
+}
+function makeWorld() {
+  return {A: new Float64Array(N * N), re: new Float64Array(N * N), im: new Float64Array(N * N), t: 0, mu: 0.15, sigma: 0.015, K: null};
+}
+function lstep(w) {   // one Lenia step: A <- clip(A + dt * G(K * A), 0, 1)
+  const {A, re, im, K} = w;
+  re.set(A); im.fill(0); fft2(re, im, false);
+  for (let i = 0; i < N * N; i++) { const a = re[i], b = im[i], c = K.re[i], d = K.im[i]; re[i] = a * c - b * d; im[i] = a * d + b * c; }
+  fft2(re, im, true);
+  const inv = 1 / (N * N), dt = 1 / T, s2 = 2 * w.sigma * w.sigma, mu = w.mu;
+  for (let i = 0; i < N * N; i++) {
+    const u = re[i] * inv - mu, v = A[i] + dt * (2 * Math.exp(-u * u / s2) - 1);
+    A[i] = v < 0 ? 0 : v > 1 ? 1 : v;
+  }
+  w.t++;
+}
+function stampCells(t) { return bytes(STAMPS[t].cells); }
+function stamp(A, cy, cx, t) {   // Orbium in orientation t, centred on (cy, cx), max-combined, torus wrap
+  const c = stampCells(t);
+  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) {
+    const v = c[y * 20 + x] / 255; if (!v) continue;
+    const i = ((cy - 10 + y + N) % N) * N + ((cx - 10 + x + N) % N);
+    if (v > A[i]) A[i] = v;
+  }
+}
+function aim(dy, dx) {   // orientation whose measured heading best matches a drag direction
+  let best = 0, bd = -2; const L = Math.hypot(dy, dx) || 1;
+  STAMPS.forEach((s, i) => { const h = s.heading, hl = Math.hypot(h[0], h[1]); const d = (h[0] * dy + h[1] * dx) / (L * hl); if (d > bd) { bd = d; best = i; } });
+  return best;
+}
+function brush(A, cy, cx, r, mode, rnd) {
+  for (let y = -r; y <= r; y++) for (let x = -r; x <= r; x++) {
+    if (x * x + y * y > r * r) continue;
+    const i = ((cy + y + N) % N) * N + ((cx + x + N) % N);
+    A[i] = mode === "erase" ? 0 : Math.max(A[i], rnd());
+  }
+}
+function seedSnap(A, code) {   // the 128x128 colony corner, centred
+  const s = u16(SNAP[code]); A.fill(0);
+  for (let y = 0; y < 128; y++) for (let x = 0; x < 128; x++) A[(64 + y) * N + 64 + x] = s[y * 128 + x] / 65535;
+}
+function seedScene(A) { A.fill(0); for (const [y, x, t] of SCENE) stamp(A, y + 10, x + 10, t); }
+function blobList(A) {   // components of A > 0.05 (4-connected, no wrap) with mass 55..95: same rule as analyze.py
+  const seen = new Uint8Array(N * N), stack = new Int32Array(N * N), out = [];
+  for (let s = 0; s < N * N; s++) {
+    if (seen[s] || A[s] <= 0.05) continue;
+    let top = 0, m = 0, my = 0, mx = 0; stack[top++] = s; seen[s] = 1;
+    while (top) { const i = stack[--top], a = A[i], y = (i / N) | 0, x = i % N; m += a; my += a * y; mx += a * x;
+      if (y > 0 && !seen[i - N] && A[i - N] > 0.05) { seen[i - N] = 1; stack[top++] = i - N; }
+      if (y < N - 1 && !seen[i + N] && A[i + N] > 0.05) { seen[i + N] = 1; stack[top++] = i + N; }
+      if (x > 0 && !seen[i - 1] && A[i - 1] > 0.05) { seen[i - 1] = 1; stack[top++] = i - 1; }
+      if (x < N - 1 && !seen[i + 1] && A[i + 1] > 0.05) { seen[i + 1] = 1; stack[top++] = i + 1; } }
+    if (m >= 55 && m <= 95) out.push({y: my / m, x: mx / m, m});   // centroid, for the eyes
+  }
+  return out;
+}
+function blobs(A) { return blobList(A).length; }
+function profile(block) {   // radial mean of the normalised kernel, by integer distance from cell (128,128)
+  let sum = 0; for (const v of block) sum += v;
+  const acc = new Float64Array(24), cnt = new Float64Array(24);
+  for (let y = 0; y < BS; y++) for (let x = 0; x < BS; x++) { const r = Math.round(Math.hypot(B0 + y - 128, B0 + x - 128)); if (r < 24) { acc[r] += block[y * BS + x] / sum; cnt[r]++; } }
+  return Array.from(acc, (a, i) => cnt[i] ? a / cnt[i] : 0);
+}
+// Page colour map: paper (empty) through the rule tint and the secondary ink to the one ink (full).
+// The film (render_mp4.py) keeps its own dark amber map; both apply the stops to v^0.7.
+const STOPS = [[0, [251, 250, 249]], [0.2, [211, 211, 230]], [0.55, [84, 91, 169]], [1, [25, 35, 142]]];
+const INK = {ink: "#19238E", ink2: "#545BA9", ink3: "#A1A4CE", rule: "#D3D3E6", panel: "#FFFFFF", paper: "#FBFAF9"};
+function lut() {   // 1024-entry RGB table for v in [0, 1], stops applied to v^0.7
+  const out = new Uint8Array(1024 * 3);
+  for (let i = 0; i < 1024; i++) {
+    const g = Math.pow(i / 1023, 0.7); let k = 0; while (k < STOPS.length - 2 && g > STOPS[k + 1][0]) k++;
+    const [a, ca] = STOPS[k], [b, cb] = STOPS[k + 1], f = Math.min(1, Math.max(0, (g - a) / (b - a)));
+    for (let c = 0; c < 3; c++) out[i * 3 + c] = Math.round(ca[c] + (cb[c] - ca[c]) * f);
+  }
+  return out;
+}
+function token(s) {   // shareable state -> "#ring.q50.m150.g150.d"
+  return [s.shell, s.set, "m" + Math.round(s.mu * 1000), "g" + Math.round(s.sigma * 10000), s.seed].join(".");
+}
+function parseToken(h) {
+  const m = /^#?(ring|bell|poly|step)\.(o|q25|q50|q100)\.m(\d{2,3})\.g(\d{2,3})\.(d|c|norig|nq25|nq50)$/.exec(h || "");
+  if (!m) return null;
+  const mu = +m[3] / 1000, sigma = +m[4] / 10000;
+  if (mu < 0.1 || mu > 0.25 || sigma < 0.005 || sigma > 0.04) return null;
+  return {shell: m[1], set: m[2], mu, sigma, seed: m[5]};
+}
+function fateText(shell, set) {
+  const d = DYN.orbium[shell + "|" + DYNKEY[set]], o = DYN.orbium[shell + "|orig"];
+  if (!d) return "";
+  const v = x => x.toFixed(2) + " cells/step";
+  if (d.fate === "glides") return set === "o" ? "Orbium glides at " + v(d.speed) + "." : "Orbium still glides, at " + v(d.speed) + " (original " + v(o.speed) + ").";
+  if (d.fate === "fills the world") return "Life floods the whole world: the creature does not survive as a creature.";
+  if (d.fate === "breaks up") return "Orbium breaks up: no Orbium-sized creature left after 2,000 steps.";
+  return "Orbium " + d.fate + ".";
+}
+if (typeof globalThis !== "undefined") globalThis.__QL = {N, fft2, kernelBlock, kernelFFT, makeWorld, lstep, stamp, aim, brush, seedSnap, seedScene, blobs, blobList, profile, lut, token, parseToken, fateText, f32, u16};
+
+// ---------- page ----------
+if (typeof document !== "undefined") (function () {
+  const $ = id => document.getElementById(id);
+  const toast = msg => { const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("on"), 3200); };
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const DPR = () => window.devicePixelRatio || 1;
+  const PAL = InkSprite.PALETTE;
+
+  // ---- the cast (web/sprites.json, drawn with common/inksprite.js) ----
+  const SP = {}; for (const k in SPRITES) SP[k] = InkSprite.make(SPRITES[k]);
+  const paleOf = sp => InkSprite.make({frames: sp.frames.map(f => f.map(r => r.replace(/[^K]/g, ".").replace(/K/g, "L"))), fps: sp.fps});
+  SP.orbiPale = paleOf(SP.orbi);   // the original kernel's pace, as a pale outline
+  SP.bitPale = paleOf(SP.bit);
+  document.querySelectorAll("img[data-ico]").forEach(im => {   // integer-scaled icons, pixelated
+    const sp = SP[im.dataset.ico], x = +(im.dataset.x || 1);
+    im.src = InkSprite.toDataURL(sp, 0, x); im.width = sp.w * x; im.height = sp.h * x;
+  });
+
+  // ---- the dish: canvas at device pixels, field smoothed, sprites at integer scales ----
+  const cv = $("cv"), ctx = cv.getContext("2d");
+  let D = cv.width;
+  const off = document.createElement("canvas"); off.width = off.height = N;
+  const octx = off.getContext("2d"), img = octx.createImageData(N, N), LUT = lut();
+  const w = makeWorld(), seedA = new Float64Array(N * N);
+  const st = {tool: "creature", shell: "ring", set: "o", seed: "d", playing: false, spf: reduce ? 1 : 2, br: 14,
+              ptr: null, mouse: false, down: false, kbd: {y: 128, x: 128}, kbdOn: false, drag: null, lastDir: [1, 0]};
+  const live = {mass: 0, count: 0};
+  const kcache = {};
+  function getK(shell, set) { const k = shell + set; if (!kcache[k]) kcache[k] = kernelFFT(kernelBlock(shell, set)); return kcache[k]; }
+  function fit() {
+    const r = cv.getBoundingClientRect(); if (!r.width) return;
+    const px = Math.max(256, Math.round(r.width * DPR()));
+    if (px !== cv.width) { cv.width = cv.height = px; D = px; compose(); }
+  }
+  function paintField() {
+    const A = w.A, d = img.data;
+    for (let i = 0; i < N * N; i++) { const q = Math.min(1023, (A[i] * 1023) | 0) * 3; d[i * 4] = LUT[q]; d[i * 4 + 1] = LUT[q + 1]; d[i * 4 + 2] = LUT[q + 2]; d[i * 4 + 3] = 255; }
+    octx.putImageData(img, 0, 0);
+  }
+
+  // ---- eyes on live Orbium-sized blobs: tracked from detection to detection, never invented ----
+  let tracks = [], fx = [], hints = [], seedHints = [], tid = 0, squeeze = 0, gaspUntil = 0, hopUntil = 0;
+  const tor = d => { d = ((d % N) + N) % N; return d >= N / 2 ? d - N : d; };
+  function addHint(y, x, t) { const h = STAMPS[t].heading, o = {y, x, hy: h[0], hx: h[1]}; hints.push(o); if (w.t === 0) seedHints.push(o); }
+  function ghost(tr, now) { if (fx.length < 60) fx.push({k: "ghost", y: tr.y, x: tr.x, t0: now}); gaspUntil = now + 1100; }
+  function track(kind) {   // "step" (the world moved), "edit" (a drop), "paint" (soup / erase strokes), "seed" (rebuild quietly)
+    const list = blobList(w.A), now = performance.now(), used = new Uint8Array(list.length), keep = [];
+    const stepped = kind === "step", quiet = kind === "seed";
+    if (quiet) tracks = [];
+    const nearest = (tr, R) => { let bi = -1, bd = R * R;
+      for (let i = 0; i < list.length; i++) { if (used[i]) continue; const dy = tor(list[i].y - tr.y), dx = tor(list[i].x - tr.x), d = dy * dy + dx * dx; if (d < bd) { bd = d; bi = i; } }
+      return bi; };
+    tracks.sort((a, b) => (a.lost == null ? 0 : 1) - (b.lost == null ? 0 : 1));
+    for (const tr of tracks) {
+      const i = nearest(tr, Math.min(40, 6 + 0.9 * Math.max(0, w.t - tr.t)));
+      if (i >= 0) {
+        const b = list[i], dt = w.t - tr.t; used[i] = 1;
+        if (dt > 0) { const vy = tor(b.y - tr.y) / dt, vx = tor(b.x - tr.x) / dt;
+          tr.vy = tr.vy == null ? vy : tr.vy * 0.7 + vy * 0.3; tr.vx = tr.vx == null ? vx : tr.vx * 0.7 + vx * 0.3; }
+        tr.y = b.y; tr.x = b.x; tr.t = w.t; tr.lost = null; keep.push(tr);
+        if (stepped && !tr.real && w.t - tr.born >= 30) { tr.real = true; if (fx.length < 60) fx.push({k: "sparkle", y: tr.y, x: tr.x, t0: now}); }
+      } else if (tr.lost != null) { if (stepped && w.t - tr.lost > 60) { if (tr.real) ghost(tr, now); } else keep.push(tr); }   // gone for 60 steps
+      else if (stepped) { tr.lost = w.t; keep.push(tr); }   // may just be crossing the dish's edge (the rule does not wrap)
+      else if (tr.real && (kind === "edit" || st.tool === "erase")) ghost(tr, now);
+    }
+    for (let i = 0; i < list.length; i++) {
+      if (used[i]) continue;
+      const b = list[i], h = hints.find(h => Math.hypot(tor(h.y - b.y), tor(h.x - b.x)) < 12);
+      const real = quiet || kind === "edit";   // seeded or dropped by you; others must last 30 steps to count as a creature
+      keep.push({id: ++tid, y: b.y, x: b.x, t: w.t, born: w.t, real, vy: null, vx: null, hy: h ? h.hy : 0, hx: h ? h.hx : 0, lost: null, blink: 0, nextBlink: now + 500 + Math.random() * 3500});
+      if (kind === "edit" && fx.length < 60) fx.push({k: "sparkle", y: b.y, x: b.x, t0: now});
+    }
+    hints = []; tracks = keep; live.count = list.length;
+  }
+  function gaze(tr) {   // eyes frame: 0 centre, 1..8 = E, SE, S, SW, W, NW, N, NE
+    let dy = tr.vy, dx = tr.vx;
+    if (dy == null || Math.hypot(dy, dx) < 0.08) { dy = tr.hy; dx = tr.hx; }
+    if (!dy && !dx) return 0;
+    return 1 + ((Math.round(Math.atan2(dy, dx) / (Math.PI / 4)) + 8) % 8);
+  }
+  function blinkTick(now) {
+    if (reduce) return false;
+    let ch = false;
+    for (const tr of tracks) { if (now > tr.nextBlink) { tr.blink = now + 150; tr.nextBlink = now + 2200 + Math.random() * 4500; ch = true; }
+      else if (tr.blink && now > tr.blink && now < tr.blink + 40) ch = true; }
+    return ch;
+  }
+
+  function compose(now) {
+    now = now || performance.now();
+    const s = D / N, k = DPR(), ts = Math.max(1, Math.round(2 * k)), es = Math.max(1, Math.round(s * 18 * 0.55 / 13));
+    ctx.imageSmoothingEnabled = true; ctx.drawImage(off, 0, 0, D, D);
+    for (const tr of tracks) if (tr.lost == null) InkSprite.draw(ctx, SP.eyes, now < tr.blink ? 9 : gaze(tr), (tr.x + 0.5) * s, (tr.y + 0.5) * s, es);
+    fx = fx.filter(f => {
+      const a = Math.max(0, (now - f.t0) / 1000), px = (f.x + 0.5) * s, py = (f.y + 0.5) * s;   // rAF time can precede t0
+      if (f.k === "sparkle") { if (a > 0.6) return false; InkSprite.draw(ctx, SP.sparkle, a < 0.3 ? 0 : 1, px, py - 10 * es, es); return true; }
+      if (f.k === "ghost") {
+        if (a > 1.7) return false;
+        const rise = Math.min(a, 1.35) * 10 * es;
+        if (a < 1.35) InkSprite.draw(ctx, SP.ghost, Math.floor(a * 6) % 2, px, py - rise, es);
+        else InkSprite.draw(ctx, SP.sparkle, 1, px, py - rise, es);
+        return true;
+      }
+      if (f.k === "drop") { if (a > 0.24) return false; InkSprite.draw(ctx, SP.drop, 0, px, py - (1 - a / 0.24) * 8 * ts, ts); return true; }
+      return false;
+    });
+    if (st.drag && st.tool === "creature") {   // aim arrow: ink on a paper halo, readable on empty and full cells
+      const {y0, x0, y1, x1} = st.drag, far = Math.hypot(y1 - y0, x1 - x0) > 2;
+      [[PAL.W, 7 * k], [PAL.K, 3 * k]].forEach(([col, lw]) => {
+        ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.beginPath(); ctx.arc((x0 + .5) * s, (y0 + .5) * s, 12 * s, 0, 2 * Math.PI); ctx.stroke();
+        if (far) { ctx.beginPath(); ctx.moveTo((x0 + .5) * s, (y0 + .5) * s); ctx.lineTo((x1 + .5) * s, (y1 + .5) * s); ctx.stroke(); }
+      });
+    }
+    const c = st.kbdOn ? {y: st.kbd.y + .5, x: st.kbd.x + .5} : st.ptr;
+    if (c && !st.drag) {
+      const r = (st.tool === "creature" ? 11 : st.br) * s;
+      ctx.lineWidth = 6 * k; ctx.strokeStyle = PAL.W; ctx.beginPath(); ctx.arc(c.x * s, c.y * s, r, 0, 2 * Math.PI); ctx.stroke();
+      ctx.lineWidth = 2 * k; ctx.strokeStyle = PAL.K; ctx.beginPath(); ctx.arc(c.x * s, c.y * s, r, 0, 2 * Math.PI); ctx.stroke();
+    }
+    const tp = st.drag && st.tool === "creature" ? {y: st.drag.y0 + .5, x: st.drag.x0 + .5} : (st.kbdOn || st.mouse || st.down) ? c : null;
+    if (tp) {
+      const name = {creature: "pipette", soup: "brush", erase: "eraser"}[st.tool], sp = SP[name], hot = SPRITES[name].hot;
+      const f = name === "pipette" ? (now < squeeze ? 1 : 0) : name === "brush" ? (st.down ? 1 : 0) : 0;
+      InkSprite.draw(ctx, sp, f, tp.x * s + (sp.w / 2 - hot[0]) * ts, tp.y * s + (sp.h / 2 - hot[1]) * ts, ts);
+    }
+  }
+  function readouts() {
+    let m = 0; for (let i = 0; i < N * N; i++) m += w.A[i];
+    live.mass = m;
+    $("l-t").textContent = w.t; $("l-m").textContent = m.toFixed(1); $("l-c").textContent = live.count;
+  }
+  function refresh(kind) { paintField(); track(kind); compose(); readouts(); }
+
+  // ---- playback (user-started only) ----
+  let raf = null, lastT = 0, stepsDone = 0;
+  function doStep() { if (w.t === 0) seedA.set(w.A); lstep(w); }
+  function loop(now) {
+    if (!st.playing) { raf = null; return; }   // paused since this frame was scheduled: take no more steps
+    for (let k = 0; k < st.spf; k++) doStep();
+    stepsDone += st.spf;
+    if (now - lastT > 1000) { $("l-r").textContent = Math.round(stepsDone * 1000 / (now - lastT)) + " steps/s"; lastT = now; stepsDone = 0; }
+    refresh("step");
+    raf = st.playing ? requestAnimationFrame(loop) : null;
+  }
+  function setPlaying(p) {
+    st.playing = p; $("play").textContent = p ? "Pause" : "Play"; $("play").setAttribute("aria-pressed", String(p));
+    if (p) hopUntil = performance.now() + 500;
+    if (p && !raf) { lastT = performance.now(); stepsDone = 0; raf = requestAnimationFrame(loop); }
+    if (!p) { if (raf) cancelAnimationFrame(raf); raf = null; $("l-r").textContent = "paused"; }   // Pause stops at once
+  }
+  $("play").addEventListener("click", () => setPlaying(!st.playing));
+  $("stepb").addEventListener("click", () => { setPlaying(false); doStep(); refresh("step"); });
+  $("reset").addEventListener("click", () => { setPlaying(false); if (w.t > 0) w.A.set(seedA); w.t = 0; hints = seedHints.slice(); refresh("seed"); toast("Back to step 0"); });
+  $("clear").addEventListener("click", () => { setPlaying(false); w.A.fill(0); seedA.fill(0); w.t = 0; st.seed = "c"; seedHints = []; refresh("seed"); });
+  $("spd").addEventListener("input", e => { st.spf = +e.target.value; $("spd-v").textContent = st.spf; });
+  $("br").addEventListener("input", e => { st.br = +e.target.value; $("br-v").textContent = st.br; compose(); });
+
+  // ---- painting: pipette (Orbium), brush (soup), eraser ----
+  function cellF(e) { const r = cv.getBoundingClientRect(); return {y: (e.clientY - r.top) / r.height * N, x: (e.clientX - r.left) / r.width * N}; }
+  function cell(e) { const p = cellF(e); return {y: Math.floor(p.y), x: Math.floor(p.x)}; }
+  const rnd = () => Math.random();
+  function changed(kind) { if (w.t === 0) seedA.set(w.A); refresh(kind); }
+  function drop(y, x, t) {
+    stamp(w.A, y, x, t); addHint(y, x, t);
+    const now = performance.now(); squeeze = now + 280; fx.push({k: "drop", y, x, t0: now});
+    changed("edit");
+  }
+  function setPointer(e) { st.mouse = e.pointerType === "mouse"; cv.classList.toggle("spr", st.mouse); st.ptr = cellF(e); }
+  cv.addEventListener("pointerdown", e => {
+    st.down = true; st.kbdOn = false; setPointer(e); cv.setPointerCapture(e.pointerId); const p = cell(e);
+    if (st.tool === "creature") { st.drag = {y0: p.y, x0: p.x, y1: p.y, x1: p.x}; compose(); }
+    else { brush(w.A, p.y, p.x, st.br, st.tool, rnd); changed("paint"); }
+  });
+  cv.addEventListener("pointermove", e => {
+    setPointer(e); const p = cell(e);
+    if (st.down && st.drag) { st.drag.y1 = p.y; st.drag.x1 = p.x; }
+    else if (st.down) { brush(w.A, p.y, p.x, st.br, st.tool, rnd); changed("paint"); return; }
+    if (!st.playing) compose();
+  });
+  function up() {
+    if (st.drag) {
+      const {y0, x0, y1, x1} = st.drag, dy = y1 - y0, dx = x1 - x0;
+      st.drag = null; drop(y0, x0, Math.hypot(dy, dx) > 2 ? aim(dy, dx) : Math.floor(Math.random() * 8));
+    }
+    st.down = false; compose();
+  }
+  cv.addEventListener("pointerup", up); cv.addEventListener("pointercancel", up);
+  cv.addEventListener("pointerleave", () => { st.ptr = null; if (!st.playing) compose(); });
+  cv.addEventListener("keydown", e => {
+    const m = {ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1]}[e.key];
+    if (m) { e.preventDefault(); st.kbdOn = true; st.lastDir = m; st.kbd.y = (st.kbd.y + m[0] * 8 + N) % N; st.kbd.x = (st.kbd.x + m[1] * 8 + N) % N; compose(); }
+    else if (e.key === "Enter") { e.preventDefault(); st.kbdOn = true;
+      if (st.tool === "creature") drop(st.kbd.y, st.kbd.x, aim(st.lastDir[0], st.lastDir[1]));
+      else { brush(w.A, st.kbd.y, st.kbd.x, st.br, st.tool, rnd); changed("paint"); } }
+  });
+  cv.addEventListener("blur", () => { st.kbdOn = false; compose(); });
+  document.addEventListener("keydown", e => {
+    if (e.target.closest && e.target.closest("input,textarea,select,button,summary,video,a")) return;
+    if (e.key === " ") { e.preventDefault(); setPlaying(!st.playing); }
+    else if (e.key === ".") { setPlaying(false); doStep(); refresh("step"); }
+    else if (e.key === "r" || e.key === "R") $("reset").click();
+  });
+  const hintsText = {creature: "Press and drag to aim, release to drop an Orbium.", soup: "Drag to spray random soup, as in Lenia's random starts.", erase: "Drag to erase."};
+  document.querySelectorAll("[data-tool]").forEach(b => b.addEventListener("click", () => {
+    st.tool = b.dataset.tool; document.querySelectorAll("[data-tool]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    $("hint").textContent = hintsText[st.tool]; compose();
+  }));
+
+  // ---- kernel lenses ----
+  const kimgCache = {};
+  function kernelImage(shell, set) {   // the engine's 32 x 32 block on the page colour map, normalised to its own peak
+    const key = shell + set; if (kimgCache[key]) return kimgCache[key];
+    const b = kernelBlock(shell, set), c = document.createElement("canvas"); c.width = c.height = BS;
+    const x = c.getContext("2d"), im = x.createImageData(BS, BS); let mx = 0; for (const v of b) mx = Math.max(mx, v);
+    for (let i = 0; i < BS * BS; i++) { const q = Math.min(1023, (b[i] / mx * 1023) | 0) * 3; im.data[i * 4] = LUT[q]; im.data[i * 4 + 1] = LUT[q + 1]; im.data[i * 4 + 2] = LUT[q + 2]; im.data[i * 4 + 3] = 255; }
+    x.putImageData(im, 0, 0); return (kimgCache[key] = c);
+  }
+  const lensEls = SETS.map(([v, label]) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "lens"; b.setAttribute("aria-pressed", "false");
+    b.setAttribute("aria-label", v === "o" ? "Original kernel, as sent to the engine" : "Kernel quantum-blurred at strength " + KJOBS[v].strength);
+    const c = document.createElement("canvas"); c.width = c.height = 34;
+    const n1 = document.createElement("span"); n1.className = "ln"; n1.textContent = label;
+    const n2 = document.createElement("span"); n2.className = "ls"; n2.textContent = v === "o" ? "as sent" : "18 qubits";
+    b.append(c, n1, n2);
+    b.addEventListener("click", () => { st.set = v; applyKernel(true);
+      if (!reduce) { b.classList.remove("pick"); void b.offsetWidth; b.classList.add("pick"); } });
+    $("g-set").appendChild(b); return [v, b, c];
+  });
+  function drawLenses() {
+    const k = DPR(), [gx, gy, gr] = SPRITES.lens.glass, sw = SP.lens.w;
+    for (const [v, b, c] of lensEls) {
+      const avail = b.clientWidth - 6; if (avail <= 0) continue;
+      const s = Math.max(1, Math.min(Math.round(3 * k), Math.floor(avail * k / sw)));
+      if (c.width !== sw * s) { c.width = c.height = sw * s; }
+      c.style.width = c.style.height = sw * s / k + "px";
+      const x = c.getContext("2d"); x.clearRect(0, 0, c.width, c.height);
+      const cx0 = gx * s, cy0 = gy * s, r = gr * s;
+      x.fillStyle = PAL.T; x.beginPath(); x.arc(cx0, cy0, r + s, 0, 2 * Math.PI); x.fill();
+      const side = Math.floor(r * Math.SQRT2) - s, x0 = Math.round(cx0 - side / 2), y0 = Math.round(cy0 - side / 2);
+      x.imageSmoothingEnabled = true; x.drawImage(kernelImage(st.shell, v), x0, y0, side, side);
+      x.strokeStyle = PAL.L; x.lineWidth = 1; x.strokeRect(x0 + .5, y0 + .5, side - 1, side - 1);
+      InkSprite.draw(x, SP.lens, 0, c.width / 2, c.height / 2, s);
+    }
+  }
+  function seg(id, items, get, set, what) {
+    const el = $(id);
+    items.forEach(([v, label]) => { const b = document.createElement("button"); b.type = "button"; b.textContent = label;
+      if (what) { b.setAttribute("aria-label", label + " " + what); b.title = label + " " + what; }   // "Step kernel shell", never the Step button
+      b.addEventListener("click", () => { set(v); applyKernel(true); }); el.appendChild(b); });
+    el._sync = () => [...el.children].forEach((b, i) => b.setAttribute("aria-pressed", String(get() === items[i][0])));
+  }
+  seg("g-shell", SHELLS, () => st.shell, v => st.shell = v, "kernel shell");
+
+  // ---- The data section: kernel heatmap, radial profile, every measured fate (always visible, follows the lab) ----
+  const kp = $("kprev").getContext("2d"), pc = $("kprof"), pctx = pc.getContext("2d");
+  function drawKernel() {
+    kp.clearRect(0, 0, BS, BS); kp.drawImage(kernelImage(st.shell, st.set), 0, 0);
+    const b = kernelBlock(st.shell, st.set), po = profile(kernelBlock(st.shell, "o")), pn = profile(b), W = 480, H = 224, pad = 30;   // drawn in 480 x 224 units at 2x for sharp text
+    pctx.setTransform(pc.width / W, 0, 0, pc.height / H, 0, 0);
+    const top = Math.max(...po, ...pn) * 1.1;
+    pctx.fillStyle = "#FFFFFF"; pctx.fillRect(0, 0, W, H);
+    pctx.strokeStyle = PAL.K; pctx.lineWidth = 2; pctx.beginPath(); pctx.moveTo(pad, H - pad); pctx.lineTo(W - 8, H - pad); pctx.stroke();
+    pctx.fillStyle = PAL.B; pctx.font = "500 17px 'IBM Plex Mono', monospace"; pctx.fillText("DISTANCE FROM CENTRE (CELLS) 0 → 23", pad, H - 6);
+    const line = (p, col, dash) => { pctx.setLineDash(dash); pctx.strokeStyle = col; pctx.lineWidth = 3; pctx.beginPath();
+      p.forEach((v, i) => { const x = pad + i / 23 * (W - pad - 8), y = H - pad - v / top * (H - pad - 14); i ? pctx.lineTo(x, y) : pctx.moveTo(x, y); }); pctx.stroke(); pctx.setLineDash([]); };
+    if (st.set === "o") line(po, PAL.K, []); else { line(po, PAL.L, [8, 6]); line(pn, PAL.K, []); }
+    pctx.textAlign = "right"; pctx.fillStyle = PAL.K; pctx.fillText(st.set === "o" ? "ORIGINAL" : "BLURRED", W - 10, 26);
+    pctx.fillStyle = PAL.B; pctx.fillText(st.set === "o" ? "" : "- - ORIGINAL", W - 10, 50); pctx.textAlign = "left";
+  }
+  const fateCells = [];   // built once; a press loads that shell and kernel into the lab and the dish
+  (function () {
+    const t = $("fates");
+    const h = t.insertRow(); ["shell", "original", "blur 0.25", "blur 0.5", "blur 1.0"].forEach(x => { const th = document.createElement("th"); th.textContent = x; h.appendChild(th); });
+    SHELLS.forEach(([sh, name]) => {
+      const tr = t.insertRow(); tr.insertCell().textContent = name;
+      SETS.forEach(([set, setName]) => { const d = DYN.orbium[sh + "|" + DYNKEY[set]], td = tr.insertCell(), b = document.createElement("button");
+        b.type = "button"; b.className = "fcell";
+        b.textContent = d.fate === "glides" ? "glides " + d.speed.toFixed(2) : d.fate === "fills the world" ? "floods" : d.fate;
+        b.title = "Load " + setName + " · " + name + " into the lab and the dish";
+        b.addEventListener("click", () => { st.shell = sh; st.set = set; applyKernel(true); toast(setName + " · " + name + " kernel is now in the dish" + (st.playing ? "." : ". Press Play to watch.")); });
+        td.appendChild(b); fateCells.push([sh, set, td, b]); });
+    });
+  })();
+  function buildFates() {
+    for (const [sh, set, td, b] of fateCells) { const on = sh === st.shell && set === st.set; td.className = on ? "cur" : ""; b.setAttribute("aria-pressed", String(on)); }
+  }
+  $("to-data").addEventListener("click", () => { const d = $("data"); d.scrollIntoView({behavior: reduce ? "auto" : "smooth", block: "start"}); d.focus({preventScroll: true}); });
+
+  // ---- the fate strip: Orbi replays the measured fate for this kernel and shell ----
+  const stripB = $("strip"), sc = $("strip-c"), sx = sc.getContext("2d"), SH = 34, UPS = 55;   // strip units per second per cell/step
+  let ss = 2, sw = 240, run = null;
+  const fateNow = () => ({d: DYN.orbium[st.shell + "|" + DYNKEY[st.set]], o: DYN.orbium[st.shell + "|orig"]});
+  const stripT = () => Math.max(2, (sw - 44) / (fateNow().o.speed * UPS));   // the original kernel's crossing time
+  function stripFit() {
+    const k = DPR(), wpx = $("v-scene").clientWidth - 2; if (wpx <= 0) return;
+    ss = Math.max(2, Math.round(2 * k)); sw = Math.floor(wpx * k / ss);
+    sc.width = sw * ss; sc.height = SH * ss; sc.style.width = sc.width / k + "px"; sc.style.height = sc.height / k + "px";
+    stripDraw(run ? Math.max(0, (performance.now() - run.t0) / 1000) : Infinity);
+  }
+  function startStrip() { run = reduce ? null : {t0: performance.now()}; stripDraw(run ? 0 : Infinity); }
+  function stripFrame(now) { if (!run) return; const a = Math.max(0, (now - run.t0) / 1000); if (a > stripT() + 2.2) { run = null; stripDraw(Infinity); } else stripDraw(a); }
+  function hash(i) { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+  function stripDraw(a) {
+    const {d, o} = fateNow(), s = ss, U = v => Math.round(v * s), T = stripT(), tt = Math.min(a, T + 2.2), x0 = 22, cy = 17.5;
+    const at = (v, t) => x0 + v * UPS * Math.min(t, T), blurred = st.set !== "o", ft = a === Infinity ? 0 : tt;
+    sx.imageSmoothingEnabled = false; sx.fillStyle = PAL.W; sx.fillRect(0, 0, sc.width, sc.height);
+    sx.fillStyle = PAL.L; for (let x = 0; x < sw; x += 2) sx.fillRect(U(x), U(31), s, s);
+    sx.fillStyle = PAL.T; for (let x = 2; x < sw; x += 20) sx.fillRect(U(x), U(32), s, U(2));
+    let tag;
+    if (d.fate === "glides") {
+      if (blurred) InkSprite.draw(sx, SP.orbiPale, InkSprite.frameAt(SP.orbiPale, ft), U(at(o.speed, tt)), U(cy), s);
+      const slow = d.speed < 0.75 * o.speed, sp = slow ? SP.orbiSleepy : SP.orbiHappy;
+      InkSprite.draw(sx, sp, InkSprite.frameAt(sp, ft), U(at(d.speed, tt)), U(cy), s);
+      tag = "Measured pace: <b>" + d.speed.toFixed(2) + " cells/step</b>" + (blurred ? " &middot; pale outline: original " + o.speed.toFixed(2) : "");
+    } else if (d.fate === "breaks up") {
+      InkSprite.draw(sx, SP.orbiPale, InkSprite.frameAt(SP.orbiPale, ft), U(at(o.speed, tt)), U(cy), s);
+      const tb = 0.5 * T, xb = at(d.speed, Math.min(tt, tb));
+      if (tt < tb) InkSprite.draw(sx, SP.orbiSleepy, InkSprite.frameAt(SP.orbiSleepy, ft), U(xb), U(cy), s);
+      else if (tt < tb + 0.5) InkSprite.draw(sx, SP.orbiXX, 0, U(xb), U(cy), s);
+      else { const q = Math.min(1, (tt - tb - 0.5) / 1.3), sp = q < 1 ? SP.bit : SP.bitPale;
+        [[-15, -7], [13, -10], [4, 8]].forEach(([dx, dy], i) => InkSprite.draw(sx, sp, i, U(xb + dx * q), U(cy + 4 + dy * q), s)); }
+      tag = "Measured: <b>breaks up</b>, no Orbium-sized creature left after 2,000 steps";
+    } else {
+      const q = a === Infinity ? 1 : Math.min(1, tt / (0.6 * T)), ox = x0 + 18, reach = q * sw * 1.05;
+      let n = 0;
+      for (let y = 4; y <= 26; y += 7) for (let x = 2; x < sw; x += 9) {
+        const jx = x + Math.round(hash(++n) * 5), jy = y + Math.round(hash(n + 999) * 3);
+        if (Math.abs(jx - ox) <= reach * (0.75 + 0.25 * hash(n + 7))) InkSprite.draw(sx, SP.bit, n % 3, U(jx), U(jy), s);
+      }
+      for (let x = 0; x < sw; x += 8) if (Math.abs(x - ox) <= reach) InkSprite.draw(sx, SP.wave, Math.floor(ft * 2 + x / 8) % 2, U(x + 4), U(31), s);
+      if (q < 0.85) InkSprite.draw(sx, SP.orbiDizzy, InkSprite.frameAt(SP.orbiDizzy, ft), U(ox), U(cy - 2 * Math.sin(ft * 5)), s);
+      tag = "Measured: <b>life floods the dish</b>, mass " + Math.round(d.mass).toLocaleString("en-US") + " (Orbium is " + Math.round(o.mass) + ")";
+    }
+    $("strip-tag").innerHTML = tag;
+  }
+  stripB.addEventListener("click", startStrip);
+
+  function applyKernel(user) {
+    w.K = getK(st.shell, st.set);
+    lensEls.forEach(([v, b]) => b.setAttribute("aria-pressed", String(v === st.set))); $("g-shell")._sync();
+    const label = SETS.find(s => s[0] === st.set)[1] + " · " + SHELLS.find(s => s[0] === st.shell)[1];
+    $("k-name").textContent = label; $("d-name").textContent = label; $("tape").textContent = "QL-17 · " + label + " kernel";
+    const j = KJOBS[st.set];
+    $("r-eng").textContent = j ? "Atlas blur-core-v1 · classical statevector simulator" : "none: the classical kernel we sent";
+    $("r-job").textContent = j ? j.job_id : "– (input of all three jobs)";
+    $("r-par").textContent = j ? "strength " + j.strength + " · reach 0 · style x · axes [1, 2]" : "radius R 13 · peak 1";
+    $("r-q").textContent = j ? "18 qubits, engine-reported: [4, 256, 256] = 2 + 8 + 8" : "not blurred (the input of the 18-qubit jobs)";
+    $("fate").innerHTML = "";
+    const f = document.createElement("span"); f.textContent = fateText(st.shell, st.set);
+    const sm = document.createElement("small"); sm.textContent = "Measured: one Orbium, 2,000 steps, μ 0.15, σ 0.015.";
+    $("fate").append(f, sm);
+    drawLenses(); drawKernel(); buildFates();
+    if (user) startStrip(); else stripDraw(Infinity);
+    compose();
+  }
+
+  // ---- growth ----
+  function setGrowth(mu, sigma) { w.mu = mu; w.sigma = sigma; $("mu").value = mu; $("sg").value = sigma; $("mu-v").textContent = mu.toFixed(3); $("sg-v").textContent = sigma.toFixed(4); }
+  $("mu").addEventListener("input", e => setGrowth(+e.target.value, w.sigma));
+  $("sg").addEventListener("input", e => setGrowth(w.mu, +e.target.value));
+  $("orbium").addEventListener("click", () => setGrowth(0.15, 0.015));
+
+  // ---- snapshot plates ----
+  const miniSrc = InkSprite.toDataURL(SP.mini, 0, 1);
+  const tiles = [["norig", "orig", "Plate A", "Un-blurred colony", "classical snapshot · 528 × 528 world"],
+                 ["nq25", "q25", "Plate B", "Blurred · strength 0.25", ""], ["nq50", "q50", "Plate C", "Blurred · strength 0.5", ""]];
+  const tileEls = [];
+  tiles.forEach(([code, key, plate, t1, t2]) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "tile"; b.setAttribute("aria-pressed", "false");
+    const tape = document.createElement("span"); tape.className = "ptape"; tape.textContent = plate; tape.setAttribute("aria-hidden", "true");
+    const pl = document.createElement("div"); pl.className = "plate";
+    const c = document.createElement("canvas"); c.width = c.height = 128;
+    const s = u16(SNAP[key]), cx = c.getContext("2d"), im = cx.createImageData(128, 128);
+    for (let i = 0; i < 128 * 128; i++) { const q = Math.min(1023, (s[i] / 65535 * 1023) | 0) * 3; im.data[i * 4] = LUT[q]; im.data[i * 4 + 1] = LUT[q + 1]; im.data[i * 4 + 2] = LUT[q + 2]; im.data[i * 4 + 3] = 255; }
+    cx.putImageData(im, 0, 0); pl.appendChild(c);
+    const j = SJOBS[key], rg = DYN.regrow[{orig: "orig", q25: "s0.25", q50: "s0.5"}[key]]["1000"].creatures;
+    const d = document.createElement("div"); d.style.display = "grid"; d.style.gap = ".35rem"; d.style.minWidth = "0";
+    const a1 = document.createElement("span"); a1.className = "t1"; a1.textContent = t1;
+    const a2 = document.createElement("span"); a2.className = "t2";
+    a2.textContent = (j ? "blur-core-v1 job " + j.job_id + " · 20 qubits (engine-reported) · reach 0" : t2) + " · our run: " + rg + " creature" + (rg === 1 ? "" : "s") + " left at t 1,000 (original kernel)";
+    const rr = document.createElement("span"); rr.className = "regrow"; rr.setAttribute("aria-hidden", "true"); rr.title = rg + " creature" + (rg === 1 ? "" : "s") + " left at t 1,000";
+    for (let i = 0; i < rg; i++) { const m = document.createElement("img"); m.src = miniSrc; m.alt = ""; m.className = "ico"; m.width = SP.mini.w * 2; m.height = SP.mini.h * 2; rr.appendChild(m); }
+    d.append(a1, a2, rr); b.append(tape, pl, d);
+    b.addEventListener("click", () => loadSeed(code));
+    $("tiles").appendChild(b); tileEls.push([code, b]);
+  });
+  function loadSeed(code, quiet) {
+    setPlaying(false); st.seed = code; w.t = 0; seedHints = []; hints = [];
+    if (code === "d") { seedScene(w.A); for (const [y, x, t] of SCENE) addHint(y + 10, x + 10, t); }
+    else if (code === "c") w.A.fill(0); else seedSnap(w.A, code.slice(1));
+    seedA.set(w.A); tileEls.forEach(([c, b]) => b.setAttribute("aria-pressed", String(c === code)));
+    refresh("seed");
+    if (!quiet && code[0] === "n") { toast("Loaded into the live world, paused. Press Play."); $("stage").scrollIntoView({behavior: reduce ? "auto" : "smooth", block: "center"}); }
+  }
+
+  // ---- Orbi, the mascot: idles, hops on Play, gasps at a ghost, gets dizzy when the live dish floods ----
+  const mc = $("mascot-c"), mx = mc.getContext("2d");
+  let ms = 3, lastMascot = "", fact = 0;
+  function mascotFit() { const k = DPR(); ms = Math.max(2, Math.round(3 * k)); mc.width = 32 * ms; mc.height = 30 * ms; mc.style.width = mc.width / k + "px"; mc.style.height = mc.height / k + "px"; lastMascot = ""; }
+  function drawMascot(now) {
+    const sp = now < gaspUntil ? SP.orbiGasp : live.mass > 4000 ? SP.orbiDizzy : st.playing ? SP.orbiHappy : SP.orbi;
+    const f = InkSprite.frameAt(sp, Math.max(0, now) / 1000);
+    const hop = !reduce && now < hopUntil ? Math.round(Math.sin((1 - (hopUntil - now) / 500) * Math.PI) * 4) : 0;
+    const key = sp.id + ":" + f + ":" + hop + ":" + mc.width;
+    if (key === lastMascot) return;
+    lastMascot = key; mx.clearRect(0, 0, mc.width, mc.height); InkSprite.draw(mx, sp, f, mc.width / 2, (17 - hop) * ms, ms);
+  }
+  const o0 = DYN.orbium["ring|orig"], o5 = DYN.orbium["ring|s0.5"], fl = ["ring", "bell", "poly", "step"].filter(sh => DYN.orbium[sh + "|s1.0"].fate === "fills the world").length;
+  const FACTS = ["I'm Orbium. Under my own ring kernel I glide " + o0.speed.toFixed(2) + " cells per step (measured).",
+    "Blur my sense of touch at strength 0.5 and I still glide, at " + o5.speed.toFixed(2) + " cells per step.",
+    "At strength 1.0 life floods the dish in " + fl + " of 4 kernel shells we measured.",
+    "My kernel's blur ran on Atlas's classical simulator, on an 18-qubit register. No QPU."];
+  $("mascot").addEventListener("click", () => { hopUntil = performance.now() + 500; toast(FACTS[fact++ % FACTS.length]); });
+
+  // ---- jobs table ----
+  (function () {
+    const rows = [["kernel bank", "[4, 256, 256]", "18", "0.25", KJOBS.q25], ["kernel bank", "[4, 256, 256]", "18", "0.5", KJOBS.q50],
+                  ["kernel bank", "[4, 256, 256]", "18", "1.0", KJOBS.q100], ["snapshot", "528 × 528", "20", "0.25", SJOBS.q25], ["snapshot", "528 × 528", "20", "0.5", SJOBS.q50]];
+    const t = $("jobs"), h = t.insertRow(); ["grid", "shape", "qubits", "strength", "job (completed, Atlas simulator)"].forEach(x => { const th = document.createElement("th"); th.textContent = x; h.appendChild(th); });
+    rows.forEach(r => { const tr = t.insertRow(); [r[0], r[1], r[2], r[3], r[4].job_id].forEach(x => { tr.insertCell().textContent = x; }); });
+  })();
+
+  // ---- share ----
+  $("share").addEventListener("click", async () => {
+    const seed = st.seed[0] === "n" || st.seed === "c" ? st.seed : "d";
+    history.replaceState(null, "", "#" + token({shell: st.shell, set: st.set, mu: w.mu, sigma: w.sigma, seed}));
+    try { await navigator.clipboard.writeText(location.href); toast("Link copied: kernel, growth and seed (not your painting)"); }
+    catch (e) { toast("Copy failed: the link is in your address bar"); }
+  });
+
+  // ---- one quiet ticker: idle blinks, effects, Orbi and the fate strip (rAF pauses in hidden tabs) ----
+  function tick(now) {
+    const blink = blinkTick(now);
+    if (!st.playing && (fx.length || now < squeeze + 40 || blink)) compose(now);
+    drawMascot(now); stripFrame(now);
+    requestAnimationFrame(tick);
+  }
+  function relayout() { fit(); mascotFit(); drawLenses(); stripFit(); }
+  let lastW = -1;   // relayout on width changes only, one frame later (no ResizeObserver loops)
+  if (typeof ResizeObserver !== "undefined") new ResizeObserver(es => { const wd = Math.round(es[0].contentRect.width); if (wd !== lastW) { lastW = wd; requestAnimationFrame(relayout); } }).observe(document.querySelector(".hero"));
+  else addEventListener("resize", relayout);
+
+  // ---- start: paused, default scene or the shared setup ----
+  mascotFit(); fit();
+  const tk = parseToken(location.hash);
+  if (tk) { st.shell = tk.shell; st.set = tk.set; setGrowth(tk.mu, tk.sigma); loadSeed(tk.seed, true); } else { setGrowth(0.15, 0.015); loadSeed("d", true); }
+  applyKernel(false); stripFit();
+  requestAnimationFrame(tick);
+})();
+</script>

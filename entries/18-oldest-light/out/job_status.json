@@ -1,0 +1,76 @@
+{
+ "89f0fcee-3faf-458a-82cf-af8f174ec435": {
+  "status": "failed",
+  "progress": {
+   "detail": "Recovered 19-qubit grid from measurement",
+   "step": "done"
+  },
+  "error": {
+   "message": "[TMPRL1103] Attempted to upload payloads with size that exceeded the error limit.",
+   "retryable": true,
+   "type": "internal_error"
+  },
+  "submitted_at": "2026-10-05T05:37:14Z",
+  "updated_at": "2026-10-05T05:37:47Z"
+ },
+ "a59bf7d4-258b-43ad-9982-0125c9ae6872": {
+  "status": "completed",
+  "progress": {
+   "detail": "Recovered 18-qubit grid from measurement",
+   "step": "done"
+  },
+  "error": null,
+  "submitted_at": "2026-10-05T05:38:07Z",
+  "updated_at": "2026-10-05T05:38:19Z"
+ },
+ "ff75e0b7-bab6-4cc3-b791-ac4f9d24572d": {
+  "status": "completed",
+  "progress": {
+   "detail": "Recovered 18-qubit grid from measurement",
+   "step": "done"
+  },
+  "error": null,
+  "submitted_at": "2026-10-05T05:39:08Z",
+  "updated_at": "2026-10-05T05:39:22Z"
+ },
+ "af742a15-9f88-4498-855c-6e80129d53ca": {
+  "status": "completed",
+  "progress": {
+   "detail": "Recovered 18-qubit grid from measurement",
+   "step": "done"
+  },
+  "error": null,
+  "submitted_at": "2026-10-05T05:39:33Z",
+  "updated_at": "2026-10-05T05:39:43Z"
+ },
+ "22c0d516-8879-4f61-ae09-dd09eb7bc07b": {
+  "status": "completed",
+  "progress": {
+   "detail": "Recovered 18-qubit grid from measurement",
+   "step": "done"
+  },
+  "error": null,
+  "submitted_at": "2026-10-05T05:40:19Z",
+  "updated_at": "2026-10-05T05:40:31Z"
+ },
+ "6e16e69e-0a69-4344-ac82-fb1f3e9068e2": {
+  "status": "completed",
+  "progress": {
+   "detail": "Recovered 18-qubit grid from measurement",
+   "step": "done"
+  },
+  "error": null,
+  "submitted_at": "2026-10-05T05:40:46Z",
+  "updated_at": "2026-10-05T05:41:00Z"
+ },
+ "06bc5198-da3c-4722-93c1-e0642b39693e": {
+  "status": "completed",
+  "progress": {
+   "detail": "Recovered 18-qubit grid from measurement",
+   "step": "done"
+  },
+  "error": null,
+  "submitted_at": "2026-10-05T05:41:11Z",
+  "updated_at": "2026-10-05T05:41:24Z"
+ }
+}

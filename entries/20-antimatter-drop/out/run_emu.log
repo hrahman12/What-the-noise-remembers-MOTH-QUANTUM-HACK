@@ -1,0 +1,4 @@
+  comet-qrng-v1: submitted c07b1b4e-ec07-4def-8f51-dfb16765626f
+  comet-qrng-v1: done c07b1b4e in 23.2s
+  emu_20p0: c07b1b4e-ec07-4def-8f51-dfb16765626f backend=aer qubits=20 bytes=8423 S=None grade=simulator-baseline
+spent for 20-antimatter-drop: 10 of 12 credits

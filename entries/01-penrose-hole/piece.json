@@ -1,0 +1,33 @@
+{
+ "slug": "01-penrose-hole",
+ "challenge": "01",
+ "bonus": false,
+ "title": "The Hole in the Penrose",
+ "hook": "Tear a hole in a pattern that never repeats.",
+ "sub": "A 20-qubit quantum blur scrambles a hole in a Penrose tiling. You put the pattern back, tile by tile.",
+ "you_control": [
+  "Fly the mender moth over the hole to paint tiles back",
+  "Move the hole to any of nine computed positions",
+  "Wipe to compare with the original",
+  "Flip through the 12-job parameter sweep and share your view"
+ ],
+ "engines": [
+  "blur-v1"
+ ],
+ "qubits": 20,
+ "qubits_note": "541 px hole bounding box -> ceil(log2 541) x 2 = 20 qubits, blur-v1's maximum (documented rule)",
+ "hardware": null,
+ "jobs": 30,
+ "credits_spent": 30,
+ "deliverables": [
+  "hero.png",
+  "PARAMS.md",
+  "sweep.png",
+  "web/index.html"
+ ],
+ "web_entry": "web/index.html",
+ "status": "built",
+ "honesty": "blur-v1 runs on Atlas's classical statevector simulator; the repair is classical geometry; Atlas did not run an error-correcting code.",
+ "blockers": [],
+ "mascot": "web/img/mascot.png"
+}

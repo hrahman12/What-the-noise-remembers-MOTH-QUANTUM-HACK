@@ -1,0 +1,2143 @@
+<title>Sauna vs Fridge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+/*BRAND*/
+/* SAUNA vs FRIDGE, an arcade showdown. The sauna's fighter is a hardware p-bit drawn as the real object: a
+   stochastic magnetic tunnel junction nanopillar. The fridge's fighter is a dilution refrigerator "chandelier" whose
+   plates are the level map. Both are hand-written SVG engravings in the shared ink palette (O = heat only). */
+[hidden]{display:none!important}
+.wrap{max-width:78rem;margin-inline:auto}
+.nw{white-space:nowrap}
+img.px{image-rendering:pixelated;image-rendering:crisp-edges}
+.intro{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:.9rem 2.5rem;align-items:end;padding-block:1.3rem 1.1rem}
+.intro .lead{display:grid;gap:.6rem}
+.kicker{font:500 .74rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+h1{font-size:clamp(2rem,4.2vw,3.5rem);line-height:1.02;letter-spacing:-.025em}
+.intro .copy{display:grid;gap:.85rem}
+.sub{font-size:1rem;color:var(--ink-2);max-width:56ch}
+.sub em{font-style:normal;color:var(--ink)}
+
+/* ---------- engravings ---------- */
+.eng{display:block;width:100%;height:auto;overflow:visible}
+.eng .ol{fill:none;stroke:var(--ink);stroke-width:1.3;stroke-linejoin:round;stroke-linecap:round}
+.eng .ol2{fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.eng .hl{fill:none;stroke:var(--ink);stroke-width:.75}
+.eng .sh{stroke:var(--ink-2);stroke-width:.55;fill:none}
+.eng .thin{stroke:var(--ink-2);stroke-width:.7;fill:none}
+.eng .wire{stroke:var(--ink);stroke-width:1.1;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.eng .pap{fill:var(--paper)}
+.eng .pan{fill:var(--panel)}
+.eng .ink{fill:var(--ink)}
+.eng .ink2{fill:var(--ink-2)}
+.eng .lbl{font:500 11.5px var(--mono);fill:var(--ink-2);letter-spacing:.01em}
+.eng .lbl.b{fill:var(--ink);font-weight:500}
+.eng .lbl.s{font-size:9.5px}
+.eng .tmp{font:400 15px var(--display);fill:var(--ink);letter-spacing:-.01em}
+.eng .ldr{stroke:var(--ink-2);stroke-width:.7;fill:none}
+.eng .halo{paint-order:stroke;stroke:var(--panel);stroke-width:3.2px;stroke-linejoin:round}
+.eng .heat{fill:none;stroke:var(--warn);stroke-width:1.3;stroke-linecap:round}
+.eng .fl{transition:transform .22s cubic-bezier(.3,1.5,.5,1)}
+.eng .fl.dn{transform:rotate(180deg)}
+.eng .trace{fill:none;stroke:var(--ink);stroke-width:1.2;stroke-linejoin:miter}
+.eng .tcur{stroke:var(--warn);stroke-width:1.4}
+.eng .lv circle.n{fill:var(--panel);stroke:var(--ink-3);stroke-width:1.4}
+.eng .lv text{font:500 10px var(--mono);fill:var(--ink-3);text-anchor:middle;dominant-baseline:central}
+.eng .lv.done circle.n{fill:var(--ink-2);stroke:var(--ink-2)}
+.eng .lv.done text,.eng .lv.cur text{fill:var(--on-ink)}
+.eng .lv.skip circle.n{stroke:var(--ink-2);stroke-dasharray:2.5 2}
+.eng .lv.skip text{fill:var(--ink-2)}
+.eng .lv.cur circle.n{fill:var(--ink);stroke:var(--ink)}
+.eng .lv .ring{fill:none;stroke:var(--ink);stroke-width:1.2;opacity:0}
+.eng .lv.cur .ring{opacity:1;animation:ring 1.6s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes ring{0%{transform:scale(.8);opacity:.9}100%{transform:scale(1.7);opacity:0}}
+.eng .plate.cur .face{stroke-width:2.4}
+.eng .path{fill:none;stroke:var(--ink-3);stroke-width:1;stroke-dasharray:3 3}
+.eng .probe{transition:transform .9s cubic-bezier(.5,0,.3,1)}
+.eng .can.hot .glint{animation:glint 1.1s ease-in-out infinite}
+.eng .glint{fill:none;stroke:var(--ink);stroke-width:1.2;opacity:0}
+@keyframes glint{0%,100%{opacity:0}50%{opacity:.85}}
+.eng .frost{stroke:var(--ink-3);stroke-width:.8;fill:none}
+.eng .tw{animation:tw 3.2s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.25}50%{opacity:1}}
+.eng .heat{animation:shimmer 2.4s ease-in-out infinite}
+@keyframes shimmer{0%{transform:translateY(3px);opacity:.35}50%{opacity:1}100%{transform:translateY(-5px);opacity:.35}}
+.eng.compact .lbl,.eng.compact .ldr,.eng.compact .tmp,.eng.compact .cap-txt{display:none}
+.eng.sidev .lbl.s,.eng.sidev .cap-txt{display:none}
+.eng.sidev .lbl.s.keep{display:inline;font-size:12px}
+.eng.sidev .tmp{font-size:17px}
+
+/* ---------- the arena ---------- */
+.stage{background:var(--panel);border:1px solid var(--ink);padding:clamp(.6rem,1.6vw,1rem);display:grid;gap:.9rem;min-width:0;position:relative}
+.seg{border-radius:18px}
+.toolbar{display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;align-items:center;justify-content:space-between}
+.tool{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;min-width:0}
+.dialtool{gap:.4rem;flex-wrap:nowrap}
+.dial{width:88px;height:66px;padding:0;border:0;background:transparent;cursor:grab;touch-action:none;border-radius:12px;flex:none}
+.dial:active{cursor:grabbing}
+.dial:disabled{cursor:not-allowed;opacity:.45}
+.dial svg{display:block;width:100%;height:100%}
+.dial .ring{fill:none;stroke:var(--rule);stroke-width:1.5}
+.dial .tk{stroke:var(--ink-3);stroke-width:2}
+.dial .tk.on{stroke:var(--ink)}
+.dial text{font:500 9px var(--mono);fill:var(--ink-2)}
+.dial text.on{fill:var(--ink)}
+.dial .kn{fill:var(--panel);stroke:var(--ink);stroke-width:2}
+.dial .kn2{fill:var(--panel-2);stroke:var(--ink-3);stroke-width:1}
+.dial .ptr{fill:var(--ink)}
+.dial .knob{transform-box:view-box;transform-origin:42px 36px;transition:transform .35s cubic-bezier(.3,1.5,.5,1)}
+.dial:hover:not(:disabled) .kn{fill:var(--panel-2)}
+.dial-txt{display:grid;gap:.1rem;line-height:1.15}
+.dial-txt b{font:400 1.3rem/1 var(--display);letter-spacing:-.01em}
+.dial-txt small{font:500 .68rem/1.2 var(--mono);color:var(--ink-2)}
+.lockline{font:500 .7rem/1.3 var(--mono);color:var(--ink-2);max-width:26ch}
+
+/* VS title card */
+.vs{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,214px) minmax(0,1fr);grid-template-rows:auto auto 1fr;gap:1rem;align-items:start;position:relative}
+.vs>.sauna{grid-column:1;grid-row:1/-1}.vs>.fridge{grid-column:3;grid-row:1/-1}.vs>.vs-mid{grid-column:2;grid-row:1}.vs>.startrow{grid-column:2;grid-row:2}.vs>.howline{grid-column:2;grid-row:3}
+.fcard figure .eng{max-width:430px;margin-inline:auto}
+.fcard{border:1px solid var(--ink);background:var(--paper);display:grid;align-content:start;min-width:0}
+.fcard .band{background:var(--ink);color:var(--on-ink);font:500 .72rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;padding:.6rem .8rem;display:flex;justify-content:space-between;gap:.5rem}
+.fcard .nm{padding:.7rem .9rem 0;display:grid;gap:.1rem}
+.fcard .nm b{font:300 clamp(2.1rem,4.4vw,3.4rem)/.95 var(--display);letter-spacing:-.03em;text-transform:uppercase}
+.fcard .nm span{font:500 .74rem/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.fcard figure{margin:0;padding:.3rem .7rem 0}
+.fcard.sauna .nm{text-align:left}
+.fcard.fridge .nm{text-align:right}
+.stats{margin:0;padding:.6rem .9rem .8rem;display:grid;grid-template-columns:auto minmax(0,1fr);gap:.2rem .7rem;font:400 .76rem/1.4 var(--mono);color:var(--ink-2);border-top:1px solid var(--rule)}
+.stats dt{text-transform:uppercase;letter-spacing:.08em;color:var(--ink)}
+.stats dd{margin:0}
+.vs-mid{display:grid;justify-items:center;gap:.6rem;padding-top:5.2rem}
+.vs-badge{width:92px;height:92px;border-radius:50%;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;font:500 2.3rem/1 var(--display);letter-spacing:-.04em;position:relative;transform:rotate(-8deg)}
+.vs-badge::before,.vs-badge::after{content:"";position:absolute;width:150%;height:2px;background:var(--ink);left:-25%}
+.vs-badge::before{top:18%}.vs-badge::after{bottom:18%}
+.vs-mid small{font:500 .66rem/1.35 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);text-align:center;max-width:11ch}
+.startrow{display:flex;flex-direction:column;gap:.7rem;align-items:stretch;justify-content:center}
+.startrow .seg{justify-content:center}
+.btn.big{font:500 1.15rem/1 var(--display);letter-spacing:.06em;text-transform:uppercase;padding:1.05rem 1.2rem;min-height:60px;justify-content:center}
+.btn.big .blink{display:inline-block;width:.6em}
+@media (prefers-reduced-motion:no-preference){.btn.big .blink{animation:blink 1.1s steps(2,start) infinite}}
+@keyframes blink{to{visibility:hidden}}
+.howline{text-align:center;font-size:.86rem;line-height:1.45;color:var(--ink-2)}
+.howline b{color:var(--ink);font-weight:500}
+
+/* play screen */
+.play{display:grid;grid-template-columns:minmax(0,290px) minmax(0,1fr) minmax(0,290px);gap:1rem;position:relative;align-items:start}
+.side{border:1px solid var(--rule);background:var(--paper);padding:.65rem;display:grid;gap:.45rem;align-content:start;min-width:0}
+.side h3{font:500 .74rem/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;display:flex;justify-content:space-between;gap:.4rem}
+.side h3 span{color:var(--ink-2)}
+.side .note{font-size:.8rem;line-height:1.38;color:var(--ink-2)}
+.side .note b{color:var(--ink);font-weight:500}
+.center{display:grid;gap:.65rem;min-width:0;position:relative}
+.hud{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.45rem .8rem;align-items:center;border:1px solid var(--ink);padding:.6rem .75rem;background:var(--paper)}
+.hud .stg{font:400 1.3rem/1.1 var(--display);letter-spacing:-.01em;min-width:0}
+.hud .stg small{display:block;font:500 .66rem/1.3 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.scorebox{display:flex;gap:.9rem;align-items:baseline;justify-content:flex-end}
+.scorebox span{display:grid;justify-items:end;font:500 .62rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.scorebox b{font:400 1.45rem/1 var(--display);letter-spacing:-.01em;color:var(--ink);font-variant-numeric:tabular-nums}
+.scorebox .mult b{min-width:2.2ch;text-align:right}
+.scorebox .mult.hot b{color:var(--ink);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+.scorebox .hpbar{display:flex;gap:3px;height:1.45rem;align-items:center}
+.hpbar i{width:11px;height:16px;border:1.5px solid var(--ink);background:var(--ink);transition:background .25s}
+.hpbar i.gone{background:var(--panel);border-style:dashed;border-color:var(--ink-3)}
+.bossart{display:grid;grid-template-columns:minmax(0,150px) minmax(0,1fr);gap:.9rem;align-items:center}
+.bossart .eng{max-width:150px}
+.bossart dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:.2rem .6rem;font:400 .76rem/1.4 var(--mono);color:var(--ink-2)}
+.bossart dt{text-transform:uppercase;letter-spacing:.08em;color:var(--ink)}
+.bossart dd{margin:0}
+.descent{display:flex;flex-wrap:wrap;gap:.25rem;align-items:center;font:500 .62rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.descent i{font-style:normal;padding:.28rem .4rem;border:1px solid var(--rule);border-radius:99px}
+.descent i.done{color:var(--ink-2);border-color:var(--ink-2)}
+.descent i.skip{color:var(--ink-2);border-style:dashed;border-color:var(--ink-2)}
+.descent i.cur{color:var(--on-ink);background:var(--ink);border-color:var(--ink)}
+.descent em{font-style:normal;color:var(--ink-3)}
+.pips{display:flex;gap:4px;justify-content:flex-end}
+.pips i{width:13px;height:13px;border-radius:50%;border:1.5px solid var(--ink-3);display:inline-grid;place-items:center;font:600 9px/1 var(--mono);font-style:normal;color:var(--ink)}
+.pips i.ok{background:var(--ink);border-color:var(--ink)}
+.pips i.no{border-color:var(--ink)}
+.pips i.no::after{content:"\00d7"}
+.pips i.to{border-color:var(--ink-2);border-style:dashed}
+.pips i.now{border-color:var(--ink);outline:1.5px solid var(--ink-3);outline-offset:1.5px}
+.timerow{grid-column:1/-1;display:flex;gap:.6rem;align-items:center}
+.timer{flex:1;height:12px;border:1.5px solid var(--ink);border-radius:99px;position:relative;overflow:hidden;background:var(--panel)}
+.timer i{position:absolute;inset:0 auto 0 0;background:var(--ink);width:100%}
+.timer.warn i{animation:warnbar .5s steps(2,start) infinite}
+@keyframes warnbar{to{opacity:.45}}
+.secs{font:500 .82rem/1 var(--mono);min-width:5.2ch;text-align:right;font-variant-numeric:tabular-nums}
+.hbtn{border:1px solid var(--ink);background:var(--panel);color:var(--ink);border-radius:99px;padding:.45rem .75rem;font:500 .7rem/1 var(--mono);letter-spacing:.04em;cursor:pointer;min-height:32px}
+.hbtn:hover{background:var(--tint)}
+.hbtn[aria-pressed="true"]{background:var(--ink);color:var(--on-ink)}
+.srcchip{grid-column:1/-1;font:500 .68rem/1.35 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);border-top:1px solid var(--rule);padding-top:.45rem}
+.srcchip b{color:var(--ink);font-weight:500}
+.board-wrap{position:relative;border:1px solid var(--ink);background:var(--panel)}
+#board{display:block;width:100%;height:auto}
+#board .bd{stroke:var(--ink-3);stroke-width:1.5}
+#board .bd.br{stroke:var(--ink);stroke-width:2;stroke-dasharray:6 4.5}
+#board .mg .o{fill:var(--paper);stroke:var(--ink);stroke-width:1.6}
+#board .mg .i{fill:none;stroke:var(--ink-3);stroke-width:.9}
+#board .mg .arw{transition:transform .17s cubic-bezier(.3,1.5,.5,1)}
+#board .mg .arw path{fill:var(--ink);stroke:var(--ink);stroke-width:1.2;stroke-linejoin:round;transition:fill .17s}
+#board .mg.dn .arw{transform:rotate(180deg)}
+#board .mg.dn .arw path{fill:var(--paper)}
+#board .bg{fill:url(#e-grid)}
+.board-cap{position:absolute;left:.5rem;top:.45rem;font:500 .64rem/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);pointer-events:none}
+.board-cap b{color:var(--ink);font-weight:500}
+.callout{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);pointer-events:none;text-align:center;display:grid;gap:.15rem;opacity:0;z-index:2}
+.callout b{font:500 clamp(2rem,6vw,3.6rem)/1 var(--display);letter-spacing:-.02em;text-transform:uppercase;color:var(--ink);background:var(--panel);padding:.1em .35em;border:3px solid var(--ink);white-space:nowrap}
+.callout small{font:500 .82rem/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);background:var(--panel);justify-self:center;padding:.15rem .5rem}
+.callout.heat b{border-color:var(--warn);color:var(--warn)}
+.callout.cold b{border-style:double;border-width:5px}
+.callout.pop{animation:pop 1.15s cubic-bezier(.2,1.4,.4,1) forwards}
+@keyframes pop{0%{opacity:0;transform:translate(-50%,-50%) scale(1.5)}14%{opacity:1;transform:translate(-50%,-50%) scale(1)}78%{opacity:1}100%{opacity:0;transform:translate(-50%,-60%) scale(1)}}
+.stamp{position:absolute;right:.6rem;bottom:.6rem;z-index:2;pointer-events:none;border:3px double var(--ink);color:var(--ink);background:var(--panel);padding:.35rem .7rem;transform:rotate(-6deg);display:grid;gap:.1rem;text-align:center}
+.stamp b{font:500 1.3rem/1 var(--display);letter-spacing:.06em;text-transform:uppercase}
+.stamp small{font:500 .62rem/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.stamp.heat{border-color:var(--warn)}
+.stamp.heat b{color:var(--warn)}
+.transport{display:flex;flex-wrap:wrap;gap:.45rem .6rem;align-items:center}
+.transport .hbtn{min-width:40px}
+.transport .pos{font:400 .76rem/1.3 var(--mono);color:var(--ink-2);min-width:0}
+.transport .pos b{color:var(--ink);font-weight:500}
+#tape{display:block;width:100%;height:84px;cursor:pointer;border:1px solid var(--rule);background:var(--panel)}
+.tapecap{display:flex;justify-content:space-between;gap:.6rem;font:500 .62rem/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.guess{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.gbtn{display:flex;align-items:center;justify-content:center;gap:.6rem;min-height:66px;border:2px solid var(--ink);background:var(--panel);color:var(--ink);border-radius:999px;cursor:pointer;font:500 1.25rem/1 var(--display);letter-spacing:.05em;text-transform:uppercase;padding:.6rem 1rem}
+.gbtn:hover:not(:disabled){background:var(--tint)}
+.gbtn img{height:34px;width:auto;flex:none}
+.gbtn small{display:block;font:500 .66rem/1.2 var(--mono);letter-spacing:.06em;text-transform:none;color:var(--ink-2)}
+.gbtn span{display:grid;gap:.2rem;text-align:left}
+.gbtn kbd{font:500 .68rem/1 var(--mono);border:1px solid currentColor;border-radius:4px;padding:.15rem .3rem;opacity:.7}
+.gbtn:disabled{cursor:default;color:var(--ink-3);border-color:var(--rule)}
+.gbtn:disabled img{opacity:.35}
+.gbtn[aria-pressed="true"]:disabled{color:var(--ink);border-color:var(--ink);border-style:dashed}
+.gbtn[aria-pressed="true"]:disabled img{opacity:1}
+.nextrow{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center;justify-content:space-between;min-height:3rem}
+.verdict{font-size:.92rem;color:var(--ink);flex:1 1 18rem}
+.verdict b{font-weight:600}
+.verdict .ok{color:var(--good)}
+.verdict .no{color:var(--warn)}
+.btn kbd{font:500 .66rem/1 var(--mono);opacity:.75;border:1px solid currentColor;border-radius:4px;padding:.12rem .28rem}
+/* chance meter */
+.meter{border-top:1px solid var(--ink);padding-top:.6rem;display:grid;gap:.4rem}
+.meter-h{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;flex-wrap:wrap}
+.meter-h .label{color:var(--ink)}
+.gauge{position:relative;height:30px;margin-inline:6px}
+.gauge .trk{position:absolute;left:0;right:0;top:12px;height:6px;border:1.5px solid var(--ink);border-radius:99px;background:var(--panel)}
+.gauge .zone{position:absolute;top:12px;height:6px;background:var(--ink-3);border-radius:0 99px 99px 0;right:0}
+.gauge .mk{position:absolute;top:6px;height:18px;border-left:1.5px dashed var(--ink-2)}
+.gauge .mk span{position:absolute;top:19px;left:0;transform:translateX(-50%);font:500 .58rem/1 var(--mono);color:var(--ink-2);white-space:nowrap}
+.gauge .ndl{position:absolute;top:2px;width:0;height:26px;transition:left .5s cubic-bezier(.3,1.3,.5,1)}
+.gauge .ndl::before{content:"";position:absolute;left:-7px;top:0;border:7px solid transparent;border-top:9px solid var(--ink)}
+.gauge .ndl::after{content:"";position:absolute;left:-1px;top:8px;width:2px;height:14px;background:var(--ink)}
+.gends{display:flex;justify-content:space-between;font:500 .6rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);margin-top:.5rem}
+.mtext{font-size:.86rem;color:var(--ink-2);line-height:1.45}
+.mtext b{color:var(--ink);font-weight:500}
+/* overlays inside the center column */
+.ovl{position:absolute;inset:0;z-index:4;background:rgba(251,250,249,.94);display:grid;place-items:center;padding:1rem;overflow:auto}
+.ovl .card{background:var(--panel);border:1.5px solid var(--ink);max-width:34rem;width:100%;display:grid;gap:.7rem;padding:1.1rem 1.2rem}
+.ovl .card h2{font:300 clamp(1.9rem,4vw,2.7rem)/1 var(--display);letter-spacing:-.02em;text-transform:uppercase}
+.ovl .card p{color:var(--ink-2);font-size:.92rem}
+.ovl .card p b{color:var(--ink);font-weight:500}
+.ovl .row{display:flex;flex-wrap:wrap;gap:.5rem}
+.ovl table{border-collapse:collapse;font:400 .78rem/1.4 var(--mono);color:var(--ink-2);width:100%}
+.ovl td,.ovl th{border-top:1px solid var(--rule);padding:.25rem .4rem;text-align:left}
+.ovl th{font-weight:500;color:var(--ink)}
+.nocase{text-transform:none}
+.unlock{border:1px dashed var(--ink);padding:.55rem .7rem;font-size:.84rem;color:var(--ink-2)}
+.unlock b{color:var(--ink);font-weight:500}
+/* particles + shake */
+#fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}
+.shake{animation:shake .34s cubic-bezier(.36,.07,.19,.97)}
+.thud{animation:thud .3s ease-out}
+@keyframes shake{10%,90%{transform:translate(-2px,1px)}20%,80%{transform:translate(4px,-2px)}30%,50%,70%{transform:translate(-6px,2px)}40%,60%{transform:translate(6px,-1px)}}
+@keyframes thud{30%{transform:translateY(5px)}60%{transform:translateY(-2px)}}
+@media (prefers-reduced-motion:reduce){.shake,.thud{animation:none}.eng .heat,.eng .tw,.eng .lv.cur .ring,.eng .can.hot .glint{animation:none}.eng .fl,#board .mg .arw,.eng .probe{transition:none}.callout.pop{animation:none;opacity:1}}
+
+/* data view */
+.fp{display:grid;gap:1rem}
+.fp-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:.8rem}
+.fp-head h3{font-size:clamp(1.5rem,3vw,2.2rem)}
+.fp-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+.dcard{margin:0}
+.maps{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.maps figure{margin:0;display:grid;gap:.3rem}
+.maps canvas{border:1px solid var(--rule)}
+.maps figcaption{font:500 .7rem/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.dcard{background:var(--panel);border:1px solid var(--rule);padding:1rem;display:grid;gap:.6rem;align-content:start;min-width:0}
+.dcard h3{font-size:1.25rem}
+.dcard canvas{width:100%;display:block}
+#c-edge,#c-mag{height:220px}
+.cap{font-size:.85rem;color:var(--ink-2)}
+.insp{margin:0;font:400 .74rem/1.4 var(--mono);color:var(--ink-2);min-height:2.8em;overflow-wrap:anywhere}
+.insp b{color:var(--ink);font-weight:500}
+.dcard canvas{cursor:crosshair;touch-action:manipulation}
+.dcard canvas:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:.35rem .9rem;font:500 .72rem/1.3 var(--mono);color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:.35rem}
+.sw{width:11px;height:11px;border-radius:99px;display:inline-block;flex:none}
+.sw.p{background:var(--ink)}
+.sw.q{border:2px solid var(--ink)}
+.sw.x{background:var(--ink-3);border-radius:0;height:3px;width:14px}
+.sw.t{border:1.5px solid var(--ink-2);border-radius:0;width:8px;height:8px}
+.fstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:.6rem}
+.stat{background:var(--panel);border:1px solid var(--rule);padding:.65rem .8rem;display:grid;gap:.15rem}
+.stat.p{border-color:var(--ink)}
+.stat .v{font:400 1.5rem/1.1 var(--display);letter-spacing:-.01em;font-variant-numeric:tabular-nums;color:var(--ink)}
+.stat .k{font:500 .68rem/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.stat .n{font-size:.78rem;color:var(--ink-2)}
+.why{background:var(--panel);border:1px solid var(--rule);border-inline-start:3px solid var(--ink);padding:1rem 1.1rem;display:grid;gap:.6rem;max-width:80ch}
+.why h3{font-size:1.35rem}
+.why p{color:var(--ink-2)}
+.why p b{color:var(--ink);font-weight:500}
+.tick{display:inline-flex;align-items:center;gap:.4rem;font:500 .74rem/1.2 var(--mono);color:var(--ink-2);cursor:pointer}
+.tick input{accent-color:var(--ink);width:1rem;height:1rem}
+
+/* lab cards */
+.labcards{display:grid;gap:.8rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(14.5rem,1fr));gap:.6rem}
+.lcard{border:1px solid var(--rule);background:var(--panel);padding:.75rem .85rem;display:grid;gap:.35rem;align-content:start;min-height:7.5rem}
+.lcard .no{font:500 .62rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);display:flex;justify-content:space-between}
+.lcard h3{font-size:1.05rem}
+.lcard p{font-size:.82rem;line-height:1.42;color:var(--ink-2)}
+.lcard.locked{border-style:dashed;background:var(--paper)}
+.lcard.locked h3{color:var(--ink-3)}
+.lcard.new{border-color:var(--ink);outline:2px solid var(--ink);outline-offset:-3px}
+
+/* below the stage */
+.below{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:1.25rem 2.5rem;padding-block:1.4rem .5rem;align-items:start}
+.howto{display:grid;gap:.8rem}
+.howto h3{font-size:1.5rem}
+.steps{display:grid;gap:.6rem;counter-reset:s;margin:0;padding:0;list-style:none}
+.steps li{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:.6rem;align-items:baseline;font-size:.95rem}
+.steps li b{font-weight:600}
+.steps li::before{counter-increment:s;content:counter(s);font:500 .8rem/1.6 var(--mono);color:var(--on-ink);background:var(--ink);border-radius:99px;width:1.6rem;height:1.6rem;display:grid;place-items:center}
+.panel{display:grid;gap:.85rem;background:var(--panel);border:1px solid var(--rule);padding:1.1rem 1.2rem}
+.row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.row .label{min-width:7rem}
+.readout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.25rem .9rem;font:400 .76rem/1.5 var(--mono);color:var(--ink-2);margin:0;border-top:1px solid var(--rule);padding-top:.85rem}
+.readout dt{white-space:nowrap}
+.readout dd{margin:0;min-width:0}
+.readout b{color:var(--ink);font-weight:500;overflow-wrap:anywhere}
+.toast{position:fixed;left:50%;top:1rem;transform:translateX(-50%);max-width:calc(100vw - 32px);text-align:center;line-height:1.3;background:var(--ink);color:var(--on-ink);font:500 .85rem/1 var(--mono);padding:.8rem 1.1rem;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9}
+.toast.on{opacity:1}
+.manual{display:grid;gap:.4rem}
+.manual[hidden]{display:none}
+.manual-text{width:100%;min-width:0;font:400 .72rem/1.3 var(--mono);color:var(--ink);background:var(--panel);border:1px solid var(--rule);padding:.55rem .6rem}
+.manual-text:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.live{display:grid;gap:.9rem;padding-block:1.5rem;border-top:1px solid var(--ink)}
+.live h2{font-size:clamp(1.6rem,3vw,2.3rem)}
+.live .status{font:400 .8rem/1.5 var(--mono);color:var(--ink-2);overflow-wrap:anywhere}
+.live code{font:400 .9em/1 var(--mono);color:var(--ink)}
+/* titled sections below the arena: one solid ink bar each, like the brief pages */
+.toc{font:400 .76rem/1.7 var(--mono);color:var(--ink-2)}
+.toc a{color:var(--ink);text-underline-offset:3px}
+.sec{margin-top:2.5rem}
+.sec .ink-bar{flex-wrap:wrap;gap:.4rem 1rem}
+.ink-bar h2{font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;margin:0}
+.sec-body{display:grid;gap:1rem;padding:1.3rem 0 .4rem;color:var(--ink-2);max-width:72ch}
+.sec-body.wide{max-width:none}
+.sec-body.wide>p{max-width:76ch}
+.sec-body h3{font:400 1.3rem/1.2 var(--display);color:var(--ink)}
+.sec>details.drawer:first-of-type{border-top:0}
+.sec .body code,.sec-body code{font:400 .85em/1 var(--mono);color:var(--ink)}
+.sec .body ul{margin:0;padding-inline-start:1.1rem;display:grid;gap:.35rem}
+.sec .steps li{color:var(--ink)}
+.dnote{font-size:.9rem;line-height:1.5;color:var(--ink-2);max-width:76ch}
+.keys{font:400 .78rem/1.6 var(--mono);color:var(--ink-2);border-top:1px solid var(--rule);padding-top:.8rem}
+.keys b{color:var(--ink);font-weight:500}
+.tolink{text-decoration:none;display:inline-flex;align-items:center;box-sizing:border-box;min-height:34px}
+.databody{display:grid;gap:1rem;background:var(--panel);border:1px solid var(--ink);border-top:0;padding:clamp(.75rem,2vw,1.1rem);min-width:0}
+.subbar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.3rem 1rem;border:1px solid var(--ink);padding:.6rem .8rem;font:500 .7rem/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.dctl{display:flex;flex-wrap:wrap;gap:.6rem 1.4rem;align-items:center}
+.dctl .lockline{max-width:none}
+.scroll{overflow-x:auto;max-width:100%}
+table.jobs{border-collapse:collapse;font:400 .74rem/1.4 var(--mono);width:100%;color:var(--ink-2)}
+table.jobs th,table.jobs td{border-bottom:1px solid var(--rule);padding:.42rem .5rem;text-align:left;vertical-align:middle}
+table.jobs th{color:var(--ink);font-weight:500;letter-spacing:.04em}
+table.jobs td b{color:var(--ink);font-weight:500}
+table.jobs code{font:inherit;color:var(--ink);overflow-wrap:anywhere}
+table.jobs .hbtn{min-height:30px;padding:.35rem .7rem}
+#jobs-t{min-width:48rem}
+#pbits-t{min-width:36rem}
+.credits{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.45rem 1rem;margin:0;font-size:.88rem}
+.credits dt{font:500 .7rem/1.7 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.credits dd{margin:0}
+/* the classic board: the earlier guessing board, 16 tiles at once */
+.cl-hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);grid-template-areas:'stage copy' 'stage side';gap:1.1rem 2.2rem;align-items:start;padding-top:1.3rem}
+.cl-hero>.cl-stage{grid-area:stage}.cl-hero>.cl-copy{grid-area:copy}.cl-hero>.cl-side{grid-area:side}
+.cl-stage{display:grid;gap:.9rem;background:var(--panel);border:1px solid var(--ink);padding:clamp(.75rem,2vw,1.1rem);min-width:0}
+.stage-top{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:space-between}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(4px,1vw,8px)}
+.tile{position:relative;margin:0;border:1px solid var(--rule);background:var(--panel);aspect-ratio:1/1;overflow:hidden;padding:0;cursor:default}
+.tile:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.tile canvas{display:block;width:100%;height:100%}
+.tile{cursor:pointer}
+.tile.pin::after{content:"pinned";position:absolute;left:0;top:0;background:var(--ink);color:var(--on-ink);font:500 .55rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:.25rem .35rem}
+.tiles[data-reveal="pbit"] .tile{border-color:var(--ink);outline:2px solid var(--ink);outline-offset:-3px}
+.tiles[data-reveal="qubit"] .tile{border-color:var(--ink);outline:2px dashed var(--ink);outline-offset:-3px}
+.bitline{font:400 .74rem/1.3 var(--mono);color:var(--ink-2);min-height:1.3em;overflow-wrap:anywhere}
+.bitline b{color:var(--ink);font-weight:500;letter-spacing:.08em}
+.cl-guess{display:grid;gap:.6rem;border-top:1px solid var(--rule);padding-top:.9rem}
+.cl-guess .q{font:400 1.25rem/1.25 var(--display);letter-spacing:-.01em}
+#cl-verdict{min-height:1.5em;flex:none}
+.btn .glyph{width:.7rem;height:.7rem;border-radius:99px;display:inline-block;border:1.5px solid currentColor;flex:none}
+.btn.pb .glyph{background:currentColor}
+.score{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .8rem;font:500 .72rem/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.score b{color:var(--ink);font-weight:500}
+.dots{display:flex;flex-wrap:wrap;gap:4px;max-width:100%}
+.dots i{width:10px;height:10px;border-radius:99px;border:1.5px solid var(--ink-3);display:block}
+.dots i.y{background:var(--ink);border-color:var(--ink)}
+.cl-copy{display:grid;gap:1rem;min-width:0}
+.cl-h{font-size:clamp(1.7rem,3.4vw,2.6rem);line-height:1.02;letter-spacing:-.025em}
+.cl-copy .sub{font-size:1.02rem;max-width:46ch}
+.cl-side .row .label{min-width:7.5rem}
+.anat{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;max-width:none!important}
+.anat figure{margin:0;border:1px solid var(--rule);background:var(--panel);padding:.6rem;display:grid;gap:.4rem}
+.anat figcaption{font-size:.8rem;color:var(--ink-2)}
+details.drawer .body.wide{max-width:none}
+
+@media (max-width:1120px){.play{grid-template-columns:minmax(0,230px) minmax(0,1fr) minmax(0,230px)}}
+@media (max-width:1100px){.fp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){.fp-grid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:900px){
+  .intro{grid-template-columns:minmax(0,1fr);padding-block:1.1rem .9rem}
+  .wrap{display:flex;flex-direction:column}
+  .intro,.intro .copy{display:contents}
+  .intro .lead{padding-top:1rem}
+  .intro .sub{margin-block:.7rem 1rem}
+  .proof{order:1;margin-top:1.1rem}
+  .toc{order:1}
+  .sec,.live,.wtnr-nav,.wtnr-foot{order:2}
+  .cl-hero{grid-template-columns:minmax(0,1fr);grid-template-areas:'copy' 'stage' 'side'}
+  .play{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .center{grid-column:1/-1;order:-1}
+  .below{grid-template-columns:minmax(0,1fr)}
+  .anat{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:700px){
+  .vs{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.5rem}
+  .vs-mid{position:absolute;left:50%;top:-13px;transform:translateX(-50%);padding:0;z-index:2}
+  .vs-mid small{display:none}
+  .vs-badge{width:56px;height:56px;font-size:1.45rem;border:4px solid var(--panel)}
+  .vs-badge::before,.vs-badge::after{display:none}
+  .fcard .band .long{display:none}
+  .fcard .band{font-size:.6rem;padding:.5rem .55rem;letter-spacing:.1em}
+  .fcard .nm{padding:.5rem .55rem 0}
+  .fcard .nm b{font-size:1.75rem}
+  .fcard .nm span{font-size:.6rem}
+  .fcard figure{padding:.2rem .3rem 0}
+  .stats{grid-template-columns:minmax(0,1fr);gap:0 .4rem;padding:.45rem .55rem .6rem;font-size:.68rem}
+  .stats dt{margin-top:.25rem}
+  .stats .opt{display:none}
+  .vs>.sauna,.vs>.fridge{grid-row:1}.vs>.sauna{grid-column:1}.vs>.fridge{grid-column:2}
+  .vs>.startrow,.vs>.howline{grid-column:1/-1}.vs>.startrow{grid-row:2}.vs>.howline{grid-row:3}
+  .startrow{flex-direction:row;flex-wrap:wrap;justify-content:center}
+  .startrow .btn.big{width:100%}
+  .fcard .band .bt{display:none}
+  .fcard.fridge .band{justify-content:flex-end}
+  .vs>.vs-mid{grid-column:1/-1;grid-row:1}
+  .side{padding:.45rem}
+  .side .note{font-size:.74rem}
+  .side h3{flex-wrap:wrap;gap:.1rem .4rem;font-size:.66rem;letter-spacing:.1em}
+  .side h3 span{white-space:nowrap}
+}
+@media (max-width:520px){
+  .toolbar{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.55rem .6rem;align-items:center}
+  .toolbar>#to-data{grid-row:1;grid-column:1;justify-self:start}
+  .toolbar>.dialtool{grid-row:1;grid-column:2;justify-self:end}
+  .toolbar>#g-graph{grid-row:2;grid-column:1/-1;justify-self:start}
+  .toolbar>.lockline{grid-row:3;grid-column:1/-1;max-width:none}
+  .dial{width:74px;height:56px}
+  .dial-txt b{font-size:1.1rem}
+  .hud{padding:.5rem .55rem;gap:.35rem .5rem}
+  .descent{grid-column:1/-1;gap:3px;font-size:.56rem;letter-spacing:.04em}
+  .descent i{padding:.24rem .34rem}
+  .descent em{display:none}
+  .pips{justify-content:flex-start;grid-column:1/-1}
+  .hud .stg{font-size:1.1rem}
+  .scorebox{gap:.6rem}
+  .scorebox b{font-size:1.2rem}
+  .srcchip{font-size:.6rem}
+  .transport .bits{display:none}
+  #tape{height:64px}
+  .stamp{padding:.2rem .45rem;right:.35rem;bottom:.35rem}
+  .stamp small{font-size:.52rem}
+  .gbtn{font-size:1.05rem;gap:.4rem;padding:.5rem .55rem;min-height:68px}
+  .gbtn img{height:28px}
+  .gbtn kbd{display:none}
+  .callout b{font-size:1.7rem;border-width:2.5px}
+  .stamp b{font-size:.92rem}
+}
+@media (max-width:700px){.toast{top:auto;bottom:1rem}}
+@media (max-width:560px){.bossart{grid-template-columns:minmax(0,1fr)}.bossart .eng{max-width:190px;margin-inline:auto}}
+@media (max-width:520px){.credits{grid-template-columns:minmax(0,1fr)}.credits dd{margin-bottom:.4rem}}
+@media (max-width:420px){.btn{padding:.7rem .85rem}.seg button{padding:.55rem .6rem}.row .label,.cl-side .row .label{min-width:0;width:100%}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <pattern id="e-hh" width="4" height="3" patternUnits="userSpaceOnUse"><rect width="4" height="3" fill="#FBFAF9"/><line x1="0" y1="1.5" x2="4" y2="1.5" stroke="#545BA9" stroke-width=".6"/></pattern>
+    <pattern id="e-hd" width="4" height="2.2" patternUnits="userSpaceOnUse"><rect width="4" height="2.2" fill="#FBFAF9"/><line x1="0" y1="1.1" x2="4" y2="1.1" stroke="#545BA9" stroke-width=".85"/></pattern>
+    <pattern id="e-hl" width="5" height="4" patternUnits="userSpaceOnUse"><rect width="5" height="4" fill="#FBFAF9"/><line x1="0" y1="2" x2="5" y2="2" stroke="#A1A4CE" stroke-width=".7"/></pattern>
+    <pattern id="e-vh" width="2.6" height="4" patternUnits="userSpaceOnUse"><rect width="2.6" height="4" fill="#FBFAF9"/><line x1="1.3" y1="0" x2="1.3" y2="4" stroke="#545BA9" stroke-width=".8"/></pattern>
+    <pattern id="e-xh" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="#FBFAF9"/><line x1="0" y1="0" x2="0" y2="5" stroke="#545BA9" stroke-width=".8"/><line x1="0" y1="0" x2="5" y2="0" stroke="#545BA9" stroke-width=".8"/></pattern>
+    <pattern id="e-dot" width="3.4" height="3.4" patternUnits="userSpaceOnUse"><rect width="3.4" height="3.4" fill="#D3D3E6"/><circle cx=".85" cy=".85" r=".6" fill="#19238E"/><circle cx="2.55" cy="2.55" r=".6" fill="#545BA9"/></pattern>
+    <pattern id="e-gold" width="7" height="2.6" patternUnits="userSpaceOnUse"><rect width="7" height="2.6" fill="#FBFAF9"/><line x1="0" y1="1.3" x2="7" y2="1.3" stroke="#A1A4CE" stroke-width=".7"/></pattern>
+    <pattern id="e-golddk" width="7" height="1.8" patternUnits="userSpaceOnUse"><rect width="7" height="1.8" fill="#FBFAF9"/><line x1="0" y1=".9" x2="7" y2=".9" stroke="#545BA9" stroke-width=".7"/></pattern>
+    <pattern id="e-grid" width="24" height="24" patternUnits="userSpaceOnUse"><rect width="24" height="24" fill="#FFFFFF"/><circle cx="12" cy="12" r=".9" fill="#D3D3E6"/></pattern>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <nav class="wtnr-bar"><a href="https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa">What the Noise Remembers</a><span class="count"><b>Challenge 08</b> · Lose</span></nav>
+
+  <header class="intro">
+    <div class="lead">
+      <p class="kicker">Challenge 08 · Make a web app · Arcade</p>
+      <h1>Call the noise: sauna or fridge?</h1>
+    </div>
+    <div class="copy">
+      <p class="sub"><em>An arcade showdown on one 20-spin Ising problem.</em> p-bit samples (THRML software modelling room-temperature thermal noise) against 20-qubit shots from graph-v1: Atlas's emulator on the way down, and real ibm_fez hardware, kept in a fridge colder than space, as the boss. Call each envelope against the clock and descend the dilution fridge plate by plate.</p>
+      <div class="proof" id="proof"></div>
+      <p class="toc">On this page: <a href="#how-to-play">How to play</a> · <a href="#data">The data</a> · <a href="#classic">The classic board</a> · <a href="#cards-sec">Lab cards</a> · <a href="#made">How it was made</a> · <a href="#science">The science</a> · <a href="#claims">What this does not claim</a> · <a href="#jobs">Jobs and credits</a></p>
+    </div>
+  </header>
+
+  <section class="stage" id="arena" aria-label="Sauna vs fridge arcade">
+    <div class="toolbar">
+      <a class="hbtn tolink" id="to-data" href="#data">The data &darr;</a>
+      <div class="seg" role="group" aria-label="Graph" id="g-graph"></div>
+      <div class="tool dialtool">
+        <button type="button" class="dial" id="j-dial" aria-describedby="j-help">
+          <svg viewBox="0 0 84 64" aria-hidden="true">
+            <path class="ring" d="M16.6 45.2 A27 27 0 1 1 67.4 45.2"/>
+            <g id="j-ticks"></g>
+            <g class="knob" id="j-knob"><circle cx="42" cy="36" r="17" class="kn"/><circle cx="42" cy="36" r="11.5" class="kn2"/><rect x="40.5" y="20" width="3" height="11" rx="1.2" class="ptr"/></g>
+          </svg>
+        </button>
+        <div class="dial-txt" id="j-help"><span class="label">Coupling J</span><b id="j-val">0.4</b><small id="j-word">turn the dial</small></div>
+      </div>
+      <p class="lockline" id="lockline" hidden>Boss round: the boss picks the problem. Only these two have real hardware shots.</p>
+    </div>
+
+    <!-- title: the versus card -->
+    <div class="vs" id="vs">
+      <article class="fcard sauna" aria-label="Fighter one: the sauna's p-bit">
+        <div class="band"><span>Fighter 1<span class="long"> · the sauna</span></span><span class="bt">~300 K</span></div>
+        <div class="nm"><b>Sauna</b><span>p-bit · stochastic magnetic tunnel junction</span></div>
+        <figure id="vs-mtj"></figure>
+        <dl class="stats">
+          <dt>Noise</dt><dd>thermal: kT ≈ 26 meV at room temperature</dd>
+          <dt class="opt">Move</dt><dd class="opt">its free layer flips on its own, as fast as nanoseconds</dd>
+          <dt class="opt">Readout</dt><dd class="opt">parallel = low resistance, antiparallel = high</dd>
+          <dt>Here</dt><dd><b>THRML</b> software on a laptop CPU, not an MTJ chip</dd>
+        </dl>
+      </article>
+      <div class="vs-mid" aria-hidden="true"><div class="vs-badge">VS</div><small>same 20-spin Ising problem</small></div>
+      <article class="fcard fridge" aria-label="Fighter two: the fridge's qubits">
+        <div class="band"><span class="bt">~10–20 mK</span><span>Fighter 2<span class="long"> · the fridge</span></span></div>
+        <div class="nm"><b>Fridge</b><span>qubits · dilution refrigerator</span></div>
+        <figure id="vs-dr"></figure>
+        <dl class="stats">
+          <dt>Noise</dt><dd>Born-rule measurement, plus decoherence on real chips</dd>
+          <dt class="opt">Move</dt><dd class="opt">prepared by gates, random only when measured</dd>
+          <dt class="opt">Cold</dt><dd class="opt">gold-plated copper plates, coldest at the bottom</dd>
+          <dt>Here</dt><dd><b>Atlas emulator</b> (plates 1–4, a classical simulation) · <b>ibm_fez</b> hardware (the boss)</dd>
+        </dl>
+      </article>
+      <div class="startrow">
+        <button type="button" class="btn big" id="b-start">Press start <span class="blink" aria-hidden="true">&#9656;</span></button>
+        <div class="seg" role="group" aria-label="Guess timer" id="g-timer"></div>
+        <button type="button" class="hbtn" id="b-sound0" aria-pressed="true">Sound: on</button>
+      </div>
+      <p class="howline">Each envelope holds <b>16 real samples</b> that flip past on a magnet board. Call <b>Sauna</b> (p-bits) or <b>Fridge</b> (qubits) before the clock runs out. Call 3 of 5 right to drop a plate. The boss at the bottom throws <b>real ibm_fez</b> shots.</p>
+    </div>
+
+    <!-- the game -->
+    <div class="play" id="play" hidden>
+      <aside class="side sauna" aria-label="The sauna's fighter: a stochastic MTJ p-bit">
+        <h3>The sauna <span>~300 K</span></h3>
+        <div id="pl-mtj"></div>
+        <p class="note" id="fl-note">Free layer: <b>&rarr; parallel</b>, low resistance.</p>
+        <p class="note">The flips replay <b>spin 0 of THRML chain 0</b>, sample by sample. Here the p-bits are THRML software on a CPU; the junction is an illustration of hardware p-bits.</p>
+      </aside>
+
+      <div class="center" id="center">
+        <div class="hud" aria-label="Status">
+          <div class="stg" id="hud-stage"><small>Stage 1 of 5 · plate 50 K</small>50 K plate</div>
+          <div class="scorebox"><span class="hp" id="hud-hpbox" hidden>Boss HP<b class="hpbar" id="hud-hp"></b></span><span>Score<b id="hud-score">0</b></span><span class="mult" id="hud-multbox">Combo<b id="hud-mult">×1</b></span></div>
+          <div class="descent" id="descent" aria-label="Descent through the fridge"></div>
+          <div class="pips" id="pips" aria-label="Envelopes this stage"></div>
+          <div class="timerow"><div class="timer" id="timer" role="progressbar" aria-label="Time left to call this envelope" aria-valuemin="0" aria-valuemax="15"><i id="timer-fill"></i></div><span class="secs" id="secs">15.0 s</span><button type="button" class="hbtn" id="b-pause" aria-pressed="false">Pause</button><button type="button" class="hbtn" id="b-sound" aria-pressed="true">Sound: on</button></div>
+          <div class="srcchip" id="srcchip">Fridge envelopes here: <b>Atlas emulator</b>, a classical simulation</div>
+        </div>
+
+        <div class="board-wrap" id="board-wrap">
+          <svg id="board" viewBox="0 0 600 340" role="img" aria-label="Magnet board: 20 spins of one real sample"></svg>
+          <div class="board-cap" id="board-cap">Sample <b>1</b> / 16</div>
+          <div class="callout" id="callout" aria-live="assertive"><b id="co-big"></b><small id="co-small"></small></div>
+          <div class="stamp" id="stamp" hidden><b id="st-big"></b><small id="st-small"></small></div>
+        </div>
+        <div class="transport">
+          <button type="button" class="hbtn" id="b-prev" aria-label="Previous sample">&#9664;</button>
+          <button type="button" class="hbtn" id="b-play" aria-pressed="false">Play batch</button>
+          <button type="button" class="hbtn" id="b-step" aria-label="Next sample">&#9654;</button>
+          <span class="pos" id="pos" aria-live="polite">Sample <b>1</b> of 16 · <b>0</b> bonds broken</span>
+        </div>
+        <canvas id="tape" role="img" aria-label="The envelope as a tape: 16 samples left to right, 20 spins top to bottom. Tap a column to show that sample."></canvas>
+        <div class="tapecap"><span>the envelope: 16 samples &rarr;</span><span>filled = spin up (bit 0)</span></div>
+
+        <div class="guess">
+          <button type="button" class="gbtn" id="b-pbit"><img class="px" id="ico-mtj" alt=""><span>Sauna<small>p-bits <kbd>S</kbd></small></span></button>
+          <button type="button" class="gbtn" id="b-qubit"><img class="px" id="ico-dr" alt=""><span>Fridge<small>qubits <kbd>F</kbd></small></span></button>
+        </div>
+        <div class="nextrow">
+          <p class="verdict" id="verdict" aria-live="polite">Who sent these 16 samples?</p>
+          <button type="button" class="btn" id="b-next" hidden>Next envelope <kbd>N</kbd></button>
+        </div>
+
+        <div class="meter" aria-label="Are you beating chance?">
+          <div class="meter-h"><span class="label">Are you beating chance?</span><span class="label" id="m-count">0 calls</span></div>
+          <div class="gauge" aria-hidden="true"><div class="trk"></div><div class="mk" style="left:43.4%"><span>p 0.05</span></div><div class="mk" style="left:66.7%"><span>0.01</span></div><div class="ndl" id="ndl" style="left:0%"></div></div>
+          <div class="gends"><span>&larr; a coin</span><span>sure thing &rarr;</span></div>
+          <p class="mtext" id="m-text">No calls yet. The needle shows how unlikely your score would be for a coin (an exact binomial test).</p>
+        </div>
+
+        <div class="ovl" id="ovl" hidden></div>
+      </div>
+
+      <aside class="side fridge" aria-label="The fridge: a dilution refrigerator as a level map">
+        <h3>The fridge <span id="fr-temp">~50 K</span></h3>
+        <div id="pl-dr"></div>
+        <p class="note" id="fr-note">You are on the <b>50 K plate</b>. Clear 3 of 5 to drop to the next one.</p>
+      </aside>
+      <canvas id="fx" aria-hidden="true"></canvas>
+    </div>
+
+  </section>
+
+  <section class="sec" id="how-to-play" aria-labelledby="h-how">
+    <div class="ink-bar"><h2 id="h-how">How to play</h2><span>You are in control</span></div>
+    <div class="below">
+      <div class="howto">
+        <h3>You control</h3>
+        <ol class="steps">
+          <li><span><b>Start</b> the showdown, and turn the J dial or pick a graph between envelopes (the boss picks its own).</span></li>
+          <li><span><b>Watch</b> the 16 real samples flip past on the magnet board, or step through them on the tape. Dashed bonds are broken.</span></li>
+          <li><span><b>Call</b> it: Sauna (p-bits, key S) or Fridge (qubits, key F) before the clock runs out. Streaks multiply your score.</span></li>
+          <li><span><b>Check</b> the chance meter, unlock lab cards, and scroll to <a href="#data">The data</a> for the fingerprints behind every call.</span></li>
+        </ol>
+        <p class="keys"><b>Keys.</b> In the arcade: Enter starts, S or &larr; calls Sauna, F or &rarr; calls Fridge, N or Enter opens the next envelope, Esc pauses. On <a href="#classic">the classic board</a>: P, Q and N. <b>One problem for the whole page:</b> the J dial, the graph buttons, The data and the classic board all set the same graph and J, and the readouts, the charts and both boards follow it.</p>
+      </div>
+      <div class="panel">
+        <div class="row">
+          <button type="button" class="btn ghost" id="b-share">Copy link to this view</button>
+          <button type="button" class="btn ghost" id="b-reset">Reset game</button>
+        </div>
+        <div class="manual" hidden><span class="label">Copying is blocked here. Copy the link by hand:</span><input type="text" readonly class="manual-text" aria-label="Link to this view"></div>
+        <dl class="readout">
+          <dt>Problem</dt><dd><b id="r-prob">–</b></dd>
+          <dt>p-bits</dt><dd><b id="r-pbit">–</b></dd>
+          <dt>Qubits</dt><dd><b id="r-qubit">–</b></dd>
+          <dt>This envelope</dt><dd><b id="r-batch">hidden until you call it</b></dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="data" aria-labelledby="h-data">
+    <div class="ink-bar"><h2 id="h-data">The data</h2><span>Moves with the game</span></div>
+    <div class="databody fp" id="fp" aria-label="Correlation fingerprints">
+      <div class="subbar"><span>Revealed</span><span>Filled = p-bits · hollow = qubits · pale = exact</span></div>
+      <p class="dnote">The fingerprints of the problem on the boards. Filled marks are the sauna's p-bits, hollow ones the fridge's qubits, and the pale line is the exact answer, enumerated over all 2<sup>20</sup> states. A pick here also moves the arcade and the classic board.</p>
+      <div class="fp-head">
+        <h3 id="fp-title">The fingerprints</h3>
+      </div>
+      <div class="dctl">
+        <div class="tool"><span class="label">Graph</span><div class="seg" role="group" aria-label="Graph for the data" id="d-graph"></div></div>
+        <div class="tool"><span class="label">Coupling J</span><div class="seg" role="group" aria-label="Coupling J for the data" id="d-J"></div></div>
+        <div class="tool"><span class="label">Fridge batches</span><div class="seg" role="group" aria-label="Where the qubit batches come from" id="g-src"></div></div>
+        <div class="tool"><span class="label">p-bit samples</span><div class="seg" role="group" aria-label="p-bit sample count" id="g-n"></div></div>
+        <p class="lockline" id="lock-d" hidden>Boss round: the boss picks the problem until the round ends.</p>
+      </div>
+      <div class="fstats" id="fstats"></div>
+      <div class="fp-grid">
+        <figure class="dcard" aria-labelledby="h-edge">
+          <h3 id="h-edge">Edge correlations ⟨Z<sub>i</sub>Z<sub>j</sub>⟩</h3>
+          <canvas id="c-edge" height="220" role="img" tabindex="0" aria-describedby="i-edge" aria-label="Correlation on every edge for p-bits, qubits and the exact answer"></canvas>
+          <div class="legend"><span><i class="sw p"></i>p-bits</span><span><i class="sw q"></i><span class="qname">qubits</span></span><span><i class="sw x"></i>exact (Boltzmann)</span><span id="lg-tomo" hidden><i class="sw t"></i>graph-v1 tomography</span></div>
+          <label class="tick"><input type="checkbox" id="t-tomo"> show graph-v1's own reported tomography</label>
+          <p class="insp" id="i-edge" aria-live="polite"></p>
+          <figcaption class="cap">One column per edge, in the order graph-v1 builds them. +1: the two spins always agree; −1: always disagree. On the magnet board each spin is a magnet, and a bond that disagrees with its coupling is drawn dashed.</figcaption>
+        </figure>
+        <figure class="dcard" aria-labelledby="h-mag">
+          <h3 id="h-mag">Magnetisation</h3>
+          <canvas id="c-mag" height="220" role="img" tabindex="0" aria-describedby="i-mag" aria-label="Histogram of total magnetisation for p-bits, qubits and the exact answer"></canvas>
+          <div class="legend"><span><i class="sw p"></i>p-bits</span><span><i class="sw q"></i><span class="qname">qubits</span></span><span><i class="sw x"></i>exact (Boltzmann)</span></div>
+          <p class="insp" id="i-mag" aria-live="polite"></p>
+          <figcaption class="cap">Sum of the 20 spins in each sample (+20 = every bit 0). A cold ferromagnet piles up at both ends. On the magnet board +20 is every magnet up; cold here means the coupling J = 1.0, not the fridge.</figcaption>
+        </figure>
+        <figure class="dcard" aria-labelledby="h-mi">
+          <h3 id="h-mi">Pairwise mutual information</h3>
+          <div class="maps">
+            <figure><canvas id="c-mi-p" height="160" role="img" tabindex="0" aria-describedby="i-mi" aria-label="p-bit mutual information matrix"></canvas><figcaption>p-bits</figcaption></figure>
+            <figure><canvas id="c-mi-q" height="160" role="img" tabindex="0" aria-describedby="i-mi" aria-label="qubit mutual information matrix"></canvas><figcaption class="qname">qubits</figcaption></figure>
+          </div>
+          <p class="insp" id="i-mi" aria-live="polite"></p>
+          <figcaption class="cap" id="mi-cap">Each cell: how many bits qubit i tells you about qubit j. Dots mark the coupled pairs.</figcaption>
+        </figure>
+      </div>
+      <div class="why" id="why"></div>
+    </div>
+  </section>
+
+  <section class="sec" id="classic" aria-labelledby="h-classic">
+    <div class="ink-bar"><h2 id="h-classic">The classic board</h2><span>p-bit or qubit?</span></div>
+    <div class="cl-hero">
+      <section class="cl-stage" aria-label="Guessing board">
+        <div class="stage-top">
+          <div class="seg" role="group" aria-label="Graph" id="cl-graph"></div>
+          <div class="seg" role="group" aria-label="Coupling J" id="cl-J"></div>
+        </div>
+        <div class="tiles" id="tiles" role="list" aria-label="16 bitstrings from one sampler"></div>
+        <p class="bitline" id="bitline" aria-live="polite">Hover or focus a tile to read its 20 bits (qubit 0 first). Click it, or press Enter, to pin it.</p>
+        <div class="cl-guess">
+          <p class="q" id="q-line">Which noise made these 16 bitstrings?</p>
+          <div class="row" id="guess-row">
+            <button type="button" class="btn pb" id="cl-pbit"><i class="glyph" aria-hidden="true"></i>p-bits <kbd>P</kbd></button>
+            <button type="button" class="btn ghost qb" id="cl-qubit"><i class="glyph" aria-hidden="true"></i>qubits <kbd>Q</kbd></button>
+            <button type="button" class="btn ghost" id="cl-next" hidden>Next batch <kbd>N</kbd></button>
+          </div>
+          <p class="verdict" id="cl-verdict" aria-live="polite"></p>
+          <div class="score"><span>Score <b id="sc-num">0 / 0</b></span><span id="sc-chance">50% is a coin flip</span><div class="dots" id="sc-dots" aria-hidden="true"></div></div>
+        </div>
+      </section>
+      <div class="cl-copy">
+        <h3 class="cl-h">Tell thermal noise from quantum noise.</h3>
+        <p class="sub"><em>Same energy function, different physics of noise.</em> One 20-node Ising problem, sampled by Extropic's THRML p-bits and by 20 qubits through Atlas's graph-v1 engine. Each batch is 16 bitstrings. Which sampler made it?</p>
+        <ol class="steps">
+          <li><span><b>Pick</b> a graph and a coupling J: warm and loose, or cold and ordered.</span></li>
+          <li><span><b>Guess</b> p-bits or qubits for each batch, and keep score against a coin.</span></li>
+          <li><span><b>Reveal</b> the fingerprints: edge correlations, magnetisation, mutual information.</span></li>
+        </ol>
+        <p class="dnote">A quieter way to play: no clock and no stages. It shares its problem with the arcade, so a pick here also turns the J dial, and its batches come from the same real jobs.</p>
+      </div>
+      <div class="panel cl-side">
+        <div class="row"><span class="label">Qubit batches</span><div class="seg" role="group" aria-label="Qubit source" id="cl-src"></div></div>
+        <div class="row"><span class="label">Tiles show</span><div class="seg" role="group" aria-label="Tile style" id="cl-tile"></div></div>
+        <p class="lockline" id="lock-c" hidden>Boss round: the boss picks the problem until the round ends.</p>
+        <div class="row">
+          <button type="button" class="btn" id="cl-reveal" aria-controls="data">Reveal the fingerprints</button>
+          <button type="button" class="btn ghost" id="cl-share">Copy link to this view</button>
+          <button type="button" class="btn ghost" id="cl-reset">Reset score</button>
+        </div>
+        <div class="manual" hidden><span class="label">Copying is blocked here. Copy the link by hand:</span><input type="text" readonly class="manual-text" aria-label="Link to this view"></div>
+        <dl class="readout">
+          <dt>Problem</dt><dd><b id="cl-r-prob">–</b></dd>
+          <dt>p-bits</dt><dd><b id="cl-r-pbit">–</b></dd>
+          <dt>Qubits</dt><dd><b id="cl-r-qubit">–</b></dd>
+          <dt>This batch</dt><dd><b id="cl-batch">hidden until you guess</b></dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+<!--LIVE-START-->
+  <section class="live" id="live" hidden aria-label="Run graph-v1 live">
+    <h2>Run graph-v1 live</h2>
+    <p class="sub" style="max-width:70ch">This page is served by <code>server.js</code>. When you press Run, the server builds the same recipe for your J, calls Atlas with its own key (the key never reaches this page), then hands back the 20 shots. p-bits for a new J are sampled right here by a JavaScript port of the same block-Gibbs update (classical, not THRML).</p>
+    <div class="row"><span class="label">Graph</span><div class="seg" role="group" aria-label="Live graph" id="l-graph"></div></div>
+    <div class="row"><span class="label">Coupling J</span><input type="range" id="l-J" min="0.1" max="1.5" step="0.1" value="0.7" style="max-width:16rem" aria-label="Live coupling J"><b id="l-Jv" style="font-family:var(--mono)">0.7</b></div>
+    <div class="row"><span class="label">Where</span><div class="seg" role="group" aria-label="Live mode" id="l-mode"></div></div>
+    <div class="row"><button type="button" class="btn" id="l-run">Run graph-v1 (5 credits)</button></div>
+    <p class="status" id="l-status" aria-live="polite">Checking the server…</p>
+  </section>
+<!--LIVE-END-->
+
+  <section class="sec labcards" id="cards-sec" aria-labelledby="h-cards">
+    <div class="ink-bar"><h2 id="h-cards">Lab cards</h2><span id="cards-count">0 of 10 unlocked</span></div>
+    <p class="dnote">Cards unlock as you play the arcade; a locked card says how to unlock it.</p>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section class="sec" id="made" aria-labelledby="h-made">
+    <div class="ink-bar"><h2 id="h-made">How it was made</h2><span>What ran where</span></div>
+    <details class="drawer"><summary>What graph-v1 did on 20 qubits</summary><div class="body">
+      <p>graph-v1 can't take an energy function. It takes targets: a <code>bloch</code> target for each qubit and a <code>relationship</code> target (a two-qubit Pauli expectation) for each coupled pair. For every problem we sent the same recipe:</p>
+      <ul>
+        <li>20 <code>bloch</code> targets X = 1: every qubit starts in |+⟩, so no bit is favoured (zero field).</li>
+        <li>One <code>relationship</code> target per edge: ZZ = ⟨s<sub>i</sub>s<sub>j</sub>⟩, the exact Boltzmann edge correlation for that J (enumerated over all 2<sup>20</sup> states), with rotation <code>fraction</code> = (2/π)·asin|ZZ|. On a lone edge, the engine's partial rotation from |++⟩ gives ZZ = sin(π·fraction/2), so it lands on the target.</li>
+        <li><code>num_qubits</code> = 20, the engine's maximum (one qubit per node), and <code>shots</code> = 20. graph-v1 returns only its 20 most frequent bitstrings, so with 20 shots that list holds every shot and nothing is cut. Each envelope shows 16 of those 20 shots, so envelopes from the same job overlap.</li>
+      </ul>
+      <p>The same parameters ran on Atlas's emulator (Aer, a classical simulation of the circuit, noiseless) and were sent, with <code>mode: "qpu"</code>, to IBM's ibm_fez. <span id="hw-note"></span> Every job ID is in the readout and in PARAMS.md.</p>
+      <p>graph-v1 also returns its own tomography of the prepared state. Tick "show graph-v1's own reported tomography" to compare it with the shots: on several problems it disagrees with them (for example, on the cold ring it reads about 0 on 8 of the 20 edges, where the shots average 0.71). We read this as the engine tracking its state approximately, which we infer and haven't verified, so the charts trust the shots.</p>
+      <p>The tick box sits under the edge-correlation chart in <a href="#data">The data</a>; every job is listed in <a href="#jobs">Jobs and credits</a>.</p>
+    </div></details>
+    <details class="drawer"><summary>What THRML did</summary><div class="body">
+      <p>For each problem, <code>IsingEBM</code> with the same edges and couplings, zero biases and β = 1, blocks from a graph colouring (2 colours for the ring and ladder, 3 for the spin glass), and 64 independent chains: 400 warm-up sweeps, then 64 samples each, 10 sweeps apart. That makes 4,096 samples per problem. Every game batch takes 16 samples from 16 different chains. So does every sauna envelope in the arcade.</p>
+      <p>Checked against exact enumeration of all 2<sup>20</sup> states: the largest edge-correlation error is shown in the readout (at most 0.04). THRML ran on a laptop CPU through JAX, not on Extropic hardware. It did not run on an MTJ chip either.</p>
+    </div></details>
+    <details class="drawer" id="d-app"><summary>The web app behind this page</summary><div class="body">
+      <p>This artifact can't call any API, so it replays the real batches listed above. The entry also ships a small web app: a Node server with <code>/api/graph</code>, which calls Atlas server-side with the key from <code>.env</code> (the key never reaches the browser), plus this same front end with a live panel. Run it with <code>node server.js</code> inside <code>app/</code>. It is set up for Vercel (<code>vercel.json</code>, <code>api/graph.js</code>) but has not been deployed.</p>
+    </div></details>
+  </section>
+
+  <section class="sec" id="science" aria-labelledby="h-science">
+    <div class="ink-bar"><h2 id="h-science">The science</h2><span>Thermal noise against quantum noise</span></div>
+    <div class="sec-body">
+      <h3>Why p-bits against qubits?</h3>
+      <p>A p-bit is a bit that keeps flipping. Extropic is building chips in which each p-bit turns on with probability σ(2·field), where the field comes from its neighbours (the p-bit idea is from Camsari, Sutton and Datta, Applied Physics Reviews, 2019). Update the nodes colour by colour and you get block Gibbs sampling: the chip settles into the Boltzmann distribution p(s) ∝ exp(Σ J<sub>ij</sub> s<sub>i</sub>s<sub>j</sub>). Its randomness is thermal. THRML is Extropic's open-source JAX library that simulates exactly these programs.</p>
+      <p>A qubit is set deterministically by gates. Its randomness only appears when you measure it (the Born rule), and on real hardware decoherence, gate errors and readout errors add more. Both kinds of machine end up handing you bitstrings, so the question is whether the bitstrings remember which physics made them.</p>
+      <p>A note on words. Warm and cold on the boards and charts describe the coupling J, as in a statistical-physics model: J 0.4 is warm and loose, J 1.0 is cold and ordered. The sauna and the fridge are the machines: room-temperature heat for a hardware p-bit such as the magnetic tunnel junction drawn above, and a dilution refrigerator at about 10–20 mK for superconducting qubits.</p>
+    </div>
+    <details class="drawer" id="d-anat"><summary>Anatomy of the two fighters</summary><div class="body wide">
+      <div class="anat">
+        <figure><div id="an-mtj"></div><figcaption>A hardware p-bit: a stochastic magnetic tunnel junction, an elliptical pillar tens of nanometres across. Two CoFeB nanomagnets, about 2 nm each, sandwich an MgO barrier about a nanometre thick, and both are magnetised in the plane of the layers. The reference layer is held in place by a synthetic antiferromagnet (a 0.9 nm Ru spacer, a Co pinned layer pointing the other way, and PtMn); the free layer has so small an energy barrier that room-temperature heat flips it between parallel (low resistance) and antiparallel (high). The stack follows the p-bit devices of Borders et al. (Nature 2019); layer thicknesses are exaggerated. The trace replays spin 0 of THRML chain 0 the way a junction's resistance would look; the circuit is the one-transistor, one-junction p-bit (Camsari et al. 2017).</figcaption></figure>
+        <figure><div id="an-dr"></div><figcaption>A dilution refrigerator with its cans off, the "chandelier". A two-stage pulse tube cools the 50 K and 4 K plates; the still (about 0.8 K), cold plate (about 0.1 K) and mixing chamber (about 10–20 mK) are cooled by the helium-3/helium-4 dilution unit. Coax lines carry signals down through attenuators on each plate; HEMT amplifiers on the 4 K plate boost the readout signals on the way up. The processor sits in a shielded can on the coldest plate. Original drawing, not to scale.</figcaption></figure>
+      </div>
+    </div></details>
+  </section>
+
+  <section class="sec" id="claims" aria-labelledby="h-claims">
+    <div class="ink-bar"><h2 id="h-claims">What this does not claim</h2><span>Honesty</span></div>
+    <div class="sec-body">
+      <p class="honesty">No advantage is claimed in either direction. Emulated qubits are a classical simulation of the circuit. <span id="hw-honest"></span> Every qubit statistic comes from 20 shots and carries the error bar shown. The p-bits are THRML software running on a CPU. The qubits did not solve the Ising problem: we told them the answer's pair correlations and asked them to build a state that has them. Nor are the p-bits a magnetic tunnel junction: the junction in the drawings stands for hardware p-bits. On most problems that makes the two sources hard to tell apart by construction, and the chance meter will say so. The drawings are illustrations of the kinds of hardware involved, and their temperatures are approximate general figures.</p>
+    </div>
+    <details class="drawer"><summary>What is real data in the game, and what is decoration</summary><div class="body">
+      <ul>
+        <li>Every frame of the <b>magnet board</b> and every column of the <b>tape</b> is one real sample: a THRML p-bit sample, or one graph-v1 shot from the Atlas emulator or ibm_fez. Up = spin +1 = bit 0; down = spin −1 = bit 1. A dashed bond is broken: its two magnets disagree when the coupling wants them to agree (or the reverse on a spin glass's negative bonds).</li>
+        <li>The <b>free layer's arrow</b> and the <b>resistance trace</b> under the junction replay spin 0 of THRML chain 0, sample by sample (10 sweeps apart). They are software samples drawn the way an MTJ would show them, not readings from a junction.</li>
+        <li>The <b>chance meter</b> is an exact one-sided binomial test of your calls against a fair coin. Time-outs are not calls and are left out.</li>
+        <li><b>Plates 1 to 4</b> use the Atlas emulator's shots (a classical simulation of the circuit, no fridge involved). <b>The boss</b> uses the two real ibm_fez batches. The fridge drawing is the level map, not a picture of the machine that ran the emulator.</li>
+        <li>Every tile on <b>the classic board</b> is one real sample too, and the <b>charts in The data</b> are computed from the same samples and shots.</li>
+      </ul>
+      <p>Steam, frost, screen shake, callouts, the sounds and the pulsing level marker are decoration. The temperatures on the drawings are approximate general figures for these machines, not readings from our jobs.</p>
+    </div></details>
+  </section>
+
+  <section class="sec" id="jobs" aria-labelledby="h-jobs">
+    <div class="ink-bar"><h2 id="h-jobs">Jobs and credits</h2><span id="jobs-n">Atlas jobs</span></div>
+    <div class="sec-body wide">
+      <p>Every qubit batch on this page is the cached result of one of these graph-v1 jobs (20 qubits, 20 shots each). <b>Show</b> puts that problem and that source on both boards and in <a href="#data">The data</a>. The same IDs are in PARAMS.md.</p>
+      <div class="scroll"><table class="jobs" id="jobs-t"></table></div>
+      <p id="jobs-spend"></p>
+      <p>The p-bit side: one THRML run per problem, 4,096 samples each.</p>
+      <div class="scroll"><table class="jobs" id="pbits-t"></table></div>
+      <dl class="credits">
+        <dt>Engine</dt><dd>Moth Quantum Atlas graph-v1 (Quantum Graph Engine), built on QuantumGraph (Apache-2.0). Emulator jobs ran on Atlas's server-side Aer simulator; hardware jobs on IBM's ibm_fez.</dd>
+        <dt>p-bits</dt><dd>THRML 0.1.4, Extropic's Thermodynamic Hypergraphical Model Library in JAX (Apache-2.0), run on a laptop CPU.</dd>
+        <dt>Papers</dt><dd>Camsari, Sutton and Datta, Applied Physics Reviews 6, 011305 (2019); Camsari, Faria, Sutton and Datta, Physical Review X 7, 031014 (2017); Borders et al., Nature 573, 390 (2019); Safranski et al., Nano Letters 21, 2040 (2021); Kalra et al., Review of Scientific Instruments 87, 073905 (2016); Krinner et al., EPJ Quantum Technology 6, 2 (2019).</dd>
+        <dt>Drawings</dt><dd>Original SVG engravings and pixel icons, drawn in code from written descriptions (Yoon et al., arXiv:2604.14446; Bluefors; IBM Quantum documentation). Nothing traced or embedded.</dd>
+        <dt>Data</dt><dd>No third-party data. The three Ising problems are generated by problems.py; every bitstring is a THRML sample or a graph-v1 shot.</dd>
+      </dl>
+    </div>
+  </section>
+  <!--NAV-->
+  <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/*ISING*/
+</script>
+<script>
+/*INKSPRITE*/
+const SPRITES = /*SPRITES*/{};
+const DATA = /*DATA*/{};
+const LIVE = /*LIVE*/false;
+const I = Ising, N = I.N;
+const $ = id => document.getElementById(id);
+const CSS = getComputedStyle(document.documentElement);
+const cssv = (n, f) => CSS.getPropertyValue(n).trim() || f;
+// paper/ink palette (common/brand.css): ink = marks, ink-2 = labels, ink-3 = the exact answer, rule = quiet lines
+const COL = {ink: cssv('--ink', '#19238E'), ink2: cssv('--ink-2', '#545BA9'), ink3: cssv('--ink-3', '#A1A4CE'),
+  rule: cssv('--rule', '#D3D3E6'), paper: cssv('--paper', '#FBFAF9'), panel: cssv('--panel', '#FFFFFF'), warn: cssv('--warn', '#B4541A')};
+const INK_RGB = (() => { const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(COL.ink); return m ? m.slice(1).map(h => parseInt(h, 16)) : [25, 35, 142]; })();
+const SRC_NAME = {emu: 'Atlas emulator', qpu: 'ibm_fez'};
+const FAILED = DATA.failed || [];
+const failedFor = c => FAILED.find(f => f.graph === c.graph && f.J === c.J && f.mode === 'qpu');
+const reduced = () => !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+const store = {get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }};
+
+// ---------- data ----------
+const CONFIGS = DATA.configs.map(c => prepConfig(c));
+function prepConfig(c) {
+  const out = Object.assign({}, c);
+  out.pbitSpins = c.pbitSpins || c.pbit.states.map(v => I.bitsToSpins(I.intToBits(v)));
+  for (const m of ['emu', 'qpu']) if (c[m]) out[m] = Object.assign({}, c[m], {spins: c[m].spins || c[m].bitstrings.map(I.bitsToSpins)});
+  // spin 0 of chain 0, sample after sample (THRML states are stored sample-major, chain-minor): the free layer's flips
+  const ch = c.pbit.chains || 64;
+  out.chain0 = out.pbitSpins.filter((s, i) => i % ch === 0).map(s => s[0]);
+  return out;
+}
+const st = {graph: 'ladder', J: 1, src: 'qpu', tile: 'graph', nP: 20, tomo: false, sound: true, timerOn: true};
+const rng = I.mulberry32((Date.now() ^ 0x5bd1e995) >>> 0);   // game draws: not meant to be reproducible
+const cfg = () => CONFIGS.find(c => c.graph === st.graph && c.J === st.J);
+const G = () => DATA.graphs[st.graph];
+const SP = {}; for (const k in SPRITES) SP[k] = InkSprite.make(SPRITES[k]);
+
+// how far apart each source's batches really are on a problem (signed mean edge correlation, in standard errors)
+function bootSE(spins, edges, signs, reps) {        // bootstrap standard error of the signed mean edge correlation
+  const r = I.mulberry32(7), n = spins.length, vals = [];
+  for (let k = 0; k < reps; k++) { const b = []; for (let i = 0; i < n; i++) b.push(spins[Math.floor(r() * n)]); vals.push(I.meanSigned(I.edgeZZ(b, edges), signs)); }
+  const m = vals.reduce((a, b) => a + b, 0) / reps;
+  return Math.sqrt(vals.reduce((a, b) => a + (b - m) * (b - m), 0) / (reps - 1));
+}
+const TELL = new Map();
+function tellOf(c, src) {
+  const key = c.graph + c.J + src; if (TELL.has(key)) return TELL.get(key);
+  const g = DATA.graphs[c.graph], q = c[src]; if (!q) return null;
+  const mQ = I.meanSigned(I.edgeZZ(q.spins, g.edges), g.signs), mP = I.meanSigned(I.edgeZZ(c.pbitSpins, g.edges), g.signs);
+  const se = Math.max(bootSE(q.spins, g.edges, g.signs, 200), 0.02), z = Math.abs(mQ - mP) / se;
+  const t = {mQ, mP, se, z, word: z >= 3 ? 'a clear tell' : z >= 2 ? 'a faint tell' : 'no measurable tell'};
+  TELL.set(key, t); return t;
+}
+
+// ---------- the engravings (original SVG drawings; parts and proportions checked against published descriptions) ----------
+const f1 = v => (Math.round(v * 10) / 10).toString();
+const arcBand = (cx, rx, ry, y0, y1) => `M${f1(cx - rx)} ${f1(y0)}A${rx} ${ry} 0 0 0 ${f1(cx + rx)} ${f1(y0)}L${f1(cx + rx)} ${f1(y1)}A${rx} ${ry} 0 0 1 ${f1(cx - rx)} ${f1(y1)}Z`;
+const frontArc = (cx, rx, ry, y) => `M${f1(cx - rx)} ${f1(y)}A${rx} ${ry} 0 0 0 ${f1(cx + rx)} ${f1(y)}`;
+const offAt = (cx, rx, ry, x) => ry * Math.sqrt(Math.max(0, 1 - ((x - cx) / rx) ** 2));
+function sine(x, y0, y1, amp, per, ph) { let d = `M${f1(x + amp * Math.sin(ph))} ${y0}`; for (let y = y0 + 2; y <= y1; y += 2) d += `L${f1(x + amp * Math.sin(ph + (y - y0) / per * 2 * Math.PI))} ${y}`; return d; }
+function crystal(x, y, r) { let d = ''; for (let k = 0; k < 6; k++) { const a = k * Math.PI / 3, ex = x + r * Math.cos(a), ey = y + r * Math.sin(a); d += `M${f1(x)} ${f1(y)}L${f1(ex)} ${f1(ey)}`; const bx = x + .6 * r * Math.cos(a), by = y + .6 * r * Math.sin(a); d += `M${f1(bx)} ${f1(by)}L${f1(bx + .3 * r * Math.cos(a + .9))} ${f1(by + .3 * r * Math.sin(a + .9))}M${f1(bx)} ${f1(by)}L${f1(bx + .3 * r * Math.cos(a - .9))} ${f1(by + .3 * r * Math.sin(a - .9))}`; } return d; }
+const arrowUp = (x, y, h, w) => `M${f1(x)} ${f1(y - h / 2)}L${f1(x + w / 2)} ${f1(y - h / 2 + w * .62)}L${f1(x + w * .17)} ${f1(y - h / 2 + w * .62)}L${f1(x + w * .17)} ${f1(y + h / 2)}L${f1(x - w * .17)} ${f1(y + h / 2)}L${f1(x - w * .17)} ${f1(y - h / 2 + w * .62)}L${f1(x - w / 2)} ${f1(y - h / 2 + w * .62)}Z`;
+
+// The stack is the in-plane sMTJ used for p-bits (Borders et al., Nature 2019; Yoon et al., arXiv 2604.14446), top down:
+// Ta/Ru/Ta cap, CoFeB free layer (~2 nm), MgO barrier (~1 nm), CoFeB reference (~2 nm), Ru (0.9 nm), Co pinned
+// (2.4 nm), PtMn antiferromagnet (20 nm), Ta seed. The magnetisation lies IN the plane of the layers.
+const MTJ_LAYERS = [   // [key, height in drawing units (not to scale), fill, label]
+  ['cap', 14, 'url(#e-hl)', 'cap · Ta/Ru/Ta'],
+  ['free', 42, 'var', 'FREE LAYER · CoFeB'],
+  ['mgo', 9, 'url(#e-dot)', 'MgO barrier ≈ 1 nm'],
+  ['ref', 22, 'url(#e-hh)', 'reference · CoFeB'],
+  ['ru', 6, '#545BA9', 'Ru spacer · 0.9 nm'],
+  ['pin', 20, 'url(#e-hh)', 'pinned · Co'],
+  ['afm', 26, 'url(#e-xh)', 'PtMn antiferromagnet'],
+  ['seed', 9, 'url(#e-hl)', 'seed · Ta']];
+const TR0 = 56;   // where the resistance trace starts, right of its R high / R low labels
+const arrowSide = (x, y, len, w, cls, left) => `<g transform="rotate(${left ? -90 : 90} ${f1(x)} ${f1(y)})"><path d="${arrowUp(x, y, len, w)}" class="${cls}"/></g>`;
+function svgMTJ(compact) {
+  const cx = 104, rx = 48, ry = 12, yTop = 70, out = [];
+  let y = yTop; const band = {};
+  for (const [k, h] of MTJ_LAYERS) { band[k] = [y, y + h]; y += h; }
+  const yBot = y, W = 320;
+  out.push(`<svg class="eng${compact ? ' compact' : ''}" viewBox="0 0 ${W} 454" role="img" aria-label="A stochastic magnetic tunnel junction nanopillar with labelled layers: cap, CoFeB free layer, MgO barrier, CoFeB reference layer, Ru spacer, CoFe pinned layer, IrMn and seed, between top and bottom electrodes; below it a resistance trace and the p-bit circuit.">`);
+  // heat shimmer (warm accent: heat only)
+  out.push(`<g aria-hidden="true">`);
+  [[18, 92, 190, 0], [34, 80, 176, 1.7], [10, 110, 210, 3.1]].forEach(([x, a, b, ph], i) => out.push(`<path class="heat" style="animation-delay:${-i * .8}s" d="${sine(x, a, b, 3, 26, ph)}"/>`));
+  out.push(`<text class="tmp" x="4" y="20">~300 K</text><text class="lbl s" x="4" y="34">kT ≈ 26 meV</text></g>`);
+  // bottom electrode (runs off to the left), drawn first: the pillar stands on it
+  const hb = 14;
+  out.push(`<path d="M0 ${yBot - ry}L${cx} ${yBot - ry}A${rx} ${ry} 0 0 1 ${cx + rx} ${yBot}A${rx} ${ry} 0 0 1 ${cx} ${yBot + ry}L0 ${yBot + ry}Z" fill="url(#e-hl)" class="ol"/>`);
+  out.push(`<path d="M0 ${yBot + ry}L${cx} ${yBot + ry}A${rx} ${ry} 0 0 0 ${cx + rx} ${yBot}L${cx + rx} ${yBot + hb}A${rx} ${ry} 0 0 1 ${cx} ${yBot + ry + hb}L0 ${yBot + ry + hb}Z" fill="url(#e-hd)" class="ol"/>`);
+  // the pillar: one band per layer
+  for (const [k, h, fill] of MTJ_LAYERS) out.push(`<path d="${arcBand(cx, rx, ry, band[k][0], band[k][1])}" fill="${k === 'free' ? '#FBFAF9' : fill}"/>`);
+  // engraved cylinder shading: vertical lines at even angles, so they crowd toward the edges
+  let sh = '';
+  for (let a = -86; a <= 86; a += 7) {
+    if (a > -30 && a < 50) continue;
+    const x = cx + rx * Math.sin(a * Math.PI / 180), o = offAt(cx, rx, ry, x);
+    sh += `M${f1(x)} ${f1(yTop + o)}L${f1(x)} ${f1(yBot + o)}`;
+  }
+  out.push(`<path class="sh" d="${sh}"/>`);
+  for (const [k] of MTJ_LAYERS.slice(1)) out.push(`<path class="hl" d="${frontArc(cx, rx, ry, band[k][0])}"/>`);
+  out.push(`<path class="ol2" d="M${cx - rx} ${yTop}L${cx - rx} ${yBot}A${rx} ${ry} 0 0 0 ${cx + rx} ${yBot}L${cx + rx} ${yTop}"/>`);
+  // in-plane magnetisation arrows: the free layer's flips (real data drives the class: right = parallel to the
+  // reference = spin +1), and the fixed synthetic-antiferromagnet pair below it (reference right, pinned left)
+  const fm = (band.free[0] + band.free[1]) / 2 + ry * .55;
+  out.push(`<g class="fl" style="transform-origin:${cx}px ${f1(fm)}px">${arrowSide(cx, fm, 52, 22, 'ink')}</g>`);
+  out.push(arrowSide(cx, (band.ref[0] + band.ref[1]) / 2 + ry * .6, 40, 13, 'ink2'));
+  out.push(arrowSide(cx, (band.pin[0] + band.pin[1]) / 2 + ry * .6, 40, 13, 'ink2', true));
+  // top electrode with a rounded end over the pillar (runs off to the right)
+  const ht = 11;
+  out.push(`<path d="M${cx - rx} ${yTop - ht}L${cx - rx} ${yTop}A${rx} ${ry} 0 0 0 ${cx} ${yTop + ry}L${W} ${yTop + ry}L${W} ${yTop + ry - ht}L${cx} ${yTop + ry - ht}A${rx} ${ry} 0 0 1 ${cx - rx} ${yTop - ht}Z" fill="url(#e-hd)" class="ol"/>`);
+  out.push(`<path d="M${cx - rx} ${yTop - ht}A${rx} ${ry} 0 0 1 ${cx} ${yTop - ht - ry}L${W} ${yTop - ht - ry}L${W} ${yTop - ht + ry}L${cx} ${yTop - ht + ry}A${rx} ${ry} 0 0 1 ${cx - rx} ${yTop - ht}Z" fill="url(#e-hl)" class="ol"/>`);
+  // labels with leader lines
+  const lx = 176; let lab = '';
+  for (const [k, , , text] of MTJ_LAYERS) {
+    let ly = (band[k][0] + band[k][1]) / 2 + 4;
+    if (k === 'ru') ly -= 2; if (k === 'pin') ly += 2; if (k === 'cap') ly += 7;   // clear the top electrode's edge
+    const sx = cx + rx * .93, sy = (band[k][0] + band[k][1]) / 2 + offAt(cx, rx, ry, sx);
+    lab += `<path class="ldr" d="M${f1(sx)} ${f1(sy)}L${lx - 6} ${f1(ly - 4)}L${lx - 2} ${f1(ly - 4)}"/><text class="lbl${k === 'free' ? ' b' : ''}" x="${lx}" y="${f1(ly)}">${text}</text>`;
+  }
+  lab += `<text class="lbl s" x="${lx}" y="${band.free[0] + 34}">flips ⇄ on heat alone</text>`;
+  lab += `<text class="lbl" x="${W - 4}" y="${yTop - ht - ry - 6}" text-anchor="end">top electrode</text><text class="lbl" x="4" y="${yBot + ry + hb + 14}">bottom electrode</text>`;
+  lab += `<path class="ldr" d="M${cx - rx} ${yBot + ry + hb + 22}L${cx + rx} ${yBot + ry + hb + 22}M${cx - rx} ${yBot + ry + hb + 18}L${cx - rx} ${yBot + ry + hb + 26}M${cx + rx} ${yBot + ry + hb + 18}L${cx + rx} ${yBot + ry + hb + 26}"/><text class="lbl s" x="${cx + rx + 6}" y="${yBot + ry + hb + 25}">tens of nm across, magnetised</text><text class="lbl s" x="${cx + rx + 6}" y="${yBot + ry + hb + 37}">in plane; layers not to scale</text>`;
+  out.push(`<g aria-hidden="true">${lab}</g>`);
+  // resistance trace (real data: spin 0 of THRML chain 0) and the 1T1MTJ p-bit circuit
+  const ty = 326;
+  out.push(`<g aria-hidden="true"><text class="lbl s keep" x="4" y="${ty - 4}">R high</text><text class="lbl s keep" x="4" y="${ty + 22}">R low</text>`);
+  out.push(`<path class="thin" d="M${TR0} ${ty - 7}L${W - 4} ${ty - 7}M${TR0} ${ty + 19}L${W - 4} ${ty + 19}" stroke-dasharray="2 3"/><path class="trace" d=""/><line class="tcur" x1="${TR0}" x2="${TR0}" y1="${ty - 12}" y2="${ty + 24}"/>`);
+  out.push(`<text class="lbl s cap-txt" x="${TR0}" y="${ty + 36}">trace: spin 0 of THRML chain 0, real samples</text><text class="lbl s cap-txt" x="${TR0}" y="${ty - 20}">← antiparallel: high · → parallel: low</text></g>`);
+  const cy = 392;
+  out.push(`<g aria-hidden="true"><text class="lbl" x="4" y="${cy + 4}">V+</text><path class="wire" d="M24 ${cy}L58 ${cy}M96 ${cy}L138 ${cy}L138 ${cy + 8}M168 ${cy + 8}L168 ${cy}L198 ${cy}L198 ${cy + 10}M188 ${cy + 10}L208 ${cy + 10}M191 ${cy + 14}L205 ${cy + 14}M195 ${cy + 18}L201 ${cy + 18}M118 ${cy}L118 ${cy + 30}L226 ${cy + 30}M262 ${cy + 30}L300 ${cy + 30}M153 ${cy + 15}L153 ${cy + 24}"/>`);
+  out.push(`<circle cx="118" cy="${cy}" r="2.3" class="ink"/><rect x="58" y="${cy - 9}" width="38" height="18" fill="url(#e-hl)" class="ol"/>${arrowSide(77, cy - 4, 24, 7, 'ink')}${arrowSide(77, cy + 4, 24, 7, 'ink2')}`);
+  out.push(`<path class="ol2" d="M138 ${cy + 8}L168 ${cy + 8}M140 ${cy + 15}L166 ${cy + 15}"/><path class="ol" d="M226 ${cy + 20}L226 ${cy + 40}L262 ${cy + 30}Z" fill="#FFFFFF"/>`);
+  out.push(`<text class="lbl s" x="62" y="${cy + 22}">sMTJ</text><text class="lbl s" x="149" y="${cy + 26}" text-anchor="end">in</text><text class="lbl s" x="214" y="${cy - 6}">ground</text><text class="lbl s" x="${W - 4}" y="${cy + 24}" text-anchor="end">out: m = ±1</text><text class="lbl s cap-txt" x="4" y="${cy + 56}">one transistor, one junction, one comparator: a p-bit</text></g>`);
+  out.push(`</svg>`);
+  return out.join('');
+}
+
+const DR_PLATES = [  // [key, y of the top face, half width, name, temperature]
+  ['top', 46, 106, 'room temp.', '300 K'],
+  ['50k', 116, 98, '50 K plate', '~50 K'],
+  ['4k', 184, 88, '4 K plate', '~4 K'],
+  ['still', 246, 76, 'still', '~0.8 K'],
+  ['cold', 302, 64, 'cold plate', '~0.1 K'],
+  ['mxc', 356, 52, 'mix. chamber', '10–20 mK']];
+const DR_CX = 134, DR_T = 7, ryOf = rx => .13 * rx;
+const lvPos = i => { const [, y, rx] = DR_PLATES[i]; return [DR_CX - rx - 15, y + ryOf(rx) * .4 + DR_T / 2]; };
+function svgDR(compact) {
+  const cx = DR_CX, W = 320, out = [];
+  out.push(`<svg class="eng${compact ? ' compact' : ''}" viewBox="0 0 ${W} 468" role="img" aria-label="A dilution refrigerator with its cans off: room-temperature flange with the pulse tube, then the 50 K, 4 K, still, cold and mixing-chamber plates on rods, coax lines with attenuators, HEMT amplifiers, the still pot, heat exchanger, mixing-chamber pot and the shielded can holding the qubit chip. The plates double as the game's level map.">`);
+  // behind the plates: support rods, the pulse tube's stages, copper braids
+  let back = '';
+  for (let i = 0; i < DR_PLATES.length - 1; i++) {
+    const [, ya, rxa] = DR_PLATES[i], [, yb, rxb] = DR_PLATES[i + 1];
+    for (const s of [-1, 1]) { const x = cx + s * rxb * .8; back += `<rect x="${f1(x - 1.6)}" y="${f1(ya + DR_T)}" width="3.2" height="${f1(yb - ya - DR_T + ryOf(rxb))}" fill="#FBFAF9" stroke="#545BA9" stroke-width=".8"/>`; }
+    back += `<rect x="${f1(cx + 6 - 1.2)}" y="${f1(ya + DR_T - ryOf(rxa) * .6)}" width="2.4" height="${f1(yb - ya)}" fill="#FBFAF9" stroke="#A1A4CE" stroke-width=".7"/>`;
+  }
+  back += `<rect x="${cx + 62}" y="${46}" width="12" height="${116 - 46}" fill="url(#e-vh)" class="ol"/><rect x="${cx + 64}" y="${116}" width="8" height="${184 - 116}" fill="url(#e-vh)" class="ol"/>`;
+  back += `<path class="thin" d="${sine(cx + 56, 128, 182, 2.5, 9, 0)}"/>`;
+  out.push(`<g aria-hidden="true">${back}</g>`);
+  // the plates (gold-plated copper), top face + front edge, with bolt holes
+  for (let i = 0; i < DR_PLATES.length; i++) {
+    const [k, y, rx] = DR_PLATES[i], ry = ryOf(rx);
+    let bolts = ''; for (let a = 0; a < 360; a += 30) { const t = a * Math.PI / 180; bolts += `<ellipse cx="${f1(cx + .86 * rx * Math.cos(t))}" cy="${f1(y + .86 * ry * Math.sin(t))}" rx="1.4" ry=".8" class="ink2"/>`; }
+    out.push(`<g class="plate" data-k="${k}"><path d="${arcBand(cx, rx, ry, y, y + DR_T)}" fill="url(#e-vh)" class="ol"/><ellipse class="face ol" cx="${cx}" cy="${y}" rx="${rx}" ry="${f1(ry)}" fill="url(#e-gold)"/><ellipse cx="${cx - rx * .28}" cy="${f1(y - ry * .1)}" rx="${f1(rx * .38)}" ry="${f1(ry * .4)}" fill="#FBFAF9"/>${bolts}</g>`);
+  }
+  // pulse-tube cold head standing on the top flange
+  out.push(`<g aria-hidden="true"><rect x="${cx + 56}" y="8" width="24" height="34" fill="url(#e-vh)" class="ol"/><rect x="${cx + 52}" y="4" width="32" height="6" fill="url(#e-hd)" class="ol"/><path class="ol" d="M${cx + 80} 18 C ${cx + 96} 18 ${cx + 96} 6 ${cx + 110} 6"/></g>`);
+  // still pot, heat exchanger, mixing-chamber pot, HEMT amplifiers
+  const pot = (x, y, w, h) => `<path d="${arcBand(x + w / 2, w / 2, 3, y, y + h)}" fill="url(#e-hh)" class="ol"/><ellipse cx="${x + w / 2}" cy="${y}" rx="${w / 2}" ry="3" fill="#FBFAF9" class="ol"/>`;
+  out.push(`<g aria-hidden="true">${pot(cx + 8, 262, 30, 20)}`);
+  for (let k = 0; k < 4; k++) out.push(`<ellipse cx="${cx + 22}" cy="${318 + k * 7}" rx="${11 - k}" ry="2.4" fill="url(#e-hd)" class="ol"/>`);
+  out.push(`${pot(cx + 10, 342, 26, 12)}<rect x="${cx + 26}" y="${208}" width="16" height="11" fill="url(#e-hd)" class="ol"/><rect x="${cx + 46}" y="${208}" width="16" height="11" fill="url(#e-hd)" class="ol"/></g>`);
+  // coax lines through the plates, with an attenuator under each plate; two output lines up to the HEMTs
+  let coax = '', att = '';
+  for (let j = 0; j < 6; j++) {
+    const x = cx - 48 + j * 5.4;
+    coax += `M${f1(x)} ${46}L${f1(x)} ${356 + 4}C${f1(x)} 368 ${f1(cx - 14 + j * 2)} 370 ${f1(cx - 14 + j * 2)} 380`;
+    for (let i = 1; i < DR_PLATES.length; i++) {
+      const [, y, rx] = DR_PLATES[i]; if (Math.abs(x - cx) > rx - 4) continue;
+      const yy = y + DR_T + offAt(cx, rx, ryOf(rx), x) + (j % 2 ? 11 : 3);
+      att += `<rect x="${f1(x - 2.2)}" y="${f1(yy)}" width="4.4" height="7" fill="url(#e-hd)" stroke="#19238E" stroke-width=".7"/>`;
+    }
+  }
+  coax += `M${cx + 30} 219L${cx + 30} 356M${cx + 34} 219L${cx + 34} 342M${cx + 54} 208L${cx + 54} 34`;
+  out.push(`<g aria-hidden="true"><path d="${coax}" fill="none" stroke="#19238E" stroke-width=".75"/>${att}</g>`);
+  // cold finger and the shielded can, cut away to show the chip
+  out.push(`<g class="can" aria-hidden="true"><rect x="${cx - 3}" y="368" width="6" height="12" fill="url(#e-vh)" class="ol"/><path d="${arcBand(cx, 22, 5, 380, 440)}" fill="url(#e-hl)" class="ol"/><ellipse cx="${cx}" cy="380" rx="22" ry="5" fill="#FBFAF9" class="ol"/><path d="M${cx - 13} 392L${cx + 13} 392L${cx + 11} 424L${cx - 12} 422Z" fill="#FFFFFF" class="hl"/><rect x="${cx - 6}" y="400" width="12" height="12" fill="url(#e-xh)" class="ol"/><path class="thin" d="M${cx - 6} 403L${cx - 11} 401M${cx - 6} 409L${cx - 11} 411M${cx + 6} 403L${cx + 11} 401M${cx + 6} 409L${cx + 11} 411"/><ellipse class="glint" cx="${cx}" cy="406" rx="16" ry="16"/></g>`);
+  // frost (decoration)
+  let fr = ''; [[cx - 70, 270, 4], [cx + 78, 280, 3.5], [cx - 56, 334, 3.5], [cx + 62, 338, 4], [cx - 40, 392, 3], [cx + 40, 430, 3.5], [cx + 92, 226, 3]].forEach(([x, y, r], i) => fr += `<path class="frost tw" style="animation-delay:${-i * .5}s" d="${crystal(x, y, r)}"/>`);
+  out.push(`<g aria-hidden="true">${fr}</g>`);
+  // the level map: a dashed path down the left-hand ends of the plates, one node per plate
+  let path = 'M', nodes = '';
+  for (let i = 0; i < DR_PLATES.length; i++) { const [x, y] = lvPos(i); path += `${i ? 'L' : ''}${f1(x)} ${f1(y)}`; nodes += `<g class="lv" data-i="${i}"><circle class="ring" cx="${f1(x)}" cy="${f1(y)}" r="9"/><circle class="n" cx="${f1(x)}" cy="${f1(y)}" r="9"/><text x="${f1(x)}" y="${f1(y + .5)}">${i ? i : 'go'}</text></g>`; }
+  out.push(`<g aria-hidden="true"><path class="path" d="${path}"/>${nodes}<g class="probe"><path d="M0 -6L5 0L0 6Z" class="ink"/></g></g>`);
+  // labels: temperatures and names in a column on the right; parts inside the frame
+  let lab = '';
+  for (let i = 0; i < DR_PLATES.length; i++) {
+    const [, y, rx, name, temp] = DR_PLATES[i], ly = y + 2;
+    lab += `<path class="ldr" d="M${cx + rx + 2} ${y + 2}L${246} ${ly}"/><text class="tmp" x="250" y="${ly + 2}">${temp}</text><text class="lbl s" x="250" y="${ly + 14}">${name}</text>`;
+  }
+  lab += `<text class="lbl s halo" x="${cx + 88}" y="31">pulse tube</text>`;
+  lab += `<text class="lbl s halo" x="${cx - 98}" y="160">coax +</text><text class="lbl s halo" x="${cx - 98}" y="171">attenuators</text>`;
+  lab += `<text class="lbl s halo" x="${cx + 24}" y="232">HEMT amps</text>`;
+  lab += `<text class="lbl s halo" x="${cx + 42}" y="278">still pot</text>`;
+  lab += `<text class="lbl s halo" x="${cx + 38}" y="331">heat exch.</text>`;
+  lab += `<path class="ldr" d="M${cx + 24} 412L${248} 412"/><text class="lbl s" x="250" y="408">qubit chip,</text><text class="lbl s" x="250" y="420">shielded can</text>`;
+  lab += `<text class="lbl s cap-txt" x="4" y="462">gold-plated copper plates, drawn in ink; not to scale</text>`;
+  out.push(`<g aria-hidden="true">${lab}</g></svg>`);
+  return out.join('');
+}
+function mountArt() {
+  $('vs-mtj').innerHTML = svgMTJ(false); $('vs-dr').innerHTML = svgDR(false);
+  $('pl-mtj').innerHTML = svgMTJ(false); $('pl-dr').innerHTML = svgDR(false);
+  $('an-mtj').innerHTML = svgMTJ(false); $('an-dr').innerHTML = svgDR(false);
+  $('ico-mtj').src = InkSprite.toDataURL(SP.mtj_icon, 0, 2);
+  $('ico-dr').src = InkSprite.toDataURL(SP.dr_icon, 0, 2);
+  syncCompact();
+}
+function syncCompact() {   // labels hide where the drawing is too small to read them
+  const narrowVS = window.innerWidth <= 700, narrowPlay = window.innerWidth <= 900;
+  for (const id of ['vs-mtj', 'vs-dr']) { const s = $(id).querySelector('svg'); if (s) s.classList.toggle('compact', narrowVS); }
+  for (const id of ['pl-mtj', 'pl-dr']) { const s = $(id).querySelector('svg'); if (s) { s.classList.toggle('compact', narrowPlay); s.classList.toggle('sidev', !narrowPlay); } }
+}
+
+// the free layer: replays spin 0 of THRML chain 0 (real samples); drawn as the junction's arrow and resistance trace
+const FL = {i: 0, next: 0};
+function chain0() { return (cfg() || CONFIGS[0]).chain0; }
+function drawTrace() {
+  const ch = chain0(), x0 = TR0, x1 = 316, ty = 326, w = (x1 - x0) / ch.length;
+  let d = '';
+  ch.forEach((s, k) => { const y = s > 0 ? ty + 19 : ty - 7; d += `${k ? 'L' : 'M'}${f1(x0 + k * w)} ${y}L${f1(x0 + (k + 1) * w)} ${y}`; });
+  document.querySelectorAll('.eng .trace').forEach(p => p.setAttribute('d', d));
+  setFree();
+}
+function setFree() {
+  const ch = chain0(), i = FL.i % ch.length, up = ch[i] > 0, x = TR0 + (i + .5) * ((316 - TR0) / ch.length);
+  document.querySelectorAll('.eng .fl').forEach(g => g.classList.toggle('dn', !up));
+  document.querySelectorAll('.eng .tcur').forEach(l => { l.setAttribute('x1', f1(x)); l.setAttribute('x2', f1(x)); });
+  $('fl-note').innerHTML = `Free layer: <b>${up ? '&rarr; parallel' : '&larr; antiparallel'}</b> to the reference, ${up ? 'low' : 'high'} resistance, spin ${up ? '+1' : '&minus;1'} (sample ${i + 1} of ${ch.length}).`;
+}
+
+// ---------- sound (Web Audio, synthesised; nothing plays until you press something) ----------
+const SFX = (() => {
+  let ac = null, out = null, noise = null; const playing = new Set();
+  function ctx() {
+    if (!ac) {
+      const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null;
+      ac = new AC(); const comp = ac.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 6;
+      out = ac.createGain(); out.gain.value = .8; out.connect(comp).connect(ac.destination);
+      noise = ac.createBuffer(1, ac.sampleRate, ac.sampleRate); const d = noise.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    }
+    if (ac.state === 'suspended') ac.resume();
+    return ac;
+  }
+  const keep = n => { playing.add(n); n.onended = () => playing.delete(n); return n; };
+  function env(g, t, a, peak, dur) { g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(.0001, t + dur); }
+  function tone(type, f0, f1v, at, dur, peak, lp) {
+    const c = ctx(); if (!c) return; const t = c.currentTime + at;
+    const o = keep(c.createOscillator()), g = c.createGain(); o.type = type; o.frequency.setValueAtTime(f0, t);
+    if (f1v && f1v !== f0) o.frequency.exponentialRampToValueAtTime(f1v, t + dur * .9);
+    env(g, t, .004, peak, dur);
+    let n = o; if (lp) { const f = c.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = lp; o.connect(f); n = f; }
+    n.connect(g).connect(out); o.start(t); o.stop(t + dur + .02);
+  }
+  function hiss(at, dur, type, f0, f1v, q, peak, att) {
+    const c = ctx(); if (!c) return; const t = c.currentTime + at;
+    const s = keep(c.createBufferSource()); s.buffer = noise; s.loop = true;
+    const f = c.createBiquadFilter(); f.type = type; f.Q.value = q; f.frequency.setValueAtTime(f0, t); if (f1v) f.frequency.exponentialRampToValueAtTime(f1v, t + dur);
+    const g = c.createGain(); env(g, t, att || .02, peak, dur);
+    s.connect(f).connect(g).connect(out); s.start(t, Math.random() * .5); s.stop(t + dur + .02);
+  }
+  const fx = {
+    click(i, at) { hiss(at, .03, 'bandpass', 2400 + 140 * i, 0, 7, .55, .0015); },
+    sizzle() { hiss(0, .95, 'highpass', 2600, 5200, .7, .2); hiss(0, .7, 'bandpass', 1200, 3400, 1.2, .12); for (let k = 0; k < 16; k++) hiss(Math.random() * .75, .02, 'bandpass', 3000 + Math.random() * 3000, 0, 4, .35); },
+    chime() { [[1318.5, 0], [1760, .09], [2637, .18]].forEach(([f, at]) => [1, 2.76, 5.4].forEach((m, j) => tone('sine', f * m, 0, at, 1.3 - j * .3, .09 / (j + 1)))); tone('triangle', 5274, 0, .22, .4, .02); },
+    hit(level) { tone('sine', 170, 46, 0, .2, .55); hiss(0, .03, 'highpass', 3000, 0, .7, .25); const b = [659.3, 784, 987.8, 1174.7, 1318.5][Math.min(4, level)]; tone('square', b, 0, .05, .09, .07, 2600); tone('square', b * 1.5, 0, .13, .14, .07, 2600); },
+    miss() { tone('square', 233, 110, 0, .34, .1, 900); tone('sine', 90, 50, 0, .25, .3); },
+    time() { tone('square', 330, 0, 0, .14, .09, 1400); tone('square', 330, 0, .2, .3, .09, 1400); },
+    tick(hi) { tone('sine', hi ? 1480 : 1040, 0, 0, .05, .14); },
+    go() { [523.3, 659.3, 784, 1046.5].forEach((f, k) => tone('square', f, 0, k * .07, .1, .06, 3000)); },
+    clear() { [523.3, 659.3, 784, 1046.5, 1318.5].forEach((f, k) => tone('square', f, 0, k * .08, .14, .06, 3200)); tone('triangle', 1046.5, 0, .42, .6, .08); },
+    fail() { [392, 349.2, 311.1, 233.1].forEach((f, k) => tone('square', f, 0, k * .12, .16, .06, 1600)); },
+    boss() { tone('sawtooth', 55, 0, 0, 1.6, .12, 400); for (let k = 0; k < 3; k++) hiss(k / 1.4, .32, 'bandpass', 900, 500, 1.4, .16); },   // three pulse-tube "chirps", 1.4 per second
+    on() { tone('sine', 1175, 0, 0, .2, .12); }
+  };
+  return {
+    play(kind, ...a) { if (!st.sound || !fx[kind]) return; try { fx[kind](...a); } catch (e) {} },
+    stop() { playing.forEach(n => { try { n.stop(); } catch (e) {} }); playing.clear(); }
+  };
+})();
+
+// ---------- particles: steam for heat, frost for cold, sparks for a hit (decoration) ----------
+const FX = {parts: [], cv: $('fx'), w: 0, h: 0, d: 1};
+function fitFx() {
+  const r = $('play').getBoundingClientRect(), d = Math.min(window.devicePixelRatio || 1, 2);
+  FX.d = d; FX.w = r.width; FX.h = r.height; FX.cv.width = Math.max(1, Math.round(r.width * d)); FX.cv.height = Math.max(1, Math.round(r.height * d));
+}
+function boardBox() { const p = $('play').getBoundingClientRect(), b = $('board-wrap').getBoundingClientRect(); return {x: b.left - p.left, y: b.top - p.top, w: b.width, h: b.height}; }
+function burst(kind) {
+  if (reduced()) return;
+  fitFx(); const b = boardBox(), t = performance.now() / 1000, z = Math.max(.55, Math.min(1, b.w / 560)), nn = k => Math.round(k * (.5 + .5 * z));
+  if (kind === 'steam') for (let k = 0; k < nn(26); k++) FX.parts.push({k: 'steam', x: b.x + Math.random() * b.w, y: b.y + b.h - Math.random() * 20, vx: (Math.random() - .5) * 20, vy: (-40 - Math.random() * 50) * z, r: (5 + Math.random() * 9) * z, g: 9 * z, born: t + Math.random() * .25, life: 1.3 + Math.random() * .8, warm: Math.random() < .35});
+  if (kind === 'frost') for (let k = 0; k < nn(24); k++) FX.parts.push({k: 'frost', x: b.x + Math.random() * b.w, y: b.y - 6 + Math.random() * 30, vx: (Math.random() - .5) * 18, vy: (30 + Math.random() * 45) * z, r: (4 + Math.random() * 6) * z, a: Math.random() * 6, va: (Math.random() - .5) * 3, born: t + Math.random() * .3, life: 1.6 + Math.random() * .8});
+  if (kind === 'spark') for (let k = 0; k < 14; k++) { const a = k / 14 * 2 * Math.PI; FX.parts.push({k: 'spark', x: b.x + b.w / 2, y: b.y + b.h * .44, vx: Math.cos(a) * (180 + Math.random() * 90), vy: Math.sin(a) * (120 + Math.random() * 70), born: t, life: .42}); }
+  kick();
+}
+function stepFx(t, dt) {
+  const P = FX.parts; if (!P.length) return;
+  const c = FX.cv.getContext('2d'), d = FX.d;
+  c.setTransform(d, 0, 0, d, 0, 0); c.clearRect(0, 0, FX.w, FX.h);
+  for (const p of P) {
+    const age = t - p.born; if (age < 0) continue;
+    p.x += p.vx * dt; p.y += p.vy * dt; const k = 1 - age / p.life;
+    if (p.k === 'steam') {
+      p.vx *= .985; p.r += p.g * dt; c.globalAlpha = Math.max(0, k) * .85;
+      c.fillStyle = COL.paper; c.strokeStyle = p.warm ? COL.warn : COL.ink3; c.lineWidth = 1.2;
+      c.beginPath(); c.arc(p.x, p.y, p.r, 0, 2 * Math.PI); c.fill(); c.stroke();
+      c.beginPath(); c.arc(p.x - p.r * .3, p.y - p.r * .2, p.r * .45, Math.PI, 1.9 * Math.PI); c.stroke();
+    } else if (p.k === 'frost') {
+      p.a += p.va * dt; c.globalAlpha = Math.max(0, Math.min(1, k * 1.6)); c.strokeStyle = COL.ink2; c.lineWidth = 1.1;
+      c.beginPath();
+      for (let j = 0; j < 6; j++) { const a = p.a + j * Math.PI / 3, ex = Math.cos(a), ey = Math.sin(a); c.moveTo(p.x, p.y); c.lineTo(p.x + ex * p.r, p.y + ey * p.r);
+        const bx = p.x + ex * p.r * .6, by = p.y + ey * p.r * .6; c.moveTo(bx, by); c.lineTo(bx + Math.cos(a + .9) * p.r * .3, by + Math.sin(a + .9) * p.r * .3); c.moveTo(bx, by); c.lineTo(bx + Math.cos(a - .9) * p.r * .3, by + Math.sin(a - .9) * p.r * .3); }
+      c.stroke();
+    } else {
+      c.globalAlpha = Math.max(0, k); c.strokeStyle = COL.ink; c.lineWidth = 2;
+      c.beginPath(); c.moveTo(p.x, p.y); c.lineTo(p.x - p.vx * .06, p.y - p.vy * .06); c.stroke();
+    }
+  }
+  c.globalAlpha = 1;
+  FX.parts = P.filter(p => t - p.born < p.life);
+  if (!FX.parts.length) c.clearRect(0, 0, FX.w, FX.h);
+}
+function shake(kind) {
+  if (reduced()) return;
+  const el = $('play'); el.classList.remove('shake', 'thud'); void el.offsetWidth; el.classList.add(kind);
+}
+$('play').addEventListener('animationend', e => { if (e.target === $('play')) $('play').classList.remove('shake', 'thud'); });
+function callout(big, small, tone) {
+  const el = $('callout'); $('co-big').textContent = big; $('co-small').textContent = small || ''; $('co-small').hidden = !small;
+  el.className = 'callout' + (tone ? ' ' + tone : ''); void el.offsetWidth; el.classList.add('pop');
+  clearTimeout(el._h); if (reduced()) el._h = setTimeout(() => { el.className = 'callout'; }, 1300);
+}
+
+// ---------- the magnet board ----------
+const BOARD = {W: 600, H: 340, P: [], r: 16, mags: [], bonds: []};
+function layoutPx(g) {
+  const W = BOARD.W, H = BOARD.H;
+  if (st.graph === 'ladder') return g.layout.map(([x, y]) => [22 + (x - .07) / .86 * (W - 44), y < .5 ? 92 : 252]);
+  const s = Math.min(W, H) * .94, ox = (W - s) / 2, oy = (H - s) / 2;
+  return g.layout.map(([x, y]) => [ox + x * s, oy + y * s]);
+}
+function buildBoard() {
+  BOARD.W = window.innerWidth <= 520 ? 420 : 600;
+  $('board').setAttribute('viewBox', `0 0 ${BOARD.W} ${BOARD.H}`);
+  const g = G(), P = layoutPx(g); BOARD.P = P;
+  let m = 1e9; for (let a = 0; a < N; a++) for (let b = a + 1; b < N; b++) m = Math.min(m, Math.hypot(P[a][0] - P[b][0], P[a][1] - P[b][1]));
+  const r = BOARD.r = Math.max(9, Math.min(19, m * .4));
+  let s = `<rect class="bg" width="${BOARD.W}" height="${BOARD.H}"/>`;
+  g.edges.forEach(([a, b], e) => s += `<line class="bd" data-e="${e}" x1="${f1(P[a][0])}" y1="${f1(P[a][1])}" x2="${f1(P[b][0])}" y2="${f1(P[b][1])}"/>`);
+  for (let i = 0; i < N; i++) s += `<g class="mg" transform="translate(${f1(P[i][0])} ${f1(P[i][1])})"><circle class="o" r="${f1(r)}"/><circle class="i" r="${f1(r * .8)}"/><g class="arw"><path d="${arrowUp(0, 0, r * 1.25, r * .95)}"/></g></g>`;
+  $('board').innerHTML = s;
+  BOARD.mags = [...$('board').querySelectorAll('.mg')]; BOARD.bonds = [...$('board').querySelectorAll('.bd')];
+  BOARD.last = null;
+}
+function showSample(k, sound) {
+  const r = GM.round; if (!r) return;
+  k = Math.max(0, Math.min(15, k)); PB.k = k;
+  const s = r.samples[k], g = G(), prev = BOARD.last;
+  let flips = 0;
+  for (let i = 0; i < N; i++) {
+    const dn = s[i] < 0; BOARD.mags[i].classList.toggle('dn', dn);
+    if (prev && prev[i] !== s[i]) { if (sound && flips < 7) SFX.play('click', i, flips * .009 + Math.random() * .004); flips++; }
+  }
+  let broken = 0;
+  g.edges.forEach(([a, b], e) => { const br = s[a] * s[b] * g.signs[e] < 0; if (br) broken++; BOARD.bonds[e].classList.toggle('br', br); });
+  BOARD.last = s;
+  $('board-cap').innerHTML = `Sample <b>${k + 1}</b> / 16`;
+  $('pos').innerHTML = `Sample <b>${k + 1}</b> of 16 · <b>${broken}</b> bond${broken === 1 ? '' : 's'} broken<span class="bits"> · bits ${bitsOf(s)}</span>`;
+  $('board').setAttribute('aria-label', `Magnet board, sample ${k + 1} of 16: bits ${bitsOf(s)}, ${broken} bonds broken`);
+  drawTape();
+}
+const bitsOf = s => Array.from(s, v => v > 0 ? '0' : '1').join('');
+function sizeCanvas(cv) {
+  const r = cv.getBoundingClientRect(), d = Math.min(window.devicePixelRatio || 1, 2);
+  const w = Math.max(1, Math.round(r.width * d)), h = Math.max(1, Math.round(r.height * d));
+  if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; }
+  return {w, h, d};
+}
+function drawTape() {
+  const r = GM.round, cv = $('tape'); if (!r || cv.offsetParent === null) return;
+  const {w, h, d} = sizeCanvas(cv), c = cv.getContext('2d');
+  c.clearRect(0, 0, w, h);
+  const pad = 3 * d, cw = (w - 2 * pad) / 16, rh = (h - 2 * pad) / N;
+  for (let k = 0; k < 16; k++) for (let i = 0; i < N; i++) {
+    c.fillStyle = r.samples[k][i] > 0 ? COL.ink : COL.rule;
+    c.fillRect(pad + k * cw + 1.5 * d, pad + i * rh + .5 * d, cw - 3 * d, Math.max(1, rh - 1 * d));
+  }
+  c.strokeStyle = COL.ink; c.lineWidth = 2 * d; c.strokeRect(pad + PB.k * cw + .5 * d, pad - 1 * d, cw - 1 * d, h - 2 * pad + 2 * d);
+}
+function clearTape() { const cv = $('tape'); if (cv.width) cv.getContext('2d').clearRect(0, 0, cv.width, cv.height); }
+$('tape').addEventListener('click', e => {
+  if (!GM.round) return; const b = $('tape').getBoundingClientRect();
+  stopPB(); showSample(Math.floor((e.clientX - b.left) / b.width * 16), true);
+});
+
+// playback of the batch: one real sample every 0.33 s, each flip clicks
+const PB = {on: false, k: 0, next: 0};
+function startPB(from) { PB.on = true; PB.k = from == null ? 0 : from; PB.next = performance.now() / 1000 + .33; if (from == null) showSample(0, true); syncPB(); kick(); }
+function stopPB() { PB.on = false; syncPB(); }
+function syncPB() { $('b-play').setAttribute('aria-pressed', String(PB.on)); $('b-play').textContent = PB.on ? 'Stop' : 'Play batch'; }
+$('b-play').addEventListener('click', () => { if (!GM.round) return; if (PB.on) stopPB(); else startPB(PB.k >= 15 ? null : PB.k); });
+$('b-prev').addEventListener('click', () => { if (!GM.round) return; stopPB(); showSample(PB.k - 1, true); });
+$('b-step').addEventListener('click', () => { if (!GM.round) return; stopPB(); showSample(PB.k + 1, true); });
+
+// ---------- the game ----------
+const STAGES = [
+  {key: '50k', short: '50 K', name: '50 K plate', temp: '~50 K', graph: 'ladder', J: 1, n: 5, need: 3, card: 'k50'},
+  {key: '4k', short: '4 K', name: '4 K plate', temp: '~4 K', graph: 'ring', J: 1, n: 5, need: 3, card: 'k4'},
+  {key: 'still', short: 'Still', name: 'Still', temp: '~0.8 K', graph: 'random', J: 1, n: 5, need: 3, card: 'still'},
+  {key: 'cold', short: 'Cold', name: 'Cold plate', temp: '~0.1 K', graph: 'ring', J: 0.4, n: 5, need: 3, card: 'cold'},
+  {key: 'mxc', short: 'MXC · boss', name: 'Mixing chamber', temp: '10–20 mK', boss: true, n: 6, need: 4, card: 'fez'}];
+const TIME = 15;
+const GM = {mode: 'title', stage: 0, env: 0, hits: 0, log: [], res: [null, null, null, null, null], score: 0, streak: 0, best: 0,
+  calls: [], timeouts: 0, round: null, phase: 'idle', paused: false, left: TIME, graceUntil: 0, lastTick: 99, cards: new Set(), fridgeMiss: 0, bossMet: false};
+const stageDef = () => STAGES[GM.stage];
+const lc = name => name.replace(/^[A-Z](?=[a-z])/, ch => ch.toLowerCase());
+const bossCfgs = () => CONFIGS.filter(c => c.qpu);
+const multOf = s => s >= 6 ? 4 : s >= 4 ? 3 : s >= 2 ? 2 : 1;
+const COMBO = ['', '', 'Double!', 'Triple!', 'Super!', 'Ultra!', 'Mega!'];
+
+function startGame() {
+  Object.assign(GM, {mode: 'play', stage: 0, env: 0, hits: 0, log: [], res: [null, null, null, null, null], score: 0, streak: 0, best: 0, calls: [], timeouts: 0, round: null, phase: 'idle', paused: false, fridgeMiss: 0, bossMet: false});
+  syncView(); unlock('mtj');
+  stageIntro();
+}
+function stageIntro() {
+  const S = stageDef(); GM.env = 0; GM.hits = 0; GM.log = [];
+  if (S.boss) { const b = bossCfgs(); if (b.length) { st.graph = b[0].graph; st.J = b[0].J; } unlock('mxc'); }
+  else if (CONFIGS.some(c => c.graph === S.graph && c.J === S.J)) { st.graph = S.graph; st.J = S.J; }
+  if (S.boss && !GM.bossMet) { GM.round = null; GM.phase = 'intro'; stopPB(); }
+  buildSegs(); buildBoard(); syncReadout(); syncHud(); syncMap();
+  if (S.boss && !GM.bossMet) { bossCard(); return; }
+  deal();
+  if (S.boss) { callout('Fight!', 'boss round · real ibm_fez shots', 'cold'); SFX.play('boss'); }
+  else { callout(`Stage ${GM.stage + 1}`, `${S.name} · ${S.temp}`, ''); SFX.play('go'); }
+  GM.graceUntil = performance.now() / 1000 + 1.1;
+}
+// the boss's title card: who it is, and that its fridge envelopes are real hardware shots. Waits for the player.
+function bossCard() {
+  const b = bossCfgs(), S = stageDef();
+  const probs = b.map(c => `${DATA.graphs[c.graph].label.toLowerCase()}, J ${c.J.toFixed(1)}`).join(' and ');
+  const ids = b.map(c => c.qpu.ibm_job_id || c.qpu.job_id).filter(Boolean).map(x => `<span class="nw">${x}</span>`).join(', ');
+  syncGuess(); clearTape();
+  $('ovl').innerHTML = `<div class="card" role="dialog" aria-label="Boss round"><span class="label">Stage 5 of 5 · mixing chamber · 10–20 mK</span><h2>Boss: <span class="nocase">ibm_fez</span></h2>
+    <div class="bossart"><div id="boss-art">${svgChip()}</div><dl>
+      <dt>Chip</dt><dd>IBM Heron r2: 156 superconducting transmon qubits, tunable couplers</dd>
+      <dt>Used</dt><dd>20 qubits and 20 shots per job; <b>${b.length} real hardware jobs</b></dd>
+      <dt>Lives</dt><dd>on the mixing-chamber plate, inside a shielded can</dd></dl></div>
+    <p>Down here every fridge envelope is <b>16 of the 20 real shots</b> from one of our ibm_fez jobs (IBM job ${ids}). Sauna envelopes are still THRML p-bits. The boss picks the problem: only the ${probs} have hardware shots. Knock out its <b>${S.need} HP</b>: call ${S.need} of ${S.n} right.</p>
+    <div class="row"><button type="button" class="btn" id="o-fight">Fight &#9656;</button></div></div>`;
+  $('ovl').hidden = false;
+  $('o-fight').addEventListener('click', () => { GM.bossMet = true; $('ovl').hidden = true; stageIntro(); $('b-pbit').focus({preventScroll: true}); });
+  $('o-fight').focus({preventScroll: true});
+  SFX.play('boss');
+}
+// a small engraving of the boss: the processor die in its sample holder, wire-bonded to a gold-plated board ringed
+// with coax connectors, on the mixing-chamber plate, with the shielding can lifted off
+function svgChip() {
+  let s = `<svg class="eng" viewBox="0 0 160 150" role="img" aria-label="Drawing of a superconducting qubit chip in its sample holder: the square die wire-bonded to a circuit board ringed with coax connectors, on the mixing-chamber plate, with the shielding can lifted off.">`;
+  s += `<path d="${arcBand(80, 66, 14, 112, 124)}" fill="url(#e-vh)" class="ol"/><ellipse cx="80" cy="112" rx="66" ry="14" fill="url(#e-gold)" class="ol"/>`;
+  s += `<path d="M80 98L80 112" class="ol"/><path d="M30 70L80 50L130 70L80 92Z" fill="url(#e-hl)" class="ol"/><path d="M30 70L30 76L80 98L130 76L130 70" fill="url(#e-golddk)" class="ol"/>`;
+  for (let k = 0; k < 8; k++) { const t = (k + .5) / 8 * 2 * Math.PI, x = 80 + 40 * Math.cos(t), y = 71 + 16 * Math.sin(t); s += `<ellipse cx="${f1(x)}" cy="${f1(y)}" rx="3.4" ry="2.1" fill="#FBFAF9" class="ol"/><ellipse cx="${f1(x)}" cy="${f1(y)}" rx="1" ry=".6" class="ink"/>`; }
+  s += `<path d="M62 70L80 62.5L98 70L80 78Z" fill="url(#e-xh)" class="ol2"/>`;
+  let bonds = ''; for (let k = 0; k < 5; k++) { const u = (k + .5) / 5; bonds += `M${f1(62 + 18 * u)} ${f1(70 - 7.5 * u)}l-5 -3M${f1(98 - 18 * u)} ${f1(70 + 8 * u)}l5 3`; }
+  s += `<path d="${bonds}" class="thin"/>`;
+  s += `<path d="M14 40L14 16A66 10 0 0 1 146 16L146 40" fill="url(#e-hl)" class="ol"/><path d="M14 40A66 10 0 0 0 146 40" class="ol"/><path d="M40 44L40 52M120 44L120 52M80 49L80 57" class="thin" stroke-dasharray="2 2"/>`;
+  s += `<text class="lbl s halo" x="80" y="32" text-anchor="middle">shield can, lifted</text><text class="lbl s" x="80" y="145" text-anchor="middle">not to scale</text></svg>`;
+  return s;
+}
+// 16 real samples for one batch: 16 consecutive THRML samples (16 different chains), or 16 of a job's 20 shots
+function drawBatch(c, src, truth) {
+  let samples, info;
+  if (truth === 'pbit') {
+    const nb = Math.floor(c.pbitSpins.length / 16), k = Math.floor(rng() * nb);
+    samples = c.pbitSpins.slice(16 * k, 16 * k + 16);
+    info = `${c.pbit.label || 'THRML p-bits'}: batch ${k + 1} of ${nb} (16 samples from 16 independent chains)`;
+  } else {
+    const j = c[src], pick = I.shuffle(j.spins.map((s, i) => i), rng).slice(0, 16);
+    samples = pick.map(i => j.spins[i]);
+    info = `graph-v1 on ${j.backend === 'aer' ? 'the Atlas emulator (Aer), a classical simulation' : j.backend + ', real IBM hardware'}: 16 of the 20 shots of job ${j.job_id}`;
+  }
+  return {samples, info};
+}
+function roundSrc(c) { return stageDef().boss ? (c.qpu ? 'qpu' : 'emu') : (c.emu ? 'emu' : 'qpu'); }
+function deal() {
+  const S = stageDef();
+  if (S.boss) {   // the boss alternates between the problems that have real hardware shots
+    const b = bossCfgs();
+    if (GM.env === 0) GM.bossOff = Math.floor(rng() * Math.max(1, b.length));
+    const c = b.length ? b[(GM.env + GM.bossOff) % b.length] : cfg();
+    if (c.graph !== st.graph || c.J !== st.J) { st.graph = c.graph; st.J = c.J; buildSegs(); buildBoard(); syncReadout(); }
+  }
+  const c = cfg(), src = roundSrc(c), truth = rng() < 0.5 ? 'pbit' : 'qubit';
+  const {samples, info} = drawBatch(c, src, truth);
+  GM.round = {truth, samples, info, src, graph: st.graph, J: st.J, guessed: null};
+  GM.phase = 'guess'; GM.left = TIME; GM.lastTick = 99;
+  GM.graceUntil = performance.now() / 1000 + .5;
+  $('stamp').hidden = true; BOARD.last = null;
+  syncGuess(); syncHud(); syncTimer();
+  startPB();
+}
+function guess(g) {
+  if (GM.mode !== 'play' || GM.phase !== 'guess' || GM.paused) return;
+  resolve(g);
+}
+function resolve(g) {
+  const r = GM.round, ok = g === r.truth, S = stageDef();
+  GM.phase = 'reveal'; r.guessed = g || 'timeout';
+  if (g) {
+    GM.calls.push({ok, truth: r.truth, src: r.src, boss: !!S.boss, key: `${r.graph}|${r.J}|${r.src}`});
+    if (ok) {
+      GM.streak++; GM.best = Math.max(GM.best, GM.streak); GM.hits++;
+      const m = multOf(GM.streak), bonus = Math.round(Math.max(0, GM.left) * 10), pts = (100 + bonus) * m;
+      GM.score += pts;
+      const word = COMBO[Math.min(GM.streak, 6)] || '', heat = r.truth === 'pbit';
+      if (S.boss && GM.hits === S.need) callout('K.O.!', `boss down · +${pts}${GM.env + 1 < S.n ? ' · finish the round for the record' : ''}`, 'cold');
+      else if (S.boss) callout(GM.streak >= 2 ? word : 'Boss hit!', `+${pts} · boss HP ${S.need - GM.hits}`, heat ? 'heat' : 'cold');
+      else callout(GM.streak >= 2 ? word : heat ? 'Sizzling!' : 'Ice cold!', `+${pts}${m > 1 ? ` · ×${m} combo` : ''}`, heat ? 'heat' : 'cold');
+      SFX.play('hit', GM.streak - 1); shake('shake'); burst('spark');
+      if (r.truth === 'pbit') unlock('pbit');
+    } else {
+      GM.streak = 0; callout('Miss', r.truth === 'pbit' ? 'it was the sauna' : 'it was the fridge', '');
+      SFX.play('miss'); shake('thud');
+      if (r.truth === 'qubit' && ++GM.fridgeMiss >= 2) unlock('twin');
+    }
+  } else {
+    GM.streak = 0; GM.timeouts++; callout('Time!', r.truth === 'pbit' ? 'it was the sauna' : 'it was the fridge', ''); SFX.play('time'); shake('thud');
+  }
+  GM.log.push(g ? (ok ? 'ok' : 'no') : 'to');
+  setTimeout(() => { if (GM.round !== r || GM.phase !== 'reveal') return; SFX.play(r.truth === 'pbit' ? 'sizzle' : 'chime'); burst(r.truth === 'pbit' ? 'steam' : 'frost'); }, 180);
+  const stmp = $('stamp');
+  $('st-big').textContent = r.truth === 'pbit' ? 'Sauna' : 'Fridge';
+  $('st-small').textContent = r.truth === 'pbit' ? 'THRML p-bits · software' : r.src === 'qpu' ? 'ibm_fez · real hardware' : 'Atlas emulator · simulated';
+  stmp.className = 'stamp' + (r.truth === 'pbit' ? ' heat' : ''); stmp.hidden = false;
+  syncGuess(); syncHud(); syncMeter();
+  const p = I.binomTail(GM.calls.filter(c => c.ok).length, GM.calls.length);
+  if (GM.calls.length >= 5 && p < .05) unlock('peek');
+  $('b-next').focus({preventScroll: true});
+}
+function next() {
+  if (GM.mode !== 'play' || GM.phase !== 'reveal') return;
+  GM.env++;
+  if (GM.env >= stageDef().n) stageEnd(); else deal();
+}
+function stageEnd() {
+  const S = stageDef(), cleared = GM.hits >= S.need;
+  GM.phase = 'over'; stopPB(); syncGuess();
+  const c = cfg(), t = c ? tellOf(c, roundSrc(c)) : null;
+  const coin = (() => { let p = 0; for (let k = S.need; k <= S.n; k++) p += binom(S.n, k); return p / Math.pow(2, S.n); })();
+  const fair = t ? (t.z >= 3 ? `On this problem the fridge's shots carry ${t.word}: their mean bond correlation is ${t.mQ.toFixed(2)} against the p-bits' ${t.mP.toFixed(2)} (${t.z.toFixed(1)} standard errors apart). Broken bonds give them away.`
+    : `On this problem the fridge's shots and the p-bits are ${t.z >= 2 ? 'only faintly different' : 'statistically indistinguishable'} (mean bond correlation ${t.mQ.toFixed(2)} against ${t.mP.toFixed(2)}, ${t.z.toFixed(1)} standard errors). A coin clears this stage ${Math.round(coin * 100)}% of the time, and that is the physics, not you.`) : '';
+  if (S.boss) {
+    const lines = bossCfgs().map(b => { const t2 = tellOf(b, 'qpu'); return `${DATA.graphs[b.graph].label.toLowerCase()}, J ${b.J.toFixed(1)}: ibm_fez ${t2.mQ.toFixed(2)} against the p-bits' ${t2.mP.toFixed(2)}, ${t2.z.toFixed(1)} standard errors apart (${t2.word})`; });
+    finalCard(cleared, `Mean bond correlation on the boss's problems: ${lines.join('; ')}.`); return;
+  }
+  FX.parts = [];
+  if (cleared) { GM.score += 500 * (GM.stage + 1); SFX.play('clear'); }
+  else SFX.play('fail');
+  const nextS = STAGES[GM.stage + 1];
+  const card = S.card && CARDS.find(x => x.id === S.card);
+  $('ovl').innerHTML = `<div class="card" role="dialog" aria-label="Stage result"><span class="label">${S.name} · ${S.temp}</span><h2>${cleared ? 'Stage clear' : 'Stage failed'}</h2>
+    <p><b>${GM.hits} of ${S.n}</b> called right${cleared ? `, +${500 * (GM.stage + 1)} clear bonus` : ` (${S.need} needed)`}. ${fair}</p>
+    ${card ? `<div class="unlock">Lab card unlocked: <b>${card.t}</b>. ${card.x}</div>` : ''}
+    <div class="row">${cleared ? `<button type="button" class="btn" id="o-down">Drop to the ${lc(nextS.name)} &#9662;</button>` : `<button type="button" class="btn" id="o-retry">Retry this plate</button><button type="button" class="btn ghost" id="o-skip">Drop anyway (no bonus)</button>`}</div></div>`;
+  $('ovl').hidden = false;
+  if (card) unlock(card.id, true);
+  const go = skip => { GM.res[GM.stage] = skip ? 'skip' : 'done'; $('ovl').hidden = true; GM.stage++; syncMap(true); stageIntro(); };
+  if (cleared) $('o-down').addEventListener('click', () => go(false));
+  else { $('o-retry').addEventListener('click', () => { $('ovl').hidden = true; stageIntro(); }); $('o-skip').addEventListener('click', () => go(true)); }
+  ($('o-down') || $('o-retry')).focus({preventScroll: true});
+}
+function binom(n, k) { let r = 1; for (let i = 1; i <= k; i++) r = r * (n - k + i) / i; return r; }
+function finalCard(won, fair) {
+  GM.res[4] = won ? 'done' : 'skip'; GM.mode = 'final'; syncMap();
+  FX.parts = [];
+  if (won) { GM.score += 2000; SFX.play('clear'); } else SFX.play('fail');
+  unlock('fez', true);
+  const all = GM.calls, k = all.filter(c => c.ok).length, p = all.length ? I.binomTail(k, all.length) : 1;
+  const hw = all.filter(c => c.boss), kh = hw.filter(c => c.ok).length, ph = hw.length ? I.binomTail(kh, hw.length) : 1;
+  const by = {}; all.forEach(c => { (by[c.key] = by[c.key] || {k: 0, n: 0}).n++; if (c.ok) by[c.key].k++; });
+  const rows = Object.keys(by).map(key => { const [g, J, src] = key.split('|'), b = by[key], pv = I.binomTail(b.k, b.n);
+    return `<tr><td>${DATA.graphs[g].label.toLowerCase()}, J ${(+J).toFixed(1)}</td><td>${SRC_NAME[src]}</td><td>${b.k}/${b.n}</td><td>${pv < .001 ? '&lt; 0.001' : pv.toFixed(2)}</td></tr>`; }).join('');
+  $('ovl').innerHTML = `<div class="card" role="dialog" aria-label="Final result"><span class="label">Mixing chamber · 10–20 mK · real ibm_fez shots</span><h2>${won ? 'Boss down' : 'The boss holds'}</h2>
+    <p>Final score <b>${GM.score.toLocaleString('en')}</b> · best streak <b>${GM.best}</b> · time-outs ${GM.timeouts}.</p>
+    <p>All your calls: <b>${k} of ${all.length}</b>, p = <b>${p < .001 ? '&lt; 0.001' : p.toFixed(3)}</b> against a coin. Boss calls (THRML against real hardware): <b>${kh} of ${hw.length}</b>, p = <b>${ph < .001 ? '&lt; 0.001' : ph.toFixed(2)}</b>. ${fair}</p>
+    <table><tr><th>problem</th><th>fridge source</th><th>right</th><th>p</th></tr>${rows}</table>
+    <p>Where you beat a coin, the fridge's batches really are different there (look at The data, below the arcade); where you didn't, they may simply not be. No advantage is claimed either way.</p>
+    <div class="row"><button type="button" class="btn" id="o-again">Play again</button><button type="button" class="btn ghost" id="o-data">Open the data</button></div></div>`;
+  $('ovl').hidden = false;
+  $('o-again').addEventListener('click', () => { $('ovl').hidden = true; startGame(); });
+  $('o-data').addEventListener('click', goData);
+  $('o-again').focus({preventScroll: true});
+}
+function syncGuess() {
+  const r = GM.round, open = GM.mode === 'play' && GM.phase === 'guess';
+  [['b-pbit', 'pbit'], ['b-qubit', 'qubit']].forEach(([id, v]) => { const b = $(id); b.disabled = !open; b.setAttribute('aria-pressed', String(!!r && r.guessed === v)); });
+  const showNext = GM.mode === 'play' && GM.phase === 'reveal';
+  $('b-next').hidden = !showNext;
+  if (showNext) $('b-next').innerHTML = (GM.env + 1 >= stageDef().n ? 'Stage result' : 'Next envelope') + ' <kbd>N</kbd>';
+  if (r && r.guessed) {
+    const ok = r.guessed === r.truth, who = r.truth === 'pbit' ? 'the sauna: THRML p-bits' : r.src === 'qpu' ? 'the fridge: real ibm_fez shots' : 'the fridge, as simulated by the Atlas emulator';
+    $('verdict').innerHTML = r.guessed === 'timeout' ? `<b class="no">Time.</b> These were from ${who}.` : `<b class="${ok ? 'ok' : 'no'}">${ok ? 'Right.' : 'Wrong.'}</b> You called ${r.guessed === 'pbit' ? 'the sauna' : 'the fridge'}. These were from ${who}.`;
+    $('r-batch').textContent = r.info;
+  } else {
+    $('verdict').textContent = GM.mode === 'play' ? 'Who sent these 16 samples? Call it.' : '';
+    $('r-batch').textContent = 'hidden until you call it';
+  }
+}
+function syncHud() {
+  const S = stageDef();
+  $('hud-stage').innerHTML = `<small>${S.boss ? 'Boss · stage 5 of 5' : `Stage ${GM.stage + 1} of 5`} · ${S.temp}</small>${S.name}`;
+  $('hud-score').textContent = GM.score.toLocaleString('en');
+  const m = multOf(GM.streak); $('hud-mult').textContent = '×' + m; $('hud-multbox').classList.toggle('hot', m > 1);
+  $('hud-hpbox').hidden = !S.boss || GM.mode === 'title';
+  if (S.boss) { const hp = Math.max(0, S.need - GM.hits); $('hud-hp').innerHTML = Array.from({length: S.need}, (_, i) => `<i class="${i < hp ? '' : 'gone'}"></i>`).join(''); $('hud-hpbox').title = `boss HP ${hp} of ${S.need}`; }
+  $('hud-multbox').title = `streak ${GM.streak}, best ${GM.best}`;
+  $('descent').innerHTML = STAGES.map((s, i) => `<i class="${i === GM.stage && GM.mode !== 'title' ? 'cur' : GM.res[i] || ''}">${s.short}</i>`).join('<em>&#9656;</em>');
+  $('pips').innerHTML = Array.from({length: S.n}, (_, i) => `<i class="${GM.log[i] || (i === GM.env && GM.phase === 'guess' ? 'now' : '')}"></i>`).join('');
+  $('pips').setAttribute('aria-label', `Envelope ${Math.min(GM.env + 1, S.n)} of ${S.n} on this plate; ${GM.hits} right so far, ${S.need} needed`);
+  const c = cfg(), src = c ? roundSrc(c) : 'emu';
+  $('srcchip').innerHTML = src === 'qpu' ? 'Fridge envelopes here: <b>ibm_fez</b>, real IBM hardware (Heron), 20 shots per job' : 'Fridge envelopes here: <b>Atlas emulator</b>, a classical simulation of the circuit';
+  $('fr-temp').textContent = S.temp;
+  $('fr-note').innerHTML = S.boss ? `<b>Boss round</b> in the mixing chamber: fridge envelopes are <b>real ibm_fez shots</b>. Call ${S.need} of ${S.n} right to beat it.`
+    : `You are on the <b>${lc(S.name)}</b> (${S.temp}). Call ${S.need} of ${S.n} right to drop to the next plate. Fridge envelopes here come from the <b>Atlas emulator</b>, a classical simulation: no fridge involved.`;
+}
+function syncMap(animate) {
+  const cur = GM.mode === 'title' ? -1 : GM.mode === 'final' ? 9 : GM.stage;
+  document.querySelectorAll('.eng .lv').forEach(g => { const i = +g.dataset.i; g.setAttribute('class', 'lv' + (i === 0 ? (cur >= 0 ? ' done' : ' cur') : i - 1 === cur ? ' cur' : GM.res[i - 1] === 'done' ? ' done' : GM.res[i - 1] === 'skip' ? ' skip' : '')); });
+  document.querySelectorAll('.eng .plate').forEach(p => p.classList.toggle('cur', cur >= 0 && cur < STAGES.length && p.dataset.k === STAGES[cur].key));
+  const [x, y] = lvPos(Math.max(0, Math.min(DR_PLATES.length - 1, cur + 1)));
+  document.querySelectorAll('.eng .probe').forEach(p => { p.style.transform = `translate(${f1(x - 16)}px, ${f1(y)}px)`; if (!animate) { p.style.transition = 'none'; void p.getBoundingClientRect(); p.style.transition = ''; } });
+  document.querySelectorAll('.eng .can').forEach(c => c.classList.toggle('hot', cur === 4));
+}
+function syncTimer() {
+  const on = st.timerOn, left = Math.max(0, GM.left);
+  $('timer-fill').style.width = (on ? 100 * left / TIME : 100) + '%';
+  $('timer').classList.toggle('warn', on && left <= 5 && GM.phase === 'guess');
+  $('secs').textContent = on ? left.toFixed(1) + ' s' : 'no clock';
+  $('timer').setAttribute('aria-valuenow', on ? left.toFixed(0) : TIME);
+}
+function syncMeter() {
+  const all = GM.calls, k = all.filter(c => c.ok).length, n = all.length, p = n ? I.binomTail(k, n) : 1;
+  const x = Math.max(0, Math.min(1, -Math.log10(Math.max(p, 1e-6)) / 3));
+  $('ndl').style.left = (100 * x).toFixed(1) + '%';
+  $('m-count').textContent = `${k} of ${n} right`;
+  const hw = all.filter(c => c.boss), kh = hw.filter(c => c.ok).length;
+  let v;
+  if (!n) v = 'No calls yet. The needle shows how unlikely your score would be for a coin (an exact binomial test).';
+  else {
+    const ps = p < .001 ? '< 0.001' : p.toFixed(p < .01 ? 3 : 2);
+    v = `A coin calls at least ${k} of ${n} right ${(100 * p).toFixed(p < .01 ? 1 : 0)}% of the time (one-sided exact binomial, p = <b>${ps}</b>). `;
+    v += n < 5 ? 'Too few calls to tell anything yet.' : p < .001 ? '<b>Way beyond chance.</b>' : p < .01 ? '<b>Clearly beating chance.</b>' : p < .05 ? '<b>Beating chance</b> (p &lt; 0.05).' : 'So far <b>a coin would do about as well</b>.';
+    const c = cfg(), t = c ? tellOf(c, roundSrc(c)) : null;
+    if (n >= 5 && p >= .05 && t && t.z < 2) v += ' On this problem the two sources match within the noise of 20 shots, so that is expected.';
+    if (hw.length) v += ` Boss calls (real hardware): ${kh} of ${hw.length}.`;
+  }
+  $('m-text').innerHTML = v;
+}
+
+// ---------- lab cards ----------
+const CARDS = [
+  {id: 'mtj', t: 'The free layer', how: 'Press start', x: 'A stochastic magnetic tunnel junction is two CoFeB nanomagnets separated by an MgO barrier about a nanometre thick, in a pillar tens of nanometres across. The free layer is built with so small an energy barrier that room-temperature heat flips it on its own, as fast as nanoseconds in devices designed for it (Safranski et al., Nano Letters 2021). Parallel to the reference layer the resistance is low; antiparallel, high.'},
+  {id: 'pbit', t: 'From magnet to p-bit', how: 'Call a sauna envelope right', x: 'Put the junction in series with a transistor and read the node between them with a comparator: the output flips at random, and the transistor\'s input voltage tilts how often it reads 1. That is a p-bit (Camsari et al., Physical Review X 2017). Borders et al. (Nature 2019) factored integers with a small network of them.'},
+  {id: 'k50', t: '50 K: the chirp', how: 'Finish the 50 K plate', x: 'The 50 K and 4 K plates are cooled by a two-stage pulse-tube cryocooler. Its rotary valve switches the helium pressure about 1.4 times a second, a sound labs call chirping, and its vibration is a known noise source (Kalra et al., Review of Scientific Instruments 2016).'},
+  {id: 'k4', t: '4 K: amplifiers and attenuators', how: 'Finish the 4 K plate', x: 'The 4 K plate usually carries the HEMT amplifiers that boost the qubits\' faint readout signals on their way up. On the way down, attenuators on the plates soak up room-temperature noise travelling along the coax (Krinner et al., EPJ Quantum Technology 2019).'},
+  {id: 'still', t: 'The still', how: 'Finish the still', x: 'At about 0.8 K, helium-3 evaporates out of the helium-3/helium-4 mixture in the still. It is pumped away at room temperature, cleaned, and sent back down to condense and circulate again.'},
+  {id: 'cold', t: 'Why the plates are gold', how: 'Finish the cold plate', x: 'The plates are oxygen-free copper, which carries heat well, plated with gold so the copper cannot oxidise and every bolted joint keeps conducting heat. The chandelier is gold for physics, not for looks. Each plate is a heat sink for every wire that passes through it.'},
+  {id: 'mxc', t: 'The mixing chamber', how: 'Reach the boss', x: 'In the mixing chamber, helium-3 crosses from a helium-3-rich phase into a dilute phase in helium-4, and that crossing absorbs heat. It is the coldest plate, roughly 10 to 20 mK, and the processor sits on it inside shielding.'},
+  {id: 'fez', t: 'ibm_fez', how: 'Finish the boss round', x: ''},
+  {id: 'twin', t: 'Why the emulator is hard to catch', how: 'Miss two fridge envelopes', x: 'graph-v1 was handed the p-bits\' exact pair correlations as its targets, and a Z-basis measurement keeps only probabilities. So on most problems the emulated qubits share the p-bits\' pair statistics by construction. Missing them is the expected result, not a failure of your eyes.'},
+  {id: 'peek', t: 'Don\'t stop when you\'re ahead', how: 'Get under p = 0.05', x: 'Checking your p-value after every call and stopping as soon as it dips under 0.05 makes beating chance easier than p says. For an honest test, decide how many envelopes you will play before you start.'}];
+(function () {
+  const q = DATA.qpu_jobs, f = FAILED.length;
+  CARDS.find(c => c.id === 'fez').x = `ibm_fez is an IBM Heron r2 processor: 156 fixed-frequency transmon qubits joined by tunable couplers. Each of our graph-v1 jobs used 20 of them for 20 shots. Of ${q + f} hardware submissions, ${q} came back and ${f} ended cancelled on IBM's side; the credit cap ruled out more. The boss's fridge envelopes are 16 of those 20 real shots, reshuffled.`;
+})();
+try { (store.get('pq-cards') || '').split(',').filter(id => CARDS.some(c => c.id === id)).forEach(id => GM.cards.add(id)); } catch (e) {}
+function unlock(id, quiet) {
+  if (GM.cards.has(id)) return; GM.cards.add(id); store.set('pq-cards', [...GM.cards].join(','));
+  renderCards(id);
+  if (!quiet) { const c = CARDS.find(x => x.id === id); if (c) toast(`Lab card unlocked: ${c.t}`); }
+}
+function renderCards(fresh) {
+  $('cards').innerHTML = CARDS.map((c, i) => GM.cards.has(c.id)
+    ? `<article class="lcard${c.id === fresh ? ' new' : ''}"><span class="no"><span>Card ${i + 1}</span><span>unlocked</span></span><h3>${c.t}</h3><p>${c.x}</p></article>`
+    : `<article class="lcard locked"><span class="no"><span>Card ${i + 1}</span><span>locked</span></span><h3>?</h3><p>To unlock: ${lc(c.how)}.</p></article>`).join('');
+  $('cards-count').textContent = `${GM.cards.size} of ${CARDS.length} unlocked`;
+}
+
+// ---------- controls ----------
+function seg(id, items, get, set, after) {
+  const el = $(id); el.innerHTML = '';
+  items.forEach(it => {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = it.label; b.dataset.v = String(it.v);
+    if (it.disabled) { b.disabled = true; b.title = it.title || ''; }
+    b.addEventListener('click', () => { set(it.v); (after || (() => refresh(true)))(); });
+    el.appendChild(b);
+  });
+  el._sync = () => [...el.children].forEach(b => b.setAttribute('aria-pressed', String(String(get()) === b.dataset.v)));
+  el._sync();
+}
+const dial = {Js: [], dragged: false};
+const jWord = J => J === 0.4 ? 'loose couplings' : J === 1 ? 'neighbours lock together' : 'live run';
+const angleOf = i => dial.Js.length < 2 ? 0 : -110 + 220 * i / (dial.Js.length - 1);
+const locked = () => GM.mode === 'play' && !!stageDef().boss;   // the boss picks the problem for the whole page
+function buildDial() {
+  dial.Js = [...new Set(CONFIGS.filter(c => c.graph === st.graph).map(c => c.J))].sort((a, b) => a - b);
+  const i = dial.Js.indexOf(st.J);
+  $('j-ticks').innerHTML = dial.Js.map((J, k) => {
+    const a = angleOf(k) * Math.PI / 180, sx = Math.sin(a), cy = -Math.cos(a), on = k === i ? ' on' : '';
+    return `<line class="tk${on}" x1="${(42 + 20 * sx).toFixed(1)}" y1="${(36 + 20 * cy).toFixed(1)}" x2="${(42 + 25 * sx).toFixed(1)}" y2="${(36 + 25 * cy).toFixed(1)}"/>` +
+      `<text class="${on.trim()}" x="${(42 + 34 * sx).toFixed(1)}" y="${(36 + 34 * cy + 9).toFixed(1)}" text-anchor="middle">${J.toFixed(1)}</text>`;
+  }).join('');
+  $('j-knob').style.transform = `rotate(${angleOf(Math.max(0, i))}deg)`;
+  $('j-val').textContent = `J = ${st.J.toFixed(1)}`;
+  $('j-word').textContent = jWord(st.J);
+  $('j-dial').disabled = locked();
+  $('j-dial').setAttribute('aria-label', `Coupling J dial, now ${st.J.toFixed(1)} (${jWord(st.J)}). Press to turn to the next setting; arrow keys turn it too.`);
+}
+function setJ(J) { if (J === st.J || locked()) return; st.J = J; refresh(true); }
+$('j-dial').addEventListener('click', () => { if (dial.dragged) { dial.dragged = false; return; } const i = dial.Js.indexOf(st.J); setJ(dial.Js[(i + 1) % dial.Js.length]); });
+$('j-dial').addEventListener('keydown', e => {
+  const i = dial.Js.indexOf(st.J), k = e.key;
+  if (k === 'ArrowRight' || k === 'ArrowUp') { e.preventDefault(); setJ(dial.Js[Math.min(dial.Js.length - 1, i + 1)]); }
+  else if (k === 'ArrowLeft' || k === 'ArrowDown') { e.preventDefault(); setJ(dial.Js[Math.max(0, i - 1)]); }
+});
+(function () {
+  let down = false;
+  const pick = e => {
+    const r = $('j-dial').getBoundingClientRect(), cx = r.left + r.width * 42 / 84, cy = r.top + r.height * 36 / 64;
+    const a = Math.atan2(e.clientX - cx, cy - e.clientY) * 180 / Math.PI;
+    let best = 0; dial.Js.forEach((J, k) => { if (Math.abs(angleOf(k) - a) < Math.abs(angleOf(best) - a)) best = k; });
+    if (dial.Js[best] !== st.J) { dial.dragged = true; setJ(dial.Js[best]); }
+  };
+  $('j-dial').addEventListener('pointerdown', e => { down = true; dial.dragged = false; try { $('j-dial').setPointerCapture(e.pointerId); } catch (x) {} });
+  $('j-dial').addEventListener('pointermove', e => { if (down && e.buttons) pick(e); });
+  $('j-dial').addEventListener('pointerup', () => { down = false; });
+  $('j-dial').addEventListener('pointercancel', () => { down = false; });
+})();
+const jLabel = J => `J ${J.toFixed(1)}${J === 0.4 ? ' warm' : J === 1 ? ' cold' : ' live'}`;
+function fixSrc() { const c = cfg(); if (c && !c[st.src]) st.src = c.qpu ? 'qpu' : 'emu'; }
+function buildSegs() {
+  fixSrc();
+  const lk = locked(), LT = 'the boss picks the problem';
+  const setGraph = v => { if (locked()) return; st.graph = v; if (!cfg()) st.J = CONFIGS.find(c => c.graph === v).J; };
+  const graphs = () => Object.keys(DATA.graphs).map(k => ({v: k, label: DATA.graphs[k].label, disabled: lk && k !== st.graph, title: LT}));
+  for (const id of ['g-graph', 'd-graph', 'cl-graph']) seg(id, graphs(), () => st.graph, setGraph);
+  const Js = [...new Set(CONFIGS.filter(c => c.graph === st.graph).map(c => c.J))].sort((a, b) => a - b);
+  for (const id of ['d-J', 'cl-J']) seg(id, Js.map(J => ({v: J, label: jLabel(J), disabled: lk && J !== st.J, title: LT})), () => st.J, v => { if (!locked()) st.J = v; });
+  const c = cfg(), fl = failedFor(c);
+  const srcs = () => [{v: 'emu', label: 'Atlas emulator', disabled: !c.emu}, {v: 'qpu', label: c.qpu ? 'ibm_fez' : fl ? 'ibm_fez (cancelled)' : 'ibm_fez (not run)', disabled: !c.qpu,
+    title: fl ? `job ${fl.job_id} came back cancelled by IBM` : 'no hardware run for this problem'}];
+  // the qubit source changes the charts and the classic board, not the arcade's envelope: no re-deal
+  for (const id of ['g-src', 'cl-src']) seg(id, srcs(), () => st.src, v => st.src = v, () => { buildSegs(); syncReadout(); });
+  seg('cl-tile', [{v: 'graph', label: 'Graph'}, {v: 'bars', label: 'Bits'}], () => st.tile, v => st.tile = v, () => { $('cl-tile')._sync(); clDrawTiles(); });
+  seg('g-timer', [{v: 'on', label: '15 s clock'}, {v: 'off', label: 'No clock'}], () => st.timerOn ? 'on' : 'off', v => st.timerOn = v === 'on', () => { $('g-timer')._sync(); syncTimer(); });
+  seg('g-n', [{v: 20, label: '20 (same as qubits)'}, {v: 4096, label: 'all'}], () => st.nP, v => st.nP = v, () => { $('g-n')._sync(); drawFingerprints(); });
+  buildDial();
+  for (const id of ['lockline', 'lock-d', 'lock-c']) $(id).hidden = !lk;
+  syncJobButtons();
+}
+function syncView() {
+  $('vs').hidden = GM.mode !== 'title';
+  $('play').hidden = GM.mode === 'title';
+  buildSegs();
+  if (GM.mode !== 'title') requestAnimationFrame(() => { fitFx(); drawTape(); });
+  syncCompact(); kick();
+}
+// The data is a section of its own now; "Open the data" and the classic board's reveal button bring it into view
+function goData() {
+  const h = $('h-data');
+  $('data').scrollIntoView({block: 'start', behavior: reduced() ? 'auto' : 'smooth'});
+  h.tabIndex = -1; h.focus({preventScroll: true});
+}
+// every view of the problem follows st: the readouts, the free layer, the charts and the classic board
+function syncReadout() {
+  fixSrc();
+  const c = cfg(), g = G();
+  const prob = `${g.label.toLowerCase()} · 20 nodes · ${g.edges.length} edges · J = ${st.J.toFixed(1)}${st.graph === 'random' ? ' (±J, random signs)' : ' (ferromagnet)'}`;
+  const pb = c.pbit.label ? `${c.pbit.label} · ${c.pbitSpins.length} samples` :
+    `THRML ${c.pbit.colours}-colour block Gibbs · ${c.pbit.chains} chains × ${c.pbit.samples_per_chain} samples · max edge error vs exact ${c.pbit.max_abs_edge_err_vs_exact}`;
+  const qb = ['emu', 'qpu'].filter(m => c[m]).map(m => `${m === 'emu' ? 'emulator (Aer)' : c[m].backend} job ${c[m].job_id.slice(0, 8)} · 20 shots`).join(' | ') + ' · graph-v1, 20 qubits';
+  $('r-prob').textContent = $('cl-r-prob').textContent = prob;
+  $('r-pbit').textContent = $('cl-r-pbit').textContent = pb;
+  $('r-qubit').textContent = $('cl-r-qubit').textContent = qb;
+  document.querySelectorAll('.qname').forEach(e => e.textContent = `qubits · ${SRC_NAME[st.src]}`);
+  FL.i = 0; drawTrace();
+  drawFingerprints(); clEnsureRound();
+}
+// a problem change (graph or dial): rebuild, and in a game deal a fresh envelope of the new problem
+function refresh(reDeal) {
+  fixSrc();
+  buildSegs(); buildBoard(); syncReadout();
+  if (GM.mode === 'play' && reDeal && GM.phase === 'guess' && !stageDef().boss) deal();
+  else if (GM.round && GM.round.graph === st.graph && GM.round.J === st.J) showSample(PB.k, false);
+  syncHud(); syncMeter();
+}
+
+// ---------- fingerprints (The data section) ----------
+function bootSEz(spins, reps) {
+  const r = I.mulberry32(11), n = spins.length, vals = [];
+  for (let k = 0; k < reps; k++) { const b = []; for (let i = 0; i < n; i++) b.push(spins[Math.floor(r() * n)]); vals.push(I.meanZ(b)); }
+  const m = vals.reduce((a, b) => a + b, 0) / reps;
+  return Math.sqrt(vals.reduce((a, b) => a + (b - m) * (b - m), 0) / (reps - 1));
+}
+const f2 = v => (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(2);
+function fingerprint() {
+  const c = cfg(), g = G(), q = c[st.src];
+  const P = st.nP === 20 ? c.pbitSpins.slice(0, 20) : c.pbitSpins;
+  return {c, g, q, P, zzP: I.edgeZZ(P, g.edges), zzQ: I.edgeZZ(q.spins, g.edges), zzX: c.exact.edge_zz, hP: I.magHist(P), hQ: I.magHist(q.spins), hX: c.exact.mag_hist,
+    miP: I.miMatrix(P), miQ: I.miMatrix(q.spins)};
+}
+function drawFingerprints() {
+  fixSrc();
+  const F = fingerprint(), {c, g, q} = F;
+  FPL = F; if (INS.edge != null && INS.edge >= g.edges.length) INS.edge = null;
+  const mX = I.meanSigned(F.zzX, g.signs), mP = I.meanSigned(F.zzP, g.signs), mQ = I.meanSigned(F.zzQ, g.signs);
+  const seQ = bootSE(q.spins, g.edges, g.signs, 300), seP = bootSE(F.P, g.edges, g.signs, st.nP === 20 ? 300 : 60);
+  const zQ = I.meanZ(q.spins), zSE = bootSEz(q.spins, 300), zP = I.meanZ(F.P);
+  const other = st.src === 'qpu' ? c.emu : c.qpu;
+  const mO = other ? I.meanSigned(I.edgeZZ(other.spins, g.edges), g.signs) : null;
+  const tomoM = I.meanSigned(q.tomo_edge_zz, g.signs);
+  $('fp-title').textContent = `The fingerprints · ${g.label.toLowerCase()}, J = ${st.J.toFixed(1)}`;
+  $('fstats').innerHTML = [
+    ['Exact (Boltzmann)', mX.toFixed(2), 'mean edge correlation, signed by J'],
+    ['p-bits · THRML (sauna)', mP.toFixed(2), `± ${seP.toFixed(2)} from ${F.P.length} samples`, 'p'],
+    [`qubits · ${SRC_NAME[st.src]}`, mQ.toFixed(2), `± ${seQ.toFixed(2)} from 20 shots`],
+    other ? [`qubits · ${SRC_NAME[st.src === 'qpu' ? 'emu' : 'qpu']}`, mO.toFixed(2), 'the other qubit run, same recipe'] :
+      ['qubits · ibm_fez', failedFor(c) ? 'cancelled' : 'not run', failedFor(c) ? `job ${failedFor(c).job_id.slice(0, 8)} came back cancelled by IBM; no shots` : 'no hardware run for this problem'],
+    ['mean ⟨Z⟩ qubits', f2(zQ), `± ${zSE.toFixed(2)} · p-bits ${f2(zP)} · exact 0`]
+  ].map(([k, v, n, cls]) => `<div class="stat ${cls || ''}"><span class="k">${k}</span><span class="v">${v}</span><span class="n">${n}</span></div>`).join('');
+  drawEdges(F); drawMag(F); drawMI(F);
+  $('lg-tomo').hidden = !st.tomo;
+  const qn = SRC_NAME[st.src], gap = mQ - mX, z = Math.abs(gap) / Math.max(seQ, 0.02);
+  const nums = `Mean edge correlation: exact <b>${mX.toFixed(2)}</b>, p-bits <b>${mP.toFixed(2)}</b>, ${qn} <b>${mQ.toFixed(2)} ± ${seQ.toFixed(2)}</b>`;
+  const why = `We asked graph-v1 for exactly the pair correlations of the Boltzmann distribution, and a measurement in the Z basis keeps only probabilities. The phases that make the state quantum never reach the bitstrings. Read this way, a quantum state is just another probability distribution, and this one was tuned to share its pairwise statistics with the p-bits. What's left to tell them apart is higher-order structure that 20 shots can't resolve.`;
+  let html = '';
+  if (z < 2) html += `<h3>${st.src === 'qpu' ? 'Even the hardware looks' : 'The qubits look'} like p-bits here. Here's why.</h3><p>${nums}. ${why}</p>`;
+  else if (z < 3) html += `<h3>${qn} looks almost like p-bits: only a hint gives it away.</h3><p>${nums}: ${Math.abs(gap).toFixed(2)} ${gap < 0 ? 'weaker' : 'stronger'} than asked, about ${z.toFixed(1)} standard errors. That's suggestive, but 20 shots can't make it conclusive. ${why}</p>`;
+  else html += `<h3>${qn} gives itself away, by its correlations.</h3><p>${nums}: ${Math.abs(gap).toFixed(2)} ${gap < 0 ? 'weaker' : 'stronger'} than asked, about ${z.toFixed(0)} standard errors.</p>`;
+  if (st.src === 'qpu' && other) {
+    const seO = bootSE(other.spins, g.edges, g.signs, 300), d = mQ - mO, zd = Math.abs(d) / Math.max(Math.hypot(seQ, seO), 0.02);
+    html += `<p>The emulator ran the identical circuit without noise and reached <b>${mO.toFixed(2)} ± ${seO.toFixed(2)}</b>. ` +
+      (zd >= 2 && d < 0 ? `The drop to ${mQ.toFixed(2)} (${(-d).toFixed(2)}, about ${zd.toFixed(1)} standard errors) is the chip's own noise: every gate, idle moment and readout leaks a little information to the environment, and that washes correlations toward zero.`
+        : `The difference (${d >= 0 ? '+' : '−'}${Math.abs(d).toFixed(2)}) is within the noise of 20 shots.`) +
+      (Math.abs(mO - mX) / Math.max(seO, 0.02) >= 3 ? ` Part of the gap was already there before the chip: the noiseless circuit itself misses the target on this problem (see the emulator).` : '') + `</p>`;
+  } else if (z >= 2 && st.src === 'emu') {
+    html += `<p>graph-v1 builds the correlations one edge after another, steering each new pair from its own running estimate of the state. Where loops close or bonds are frustrated, a later edge can partly undo an earlier one, so the noiseless circuit itself misses the target here. It's a limit of the recipe, not of quantum noise.</p>`;
+  }
+  if (Math.abs(zQ) > 2 * zSE + 0.02) html += `<p>Also, the qubit bits are biased: mean ⟨Z⟩ = <b>${f2(zQ)} ± ${zSE.toFixed(2)}</b>, while a zero-field Ising model gives exactly 0. ${zQ > 0 && st.src === 'qpu' ? 'More 0s than 1s is what relaxation toward |0⟩ and readout asymmetry would produce.' : 'The recipe\'s rotations don\'t keep the bits perfectly balanced.'}</p>`;
+  if (!c.qpu) html += `<p>The hardware half of this comparison is missing: ${failedFor(c) ? `our ibm_fez job ${failedFor(c).job_id.slice(0, 8)} came back cancelled on IBM's side with no shots` : 'there was no ibm_fez run for this problem'}, so these qubits are the emulator's, a classical simulation of the circuit.</p>`;
+  html += `<p>graph-v1's own tomography reports a mean edge correlation of <b>${tomoM.toFixed(2)}</b> for this state (tick the box above to see it edge by edge). No advantage is claimed: both samplers were told the same problem, and the p-bits had it easier.</p>`;
+  $('why').innerHTML = html.replace(/p-bits/g, '<span class="nw">p-bits</span>');
+  insText();
+}
+// ---------- reading the charts: point at, tap or arrow through an edge, a bar or a cell for the values under it ----------
+const INS = {edge: null, mag: null, mi: null};   // what is being inspected on each chart (null: nothing yet); mi = [row, column, 'p' or 'q' map]
+let FPL = null;                                    // the fingerprint last drawn: the readouts quote the same numbers
+const INS_HINT = {
+  edge: 'Point at or tap an edge column to read its values; with the chart focused, the arrow keys step through the edges.',
+  mag: 'Point at or tap a bar to read its values; with the chart focused, the arrow keys step through them.',
+  mi: 'Point at or tap a cell to read how much two spins tell you about each other; with a map focused, the arrow keys move the cell.'};
+function insText() {
+  const F = FPL; if (!F) return;
+  const qn = `qubits · ${SRC_NAME[st.src]}`, E = F.g.edges.length;
+  let k = INS.edge;
+  if (k == null || k >= E) $('i-edge').textContent = INS_HINT.edge;
+  else {
+    const [a, b] = F.g.edges[k], neg = F.g.signs[k] < 0;
+    $('i-edge').innerHTML = `Edge <b>${k + 1}</b> of ${E}, spins ${a}–${b}${neg ? ' (a negative bond)' : ''}: p-bits <b>${f2(F.zzP[k])}</b> · ${qn} <b>${f2(F.zzQ[k])}</b> · exact <b>${f2(F.zzX[k])}</b>${st.tomo ? ` · graph-v1 tomography <b>${f2(F.q.tomo_edge_zz[k])}</b>` : ''}`;
+  }
+  k = INS.mag;
+  if (k == null) $('i-mag').textContent = INS_HINT.mag;
+  else {
+    const M = 2 * k - 20, nP = F.P.length, nQ = F.q.spins.length;
+    $('i-mag').innerHTML = `Magnetisation <b>${M > 0 ? '+' : M < 0 ? '−' : ''}${Math.abs(M)}</b> (${k} of 20 spins up): p-bits <b>${F.hP[k].toFixed(3)}</b> (${Math.round(F.hP[k] * nP)} of ${nP}) · ${qn} <b>${F.hQ[k].toFixed(2)}</b> (${Math.round(F.hQ[k] * nQ)} of ${nQ} shots) · exact <b>${F.hX[k].toFixed(3)}</b>`;
+  }
+  const m = INS.mi;
+  if (!m) $('i-mi').textContent = INS_HINT.mi;
+  else {
+    const [a, b] = m, coupled = F.g.edges.some(([x, y]) => (x === a && y === b) || (x === b && y === a));
+    const vp = `p-bits <b>${F.miP[a * N + b].toFixed(3)}</b> bits`, vq = `${qn} <b>${F.miQ[a * N + b].toFixed(3)}</b> bits`;
+    $('i-mi').innerHTML = (m[2] === 'q' ? 'Qubit map. ' : 'p-bit map. ') + (a === b ? `Spin <b>${a}</b> with itself: the diagonal is left blank.` :
+      `Spins <b>${a}</b> and <b>${b}</b> (${coupled ? 'a coupled pair' : 'not coupled'}): ${m[2] === 'q' ? vq + ' · ' + vp : vp + ' · ' + vq}`);
+  }
+}
+function insAt(kind, e) {   // the column, bar or cell under the pointer, in the charts' own layout (CSS pixels)
+  const F = FPL, r = e.currentTarget.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+  if (!F || !r.width) return null;
+  if (kind === 'edge') { const E = F.g.edges.length; return Math.max(0, Math.min(E - 1, Math.floor((x - 28) / ((r.width - 34) / E)))); }
+  if (kind === 'mag') return Math.max(0, Math.min(20, Math.floor((x - 34) / ((r.width - 40) / 21))));
+  return [Math.max(0, Math.min(N - 1, Math.floor(y / r.height * N))), Math.max(0, Math.min(N - 1, Math.floor(x / r.width * N))), e.currentTarget.id === 'c-mi-q' ? 'q' : 'p'];
+}
+function setIns(kind, v) {
+  const cur = INS[kind];
+  if (kind === 'mi' ? (cur && v && cur[0] === v[0] && cur[1] === v[1] && cur[2] === v[2]) || (!cur && !v) : cur === v) return;
+  INS[kind] = v;
+  if (FPL) (kind === 'edge' ? drawEdges : kind === 'mag' ? drawMag : drawMI)(FPL);
+  insText();
+}
+[['c-edge', 'edge'], ['c-mag', 'mag'], ['c-mi-p', 'mi'], ['c-mi-q', 'mi']].forEach(([id, kind]) => {
+  const cv = $(id);
+  cv.addEventListener('pointermove', e => { if (e.pointerType === 'mouse') setIns(kind, insAt(kind, e)); });
+  cv.addEventListener('click', e => setIns(kind, insAt(kind, e)));
+  cv.addEventListener('keydown', e => {
+    const F = FPL, key = e.key; if (!F || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'Escape'].includes(key)) return;
+    e.preventDefault();
+    if (key === 'Escape') { setIns(kind, null); return; }
+    const cl = (v, n) => Math.max(0, Math.min(n - 1, v));
+    if (kind === 'mi') {
+      let [a, b] = INS.mi || [0, 1];
+      if (INS.mi) { if (key === 'ArrowLeft') b--; else if (key === 'ArrowRight') b++; else if (key === 'ArrowUp') a--; else if (key === 'ArrowDown') a++; else if (key === 'Home') { a = 0; b = 1; } else { a = N - 1; b = N - 2; } }
+      setIns('mi', [cl(a, N), cl(b, N), id === 'c-mi-q' ? 'q' : 'p']); return;
+    }
+    const n = kind === 'edge' ? F.g.edges.length : 21, cur = INS[kind], back = key === 'ArrowLeft' || key === 'ArrowDown';
+    setIns(kind, cl(key === 'Home' ? 0 : key === 'End' ? n - 1 : cur == null ? (back ? n - 1 : 0) : cur + (back ? -1 : 1), n));
+  });
+});
+function axes(ctx, w, h, d, pad, yMin, yMax, ticks, fmt) {
+  ctx.font = `${10 * d}px IBM Plex Mono, monospace`; ctx.fillStyle = COL.ink2; ctx.strokeStyle = COL.rule; ctx.lineWidth = 1 * d;
+  ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  const Y = v => pad.t + (h - pad.t - pad.b) * (1 - (v - yMin) / (yMax - yMin));
+  ticks.forEach(v => { ctx.beginPath(); ctx.moveTo(pad.l, Y(v)); ctx.lineTo(w - pad.r, Y(v)); ctx.stroke(); ctx.fillText(fmt(v), pad.l - 4 * d, Y(v)); });
+  return Y;
+}
+function drawEdges(F) {
+  const cv = $('c-edge'), {w, h, d} = sizeCanvas(cv), ctx = cv.getContext('2d'), E = F.g.edges.length;
+  ctx.clearRect(0, 0, w, h);
+  const pad = {l: 28 * d, r: 6 * d, t: 8 * d, b: 18 * d}, Y = axes(ctx, w, h, d, pad, -1, 1, [-1, 0, 1], v => String(v));
+  const X = k => pad.l + (w - pad.l - pad.r) * (k + 0.5) / E;
+  ctx.fillStyle = COL.ink2; ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText('edge →', w / 2, h - 14 * d);
+  if (INS.edge != null && INS.edge < E) { const cw = (w - pad.l - pad.r) / E; ctx.fillStyle = `rgba(${INK_RGB.join(',')},.12)`; ctx.fillRect(X(INS.edge) - cw / 2, pad.t, cw, h - pad.t - pad.b); }
+  for (let k = 0; k < E; k++) {
+    ctx.strokeStyle = COL.ink3; ctx.lineWidth = 3 * d; ctx.beginPath(); ctx.moveTo(X(k) - 5 * d, Y(F.zzX[k])); ctx.lineTo(X(k) + 5 * d, Y(F.zzX[k])); ctx.stroke();
+    if (st.tomo) { ctx.strokeStyle = COL.ink2; ctx.lineWidth = 1.3 * d; ctx.strokeRect(X(k) - 2.6 * d, Y(F.q.tomo_edge_zz[k]) - 2.6 * d, 5.2 * d, 5.2 * d); }
+    ctx.fillStyle = COL.ink; ctx.beginPath(); ctx.arc(X(k), Y(F.zzP[k]), 3.2 * d, 0, 2 * Math.PI); ctx.fill();
+    ctx.strokeStyle = COL.ink; ctx.lineWidth = 1.5 * d; ctx.beginPath(); ctx.arc(X(k), Y(F.zzQ[k]), 4.2 * d, 0, 2 * Math.PI); ctx.stroke();
+  }
+}
+function drawMag(F) {
+  const cv = $('c-mag'), {w, h, d} = sizeCanvas(cv), ctx = cv.getContext('2d');
+  ctx.clearRect(0, 0, w, h);
+  const top = Math.max(0.05, ...F.hP, ...F.hQ, ...F.hX) * 1.08, step = top > 0.4 ? 0.2 : top > 0.2 ? 0.1 : 0.05;
+  const ticks = []; for (let v = 0; v <= top + 1e-9; v += step) ticks.push(+v.toFixed(2));
+  const pad = {l: 34 * d, r: 6 * d, t: 8 * d, b: 18 * d}, Y = axes(ctx, w, h, d, pad, 0, top, ticks, v => v.toFixed(2));
+  const bw = (w - pad.l - pad.r) / 21, X = k => pad.l + bw * k;
+  if (INS.mag != null) { ctx.fillStyle = `rgba(${INK_RGB.join(',')},.12)`; ctx.fillRect(X(INS.mag), pad.t, bw, h - pad.t - pad.b); }
+  for (let k = 0; k <= 20; k++) {
+    ctx.fillStyle = COL.ink; ctx.fillRect(X(k) + bw * 0.1, Y(F.hP[k]), bw * 0.38, Y(0) - Y(F.hP[k]));
+    ctx.strokeStyle = COL.ink; ctx.lineWidth = 1.2 * d; if (F.hQ[k] > 0) ctx.strokeRect(X(k) + bw * 0.52, Y(F.hQ[k]), bw * 0.38, Y(0) - Y(F.hQ[k]));
+  }
+  ctx.strokeStyle = COL.ink3; ctx.lineWidth = 2.2 * d; ctx.beginPath();
+  for (let k = 0; k <= 20; k++) { const x = X(k) + bw / 2; k ? ctx.lineTo(x, Y(F.hX[k])) : ctx.moveTo(x, Y(F.hX[k])); }
+  ctx.stroke();
+  ctx.fillStyle = COL.ink2; ctx.textBaseline = 'top';
+  [[0, '−20'], [10, '0'], [20, '+20']].forEach(([k, t]) => { ctx.textAlign = 'center'; ctx.fillText(t, X(k) + bw / 2, h - 14 * d); });
+}
+function drawMI(F) {
+  const top = Math.max(0.05, ...F.miP, ...F.miQ);
+  [['c-mi-p', F.miP, INK_RGB], ['c-mi-q', F.miQ, INK_RGB]].forEach(([id, M, rgb]) => {
+    const cv = $(id); cv.style.aspectRatio = '1/1';
+    const {w, h, d} = sizeCanvas(cv), ctx = cv.getContext('2d'), cs = w / N;
+    ctx.fillStyle = COL.panel; ctx.fillRect(0, 0, w, h);
+    for (let a = 0; a < N; a++) for (let b = 0; b < N; b++) {
+      if (a === b) continue;
+      const t = Math.sqrt(M[a * N + b] / top);
+      ctx.fillStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${t.toFixed(3)})`; ctx.fillRect(b * cs, a * cs, cs + 0.5, cs + 0.5);
+    }
+    ctx.fillStyle = COL.paper; ctx.strokeStyle = COL.ink2; ctx.lineWidth = Math.max(0.6, 0.6 * d);   // coupled pairs: a pale dot with an ink rim reads on dark and light cells
+    F.g.edges.forEach(([a, b]) => { [[a, b], [b, a]].forEach(([i, j]) => { ctx.beginPath(); ctx.arc(j * cs + cs / 2, i * cs + cs / 2, Math.max(1.4, cs * 0.17), 0, 2 * Math.PI); ctx.fill(); ctx.stroke(); }); });
+    if (INS.mi) {   // the inspected cell: an ink frame with a paper core, so it reads on dark and light cells
+      const [i, j] = INS.mi;
+      ctx.strokeStyle = COL.ink; ctx.lineWidth = 2.4 * d; ctx.strokeRect(j * cs, i * cs, cs, cs);
+      ctx.strokeStyle = COL.paper; ctx.lineWidth = 1 * d; ctx.strokeRect(j * cs + 1.7 * d, i * cs + 1.7 * d, cs - 3.4 * d, cs - 3.4 * d);
+    }
+  });
+  $('mi-cap').textContent = `Each cell: how many bits qubit i tells you about qubit j (darkest = ${top.toFixed(2)} bits, square-root scale). Dots mark the coupled pairs. With only 20 samples, every cell also picks up about 0.04 bits of pure sampling bias.`;
+}
+
+// ---------- the classic board: the earlier guessing board, 16 real samples at once, no clock ----------
+const CL = {round: null, guessed: null, pin: null, score: {ok: 0, n: 0, hist: []}, onScreen: false};
+const clSrc = c => c[st.src] ? st.src : (c.qpu ? 'qpu' : 'emu');
+function clNewRound() {
+  const c = cfg(), src = clSrc(c), truth = rng() < 0.5 ? 'pbit' : 'qubit';
+  const {samples, info} = drawBatch(c, src, truth);
+  CL.round = {truth, samples, info, src, graph: st.graph, J: st.J};
+  CL.guessed = null; CL.pin = null;
+  [...$('tiles').children].forEach(f => f.classList.remove('pin'));
+  clDrawTiles(); clSyncGuess();
+}
+function clEnsureRound() {   // a new batch whenever the page's problem or qubit source moves away from the one on the board
+  const r = CL.round;
+  if (!r || r.graph !== st.graph || r.J !== st.J || r.src !== clSrc(cfg())) clNewRound(); else clDrawTiles();
+}
+function clGuess(g) {
+  if (!CL.round || CL.guessed) return;
+  CL.guessed = g;
+  const ok = g === CL.round.truth;
+  CL.score.n++; if (ok) CL.score.ok++;
+  CL.score.hist.push(ok);
+  clDrawTiles(); clSyncGuess();
+  $('cl-next').focus({preventScroll: true});
+}
+function clSyncGuess() {
+  const r = CL.round, done = !!CL.guessed;
+  $('cl-pbit').hidden = done; $('cl-qubit').hidden = done; $('cl-next').hidden = !done;
+  $('tiles').dataset.reveal = done ? r.truth : '';
+  if (done) {
+    const ok = CL.guessed === r.truth, who = r.truth === 'pbit' ? 'p-bits' : `qubits (${SRC_NAME[r.src]})`;
+    $('cl-verdict').innerHTML = `<b class="${ok ? 'ok' : 'no'}">${ok ? 'Right.' : 'Wrong.'}</b> These were ${who}.`;
+    $('cl-batch').textContent = r.info;
+    $('q-line').textContent = 'Revealed. Ready for another?';
+  } else {
+    $('cl-verdict').textContent = '';
+    $('cl-batch').textContent = 'hidden until you guess';
+    $('q-line').textContent = 'Which noise made these 16 bitstrings?';
+  }
+  const s = CL.score;
+  $('sc-num').textContent = `${s.ok} / ${s.n}`;
+  $('sc-chance').textContent = s.n ? `a coin does this well ${Math.round(100 * I.binomTail(s.ok, s.n))}% of the time` : '50% is a coin flip';
+  $('sc-dots').innerHTML = s.hist.slice(-40).map(y => `<i class="${y ? 'y' : ''}"></i>`).join('');
+}
+function buildTiles() {
+  const box = $('tiles'); box.innerHTML = '';
+  for (let k = 0; k < 16; k++) {
+    const f = document.createElement('figure'); f.className = 'tile'; f.tabIndex = 0; f.setAttribute('role', 'listitem');
+    const cv = document.createElement('canvas'); f.appendChild(cv); box.appendChild(f);
+    const show = () => { if (CL.round) $('bitline').innerHTML = tileLine(k); };
+    f.addEventListener('pointerenter', show); f.addEventListener('focus', show);
+    f.addEventListener('pointerleave', () => { if (CL.round && CL.pin != null) $('bitline').innerHTML = tileLine(CL.pin); });
+    f.addEventListener('click', () => clPin(k));
+    f.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); clPin(k); } });
+  }
+}
+// one tile's bits and broken bonds; a pinned tile keeps its line while you hover the others
+function tileLine(k) {
+  const s = CL.round.samples[k], g = DATA.graphs[CL.round.graph];
+  let br = 0; g.edges.forEach(([a, b], e) => { if (s[a] * s[b] * g.signs[e] < 0) br++; });
+  return `Tile ${k + 1}${CL.pin === k ? ' (pinned)' : ''}: <b>${bitsOf(s)}</b> · ${br} bond${br === 1 ? '' : 's'} broken`;
+}
+function clPin(k) {
+  if (!CL.round) return;
+  CL.pin = CL.pin === k ? null : k;
+  [...$('tiles').children].forEach((f, i) => { f.classList.toggle('pin', i === CL.pin); f.setAttribute('aria-label', `bitstring ${bitsOf(CL.round.samples[i])}${i === CL.pin ? ', pinned' : ''}`); });
+  $('bitline').innerHTML = CL.pin == null ? `Tile ${k + 1} unpinned: <b>${bitsOf(CL.round.samples[k])}</b>` : tileLine(k);
+}
+function clDrawTiles() {
+  const r = CL.round; if (!r) return;
+  const g = DATA.graphs[r.graph];
+  [...$('tiles').children].forEach((f, k) => {
+    const cv = f.firstChild, s = r.samples[k]; f.setAttribute('aria-label', `bitstring ${bitsOf(s)}${k === CL.pin ? ', pinned' : ''}`);
+    const {w, h, d} = sizeCanvas(cv), ctx = cv.getContext('2d');
+    ctx.fillStyle = COL.panel; ctx.fillRect(0, 0, w, h);
+    if (st.tile === 'bars') {
+      const bw = w / N;
+      for (let i = 0; i < N; i++) { ctx.fillStyle = s[i] > 0 ? COL.ink : COL.rule; ctx.fillRect(i * bw + 0.5 * d, h * 0.12, bw - 1 * d, h * 0.76); }
+      return;
+    }
+    const P = g.layout.map(([x, y]) => [x * w, y * h]), rad = Math.max(2.2 * d, Math.min(w, h) * (r.graph === 'ladder' ? 0.034 : 0.042));
+    g.edges.forEach(([a, b], k2) => {
+      const bad = s[a] * s[b] * g.signs[k2] < 0;          // unsatisfied bond: a domain wall or a frustrated edge
+      ctx.strokeStyle = bad ? COL.ink : COL.rule; ctx.lineWidth = (bad ? 1.6 : 1.4) * d;
+      ctx.beginPath(); ctx.moveTo(P[a][0], P[a][1]); ctx.lineTo(P[b][0], P[b][1]); ctx.stroke();
+    });
+    for (let i = 0; i < N; i++) {
+      ctx.beginPath(); ctx.arc(P[i][0], P[i][1], rad, 0, 2 * Math.PI);
+      if (s[i] > 0) { ctx.fillStyle = COL.ink; ctx.fill(); } else { ctx.fillStyle = COL.panel; ctx.fill(); ctx.strokeStyle = COL.ink2; ctx.lineWidth = 1.2 * d; ctx.stroke(); }
+    }
+  });
+}
+$('cl-pbit').addEventListener('click', () => clGuess('pbit'));
+$('cl-qubit').addEventListener('click', () => clGuess('qubit'));
+$('cl-next').addEventListener('click', () => { clNewRound(); $('cl-pbit').focus({preventScroll: true}); });
+$('cl-reset').addEventListener('click', () => { CL.score = {ok: 0, n: 0, hist: []}; clSyncGuess(); toast('Score reset'); });
+$('cl-reveal').addEventListener('click', goData);
+
+// ---------- jobs and credits: every graph-v1 job behind the page, and a button to put it on the boards ----------
+function buildJobs() {
+  const rows = [], live = c => !!c.pbit.label;
+  const mean = (c, q) => { const g = DATA.graphs[c.graph]; return `${I.meanSigned(I.edgeZZ(q.spins, g.edges), g.signs).toFixed(2)} ± ${bootSE(q.spins, g.edges, g.signs, 300).toFixed(2)}`; };
+  const pname = c => `${DATA.graphs[c.graph].label.toLowerCase()}, J ${c.J.toFixed(1)}`;
+  CONFIGS.filter(c => !live(c)).forEach(c => {
+    for (const m of ['emu', 'qpu']) {
+      const q = c[m], fl = m === 'qpu' && failedFor(c);
+      if (q) rows.push(`<tr><td><b>${pname(c)}</b></td><td>${m === 'emu' ? 'Atlas emulator (Aer), classical simulation' : 'ibm_fez, real IBM hardware'}</td><td><code>${q.job_id}</code></td><td>${q.ibm_job_id ? `<code>${q.ibm_job_id}</code>` : '–'}</td><td>${q.bitstrings.length}</td><td>${mean(c, q)}</td>` +
+        `<td><button type="button" class="hbtn jobshow" data-g="${c.graph}" data-j="${c.J}" data-m="${m}">Show</button></td></tr>`);
+      if (fl) rows.push(`<tr><td><b>${pname(c)}</b></td><td>ibm_fez</td><td><code>${fl.job_id}</code></td><td>–</td><td>0</td><td>cancelled on IBM's side (${fl.error.split(':')[0]}), no shots</td><td></td></tr>`);
+    }
+  });
+  // hardware jobs that were cancelled again after a retry: list every failed submission once
+  FAILED.filter(f => !rows.some(r => r.includes(f.job_id))).forEach(f => rows.push(`<tr><td><b>${DATA.graphs[f.graph].label.toLowerCase()}, J ${(+f.J).toFixed(1)}</b></td><td>ibm_fez</td><td><code>${f.job_id}</code></td><td>–</td><td>0</td><td>cancelled on IBM's side (${f.error.split(':')[0]}), no shots</td><td></td></tr>`));
+  $('jobs-t').innerHTML = `<tr><th>problem</th><th>where</th><th>Atlas job</th><th>IBM job</th><th>shots</th><th>mean edge corr.</th><th></th></tr>` + rows.join('');
+  const subs = DATA.jobs + FAILED.length;
+  $('jobs-n').textContent = `${DATA.jobs} completed · ${FAILED.length} cancelled`;
+  $('jobs-spend').textContent = `${subs} graph-v1 submissions at 5 credits each: ${subs * 5} credits, the piece's whole cap. Cancelled jobs were charged too. Mean edge correlation is signed by J, ± a bootstrap standard error over the shots.`;
+  $('pbits-t').innerHTML = `<tr><th>problem</th><th>sampler</th><th>colours</th><th>chains × samples</th><th>max edge error vs exact</th></tr>` +
+    CONFIGS.filter(c => !live(c)).map(c => `<tr><td><b>${pname(c)}</b></td><td>THRML 0.1.4 block Gibbs, CPU</td><td>${c.pbit.colours}</td><td>${c.pbit.chains} × ${c.pbit.samples_per_chain}</td><td>${c.pbit.max_abs_edge_err_vs_exact}</td></tr>`).join('');
+  document.querySelectorAll('.jobshow').forEach(b => b.addEventListener('click', () => {
+    if (locked()) { toast('Boss round: the boss picks the problem'); return; }
+    st.graph = b.dataset.g; st.J = +b.dataset.j; st.src = b.dataset.m; refresh(true); goData();
+  }));
+  syncJobButtons();
+}
+function syncJobButtons() {
+  const lk = locked();
+  document.querySelectorAll('.jobshow').forEach(b => {
+    const on = b.dataset.g === st.graph && +b.dataset.j === st.J && b.dataset.m === st.src;
+    b.disabled = lk; b.title = lk ? 'the boss picks the problem' : '';
+    b.setAttribute('aria-pressed', String(on));
+  });
+}
+
+// ---------- the loop: clock, playback, the free layer's idle flips, particles ----------
+let raf = 0, lastT = 0, onScreen = true;
+const wantLoop = () => onScreen && !document.hidden && (GM.mode === 'play' || FX.parts.length > 0 || PB.on || !reduced());
+function frame(ms) {
+  raf = 0; const t = ms / 1000, dt = Math.min(.1, Math.max(0, t - lastT)); lastT = t;
+  if (GM.mode === 'play' && GM.phase === 'guess' && !GM.paused && st.timerOn && t > GM.graceUntil) {
+    GM.left -= dt;
+    const s = Math.ceil(GM.left);
+    if (s <= 5 && s >= 1 && s < GM.lastTick) { GM.lastTick = s; SFX.play('tick', s <= 2); }
+    if (GM.left <= 0) { GM.left = 0; resolve(null); }
+    syncTimer();
+  }
+  if (PB.on && !GM.paused && t >= PB.next) {
+    if (PB.k >= 15) stopPB(); else { showSample(PB.k + 1, true); PB.next = t + .33; if (PB.k >= 15) stopPB(); }
+  }
+  if (!reduced() && t >= FL.next) { FL.i = (FL.i + 1) % chain0().length; setFree(); FL.next = t + .6; }
+  stepFx(t, dt);
+  if (wantLoop()) raf = requestAnimationFrame(frame);
+}
+function kick() { if (!raf && wantLoop()) { lastT = performance.now() / 1000; raf = requestAnimationFrame(frame); } }
+document.addEventListener('visibilitychange', kick);
+if ('IntersectionObserver' in window) {
+  new IntersectionObserver(es => { onScreen = es.some(e => e.isIntersecting); kick(); }).observe($('arena'));
+  new IntersectionObserver(es => { CL.onScreen = es.some(e => e.isIntersecting); }).observe($('classic'));
+}
+
+// ---------- wiring ----------
+const toast = msg => { const t = $('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 2200); };
+$('b-start').addEventListener('click', () => {
+  startGame(); $('b-pbit').focus({preventScroll: true});
+  const top = $('arena').getBoundingClientRect().top;
+  if (top < -10 || top > 80) $('arena').scrollIntoView({block: 'start', behavior: reduced() ? 'auto' : 'smooth'});
+});
+$('b-pbit').addEventListener('click', () => guess('pbit'));
+$('b-qubit').addEventListener('click', () => guess('qubit'));
+$('b-next').addEventListener('click', () => { next(); if (GM.phase === 'guess') $('b-pbit').focus({preventScroll: true}); });
+function setPaused(p) {
+  if (GM.mode !== 'play') return;
+  GM.paused = p; $('b-pause').setAttribute('aria-pressed', String(p)); $('b-pause').textContent = p ? 'Resume' : 'Pause';
+  if (p) { stopPB(); $('secs').textContent = 'paused'; } else { GM.graceUntil = performance.now() / 1000 + .3; syncTimer(); }
+  syncGuessPause(); kick();
+}
+function syncGuessPause() { if (GM.phase === 'guess') ['b-pbit', 'b-qubit'].forEach(id => $(id).disabled = GM.paused); }
+$('b-pause').addEventListener('click', () => setPaused(!GM.paused));
+function setSound(on) {
+  st.sound = on;
+  ['b-sound', 'b-sound0'].forEach(id => { $(id).setAttribute('aria-pressed', String(on)); $(id).textContent = `Sound: ${on ? 'on' : 'off'}`; });
+  if (on) SFX.play('on'); else SFX.stop();
+}
+$('b-sound').addEventListener('click', () => setSound(!st.sound));
+$('b-sound0').addEventListener('click', () => setSound(!st.sound));
+$('b-reset').addEventListener('click', () => {
+  Object.assign(GM, {mode: 'title', round: null, phase: 'idle', paused: false, res: [null, null, null, null, null], score: 0, streak: 0, calls: [], log: [], stage: 0});
+  stopPB(); SFX.stop(); $('ovl').hidden = true; setPausedUI(); syncView(); syncMap(); syncMeter(); toast('Game reset');
+});
+function setPausedUI() { $('b-pause').setAttribute('aria-pressed', 'false'); $('b-pause').textContent = 'Pause'; }
+$('t-tomo').addEventListener('change', e => { st.tomo = e.target.checked; drawFingerprints(); });
+async function share(e) {
+  const tok = I.encodeView(st), panel = e && e.currentTarget && e.currentTarget.closest('.panel'), box = panel && panel.querySelector('.manual');
+  try { history.replaceState(null, '', '#' + tok); } catch (x) { location.hash = tok; }   // file:// pages can refuse replaceState
+  document.querySelectorAll('.manual').forEach(m => m.hidden = true);
+  try { await navigator.clipboard.writeText(location.href); toast('Link copied'); }
+  catch (x) {   // a host frame can block the clipboard: show the link, selected, next to the button
+    if (box) { const t = box.querySelector('input'); box.hidden = false; t.value = location.href; t.focus(); t.select(); }
+    toast('Copy failed: the link is in your address bar' + (box ? ', and selected below' : ''));
+  }
+}
+$('b-share').addEventListener('click', share);
+$('cl-share').addEventListener('click', share);
+document.addEventListener('keydown', e => {
+  if (e.defaultPrevented) return;   // a chart or a tile already handled this key
+  if (e.target.closest && e.target.closest('input,textarea,select,.dial')) return;
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const k = e.key.toLowerCase(), onBtn = e.target.closest && e.target.closest('button,summary,a');
+  const inArena = e.target.closest && e.target.closest('#arena'), inClassic = e.target.closest && e.target.closest('#classic');
+  if (inClassic || (!inArena && !onScreen && CL.onScreen)) {
+    if (k === 'p' && !CL.guessed) clGuess('pbit');
+    else if (k === 'q' && !CL.guessed) clGuess('qubit');
+    else if (k === 'n' && CL.guessed) clNewRound();
+    return;
+  }
+  if (!inArena && !onScreen) return;   // the arcade's keys only act while you can see it
+  if (GM.mode === 'title' && (k === 'enter' || k === ' ') && !onBtn) { e.preventDefault(); startGame(); return; }
+  if (GM.mode !== 'play') return;
+  if (k === 'escape') { setPaused(!GM.paused); return; }
+  if (GM.phase === 'guess' && (k === 's' || k === 'p' || k === 'arrowleft')) { e.preventDefault(); guess('pbit'); }
+  else if (GM.phase === 'guess' && (k === 'f' || k === 'q' || k === 'arrowright')) { e.preventDefault(); guess('qubit'); }
+  else if (GM.phase === 'reveal' && (k === 'n' || ((k === ' ' || k === 'enter') && !onBtn))) { e.preventDefault(); next(); }
+});
+let rz; window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => {
+  syncCompact();
+  if ((window.innerWidth <= 520 ? 420 : 600) !== BOARD.W) { buildBoard(); if (GM.round && GM.round.graph === st.graph) showSample(PB.k, false); }
+  drawFingerprints(); clDrawTiles(); fitFx(); drawTape(); }, 120); });
+
+// proof chips: computed from the embedded job list, so they can't drift from the data
+(function () {
+  const qpu = DATA.qpu_jobs, emu = DATA.jobs - qpu, nP = CONFIGS.reduce((a, c) => a + c.pbitSpins.length, 0);
+  $('proof').innerHTML = `<span class="hot"><b>20</b> qubits per job, graph-v1's max</span><span><b>${DATA.jobs}</b> real Atlas jobs</span>` +
+    (qpu ? `<span class="hot"><b>${qpu}</b> on ibm_fez: the boss</span>` : `<span>ibm_fez: <b>${FAILED.length}</b> runs cancelled by IBM</span>`) +
+    `<span><b>${emu}</b> on the emulator</span><span><b>${nP.toLocaleString('en')}</b> THRML p-bit samples</span>`;
+  const fq = FAILED.length, ids = FAILED.map(f => f.job_id.slice(0, 8)).join(', ');
+  $('hw-note').textContent = qpu ? `${qpu} hardware batches came back${fq ? `; ${fq} more hardware jobs ended as cancelled on IBM's side (${ids})` : ''}.` :
+    `None came back: all ${fq} hardware jobs (${ids}) ended as cancelled on IBM's side about 15 minutes after submission (Atlas error ibm_collection_failed), so the ibm_fez switch is greyed out. A graph-v1 hardware job from another piece in this set was cancelled the same way.`;
+  $('hw-honest').textContent = qpu ? 'The ibm_fez batches are real hardware. The boss round uses them.' : 'No hardware batch is shown: every ibm_fez job was cancelled, so all the qubit batches here come from the emulator.';
+})();
+
+// restore a shared view (#ladder.1p0.qpu.graph)
+(function () {
+  const v = I.decodeView(location.hash.slice(1), DATA.Js);
+  if (v && CONFIGS.some(c => c.graph === v.graph && c.J === v.J)) Object.assign(st, v);
+})();
+mountArt();
+renderCards();
+buildTiles(); buildJobs();
+buildSegs(); buildBoard(); syncReadout(); syncHud(); syncMap(); syncMeter(); syncTimer(); syncGuess();
+syncView();
+
+/*LIVE-START*/
+// ---------- live panel (web app build only) ----------
+if (LIVE) (function () {
+  $('live').hidden = false; $('d-app').hidden = true;
+  const L = {graph: 'ring', mode: 'emu', qpuAllowed: false, busy: false};
+  const lsync = () => { $('l-graph')._sync(); $('l-mode')._sync(); };
+  function lseg() {   // the live segs only change the live form: they must not reroll the game board
+    seg('l-graph', Object.keys(DATA.graphs).map(k => ({v: k, label: DATA.graphs[k].label})), () => L.graph, v => L.graph = v, lsync);
+    seg('l-mode', [{v: 'emu', label: 'Atlas emulator'}, {v: 'qpu', label: 'ibm_fez', disabled: !L.qpuAllowed, title: 'start the server with ALLOW_QPU=1'}], () => L.mode, v => L.mode = v, lsync);
+  }
+  lseg();
+  $('l-J').addEventListener('input', e => $('l-Jv').textContent = (+e.target.value).toFixed(1));
+  const status = t => $('l-status').textContent = t;
+  fetch('/api/health').then(r => r.json()).then(h => {
+    L.qpuAllowed = !!h.qpu_allowed; lseg();
+    status(h.live ? `Server ready. Live jobs left in this server session: ${h.jobs_left}. ibm_fez ${h.qpu_allowed ? 'enabled' : 'disabled (set ALLOW_QPU=1)'}.` : `Live runs are off: ${h.reason}`);
+    $('l-run').disabled = !h.live;
+  }).catch(() => { status('No server found: open this page through node server.js.'); $('l-run').disabled = true; });
+  $('l-run').addEventListener('click', async () => {
+    if (L.busy) return; L.busy = true; $('l-run').disabled = true;
+    const J = +(+$('l-J').value).toFixed(1), graph = L.graph, mode = L.mode;
+    try {
+      status(`Submitting ${graph}, J = ${J}, ${mode}…`);
+      const sub = await fetch('/api/graph', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({graph, J, mode})}).then(r => r.json());
+      if (!sub.job_id) throw new Error(sub.error || 'submit failed');
+      let res;
+      for (;;) {
+        await new Promise(r => setTimeout(r, mode === 'qpu' ? 10000 : 3000));
+        res = await fetch('/api/graph?job_id=' + encodeURIComponent(sub.job_id)).then(r => r.json());
+        if (res.error) throw new Error(res.error);
+        status(`Job ${sub.job_id}: ${res.status}${res.progress ? ' · ' + res.progress : ''}`);
+        if (res.status === 'completed') break;
+        if (res.status === 'failed') throw new Error('job failed');
+      }
+      status(`Job ${sub.job_id} done on ${res.result.backend}. Sampling p-bits for J = ${J} in this browser…`);
+      await new Promise(r => setTimeout(r, 30));
+      const g = DATA.graphs[graph], couplings = g.signs.map(s => s * J);
+      const exact = I.exactStats(g.edges, couplings);
+      const spins = I.gibbsSample(g.edges, couplings, {chains: 64, perChain: 64, warmup: 400, steps: 10, seed: 2026});
+      const raw = {graph, J, exact: {edge_zz: exact.edge_zz, mag_hist: exact.mag_hist},
+        pbit: {label: 'JS block Gibbs (this browser, not THRML)', states: [], chains: 64}, pbitSpins: spins, emu: null, qpu: null};
+      raw[mode] = Object.assign({}, res.result, {spins: res.result.bitstrings.map(I.bitsToSpins)});
+      const c = prepConfig(raw);
+      const old = CONFIGS.findIndex(x => x.graph === graph && x.J === J && x.pbit.label);
+      if (CONFIGS.some(x => x.graph === graph && x.J === J && !x.pbit.label)) {
+        status(`Done. J = ${J} is a preset, so the live shots are shown here only: job ${sub.job_id}, ${res.result.bitstrings.length} shots.`);
+      } else {
+        if (old >= 0) CONFIGS.splice(old, 1);
+        CONFIGS.push(c);
+        if (locked()) { buildSegs(); status(`Done: job ${sub.job_id} on ${res.result.backend}. J ${J} live is a new setting; the boss picks the problem until its round ends.`); }
+        else {
+          st.graph = graph; st.J = J; st.src = mode; refresh(true);
+          status(`Done: job ${sub.job_id} on ${res.result.backend}. It is now the board above (J ${J} live). It is also a new detent on the J dial and in The data.`);
+        }
+      }
+    } catch (e) { status('Live run stopped: ' + e.message); }
+    L.busy = false; $('l-run').disabled = false;
+  });
+})();
+/*LIVE-END*/
+</script>

@@ -1,0 +1,57 @@
+[
+ {
+  "status": 413,
+  "body": "{\"$schema\":\"https://api.mothquantum.com/schemas/ErrorModel.json\",\"title\":\"Request Entity Too Large\",\"status\":413,\"detail\":\"request body is too large limit=1048576 bytes\"}\n",
+  "shape": [
+   2049,
+   2049
+  ],
+  "qubits": 24,
+  "body_bytes": 8400951,
+  "seconds": 2.1
+ },
+ {
+  "status": 413,
+  "body": "{\"$schema\":\"https://api.mothquantum.com/schemas/ErrorModel.json\",\"title\":\"Request Entity Too Large\",\"status\":413,\"detail\":\"request body is too large limit=1048576 bytes\"}\n",
+  "shape": [
+   1025,
+   1025
+  ],
+  "qubits": 22,
+  "body_bytes": 2103351,
+  "seconds": 2.8
+ },
+ {
+  "status": 413,
+  "body": "{\"$schema\":\"https://api.mothquantum.com/schemas/ErrorModel.json\",\"title\":\"Request Entity Too Large\",\"status\":413,\"detail\":\"request body is too large limit=1048576 bytes\"}\n",
+  "shape": [
+   1025,
+   513
+  ],
+  "qubits": 21,
+  "body_bytes": 1053751,
+  "seconds": 3.5
+ },
+ {
+  "status": 422,
+  "body": "{\"$schema\":\"https://api.mothquantum.com/schemas/ErrorModel.json\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"params do not match the engine schema\",\"errors\":[{\"message\":\"'z' does not match pattern '^[xy]+$'\",\"location\":\"body.params.style\"}]}\n",
+  "shape": [
+   513,
+   513
+  ],
+  "qubits": 20,
+  "body_bytes": 527415,
+  "seconds": 4.7
+ },
+ {
+  "status": 422,
+  "body": "{\"$schema\":\"https://api.mothquantum.com/schemas/ErrorModel.json\",\"title\":\"Unprocessable Entity\",\"status\":422,\"detail\":\"params do not match the engine schema\",\"errors\":[{\"message\":\"'z' does not match pattern '^[xy]+$'\",\"location\":\"body.params.style\"}]}\n",
+  "shape": [
+   257,
+   513
+  ],
+  "qubits": 19,
+  "body_bytes": 264247,
+  "seconds": 3.2
+ }
+]

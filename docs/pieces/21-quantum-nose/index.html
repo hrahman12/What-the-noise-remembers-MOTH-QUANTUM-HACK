@@ -148,7 +148,9 @@ ol.key li:hover,ol.key li:focus{background:var(--tint);outline:none}
 ol.key li>b{font-weight:500}
 ol.key li i{display:block;color:var(--ink-2);font-size:.92em}
 .canvas-wrap{position:relative;padding:.5rem .5rem 0}
-#cv{display:block;width:100%;height:auto;touch-action:none;cursor:pointer;border:1px solid var(--rule)}
+canvas.roll{display:block;width:100%;height:auto;touch-action:none;cursor:pointer;border:1px solid var(--rule)}
+#cv2{touch-action:pan-y}
+#shift2{display:block;margin-top:.35rem}
 .controls{display:grid;gap:.65rem;padding:.8rem;border-top:1px solid var(--ink);background:var(--panel-2)}
 .ctl-row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
 .ctl-row .label{min-width:4.6rem}
@@ -237,6 +239,58 @@ canvas.vial{width:72px;height:112px;cursor:pointer;image-rendering:pixelated;ima
 .evidence{margin-top:2.5rem;display:grid;grid-template-columns:1fr 1fr;gap:clamp(1rem,3vw,2.5rem)}
 .evidence h3{font:500 .76rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;padding:.6rem .8rem;margin-bottom:.4rem;background:var(--ink);color:var(--on-ink)}
 .cite{font:400 .78rem/1.5 var(--mono);color:var(--ink-2)}
+/* on this page + the titled sections below the scene */
+.toc{margin-top:2rem;display:flex;flex-wrap:wrap;gap:.45rem .5rem;align-items:center}
+.toc .label{margin-right:.3rem}
+.toc a{border:1px solid var(--rule);background:var(--panel);color:var(--ink);border-radius:999px;padding:.45rem .8rem;font:500 .72rem/1 var(--mono);letter-spacing:.04em;text-decoration:none}
+.toc a:hover,.toc a:focus-visible{background:var(--tint);border-color:var(--ink)}
+.sec{margin-top:2.5rem;border:1px solid var(--ink);background:var(--panel);scroll-margin-top:1rem}
+.sec h2.sec-t{font:inherit;letter-spacing:inherit;color:inherit;margin:0}
+.sec-in{display:grid;grid-template-columns:minmax(0,1fr);gap:1.6rem;padding:clamp(1rem,3vw,1.6rem);min-width:0}
+.sec-in>*{min-width:0}
+.sec-lead{color:var(--ink-2);max-width:68ch}
+.sub-h{font:500 .74rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink);padding-bottom:.45rem;border-bottom:1px solid var(--ink);margin-bottom:.7rem}
+.cols2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(1rem,3vw,2.5rem)}
+ol.guide,ul.guide{margin:0;padding:0 0 0 1.2rem;display:grid;gap:.55rem;font-size:.93rem;color:var(--ink)}
+ol.guide li::marker,ul.guide li::marker{font:500 .78rem var(--mono);color:var(--ink-2)}
+kbd{font:500 .78rem/1 var(--mono);border:1px solid var(--ink-3);border-bottom-width:2px;border-radius:4px;padding:.1rem .35rem;background:var(--panel)}
+.code{font:400 .82em/1.4 var(--mono);color:var(--ink-2);overflow-wrap:anywhere}
+.graph{display:grid;gap:.4rem;border:1px solid var(--rule);background:var(--paper);min-width:0;scroll-margin-top:1rem}
+.graph-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:.35rem 1rem;padding:.8rem .8rem 0}
+.graph-head h3{font:400 1.3rem/1.2 var(--display);letter-spacing:-.01em}
+.graph-head .label b{color:var(--ink);font-weight:500}
+.graph .ctl-row{padding:0 .8rem}
+.graph .canvas-wrap{padding:.2rem .8rem 0}
+.graph .legend{padding:.2rem .8rem 0}
+.graph .cap{padding:.2rem .8rem .9rem;max-width:80ch}
+.graph .tablewrap{padding:0 .8rem}
+.jump{font:500 .72rem/1.3 var(--mono);letter-spacing:.04em;color:var(--link)}
+.gridwrap{overflow-x:auto;padding:.2rem .8rem 0;-webkit-overflow-scrolling:touch}
+#grid{display:block;width:100%;min-width:720px;height:auto;cursor:pointer;border:1px solid var(--rule);background:var(--paper)}
+.grid-read{margin:0;padding:0 .8rem;font:400 .78rem/1.5 var(--mono);color:var(--ink-2);min-height:1.5em}
+.grid-read b{color:var(--ink);font-weight:500}
+.sec .evidence{margin-top:0}
+.sec details.drawer .body{max-width:72ch}
+.claims{display:grid;gap:.8rem;max-width:76ch}
+table.jobs{width:100%;border-collapse:collapse;font:400 .78rem/1.4 var(--mono);font-variant-numeric:tabular-nums}
+table.jobs th,table.jobs td{text-align:left;padding:.4rem .5rem;border-bottom:1px solid var(--rule);vertical-align:top}
+table.jobs th{color:var(--ink-2);font-weight:500}
+table.jobs td.id{overflow-wrap:anywhere}
+table.jobs tr.cur td{background:var(--tint);color:var(--ink);font-weight:500}
+table.jobs button{border:1px solid var(--rule);background:var(--panel);color:var(--ink);border-radius:999px;padding:.3rem .6rem;font:500 .7rem/1 var(--mono);cursor:pointer}
+table.jobs button:hover{background:var(--tint)}
+.swipe{display:none}
+@media (max-width:760px){.swipe{display:block;padding:0 .8rem;font:500 .7rem/1.3 var(--mono);letter-spacing:.06em;color:var(--ink-2)}}
+@media (max-width:620px){
+  table.jobs thead{display:none}
+  table.jobs,table.jobs tbody,table.jobs td{display:block}
+  table.jobs tr{display:flex;flex-wrap:wrap;gap:.25rem .9rem;align-items:baseline;padding:.6rem .3rem;border-bottom:1px solid var(--rule)}
+  table.jobs td{border:0;padding:0}
+  table.jobs td[data-l]::before{content:attr(data-l) " ";color:var(--ink-2)}
+  table.jobs td.id,table.jobs td.outs{flex:1 1 100%}
+}
+ul.credits{margin:0;padding:0;list-style:none;display:grid;gap:.6rem;font-size:.88rem;color:var(--ink-2)}
+ul.credits b{color:var(--ink);font-weight:500}
 .more{margin-top:2.5rem}
 table.lines{width:100%;border-collapse:collapse;font:400 .78rem/1.4 var(--mono);font-variant-numeric:tabular-nums}
 table.lines th,table.lines td{text-align:left;padding:.35rem .4rem;border-bottom:1px solid var(--rule);vertical-align:top}
@@ -245,7 +299,8 @@ table.lines td.mv{color:var(--ink);font-weight:500;background:var(--tint)}
 .tablewrap{overflow-x:auto}
 @media (max-width:980px){.hero{display:flex;flex-direction:column;gap:1rem}.left,.copy{display:contents}
   .kicker{order:1}.hero h1{order:2}.sub{order:3}.stage{order:4}.contested{order:5}.proof{order:6}.steps{order:7}.mascot{order:8}.panel{order:9}.test-in{grid-template-columns:minmax(0,1fr)}.evidence{grid-template-columns:minmax(0,1fr)}
-  .p2-grid{grid-template-columns:minmax(0,1fr)}.fig{border-right:0;border-bottom:1px solid var(--rule)}.fig:last-child{border-bottom:0}}
+  .p2-grid{grid-template-columns:minmax(0,1fr)}.fig{border-right:0;border-bottom:1px solid var(--rule)}.fig:last-child{border-bottom:0}
+  .cols2{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:560px){ol.key{columns:1}
   #figd .pl-t{font-size:13px}#figc .pl-t{font-size:12.5px}
   .co circle:not(.dot){r:13px}.co text{font-size:15px}.pl-lb{font-size:14px}}
@@ -266,12 +321,12 @@ table.lines td.mv{color:var(--ink);font-weight:500;background:var(--tint)}
 </svg>
 
 <div class="wrap">
-  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count"><b>Bonus</b> &middot; Challenge 02</span></nav>
+  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count"><b>Challenge 02</b></span></nav>
 
   <div class="hero">
     <div class="left">
     <section class="stage" aria-label="Plate I: the nose, and the spectral instrument">
-      <div class="stage-top">
+      <div class="stage-top" id="top-stage">
         <div class="molname" id="molname" aria-live="polite">Acetophenone<small>C8H8O</small></div>
         <div class="seg" role="group" aria-label="Molecule" id="g-mol"></div>
       </div>
@@ -373,7 +428,7 @@ table.lines td.mv{color:var(--ink);font-weight:500;background:var(--tint)}
 
       <div class="view" id="v-data" hidden>
         <div class="canvas-wrap">
-          <canvas id="cv" width="1200" height="760" tabindex="0" aria-label="Spectrum roll: time runs left to right, vibration frequency runs bottom to top. Click or drag to move the playhead; Space plays or pauses; left and right arrows scrub."></canvas>
+          <canvas id="cv" class="roll" width="1200" height="760" tabindex="0" aria-label="Spectrum roll: time runs left to right, vibration frequency runs bottom to top. Click or drag to move the playhead; Space plays or pauses; left and right arrows scrub."></canvas>
         </div>
         <p class="legend" id="legend"></p>
       </div>
@@ -392,7 +447,7 @@ table.lines td.mv{color:var(--ink);font-weight:500;background:var(--tint)}
             <button type="button" data-iso="H" aria-pressed="true">Hydrogen</button>
             <button type="button" data-iso="D" aria-pressed="false">Deuterium</button>
           </div>
-          <button type="button" class="btn ghost" id="swap" title="Shortcut: S">Swap H &harr; D</button>
+          <button type="button" class="btn ghost" id="swap" title="Shortcut: S" aria-keyshortcuts="S">Swap H &harr; D</button>
         </div>
         <div class="ctl-row">
           <span class="label">Q-blur</span>
@@ -445,7 +500,7 @@ table.lines td.mv{color:var(--ink);font-weight:500;background:var(--tint)}
     </div>
 
     <div class="copy">
-      <p class="kicker">Bonus &middot; Challenge 02 &middot; Make it audible</p>
+      <p class="kicker">Challenge 02 &middot; Make it audible</p>
       <h1>Swap hydrogen for deuterium. Hear the molecule fall.</h1>
       <p class="sub">A contested theory says your nose reads molecular vibrations. We slowed three odorants' vibrations 120 billion times into hearing range and ran them through a 20-qubit quantum blur. You get to smell by ear.</p>
       <div class="contested" role="note">
@@ -454,16 +509,18 @@ table.lines td.mv{color:var(--ink);font-weight:500;background:var(--tint)}
       </div>
       <div class="proof" id="proof"></div>
       <ol class="steps">
-        <li><span><b>Pick</b> a molecule: watch it ride a sniff up to the olfactory epithelium and land in the detail circle, then press Play to hear its vibrational chord.</span></li>
-        <li><span><b>Swap</b> H for D while it sounds: a neutron flies into every hydrogen, the hydrogen lines slide down by about a fourth, and the heavier atoms wobble more slowly.</span></li>
+        <li><span><b>Pick</b> a molecule and press Play to hear its vibrational chord.</span></li>
+        <li><span><b>Swap</b> H for D while it sounds: the hydrogen lines slide down by about a fourth.</span></li>
         <li><span><b>Blur</b> the chord through the quantum circuit, from a light smear to a global scramble.</span></li>
-        <li><span><b>Test</b> yourself blind: which sniff bottle is deuterated?</span></li>
+        <li><span><b>Test</b> yourself blind: which sample is deuterated?</span></li>
       </ol>
       <p class="mascot"><img id="mascot" alt="Pixel mascot: a head in midline section sniffing an acetophenone molecule, with the conchae, the olfactory epithelium and the olfactory bulb" width="102" height="90"><span>Plate I is drawn as an anatomy plate; the odorants, atoms, neutrons and the tunnelling electron are pixel sprites in the same ink. The mascot sniffs when you do.</span></p>
     </div>
   </div>
 
-  <section class="plate2" aria-labelledby="p2-h">
+  <nav class="toc" aria-label="On this page"><span class="label">On this page</span><a href="#plate2">Plate II</a><a href="#test">Blind test</a><a href="#tour-sec">The tour</a><a href="#how">How to play</a><a href="#data">The data</a><a href="#science">The science</a><a href="#made">How it was made</a><a href="#claims">What this does not claim</a><a href="#jobs">Jobs and credits</a></nav>
+
+  <section class="plate2" id="plate2" aria-labelledby="p2-h">
     <div class="ink-bar"><span id="p2-h">Plate II &middot; At the receptor: two theories</span><span id="p2-mol">acetophenone &middot; H</span></div>
     <div class="p2-grid">
       <figure class="fig" id="fig-b">
@@ -585,11 +642,12 @@ table.lines td.mv{color:var(--ink);font-weight:500;background:var(--tint)}
   </section>
 
   <section class="test" id="test" aria-labelledby="test-h">
-    <div class="ink-bar"><span>Blind test</span><span id="t-badge">2 sniff bottles &middot; 1 is deuterated</span></div>
+    <div class="ink-bar"><span>Blind test</span><span id="t-badge">2 samples &middot; 1 is deuterated</span></div>
     <div class="test-in">
     <div style="display:grid;gap:1rem;min-width:0">
       <h2 id="test-h">Can you hear deuterium?</h2>
-      <p class="lead">Two samples of <b id="t-mol">acetophenone</b> (<span id="t-set">no blur</span>). One is normal, one is deuterated, in random order. Uncork and listen to both as often as you like, then pick the deuterated one. The test uses the molecule and blur chosen above, and the plates stay still while you listen so they cannot give it away.</p>
+      <p class="lead">Two samples of <b id="t-mol">acetophenone</b> (<span id="t-set">no blur</span>). One is normal, one is deuterated, in random order. Listen to both as often as you like, then pick the deuterated one. The test uses the molecule and blur chosen above.</p>
+      <p class="note">Each sample is a sniff bottle: click it to uncork it and listen. The plates stay still while you listen, so they cannot give it away.</p>
       <label class="check"><input type="checkbox" id="disguise"> Disguise pitch: shift each sample up or down at random, so only the chord's shape gives it away</label>
       <div class="ab">
         <div class="sample" id="sA">
@@ -621,7 +679,7 @@ table.lines td.mv{color:var(--ink);font-weight:500;background:var(--tint)}
     </div>
   </section>
 
-  <section class="tour" aria-labelledby="tour-h">
+  <section class="tour" id="tour-sec" aria-labelledby="tour-h">
     <div class="ink-bar"><span id="tour-h">The tour, as audio</span><span>144 s &middot; rendered from the same notes</span></div>
     <div class="tour-in">
       <p class="note">The piece's WAV deliverable, compressed for the web: each molecule normal then deuterated, first unblurred, then through a strong local blur (strength 1, reach 0, job <span id="tour-j1">-</span>) and a global one (strength 0.5, reach 1, job <span id="tour-j2">-</span>). Press play; the chips jump to a pair.</p>
@@ -630,74 +688,176 @@ table.lines td.mv{color:var(--ink);font-weight:500;background:var(--tint)}
     </div>
   </section>
 
-  <section class="evidence" aria-label="Evidence">
-    <div class="for">
-      <h3>Evidence for</h3>
-      <details class="drawer"><summary>Turin 1996: a spectroscope in the nose</summary><div class="body">
-        <p>Luca Turin proposed that olfactory receptors respond to an odorant's vibrations, read out by inelastic electron tunnelling: an electron crosses the receptor only if it can hand a vibrational quantum of the right energy to the molecule (Plate II, Fig. d). He reported that acetophenone and acetophenone-d8 smell different.</p>
-        <p class="cite">L. Turin, "A spectroscopic mechanism for primary olfactory reception", Chemical Senses 21(6):773-791 (1996). doi:10.1093/chemse/21.6.773</p>
-        <div class="row"><button type="button" class="btn ghost" data-load="acetophenone">Load acetophenone</button></div>
-      </div></details>
-      <details class="drawer"><summary>Brookes et al. 2007: the physics could work</summary><div class="body">
-        <p>A simple but general model of phonon-assisted tunnelling, with parameters appropriate for biomolecules, found the proposed mechanism consistent with the underlying physics and with observed features of smell. This is a viability argument, not evidence that receptors do it.</p>
-        <p class="cite">J. C. Brookes, F. Hartoutsiou, A. P. Horsfield, A. M. Stoneham, "Could humans recognize odor by phonon assisted tunneling?", Physical Review Letters 98:038101 (2007). doi:10.1103/PhysRevLett.98.038101</p>
-      </div></details>
-      <details class="drawer"><summary>Franco et al. 2011: fruit flies tell isotopes apart</summary><div class="body">
-        <p>Drosophila distinguished normal from deuterated odorants and could be trained to avoid either one. Flies trained against a deuterated compound also avoided an unrelated molecule with a vibrational mode in the energy range of the carbon-deuterium stretch (Gane et al. later describe it as a nitrile). Shape alone does not explain that.</p>
-        <p class="cite">M. I. Franco, L. Turin, A. Mershin, E. M. C. Skoulakis, "Molecular vibration-sensing component in Drosophila melanogaster olfaction", PNAS 108(9):3797-3802 (2011). doi:10.1073/pnas.1012293108</p>
-        <div class="row"><button type="button" class="btn ghost" data-zone="cd">Show the C-D stretch range</button></div>
-      </div></details>
-      <details class="drawer"><summary>Gane et al. 2013: humans and deuterated musk</summary><div class="body">
-        <p>With GC-purified samples, volunteers picked catalytically deuterated cyclopentadecanone over sham-deuterated cyclopentadecanone in 119 of 132 trials, describing a "burnt" note. The authors suggest that many C-H groups (28 here, against acetophenone's 8) may be needed for the difference to be smelled.</p>
-        <p class="cite">S. Gane, D. Georganakis, K. Maniati, M. Vamvakias, N. Ragoussis, E. M. C. Skoulakis, L. Turin, "Molecular vibration-sensing component in human olfaction", PLOS ONE 8(1):e55780 (2013). doi:10.1371/journal.pone.0055780</p>
-        <div class="row"><button type="button" class="btn ghost" data-load="exaltone">Load cyclopentadecanone</button></div>
-      </div></details>
-    </div>
-    <div class="against">
-      <h3>Evidence against</h3>
-      <details class="drawer"><summary>Keller &amp; Vosshall 2004: no support in people</summary><div class="body">
-        <p>Psychophysical tests in humans of predictions made by the vibration theory, including whether acetophenone and acetophenone-d8 smell different, found no evidence to support it.</p>
-        <p class="cite">A. Keller, L. B. Vosshall, "A psychophysical test of the vibration theory of olfaction", Nature Neuroscience 7(4):337-338 (2004). doi:10.1038/nn1215</p>
-        <div class="row"><button type="button" class="btn ghost" data-load="acetophenone">Load acetophenone</button></div>
-      </div></details>
-      <details class="drawer"><summary>Gane et al. 2013: acetophenone stayed the same</summary><div class="body">
-        <p>The same paper that reported the musk result confirmed Keller &amp; Vosshall: neither naive nor trained subjects could tell GC-pure acetophenone from acetophenone-d8. It also notes that deuteration changes physical properties: the deuterated musk left the GC column about 1.2 minutes earlier, a sign of weaker dispersion forces.</p>
-        <p class="cite">Gane et al., PLOS ONE 8(1):e55780 (2013). doi:10.1371/journal.pone.0055780</p>
-      </div></details>
-      <details class="drawer"><summary>Block et al. 2015: the musk receptor does not care</summary><div class="body">
-        <p>The human musk receptor OR5AN1, expressed in cells, responded alike to normal and deuterated cyclopentadecanone and muscone; other human and mouse receptors also ignored deuteration. The authors note that muscone-d30 lacks the 1,380-1,550 cm<sup>-1</sup> bands claimed to matter for musk odour, and argue from theory that the proposed electron transfer could easily be suppressed by quantum effects of the molecule's other, non-odorant vibrations.</p>
-        <p class="cite">E. Block et al., "Implausibility of the vibrational theory of olfaction", PNAS 112(21):E2766-E2774 (2015). doi:10.1073/pnas.1503054112</p>
-        <div class="row"><button type="button" class="btn ghost" data-load="muscone" data-zone="musk">Load muscone and show 1,380-1,550 cm<sup>-1</sup></button></div>
-      </div></details>
-      <details class="drawer"><summary>The 2015 exchange: still unresolved</summary><div class="body">
-        <p>Turin and colleagues replied that the theory remains plausible; Block and colleagues answered that it is implausible. The two letters were published side by side. As far as we know, no decisive experiment has settled the question since.</p>
-        <p class="cite">L. Turin, S. Gane, D. Georganakis, K. Maniati, E. M. C. Skoulakis, "Plausibility of the vibrational theory of olfaction", PNAS 112(25):E3154 (2015). doi:10.1073/pnas.1508035112<br>E. Block, S. Jang, H. Matsunami, V. S. Batista, H. Zhuang, "Reply to Turin et al.: Vibrational theory of olfaction is implausible", PNAS 112(25):E3155 (2015). doi:10.1073/pnas.1508443112</p>
-      </div></details>
+  <section class="sec" id="how" aria-labelledby="how-h">
+    <div class="ink-bar"><h2 class="sec-t" id="how-h">How to play</h2><span>you are in control &middot; nothing sounds until you press</span></div>
+    <div class="sec-in cols2">
+      <div>
+        <h3 class="sub-h">The instrument</h3>
+        <ol class="guide">
+          <li><b>Pick</b> a molecule: acetophenone (8 H), cyclopentadecanone / Exaltone (28 H) or muscone (30 H).</li>
+          <li><b>Play</b> its chord: the lines enter from the lowest to the highest frequency, then sustain.</li>
+          <li><b>Swap H &harr; D</b> while it sounds (button or the <kbd>S</kbd> key): the hydrogen lines glide down, live.</li>
+          <li><b>Blur</b> it: strength 0.25 / 0.5 / 1 &times; reach local / halfway / global, each one a real Atlas job. Click or drag the spectrum roll to scrub; arrows scrub, Space plays and pauses.</li>
+          <li><b>WAV file</b>: the instrument's "Play the WAV render" button plays the deliverable <span class="code">wav/&lt;setting&gt;/&lt;molecule&gt;_&lt;H|D&gt;.wav</span> for whatever molecule, isotope and blur is selected (a 48 kb/s mp3 of it); it toggles to "Stop", the playhead follows it, and changing the selection (even H &harr; D) while it plays jumps to the matching file at the same moment.</li>
+          <li><b>Test</b> yourself: two samples, one normal and one deuterated, in random order. Pick the deuterated one. The page keeps score and gives the binomial p-value against guessing. "Disguise pitch" randomly transposes each sample by up to &plusmn;25 % so only the chord's shape gives it away.</li>
+          <li>Open the <b>Evidence for / Evidence against</b> drawers; some load the relevant molecule or shade the relevant band on the instrument (the C-D stretch range; Block et al.'s 1,380-1,550 cm<sup>-1</sup> window).</li>
+          <li><b>Copy link to this view</b> or <b>Copy my score</b> to share.</li>
+          <li><b>The tour</b>: the demo WAV, as an audio player with chips that jump to each pair.</li>
+        </ol>
+      </div>
+      <div>
+        <h3 class="sub-h">On the plates</h3>
+        <ul class="guide">
+          <li><b>Pick</b> a molecule: watch it ride a sniff up to the olfactory epithelium and land in the detail circle, then press Play to hear its vibrational chord.</li>
+          <li><b>Swap</b> H for D while it sounds: a neutron flies into every hydrogen, the hydrogen lines slide down by about a fourth, and the heavier atoms wobble more slowly.</li>
+          <li><b>Sniff</b> (the button, or a click on Plate I) sends a puff of the selected molecule up the nose, with a sniff sound. Click a number on the plate to name the part, or hover a name in the key to find it.</li>
+          <li><b>Plate II</b>: click Fig. b to drop another odorant onto a cilium; click Fig. c to swap H and D; drag the gap in Fig. d (the slider, or drag up and down on the figure).</li>
+          <li><b>Test</b> yourself blind: which sniff bottle is deuterated?</li>
+          <li><b>Scene / Data</b>: the switch above Plate I shows the spectrum roll in its place. The same roll is always drawn in <a href="#data">The data</a>, below.</li>
+        </ul>
+      </div>
     </div>
   </section>
 
-  <section class="more">
-    <details class="drawer"><summary>How a vibration becomes a note</summary><div class="body">
+  <section class="sec" id="data" aria-labelledby="data-h">
+    <div class="ink-bar"><h2 class="sec-t" id="data-h">The data</h2><span>2 graphs and a table, from the real note lists</span></div>
+    <div class="sec-in">
+      <figure class="graph" id="g-roll">
+        <div class="graph-head"><h3>Graph 1 &middot; The chord as a spectrum roll</h3><span class="label" id="roll-now">-</span></div>
+        <div class="ctl-row">
+          <button type="button" class="btn play" id="play2" aria-label="Play the chord">Play</button>
+          <button type="button" class="btn ghost" id="restart2" aria-label="Restart: play from 0 seconds">Restart</button>
+          <button type="button" class="btn ghost" id="swap2" title="Shortcut: S">Swap H &harr; D</button>
+          <span class="clock" id="clock2">0.0 / 7.0 s</span>
+          <a class="jump" href="#top-stage">change molecule or blur in the instrument &uarr;</a>
+        </div>
+        <div class="canvas-wrap">
+          <canvas id="cv2" class="roll" width="1200" height="760" tabindex="0" aria-label="Spectrum roll: time runs left to right, vibration frequency runs bottom to top. Click or drag to move the playhead; Space plays or pauses; left and right arrows scrub."></canvas>
+        </div>
+        <p class="legend" id="legend2"></p>
+        <figcaption class="cap"><b>Graph 1</b> Spectrum roll: time runs left to right, vibration frequency runs bottom to top. Click or drag to move the playhead; Space plays or pauses; left and right arrows scrub. Shaded bands mark the C-H stretch, C-D stretch and C=O stretch regions; the evidence drawers can shade another. Each bar is a line of the chord (input score) or a note of the blur-midi-v1 output for the setting chosen in the instrument; the dashed lines are the other isotope. <span class="shift" id="shift2"></span></figcaption>
+      </figure>
+
+      <figure class="graph" id="g-grid">
+        <div class="graph-head"><h3>Graph 2 &middot; Six vibrational chords, before and after a 20-qubit quantum blur</h3><span class="label">10 settings &times; 6 chords &middot; click a cell</span></div>
+        <p class="swipe">scroll sideways for all 10 settings &rarr;</p>
+        <div class="gridwrap"><canvas id="grid" width="2400" height="1152" tabindex="0" aria-label="Every chord before and after every blur, as piano rolls: rows are the six chords, columns the input score and the nine blur-midi-v1 settings. Click a cell, or use the arrow keys, to load it into the instrument."></canvas></div>
+        <p class="grid-read" id="grid-read" aria-live="polite"></p>
+        <figcaption class="cap"><b>Graph 2</b> Every chord before and after every blur, as piano rolls (the piece's figure, <span class="code">hero.png</span>, drawn live from the same note lists). Rows: each molecule, normal then deuterated. Columns: the input score (no quantum step), then blur-midi-v1 at strength 0.25, 0.5 and 1 for reach 0, 0.5 and 1. Each cell: time 0-7 s across, wavenumber 380-3,300 cm<sup>-1</sup> up (&times; 0.25 = Hz); darker = louder. The framed cell is what the instrument plays now; click any cell (or use the arrow keys) to load it.</figcaption>
+      </figure>
+
+      <figure class="graph" id="g-table">
+        <div class="graph-head"><h3>Table 1 &middot; Every vibrational line</h3><span class="label" id="lt-mol">-</span></div>
+        <div class="tablewrap"><table class="lines" id="ltable"></table></div>
+        <figcaption class="cap"><b>Table 1</b> The lines of the molecule chosen in the instrument: the textbook value for the normal molecule, the harmonic estimate for the deuterated one (shaded where the line moves a hydrogen), and the note each becomes at 1 cm<sup>-1</sup> = 0.25 Hz. How the numbers are made: <a href="#made">How it was made</a>.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="sec" id="science" aria-labelledby="sci-h">
+    <div class="ink-bar"><h2 class="sec-t" id="sci-h">The science</h2><span>evidence for and against the vibration theory</span></div>
+    <div class="sec-in">
+      <div class="evidence" aria-label="Evidence">
+      <div class="for">
+      <h3>Evidence for</h3>
+      <details class="drawer"><summary>Turin 1996: a spectroscope in the nose</summary><div class="body">
+      <p>Luca Turin proposed that olfactory receptors respond to an odorant's vibrations, read out by inelastic electron tunnelling: an electron crosses the receptor only if it can hand a vibrational quantum of the right energy to the molecule. He reported that acetophenone and acetophenone-d8 smell different.</p>
+      <p class="cite">L. Turin, "A spectroscopic mechanism for primary olfactory reception", Chemical Senses 21(6):773-791 (1996). doi:10.1093/chemse/21.6.773</p>
+      <div class="row"><button type="button" class="btn ghost" data-load="acetophenone">Load acetophenone</button><button type="button" class="btn ghost" data-fig="fig-d">See it drawn: Plate II, Fig. d</button></div>
+      </div></details>
+      <details class="drawer"><summary>Brookes et al. 2007: the physics could work</summary><div class="body">
+      <p>A simple but general model of phonon-assisted tunnelling, with parameters appropriate for biomolecules, found the proposed mechanism consistent with the underlying physics and with observed features of smell. This is a viability argument, not evidence that receptors do it.</p>
+      <p class="cite">J. C. Brookes, F. Hartoutsiou, A. P. Horsfield, A. M. Stoneham, "Could humans recognize odor by phonon assisted tunneling?", Physical Review Letters 98:038101 (2007). doi:10.1103/PhysRevLett.98.038101</p>
+      </div></details>
+      <details class="drawer"><summary>Franco et al. 2011: fruit flies tell isotopes apart</summary><div class="body">
+      <p>Drosophila distinguished normal from deuterated odorants and could be trained to avoid either one. Flies trained against a deuterated compound also avoided an unrelated molecule with a vibrational mode in the energy range of the carbon-deuterium stretch (Gane et al. later describe it as a nitrile). Shape alone does not explain that.</p>
+      <p class="cite">M. I. Franco, L. Turin, A. Mershin, E. M. C. Skoulakis, "Molecular vibration-sensing component in Drosophila melanogaster olfaction", PNAS 108(9):3797-3802 (2011). doi:10.1073/pnas.1012293108</p>
+      <div class="row"><button type="button" class="btn ghost" data-zone="cd">Show the C-D stretch range</button></div>
+      </div></details>
+      <details class="drawer"><summary>Gane et al. 2013: humans and deuterated musk</summary><div class="body">
+      <p>With GC-purified samples, volunteers picked catalytically deuterated cyclopentadecanone over sham-deuterated cyclopentadecanone in 119 of 132 trials, describing a "burnt" note. The authors suggest that many C-H groups (28 here, against acetophenone's 8) may be needed for the difference to be smelled.</p>
+      <p class="cite">S. Gane, D. Georganakis, K. Maniati, M. Vamvakias, N. Ragoussis, E. M. C. Skoulakis, L. Turin, "Molecular vibration-sensing component in human olfaction", PLOS ONE 8(1):e55780 (2013). doi:10.1371/journal.pone.0055780</p>
+      <div class="row"><button type="button" class="btn ghost" data-load="exaltone">Load cyclopentadecanone</button></div>
+      </div></details>
+      </div>
+      <div class="against">
+      <h3>Evidence against</h3>
+      <details class="drawer"><summary>Keller &amp; Vosshall 2004: no support in people</summary><div class="body">
+      <p>Psychophysical tests in humans of predictions made by the vibration theory, including whether acetophenone and acetophenone-d8 smell different, found no evidence to support it.</p>
+      <p class="cite">A. Keller, L. B. Vosshall, "A psychophysical test of the vibration theory of olfaction", Nature Neuroscience 7(4):337-338 (2004). doi:10.1038/nn1215</p>
+      <div class="row"><button type="button" class="btn ghost" data-load="acetophenone">Load acetophenone</button></div>
+      </div></details>
+      <details class="drawer"><summary>Gane et al. 2013: acetophenone stayed the same</summary><div class="body">
+      <p>The same paper that reported the musk result confirmed Keller &amp; Vosshall: neither naive nor trained subjects could tell GC-pure acetophenone from acetophenone-d8. It also notes that deuteration changes physical properties: the deuterated musk left the GC column about 1.2 minutes earlier, a sign of weaker dispersion forces.</p>
+      <p class="cite">Gane et al., PLOS ONE 8(1):e55780 (2013). doi:10.1371/journal.pone.0055780</p>
+      </div></details>
+      <details class="drawer"><summary>Block et al. 2015: the musk receptor does not care</summary><div class="body">
+      <p>The human musk receptor OR5AN1, expressed in cells, responded alike to normal and deuterated cyclopentadecanone and muscone; other human and mouse receptors also ignored deuteration. The authors note that muscone-d30 lacks the 1,380-1,550 cm<sup>-1</sup> bands claimed to matter for musk odour, and argue from theory that the proposed electron transfer could easily be suppressed by quantum effects of the molecule's other, non-odorant vibrations.</p>
+      <p class="cite">E. Block et al., "Implausibility of the vibrational theory of olfaction", PNAS 112(21):E2766-E2774 (2015). doi:10.1073/pnas.1503054112</p>
+      <div class="row"><button type="button" class="btn ghost" data-load="muscone" data-zone="musk">Load muscone and show 1,380-1,550 cm<sup>-1</sup></button></div>
+      </div></details>
+      <details class="drawer"><summary>The 2015 exchange: still unresolved</summary><div class="body">
+      <p>Turin and colleagues replied that the theory remains plausible; Block and colleagues answered that it is implausible. The two letters were published side by side. As far as we know, no decisive experiment has settled the question since.</p>
+      <p class="cite">L. Turin, S. Gane, D. Georganakis, K. Maniati, E. M. C. Skoulakis, "Plausibility of the vibrational theory of olfaction", PNAS 112(25):E3154 (2015). doi:10.1073/pnas.1508035112<br>E. Block, S. Jang, H. Matsunami, V. S. Batista, H. Zhuang, "Reply to Turin et al.: Vibrational theory of olfaction is implausible", PNAS 112(25):E3155 (2015). doi:10.1073/pnas.1508443112</p>
+      </div></details>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="made" aria-labelledby="made-h">
+    <div class="ink-bar"><h2 class="sec-t" id="made-h">How it was made</h2><span>from a vibration to a note to a quantum blur</span></div>
+    <div class="sec-in" style="gap:0">
+      <details class="drawer"><summary>How a vibration becomes a note</summary><div class="body">
       <p>Each line is an approximate textbook infrared group frequency for the normal molecule, in wavenumbers (cm<sup>-1</sup>). One rule maps every line to sound: <b>1 cm<sup>-1</sup> = 0.25 Hz</b>, a slow-down of about 1.2 &times; 10<sup>11</sup>. Because the rule is a single multiplication, musical intervals are the true vibrational ratios.</p>
       <p>Swapping hydrogen (mass 1) for deuterium (mass 2) changes the reduced mass of a C-H oscillator. For a harmonic bond the frequency falls by &radic;(&mu;<sub>CD</sub>/&mu;<sub>CH</sub>) = <b>1.362</b>, which is 5.35 semitones, a little more than a perfect fourth. We apply that factor to every line that moves a hydrogen and leave heavy-atom lines (C=O, ring C=C, C-C) where they are. Real deuterated spectra differ by a few percent, and modes mix; this is an idealised estimate, not a measurement.</p>
       <p>For the quantum engine the chord is written as MIDI, with each MIDI note number standing for a 28 cm<sup>-1</sup> bin (7 Hz), so lines are rounded by up to 14 cm<sup>-1</sup>. Your browser plays every note as a pure sine tone. The <b>WAV file</b> button instead plays the deliverable rendered offline in Python with the same rule (<span class="cite">wav/&lt;setting&gt;/&lt;molecule&gt;_&lt;H|D&gt;.wav</span>, compressed here to a 48 kb/s mp3) for whatever molecule, isotope and blur you have selected, so every one of the 60 chord files can be heard and checked against the live synth. All of this, including the synthesis, is classical.</p>
-      <div class="tablewrap"><table class="lines" id="ltable"></table></div>
-    </div></details>
-    <details class="drawer"><summary>How the plates and sprites work</summary><div class="body">
-      <p>Plate I is a schematic anatomical drawing (after standard anatomy atlases, not traced from any one source); its labels use the English and Latin anatomical names. The molecules are pixel sprites drawn from their real structures: acetophenone (8 H), cyclopentadecanone (15-carbon ring, 28 H) and muscone (3-methyl, 30 H), with hydrogen drawn light and deuterium dark. H and D are drawn the same size on purpose: deuterium only adds a neutron.</p>
-      <p>The mascot (a head in midline section, sniffing acetophenone) and the blind test's nose are drawn from the same sprite sheet; the hub icon is exported from it. The loupe on Plate I shows the odorant docked at the second landing spot at molecular scale.</p>
-      <p>While a chord plays, every atom's wobble is driven by the notes sounding at the playhead, from the same note lists you hear (input score or downloaded blur-midi-v1 output): C-H or C-D stretch notes shake the hydrogens along their bonds, bend notes shake them sideways, C=O notes move the oxygen, ring notes breathe the ring. The wobble is slowed about 10<sup>13</sup> times further than the sound, so a C-D bond visibly wobbles 1.36 times slower than a C-H bond. Rungs in Fig. d light up when their note sounds. The caption under Plate I names the loudest note sounding, from the same list. The sniff (and its sound, filtered noise), the docking, the neutrons that fly in when you swap H for D, the spikes in Fig. b, the flash of the bulb, the tunnelling electron and the kick it gives the odorant in Fig. d are illustrations, not measurements. Each hydrogen does gain exactly one neutron, and the molar masses shown are computed from the formulas.</p>
-    </div></details>
-    <details class="drawer"><summary>What the quantum engine did</summary><div class="body">
+      <p class="cite">The line table is Table 1 in <a href="#g-table">The data</a>.</p>
+      </div></details>
+      <details class="drawer"><summary>What the quantum engine did</summary><div class="body">
       <p>Atlas <b>blur-midi-v1</b> (Quantum Blur for MIDI) turns each MIDI track into a piano roll (pitch &times; time) and blurs it as a height map with a quantum circuit, then turns the result back into notes. All six chords (three molecules, normal and deuterated) went into one file, one track each, so every job blurs H and D versions with exactly the same setting.</p>
       <p>Qubits: each track's roll is about 77-111 pitch rows (the chord's span plus the engine's 15% margin) by 6,720 time steps (1 tick per step). Quantum Blur stores a w &times; h grid in &lceil;log<sub>2</sub> w&rceil; + &lceil;log<sub>2</sub> h&rceil; qubits: 7 + 13 = <b>20 qubits</b>, the engine's maximum per pass. The engine does not report this number; we computed it from that rule.</p>
       <p>Low <i>reach</i> mixes only neighbouring pitches and times, so lines smear into the bins next to them, a bit like a low-resolution spectrometer. Higher reach lets any pitch mix with any other: five of the six settings at reach 0.5 or 1 scatter a chord into dozens to thousands of notes across the range, while strength 1 at reach 1 leaves only a few dozen notes, many far from the original lines. In every job the deuterated chords stay below about 2,250 cm<sup>-1</sup> while the normal ones reach the C-H stretch region, so the blur never fully hides the swap. This is an audio effect and an analogy, nothing more. The circuits ran on Atlas's classical statevector simulator; blur-midi-v1 has no hardware mode.</p>
       <p id="joblist" class="cite"></p>
-    </div></details>
-    <details class="drawer"><summary>What this does not claim</summary><div class="body">
-      <p class="honesty">The vibration theory of olfaction is unproven and contested. This page does not test it, support it or refute it. Fig. d illustrates the hypothesis; the receptor gap is a slider, not a measured property of any receptor. The quantum circuit did not simulate electron tunnelling, an odorant receptor or a nose. Its blur is a sound effect applied to a chord. Being able to hear deuterium in a chord that we deliberately moved into hearing range says nothing about whether noses detect it. Band positions are approximate textbook values and the deuterated lines are harmonic estimates. The blind test scores you against chance; it is not a psychophysics experiment.</p>
-    </div></details>
+      </div></details>
+      <details class="drawer"><summary>How the plates and sprites work</summary><div class="body">
+      <p>Plate I is a schematic anatomical drawing (after standard anatomy atlases, not traced from any one source); its labels use the English and Latin anatomical names. The molecules are pixel sprites drawn from their real structures: acetophenone (8 H), cyclopentadecanone (15-carbon ring, 28 H) and muscone (3-methyl, 30 H), with hydrogen drawn light and deuterium dark. H and D are drawn the same size on purpose: deuterium only adds a neutron.</p>
+      <p>The mascot (a head in midline section, sniffing acetophenone) and the blind test's nose are drawn from the same sprite sheet; the hub icon is exported from it. The loupe on Plate I shows the odorant docked at the second landing spot at molecular scale.</p>
+      <p>While a chord plays, every atom's wobble is driven by the notes sounding at the playhead, from the same note lists you hear (input score or downloaded blur-midi-v1 output): C-H or C-D stretch notes shake the hydrogens along their bonds, bend notes shake them sideways, C=O notes move the oxygen, ring notes breathe the ring. The wobble is slowed about 10<sup>13</sup> times further than the sound, so a C-D bond visibly wobbles 1.36 times slower than a C-H bond. Rungs in Fig. d light up when their note sounds. The caption under Plate I names the loudest note sounding, from the same list. The sniff (and its sound, filtered noise), the docking, the neutrons that fly in when you swap H for D, the spikes in Fig. b, the flash of the bulb, the tunnelling electron and the kick it gives the odorant in Fig. d are illustrations, not measurements. Each hydrogen does gain exactly one neutron, and the molar masses shown are computed from the formulas.</p>
+      </div></details>
+    </div>
   </section>
+
+  <section class="sec" id="claims" aria-labelledby="claims-h">
+    <div class="ink-bar"><h2 class="sec-t" id="claims-h">What this does not claim</h2><span>honesty notes</span></div>
+    <div class="sec-in claims">
+      <p class="honesty">The vibration theory of olfaction is unproven and contested. This page does not test it, support it or refute it. The quantum circuit did not simulate electron tunnelling, an odorant receptor or a nose. Its blur is a sound effect applied to a chord. Being able to hear deuterium in a chord that we deliberately moved into hearing range says nothing about whether noses detect it. Band positions are approximate textbook values and the deuterated lines are harmonic estimates. The blind test scores you against chance; it is not a psychophysics experiment.</p>
+      <p class="honesty">Fig. d illustrates the hypothesis; the receptor gap is a slider, not a measured property of any receptor. The sniff, the docking, the neutrons, the spikes, the flash of the bulb and the tunnelling electron are illustrations, not measurements.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="jobs" aria-labelledby="jobs-h">
+    <div class="ink-bar"><h2 class="sec-t" id="jobs-h">Jobs and credits</h2><span id="jobs-sum">-</span></div>
+    <div class="sec-in">
+      <div>
+        <h3 class="sub-h">The Atlas jobs</h3>
+        <div class="tablewrap"><table class="jobs" id="jobtable"></table></div>
+        <p class="cite" style="margin-top:.6rem">Fixed in every job: qubits param 20 (the engine maximum), resolution 1 tick per piano-roll step. Notes out are counted from the downloaded MIDI files, in track order acetophenone H / D, cyclopentadecanone H / D, muscone H / D. Load sets the instrument to that blur.</p>
+      </div>
+      <div>
+        <h3 class="sub-h">Credits</h3>
+        <ul class="credits">
+          <li><b>Engine</b>: Moth Quantum Atlas, blur-midi-v1 (a unitary quantum blur for MIDI piano rolls), run on Atlas's statevector simulator.</li>
+          <li><b>Data</b>: no third-party data files. The vibrational chords are approximate, rounded textbook infrared group frequencies; the deuterated lines are our own harmonic estimates (C-H frequencies divided by 1.362).</li>
+          <li><b>Papers</b>: the eight papers in <a href="#science">The science</a>, each with its DOI.</li>
+          <li><b>Odour descriptions</b>: PubChem (acetophenone, CID 7410); The Good Scents Company (cyclopentadecanone); Wikipedia and the ACS Molecule of the Week (muscone). Molar masses are computed from the formulas.</li>
+          <li><b>Illustrations</b>: Plate I, Plate II and every pixel sprite are original drawings made for this page, schematic and not to scale; anatomical names follow Terminologia Anatomica (TA98).</li>
+          <li><b>Libraries</b>: mido, NumPy, Matplotlib, imageio-ffmpeg (Python 3.12); on the page, the Web Audio API, Canvas 2D and Google Fonts (Geist, IBM Plex Mono). No external scripts.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
   <style>
 .wtnr-nav{margin-top:2.5rem;border-top:1px solid var(--ink,#19238E);padding-top:1.1rem;display:grid;gap:1rem}
 .wtnr-nav .wn-row{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:space-between;align-items:center}
@@ -974,7 +1134,7 @@ function prerender(){ // warm the sample buffers for the current setting (comput
 // ---------- main instrument ----------
 const main=new Player(s=>{syncPlay();if(s==='play'){kick();}else{draw();redrawScene();}});
 let glideAnim=null; // {from,to,start,ms}
-function syncPlay(){const b=$('play');b.textContent=main.playing?'Pause':(main.pos>=DUR-0.05?'Replay':'Play');b.setAttribute('aria-label',main.playing?'Pause':'Play the chord');}
+function syncPlay(){for(const id of ['play','play2']){const b=$(id);b.textContent=main.playing?'Pause':(main.pos>=DUR-0.05?'Replay':'Play');b.setAttribute('aria-label',main.playing?'Pause':'Play the chord');}}
 function loadMain(){main.load(curTrack());}
 
 // the WAV deliverable for the current selection (wav/<setting>/<molecule>_<H|D>.wav as mp3), via one <audio>
@@ -1007,23 +1167,31 @@ wav.addEventListener('pause',()=>{syncWav();draw();redrawScene();});
 wav.addEventListener('ended',()=>{syncWav();draw();redrawScene();});
 const playPos=()=>wavOn()?Math.min(DUR,wav.currentTime):main.now();
 
-// canvas: the spectrum roll (the "Data" view)
-const cv=$('cv'),ctx=cv.getContext('2d');
+// canvas: the spectrum roll. One drawing, two places: the instrument's "Data" view (#cv) and Graph 1 in The data (#cv2).
+const ROLLS=[$('cv'),$('cv2')];
+let cv=ROLLS[0],ctx=cv.getContext('2d');
+const rollSeen=new Map(ROLLS.map(c=>[c,true])); // Graph 1 is skipped while it is far off screen
+try{const io=new IntersectionObserver(es=>{let any=false;for(const e of es){rollSeen.set(e.target,e.isIntersecting);any=any||e.isIntersecting;}if(any)draw();},{rootMargin:'300px'});io.observe(ROLLS[1]);}catch(e){}
+const rollOn=c=>c===ROLLS[0]?st.view==='data':rollSeen.get(c)!==false;
+function useRoll(c){cv=c;ctx=c.getContext('2d');layout();}
 const W=1200,NU0=380,NU1=3300;
 let H=760;
 let PL=78,PR=74,PT=22,PB=44,K=1;
-function layout(){const cw=cv.clientWidth||W;const want=cw<620?1150:760;if(cv.height!==want){cv.height=want;H=want;}K=Math.max(1,Math.min(4,W/Math.max(280,cw)));PL=Math.round(46*K);PR=K<2.4?Math.round(50*K):Math.round(10*K);PT=Math.round(14*K);PB=Math.round(22*K);}
+function layout(){const cw=cv.clientWidth||W;const want=cw<620?1150:760;if(cv.height!==want)cv.height=want;H=cv.height;K=Math.max(1,Math.min(4,W/Math.max(280,cw)));PL=Math.round(46*K);PR=K<2.4?Math.round(50*K):Math.round(10*K);PT=Math.round(14*K);PB=Math.round(22*K);}
 const X=t=>PL+t/DUR*(W-PL-PR), Y=nu=>PT+(NU1-nu)/(NU1-NU0)*(H-PT-PB);
 const ZONES={ch:[2800,3100,'C-H stretch'],cd:[2050,2300,'C-D stretch'],co:[1650,1760,'C=O stretch'],musk:[1380,1550,'1,380-1,550']};
 const mono=(px,w)=>(w||400)+' '+Math.round(px*K)+'px "IBM Plex Mono", monospace';
 function tokens(){const c=getComputedStyle(document.documentElement),g=(k,d)=>c.getPropertyValue(k).trim()||d;
   return {paper:g('--paper','#FBFAF9'),ink:g('--ink','#19238E'),ink2:g('--ink-2','#545BA9'),ink3:g('--ink-3','#A1A4CE'),rule:g('--rule','#D3D3E6'),tint:g('--tint','rgba(25,35,142,.07)')};}
 function draw(){
-  const pos0=playPos();
-  $('clock').textContent=pos0.toFixed(1)+' / '+DUR.toFixed(1)+' s';
+  const pos0=playPos(),ck=pos0.toFixed(1)+' / '+DUR.toFixed(1)+' s';
+  $('clock').textContent=ck;$('clock2').textContent=ck;
   if(document.activeElement!==$('scrub'))$('scrub').value=pos0.toFixed(2);
-  if(st.view!=='data')return;
-  layout();
+  // the H<->D glide advances once per frame, for both canvases
+  let gk=0;if(glideAnim){gk=Math.min(1,(performance.now()-glideAnim.start)/glideAnim.ms);if(gk>=1)glideAnim=null;}
+  for(const c of ROLLS)if(rollOn(c)){useRoll(c);drawRoll(pos0,gk);}
+}
+function drawRoll(pos0,gk){
   const T=tokens();
   ctx.clearRect(0,0,W,H);ctx.fillStyle=T.paper;ctx.fillRect(0,0,W,H);
   // spectral regions
@@ -1046,7 +1214,6 @@ function draw(){
   ctx.setLineDash([]);
   const tr=curTrack(), clean=curSet()==='clean', bh=Math.max(3.2*K,1.4*(Y(0)-Y(CM_PER_BIN)));
   const live=wavOn(), playing=main.playing||live, pos=pos0;
-  let gk=0;if(glideAnim){gk=Math.min(1,(performance.now()-glideAnim.start)/glideAnim.ms);if(gk>=1)glideAnim=null;}
   const src=glideAnim?NOTES.clean[trackKey(st.mol,glideAnim.from)]:tr;
   for(const n of src.n){
     let b=n[2];if(glideAnim&&n[4]!=null)b=n[2]*Math.pow(n[4]/n[2],gk);
@@ -1342,13 +1509,13 @@ function drawSniffer(now,t){ // the blind test's nose: sniffs while a sample pla
 // ---------- one animation loop for the roll, the plates and the vials ----------
 let raf=0,lastT=0;const T0=performance.now();
 function busy(now){return main.playing||wavOn()||test.playing||!!glideAnim||puffs.length>0||now<elecUntil||vibOn||
-  (dockB&&now-dockB.t0<FIRE_END)||!!swapAnim||docked.some(d=>now-d.t<800)||(mood&&now-mood.t0<MOOD_MS)||now<noseUntil;}
+  (dockB&&now-dockB.t0<FIRE_END)||!!swapAnim||docked.some(d=>now-d.t<800)||(mood&&now-mood.t0<MOOD_MS)||now<noseUntil||now-gridPulse<PULSE_MS;}
 function frame(now){
   raf=0;const dt=Math.max(0,Math.min(0.1,(now-(lastT||now))/1000));lastT=now;const t=Math.max(0,(now-T0)/1000);
   draw();updateVib(dt);puffStep(now);
   if(swapAnim&&now-swapAnim.t0>N_FLY+700)swapAnim=null;
   if(sceneVisible()){drawPlate1(now,t);loupeRead(now);}
-  drawFigB(now,t);drawFigC(now,t);drawFigD(now,t);drawVials(t);drawSniffer(now,t);
+  drawFigB(now,t);drawFigC(now,t);drawFigD(now,t);drawVials(t);drawSniffer(now,t);if(now-gridPulse<PULSE_MS+100)gridDraw();
   if(busy(now))raf=requestAnimationFrame(frame);else lastT=0;
 }
 function kick(){if(!raf)raf=requestAnimationFrame(frame);}
@@ -1378,10 +1545,14 @@ function refresh(){
   $('legend').innerHTML=set.key==='clean'
     ?'<span><i style="background:var(--ink)"></i>moves when H becomes D</span><span><i style="background:var(--ink-3)"></i>heavy atoms, stays put</span><span><i style="border-top:2px dashed var(--ink-3);height:0"></i>the other isotope</span>'
     :'<span><i style="background:var(--ink)"></i>engine output notes (darker = louder)</span><span><i style="border-top:2px dotted var(--ink);height:0"></i>this chord before the blur</span><span><i style="border-top:2px dashed var(--ink-3);height:0"></i>the other isotope</span>';
+  // Graph 1 in The data carries the same legend, shift line and selection as the instrument
+  $('legend2').innerHTML=$('legend').innerHTML;$('shift2').innerHTML=$('shift').innerHTML;
+  $('roll-now').innerHTML='<b>'+(st.iso==='H'?m.name:m.d_name_cap)+'</b> &middot; '+(set.key==='clean'?'no blur':'blur '+set.strength+' &times; '+reachName(set.reach).toLowerCase());
+  $('lt-mol').innerHTML='<b>'+m.name+'</b> &middot; '+m.lines.H.length+' lines';
   wavFollow();
   $('t-mol').textContent=m.name.toLowerCase();$('t-set').textContent=set.key==='clean'?'no blur':'quantum blur, strength '+set.strength+', reach '+set.reach;
   dMatch=fig_d_update();
-  lineTable();draw();redrawScene();
+  lineTable();gridPulse=performance.now();gridDraw();jobRows();draw();redrawScene();
 }
 function lineTable(){
   const m=MOLS[st.mol];let h='<thead><tr><th>Vibration (normal)</th><th>H cm\u207b\u00b9</th><th>D cm\u207b\u00b9 (est.)</th><th>H Hz</th><th>D Hz</th></tr></thead><tbody>';
@@ -1420,23 +1591,36 @@ $('restart').addEventListener('click',()=>{ // back to 0 s and play from there (
 $('sniff').addEventListener('click',()=>{sniff();sniffSound();mascotSniff(1400);poke();});
 $('scrub').addEventListener('input',e=>{seekTo(+e.target.value);draw();});
 $('gap').addEventListener('input',e=>{gap=+e.target.value;dMatch=fig_d_update();poke(2600);});
-// scrub on the canvas
-function tAt(e){const r=cv.getBoundingClientRect();const x=(e.clientX-r.left)/r.width*W;return (x-PL)/(W-PL-PR)*DUR;}
-let drag=false;
-cv.addEventListener('pointerdown',e=>{drag=true;cv.setPointerCapture(e.pointerId);seekTo(tAt(e));draw();});
-cv.addEventListener('pointermove',e=>{if(drag){seekTo(tAt(e));draw();}});
-cv.addEventListener('pointerup',()=>{drag=false;});cv.addEventListener('pointercancel',()=>{drag=false;});
-cv.addEventListener('keydown',e=>{
-  if(e.key===' '){e.preventDefault();$('play').click();}
-  else if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();seekTo(playPos()+(e.key==='ArrowLeft'?-0.5:0.5));draw();}
-  else if(e.key==='s'||e.key==='S'){e.preventDefault();$('swap').click();}
+// scrub on either spectrum roll (the instrument's Data view or Graph 1): click or drag moves the playhead,
+// Space plays or pauses, the arrows scrub by 0.5 s
+function tAt(e,c){useRoll(c);const r=c.getBoundingClientRect();const x=(e.clientX-r.left)/r.width*W;return (x-PL)/(W-PL-PR)*DUR;}
+for(const c of ROLLS){let drag=false;
+  c.addEventListener('pointerdown',e=>{drag=true;try{c.setPointerCapture(e.pointerId);}catch(_){}seekTo(tAt(e,c));draw();});
+  c.addEventListener('pointermove',e=>{if(drag){seekTo(tAt(e,c));draw();}});
+  c.addEventListener('pointerup',()=>{drag=false;});c.addEventListener('pointercancel',()=>{drag=false;});
+  c.addEventListener('keydown',e=>{
+    if(e.key===' '){e.preventDefault();$('play').click();}
+    else if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();seekTo(playPos()+(e.key==='ArrowLeft'?-0.5:0.5));draw();}
+  });}
+// Graph 1's own transport is the instrument's: the same buttons, one state
+$('play2').addEventListener('click',()=>$('play').click());
+$('restart2').addEventListener('click',()=>$('restart').click());
+$('swap2').addEventListener('click',()=>$('swap').click());
+// the S shortcut (named on the Swap button) works anywhere on the page, in the Scene view too, except while typing
+document.addEventListener('keydown',e=>{
+  if((e.key!=='s'&&e.key!=='S')||e.ctrlKey||e.metaKey||e.altKey||e.defaultPrevented)return;
+  const t=e.target;if(t&&(t.isContentEditable||/^(TEXTAREA|SELECT)$/.test(t.tagName)||(t.tagName==='INPUT'&&!/^(range|checkbox|radio|button)$/.test(t.type))))return;
+  e.preventDefault();$('swap').click();
 });
 document.querySelectorAll('[data-load],[data-zone]').forEach(b=>b.addEventListener('click',()=>{
   if(b.dataset.load){st.mol=b.dataset.load;loadMain();newPair();sniff();}
-  st.zone=b.dataset.zone||null;if(st.zone)setView('data');refresh();
-  document.querySelector('.stage').scrollIntoView({behavior:reduced()?'auto':'smooth',block:'start'});
-  toast(b.dataset.zone?'Shaded on the spectrum roll (Data view)':'Loaded '+MOLS[st.mol].name);
+  st.zone=b.dataset.zone||null;refresh();
+  // a shaded band shows on the spectrum roll (Graph 1 in The data, and the instrument's Data view); a loaded molecule on Plate I
+  (st.zone?$('g-roll'):document.querySelector('.stage')).scrollIntoView({behavior:reduced()?'auto':'smooth',block:'start'});
+  toast(b.dataset.zone?'Shaded on the instrument':'Loaded '+MOLS[st.mol].name);
 }));
+// "See it drawn": an evidence drawer points at the plate figure it describes (and sets its electron going)
+document.querySelectorAll('[data-fig]').forEach(b=>b.addEventListener('click',()=>{$(b.dataset.fig).scrollIntoView({behavior:reduced()?'auto':'smooth',block:'center'});poke(4000);}));
 // the plate key: hover or focus a name to find it on the plate
 (function(){const svg=$('plate1');
   function hl(k,on){svg.querySelectorAll('.co[data-k="'+k+'"]').forEach(g=>g.classList.toggle('hl',on));
@@ -1466,6 +1650,82 @@ $('figc').addEventListener('click',()=>setIso(st.iso==='H'?'D':'H'));
 // Fig. c membrane (lipid heads and tails), drawn once
 (function(){let h='';for(let x=4;x<360;x+=8){h+='<circle cx="'+x+'" cy="180" r="3.3" fill="#A1A4CE" stroke="#545BA9" stroke-width=".5"/><circle cx="'+x+'" cy="216" r="3.3" fill="#A1A4CE" stroke="#545BA9" stroke-width=".5"/>'+
   '<path d="M'+(x-1.2)+' 184v12M'+(x+1.2)+' 184v12M'+(x-1.2)+' 200v12M'+(x+1.2)+' 200v12" stroke="#A1A4CE" stroke-width=".6"/>';}$('c-mem').innerHTML=h;})();
+
+// ---------- Graph 2: every chord before and after every blur (hero.png, drawn live from the same note lists) ----------
+// rows: each molecule normal then deuterated; columns: the input score, then the nine blur-midi-v1 jobs (reach, then strength)
+const GCOLS=['clean',...SETS.filter(s=>s.key!=='clean').sort((a,b)=>a.reach-b.reach||a.strength-b.strength).map(s=>s.key)];
+const GROWS=[];for(const m of ORDER)for(const iso of ['H','D'])GROWS.push([m,iso]);
+const GW=1200,GH=576,GL=114,GT=62,GB=30,GPAD=8;
+const gcw=(GW-GL-GPAD)/GCOLS.length,gch=(GH-GT-GB)/GROWS.length;
+const gcell=(ci,ri)=>({x:GL+ci*gcw,y:GT+ri*gch,w:gcw-GPAD,h:gch-GPAD});
+let gridBase=null,gridScale=0,gridPulse=-1e9;const PULSE_MS=1100; // the backing store follows the on-screen size, so the small labels stay sharp
+function gridBuild(){ // the static part: every cell's notes, the headers and the axis note (built once, rebuilt when fonts arrive)
+  const T=tokens(),c=document.createElement('canvas');c.width=Math.round(GW*gridScale);c.height=Math.round(GH*gridScale);const g=c.getContext('2d');g.scale(gridScale,gridScale);
+  g.fillStyle=T.paper;g.fillRect(0,0,GW,GH);
+  g.textBaseline='middle';
+  // headers: "input score" over the first column, one bracketed "blur-midi-v1" over the nine jobs, then strength and reach
+  {const a=gcell(0,0),b=gcell(1,0),z=gcell(GCOLS.length-1,0);g.textAlign='center';g.fillStyle=T.ink;g.font='500 10.5px "IBM Plex Mono", monospace';
+    g.fillText('input score',a.x+a.w/2,GT-46);g.fillText('blur-midi-v1, 20 qubits per pass (Atlas simulator)',(b.x+z.x+z.w)/2,GT-46);
+    g.strokeStyle=T.ink2;g.lineWidth=1;g.beginPath();g.moveTo(b.x,GT-33);g.lineTo(b.x,GT-37);g.lineTo(z.x+z.w,GT-37);g.lineTo(z.x+z.w,GT-33);g.stroke();}
+  GCOLS.forEach((k,ci)=>{const s=SETS.find(x=>x.key===k),{x,w}=gcell(ci,0);g.fillStyle=T.ink2;g.textAlign='center';g.font='400 10px "IBM Plex Mono", monospace';
+    g.fillText(k==='clean'?'no quantum':('strength '+s.strength),x+w/2,GT-23);g.fillText(k==='clean'?'step':('reach '+s.reach),x+w/2,GT-10);});
+  GROWS.forEach(([m,iso],ri)=>{const M=MOLS[m],{y,h}=gcell(0,ri);g.textAlign='left';g.fillStyle=T.ink;g.font='500 10.5px "IBM Plex Mono", monospace';
+    g.fillText(M.short,6,y+h/2-7);g.fillStyle=T.ink2;g.font='400 10px "IBM Plex Mono", monospace';g.fillText(iso==='H'?'normal, '+M.n_h+' H':'deuterated, d'+M.n_h,6,y+h/2+8);});
+  const bh=Math.max(1,1.6*CM_PER_BIN/(NU1-NU0)*(gch-GPAD));
+  GCOLS.forEach((k,ci)=>GROWS.forEach(([m,iso],ri)=>{const {x,y,w,h}=gcell(ci,ri),tr=NOTES[k][trackKey(m,iso)],clean=k==='clean';
+    g.fillStyle='#FFFFFF';g.fillRect(x,y,w,h);g.strokeStyle=T.rule;g.lineWidth=1;g.strokeRect(x+.5,y+.5,w-1,h-1);
+    g.save();g.beginPath();g.rect(x+1,y+1,w-2,h-2);g.clip();
+    for(const n of tr.n){const cm=n[2]*CM_PER_BIN;if(cm<NU0-30||cm>NU1+30)continue;
+      g.globalAlpha=clean?1:(0.25+0.75*n[3]/127);g.fillStyle=(clean&&!n[5])?T.ink3:T.ink;
+      g.fillRect(x+1+n[0]/DUR*(w-2),y+1+(NU1-cm)/(NU1-NU0)*(h-2)-bh/2,Math.max(0.8,(n[1]-n[0])/DUR*(w-2)),bh);}
+    g.restore();g.globalAlpha=1;}));
+  g.fillStyle=T.ink2;g.textAlign='center';g.font='400 10px "IBM Plex Mono", monospace';
+  g.font='500 10.5px "IBM Plex Mono", monospace';g.fillText('across each cell: time, 0 to 7 s   |   up: wavenumber, 380 to 3,300 cm\u207b\u00b9 (times 0.25 gives Hz)',GL+(GW-GL)/2,GH-GB/2);
+  gridBase=c;
+}
+function gridPos(){return [Math.max(0,GCOLS.indexOf(curSet())),GROWS.findIndex(([m,iso])=>m===st.mol&&iso===st.iso)];}
+function gridDraw(){
+  const cvs=$('grid');if(!cvs)return;const dpr=window.devicePixelRatio||1,sc=Math.max(0.5,Math.min(3,(cvs.clientWidth||GW)*dpr/GW));
+  if(Math.abs(sc-gridScale)>0.01){gridScale=sc;cvs.width=Math.round(GW*sc);cvs.height=Math.round(GH*sc);gridBase=null;}
+  if(!gridBase)gridBuild();const g=cvs.getContext('2d'),T=tokens();
+  g.setTransform(1,0,0,1,0,0);g.drawImage(gridBase,0,0);g.scale(gridScale,gridScale);
+  const [ci,ri]=gridPos(),{x,y,w,h}=gcell(ci,ri);
+  g.strokeStyle=T.ink;g.lineWidth=2.4;g.strokeRect(x-1.5,y-1.5,w+3,h+3);
+  // a choice made anywhere (instrument, Graph 2, jobs table) pulses its cell here for a moment
+  const pu=(performance.now()-gridPulse)/PULSE_MS;if(pu>=0&&pu<1&&!reduced()){g.globalAlpha=1-pu;g.lineWidth=1.5;g.strokeRect(x-4-6*pu,y-4-6*pu,w+8+12*pu,h+8+12*pu);g.globalAlpha=1;}
+  // the framed cell's row and column labels in ink
+  g.fillStyle=T.ink;g.fillRect(GL+ci*gcw,GT-4,w,2);g.fillRect(GL-7,y,2,h);
+  const m=MOLS[st.mol],s=SETS.find(q=>q.key===curSet()),n=curTrack().n.length;
+  $('grid-read').innerHTML='<b>In the instrument now</b>: '+(st.iso==='H'?m.name.toLowerCase():m.d_name)+' &middot; '+(s.key==='clean'?'input score, no blur':'blur strength '+s.strength+', reach '+s.reach+' &middot; job '+s.job_id)+' &middot; '+n.toLocaleString('en-US')+' notes';
+}
+function selectCell(mol,iso,key){ // load one cell of Graph 2 (or one job) into the instrument: molecule, isotope and blur
+  const s=SETS.find(x=>x.key===key);if(!s)return;
+  const molCh=mol!==st.mol,isoCh=iso!==st.iso;
+  if(molCh){st.mol=mol;st.zone=null;}
+  st.str=key==='clean'?null:s.strength;if(key!=='clean')st.reach=s.reach;
+  if(isoCh){const from=st.iso;st.iso=iso;if(!reduced())swapAnim={from,to:iso,t0:performance.now()};}
+  loadMain();refresh();newPair();prerender();if(molCh)sniff();poke();
+}
+(function(){const cvs=$('grid');
+  const at=e=>{const r=cvs.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*GW,y=(e.clientY-r.top)/r.height*GH;
+    const ci=Math.floor((x-GL)/gcw),ri=Math.floor((y-GT)/gch);return (ci>=0&&ci<GCOLS.length&&ri>=0&&ri<GROWS.length)?[ci,ri]:null;};
+  cvs.addEventListener('click',e=>{const p=at(e);if(!p)return;const [m,iso]=GROWS[p[1]];selectCell(m,iso,GCOLS[p[0]]);});
+  cvs.addEventListener('keydown',e=>{const d={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key];if(!d)return;e.preventDefault();
+    let [ci,ri]=gridPos();ci=Math.max(0,Math.min(GCOLS.length-1,ci+d[0]));ri=Math.max(0,Math.min(GROWS.length-1,ri+d[1]));
+    const [m,iso]=GROWS[ri];selectCell(m,iso,GCOLS[ci]);});})();
+
+// ---------- Jobs and credits: the nine Atlas jobs, each loadable into the instrument ----------
+(function(){const jobs=SETS.filter(s=>s.job_id).sort((a,b)=>a.reach-b.reach||a.strength-b.strength);
+  let h='<thead><tr><th>Strength</th><th>Reach</th><th>Job ID</th><th>Run time</th><th>Notes out (6 tracks)</th><th></th></tr></thead><tbody>';
+  for(const s of jobs){const outs=GROWS.map(([m,iso])=>NOTES[s.key][trackKey(m,iso)].n.length).join(' / ');
+    h+='<tr data-key="'+s.key+'"><td data-l="strength">'+s.strength+'</td><td data-l="reach">'+s.reach+' ('+reachName(s.reach).toLowerCase()+')</td><td class="id" data-l="job">'+s.job_id+'</td><td data-l="run time">'+(s.seconds?s.seconds.toFixed(1)+' s':'-')+'</td><td class="outs" data-l="notes out">'+outs+'</td><td><button type="button" data-job="'+s.key+'" aria-label="Load the blur strength '+s.strength+', reach '+s.reach+' into the instrument">Load</button></td></tr>';}
+  const ins=GROWS.map(([m,iso])=>NOTES.clean[trackKey(m,iso)].n.length).join(' / ');
+  h+='<tr data-key="clean"><td colspan="2">input score</td><td class="id">none (classical input)</td><td>-</td><td class="outs" data-l="notes">'+ins+' (in)</td><td><button type="button" data-job="clean" aria-label="Load the input score (no blur) into the instrument">Load</button></td></tr>';
+  $('jobtable').innerHTML=h+'</tbody>';
+  $('jobtable').addEventListener('click',e=>{const b=e.target.closest('button[data-job]');if(!b)return;selectCell(st.mol,st.iso,b.dataset.job);
+    const s=SETS.find(x=>x.key===b.dataset.job);toast(s.key==='clean'?'Loaded the input score (no blur)':'Loaded blur strength '+s.strength+', reach '+s.reach+' (job '+s.job_id.slice(0,8)+')');});
+  $('jobs-sum').textContent=META.jobs+' blur-midi-v1 jobs \u00b7 20 qubits per pass \u00b7 simulator, no QPU';})();
+function jobRows(){document.querySelectorAll('#jobtable tr[data-key]').forEach(r=>r.classList.toggle('cur',r.dataset.key===curSet()));}
 
 // ---------- blind test ----------
 const test=new Player(s=>{if(s!=='play'){$('pA').textContent='Play A';$('pB').textContent='Play B';}kick();drawVials(0);});
@@ -1561,9 +1821,9 @@ $('scrub').max=DUR.toFixed(2);
 // at rest: two molecules already sit on the olfactory epithelium and one on a cilium (nothing moves until you act)
 docked=[{x:LAND[0][0],y:LAND[0][1],rot:0.3,li:0,t:-1e9},{x:LAND[1][0],y:LAND[1][1],rot:-0.5,li:1,t:-1e9}];dockB={t0:-1e9,from:[110,392],to:[128,322]};
 loadMain();refresh();newPair();score();prerender();if(hashView==='data')setView('data');
-let rz=0;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{draw();redrawScene();},60);});
+let rz=0;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{draw();gridDraw();redrawScene();},60);});
 // the canvas labels use IBM Plex Mono (imported by the brand kit): redraw once the web fonts have arrived
-try{document.fonts.load('500 12px "IBM Plex Mono"').then(draw,()=>{});document.fonts.ready.then(()=>{draw();redrawScene();});}catch(e){}
+try{document.fonts.load('500 12px "IBM Plex Mono"').then(()=>{gridBase=null;gridDraw();draw();},()=>{});document.fonts.ready.then(()=>{gridBase=null;gridDraw();draw();redrawScene();});}catch(e){}
 </script>
 
 </body>

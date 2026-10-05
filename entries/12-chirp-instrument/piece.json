@@ -1,0 +1,54 @@
+{
+ "slug": "12-chirp-instrument",
+ "challenge": "02",
+ "bonus": true,
+ "title": "Chirp Instrument",
+ "hook": "Play the last fifth of a second of two black holes.",
+ "sub": "Real LIGO strain from GW150914, tracked half-wave by half-wave into MIDI. A quantum blur on a simulated 20-qubit register then scatters it. Tap through it, scrub the blur, loop the merger, and jam over it.",
+ "you_control": [
+  "Tap the black holes in the scene (or the pad, or Z/X): each tap sends out one real half-wave, and you watch it land on the two LIGO observatories (light runs down their arms, one arm stretches as the other squeezes), or press Play",
+  "Scrub the quantum blur's reach (off, 0, 0.5) and watch its cloud of real notes spread; mute the H1/L1 voices by tapping the observatories",
+  "Loop any stretch by dragging the tape under the scene (or the roll in Data), or pick Inspiral / Merger",
+  "Jam on the keyboard over the loop (on-screen or A-;)"
+ ],
+ "engines": [
+  "blur-midi-v1"
+ ],
+ "qubits": 20,
+ "qubits_note": "qubits=20 is the engine's maximum budget per pass, and the cached job records show qubits=20 and resolution=2 were sent. Each GW150914 track's piano roll is 42 pitch rows x ~11.6k steps (resolution 2 ticks), which needs ceil(log2 42)+ceil(log2 11633) = 6+14 = 20 qubits by the Quantum Blur grid rule. That is our calculation; the engine does not report its width. The reach-0.5 output span of MIDI 41-82 (42 rows) matches it.",
+ "hardware": null,
+ "jobs": 2,
+ "credits_spent": 11.0,
+ "deliverables": [
+  "midi/GW150914_chirp.mid",
+  "midi/GW170817_chirp.mid",
+  "midi/blurred/GW150914_s0.5_r0.0.mid",
+  "midi/blurred/GW150914_s0.5_r0.5.mid",
+  "wav/GW150914_chirp.wav",
+  "wav/GW170817_chirp.wav",
+  "wav/GW150914_s0.5_r0.0.wav",
+  "wav/GW150914_s0.5_r0.5.wav",
+  "web/index.html",
+  "web/audio/GW150914_chirp.mp3",
+  "web/audio/GW150914_s0.5_r0.0.mp3",
+  "web/audio/GW150914_s0.5_r0.5.mp3",
+  "web/audio/GW170817_chirp.mp3",
+  "web/sprites.json",
+  "web/img/mascot.png",
+  "make_sprites.py",
+  "hero.png",
+  "README.md",
+  "PARAMS.md",
+  "CREDITS.md",
+  "out/jobs.csv"
+ ],
+ "web_entry": "web/index.html",
+ "mascot": "web/img/mascot.png",
+ "status": "partial",
+ "honesty": "A classical sonification of public LIGO data (CC BY 4.0). Only the blur is quantum, and it was simulated on Atlas, not run on hardware. GW170817's pitch is model-guided and it has no blur.",
+ "blockers": [
+  "NEEDS LEAD DECISION (brief not fully met): the blur-midi-v1 reach sweep (0, 0.5, 1) is incomplete. Only GW150914 strength 0.5 at reach 0 (3d69e83c-cc19-4a91-9d9f-d30170dd4b04) and reach 0.5 (9c28f32b-e560-4a0d-9e91-f97ee3e221ba) completed. Reach 1, every strength 1.0 setting and every GW170817 blur are missing, so the page's reach-1 stop is struck through. Completing the sweep at strength 0.5 needs 1 more credit (GW150914 s0.5/r1.0): raise CAP in run_blur.py from 10 to 12, then run run_blur.py, render_wav.py and build_web.py. Exactly one job is submitted, because s0.5/r1.0 is the first uncached setting in the plan. Without that approval the piece ships as partial, with the shortfall disclosed. Polish pass 2026-10-04: a workflow proposed cap 13 for this single job, but it was not submitted because spending credits needs the user's own explicit go-ahead; the ledger is unchanged at 11.",
+  "NEEDS LEAD ACCEPTANCE (cap breach): the ledger shows 11 credits against a cap of 10 (2 completed jobs + 9 failed attempts). Two overlapping parallel launches raced past the cap check, and the engine answered 'did not respond in time' 9 times: 3 attempts each for GW150914 s1.0/r0, GW150914 s1.0/r1 and GW170817 s0.5/r0.5. This cannot be undone. A read-only status check on 2026-10-04 confirmed all 9 are still 'failed'. No job has been submitted since, and run_blur.py is sequential and checks the cap before every submission.",
+  "Never submitted (cap reached): GW150914 s0.5/r1.0 and s1.0/r0.5, and GW170817 s0.5/r0.0 and s0.5/r1.0."
+ ]
+}

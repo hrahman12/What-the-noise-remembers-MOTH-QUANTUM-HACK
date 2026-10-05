@@ -96,9 +96,11 @@ details.drawer .body{padding-bottom:1.25rem;color:var(--ink-2);max-width:68ch;di
 .wtnr-foot{margin-top:2.5rem;border-top:1px solid var(--rule);padding-top:1rem;font:400 .72rem/1.5 var(--mono);letter-spacing:.04em;color:var(--ink-2)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
-/* Layout: the night scene is the hero (stage + dash under it, then a Scene / Data toggle); the headline sits
-   beside it on desktop and above it on phones, with the noise-maker picker and controls after.
-   Below: the tournament (classical sim), what came off the chip, then the science drawers.
+/* Layout: the night scene is the hero (stage + dash under it, then the click tape, its legend, the job readout
+   and the cast list, all visible); the headline sits beside it on desktop and above it on phones, with the
+   noise-maker picker and controls after.
+   Below, titled sections: How to play (the game rule), Test it (the tournament, classical sim), The data (what came
+   off the chip), How it was made, The science, What this does not claim, Jobs and credits.
    Look: Moth Hack brief pages. Paper ground, one ultramarine ink, hairlines, square panels, pill buttons.
    The cast is ink pixel art (web/sprites.json, drawn with common/inksprite.js at integer scale, no smoothing);
    the warm accent is used only for the flash of a jamming click. */
@@ -139,10 +141,14 @@ details.drawer .body{padding-bottom:1.25rem;color:var(--ink-2);max-width:68ch;di
 .pad{align-self:center;border:1px solid var(--ink);background:var(--panel);color:var(--ink);border-radius:999px;padding:0 1.4rem;font:500 .92rem/1.1 var(--body);cursor:pointer;min-height:3.6rem;touch-action:none;user-select:none;-webkit-user-select:none}
 .pad:hover{background:var(--tint)}
 .pad[aria-pressed="true"]{background:var(--ink);color:var(--on-ink)}
-/* Scene / Data toggle under the stage */
-.viewbar{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center;justify-content:space-between}
-.view{display:grid;gap:.6rem}
-.view[hidden]{display:none}
+/* under the stage: the click tape (with its legend and the job readout), then the cast list; all visible */
+.under{display:grid;gap:.6rem}
+.under > .label{display:block;border-top:1px solid var(--rule);padding-top:.7rem}
+.legend{display:flex;flex-wrap:wrap;gap:.35rem 1.1rem;font:400 .7rem/1.3 var(--mono);letter-spacing:.04em;color:var(--ink-2);margin:0}
+.legend span{display:inline-flex;gap:.45rem;align-items:center}
+.sw{width:.8rem;height:.8rem;display:inline-block;flex:none}
+.sw.ring{border:1.5px dashed var(--ink-2);border-radius:99px}
+.legend .si{display:inline-flex;align-items:center;justify-content:center;min-width:.8rem;height:1.15rem}
 .cast{display:grid;grid-template-columns:repeat(auto-fill,minmax(11.5rem,1fr));gap:.45rem;margin:0;padding:0;list-style:none}
 .cast li{display:grid;grid-template-columns:4.6rem minmax(0,1fr);gap:.55rem;align-items:center;background:var(--panel);border:1px solid var(--rule);padding:.45rem .6rem;min-width:0}
 .cast .ic{display:flex;gap:.3rem;align-items:center;justify-content:center;height:2.7rem}
@@ -209,13 +215,21 @@ section.block h2{font-size:clamp(1.6rem,3vw,2.4rem)}
 .tbl thead th{font-weight:500;color:var(--ink);letter-spacing:.06em;text-transform:uppercase;font-size:.64rem;border-bottom:1px solid var(--ink)}
 .tbl td b{color:var(--ink);font-weight:500}
 .scroll{overflow-x:auto;max-width:100%}
-details.drawer .body.wide{max-width:none}
+/* the titled sections below the hero: prose stays readable, the honesty block keeps its rule */
+.prose{display:grid;gap:.85rem;color:var(--ink-2);max-width:70ch}
+.prose b{color:var(--ink);font-weight:500}
+.prose h3{font-size:1.3rem;line-height:1.2;margin-top:.4rem}
+.cap{font:400 .74rem/1.5 var(--mono);color:var(--ink-2);margin:0}
+.credits{display:grid;gap:.6rem;margin:0;padding:0;list-style:none;color:var(--ink-2);max-width:78ch;font-size:.92rem}
+.credits b{color:var(--ink);font-weight:500}
 .toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:var(--ink);color:var(--on-ink);font:500 .85rem/1 var(--mono);padding:.8rem 1.1rem;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9}
 .toast.on{opacity:1}
 .shared{border:1px dashed var(--ink);padding:.6rem .8rem;font-size:.85rem;color:var(--ink);background:var(--panel)}
 .shared[hidden]{display:none}
-.more{margin-top:3rem}
-@media (max-width:1000px){.hero{grid-template-columns:minmax(0,1fr);grid-template-areas:"intro" "play" "rest";grid-template-rows:auto;row-gap:1.4rem}.chip{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:1000px){.hero{grid-template-columns:minmax(0,1fr);grid-template-areas:"intro" "play" "rest";grid-template-rows:auto;row-gap:1.4rem}.chip{grid-template-columns:minmax(0,1fr)}
+  /* one column: headline, stage, dash, tape, then the noise picker and controls, then the cast list */
+  .hero{display:flex;flex-direction:column;align-items:stretch;gap:.75rem}.play{display:contents}
+  .intro{order:0;margin-bottom:.65rem}.stage{order:1}.dash{order:2}#v-data{order:3}.rest{order:4;margin-block:.65rem}#v-scene{order:5}}
 @media (max-width:640px){.dash{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.dash .meter.big{grid-column:1/-1}.pad{grid-column:1/-1;min-height:3.4rem}
   .trow{grid-template-columns:minmax(0,1fr) 4.5rem;row-gap:.3rem}.trow .track{grid-column:1/-1;grid-row:2}.trow .hit{grid-column:1/-1}.trow.head{display:none}
   .hud .pill{font-size:.6rem;padding:.35rem .45rem}
@@ -227,18 +241,18 @@ details.drawer .body.wide{max-width:none}
 </style>
 
 <div class="wrap">
-  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count"><b>05</b> / 11 &middot; Hide</span></nav>
+  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count"><b>Challenge 05</b> &middot; Hide</span></nav>
 
   <div class="hero">
     <div class="intro">
       <p class="kicker">Challenge 05 &middot; Quantum game</p>
       <h1>Jam a bat that learns your rhythm.</h1>
-      <p class="sub">You're a tiger moth. Your ultrasonic clicks scramble the bat's sonar, but its AI learns your timing. Feed your click jitter from a metronome, a leaky seed packet, an emulator, or <span id="sub-hw">156 qubits of IBM hardware</span>, and see which one it can read.</p>
+      <p class="sub">You're a tiger moth. Your ultrasonic clicks scramble the bat's sonar, but its AI learns your timing. Feed your click jitter from a leaked seed, an emulator, or <span id="sub-hw">156 qubits of IBM hardware</span>, and see which one it can read.</p>
     </div>
 
     <div class="play">
       <div class="stage" id="stage">
-        <canvas id="cv" width="960" height="540" tabindex="0" aria-label="Night sky over a treeline. You are the tiger moth; a bat hunts you by sonar. Press Space or Enter to start, then steer with the arrow keys and hold Space to click. P pauses."></canvas>
+        <canvas id="cv" width="960" height="540" tabindex="0" aria-label="Night sky. You are the moth; a bat hunts you by sonar. Steer with the arrow keys, hold Space to click. Before the first flight, Space or Enter starts one; P pauses."></canvas>
         <div class="hud">
           <span class="pill hot" id="h-phase">Ready</span>
           <span class="pill pips" id="h-pass" aria-label="Passes survived"><span>Passes</span><i></i><i></i><i></i></span>
@@ -269,18 +283,12 @@ details.drawer .body.wide{max-width:none}
         <button type="button" class="pad" id="pad" aria-pressed="false">Hold to click</button>
       </div>
 
-      <div class="viewbar">
-        <div class="seg" role="group" aria-label="Show the cast or the data" id="view-seg"><button type="button" data-v="scene" aria-pressed="true">Scene</button><button type="button" data-v="data" aria-pressed="false">Data</button></div>
-        <span class="label" id="view-label">Who's who in the sky</span>
-      </div>
-      <div class="view" id="v-scene">
-        <ul class="cast" id="cast"></ul>
-        <p class="castnote">The cast is classical game art. Every reaction comes from the game state: a zap means the bat mispredicted that click, a swoop means it predicted it, and the noise-maker's lights show the real 3-bit slot each click used.</p>
-      </div>
-      <div class="view" id="v-data" hidden>
+      <div class="under" id="v-data">
+        <span class="label" id="tape-label">Your clicks and the job behind them</span>
         <canvas class="tape" id="tape" width="960" height="84" tabindex="0" role="img" aria-describedby="tape-read" aria-label="Your last click gaps (top) and the bat's guesses (bottom). Orange columns jammed the bat; pale columns it guessed and tuned out. Point at a column, or use the left and right arrow keys, to read that click."></canvas>
         <p class="taperead" id="tape-read" aria-live="polite">Point at a column, or focus the tape and use the arrow keys, to read one click: your gap, the bat's guess and what it did.</p>
         <p class="tapenote">Top row: your gaps (taller means a bigger jitter slot; full height is a pause). Bottom row: the bat's guess for each one. Orange columns jammed it. Pale columns it guessed and tuned out. The outlined column is the one you are reading.</p>
+        <p class="legend" id="legend"><span><i class="si" data-sp="moth:0"></i>You, the moth</span><span><i class="si" data-sp="bat:2"></i>The bat</span><span><i class="si" data-sp="arcs:0"></i>Clean echo</span><span><i class="si" data-sp="arcs:1"></i>Jammed echo or click</span><span><i class="sw ring"></i>Where the bat thinks you are</span></p>
         <div class="panel slim">
           <dl class="readout">
             <dt>Engine</dt><dd><b id="r-engine">-</b></dd>
@@ -291,6 +299,11 @@ details.drawer .body.wide{max-width:none}
           </dl>
         </div>
       </div>
+      <div class="under" id="v-scene">
+        <span class="label">Who's who in the sky</span>
+        <ul class="cast" id="cast"></ul>
+        <p class="castnote">The cast is classical game art. Every reaction comes from the game state: a zap means the bat mispredicted that click, a swoop means it predicted it, and the noise-maker's lights show the real 3-bit slot each click used.</p>
+      </div>
     </div>
 
     <div class="rest">
@@ -299,12 +312,12 @@ details.drawer .body.wide{max-width:none}
       <ol class="steps">
         <li><span><b>Steer</b> with the pointer, a finger or the arrow keys.</span></li>
         <li><span><b>Click</b>: hold Space, the mouse or the pad for a click train. Tap for single clicks.</span></li>
-        <li><span><b>Pick your noise-maker</b>, even mid-flight: metronome, leaky seed packet, emulator or an IBM chip.</span></li>
+        <li><span><b>Choose your noise</b>, even mid-flight: metronome, leaked seed, emulator or a hardware bank.</span></li>
         <li><span><b>Test it</b>: run hundreds of auto-rounds per source in the tournament below.</span></li>
       </ol>
 
       <div class="panel">
-        <div class="row split"><span class="label">Your noise-maker</span><span class="label" id="src-where"></span></div>
+        <div class="row split"><span class="label">Click jitter source</span><span class="label" id="src-where"></span></div>
         <div class="picker" role="group" aria-label="Click jitter source" id="src-seg"></div>
         <p class="srcnote" id="src-note"></p>
         <div class="row seedrow" id="seedrow">
@@ -322,10 +335,21 @@ details.drawer .body.wide{max-width:none}
     </div>
   </div>
 
+  <section class="block" id="how-to-play">
+    <div class="ink-bar"><span>How to play</span><span>The rule the bat plays by</span></div>
+    <h2>The game rule</h2>
+    <div class="prose" id="rule-body">
+      <p>While you hold, gaps between clicks are 70 ms + slot &times; 12 ms. The bat turns each gap into one of 12 symbols (8 slots, plus 4 lengths of pause) and predicts the next one with an <b>order-3 n-gram</b>: counts of what followed your last three symbols, backing off to shorter contexts until one has at least 4 examples, with add-half smoothing. The meter shows the probability it gives its best guess.</p>
+      <p>A click the bat predicted is tuned out. A click it got wrong jams every echo for the next 160 ms. Clean echoes give it your position and tighten its fix. Jammed echoes leave it flying at a stale guess (the dashed ring). In the terminal buzz it strikes at that guess. It catches you if you're within 24 px, and it breaks off if its fix falls below 20%. Clicks cost breath, and breath only comes back after 250 ms of silence.</p>
+      <p>On the stage, a click the bat predicted makes it swoop, and a click it got wrong shows a zap and breaks up its sonar arcs. The ghost moth inside the dashed ring is its stale guess.</p>
+      <p>With the seed leaked, the bat replays your PRNG: it has the seed and counts your clicks, so it knows every next slot and only guesses whether you'll keep holding. The flight, the bat and the tournament are all classical code. So are the sprites.</p>
+    </div>
+  </section>
+
   <section class="block" id="tournament">
     <div class="ink-bar"><span>Test it</span><span>Classical simulation, in your browser</span></div>
     <h2>The bat tournament</h2>
-    <p class="lede">Same rule, same bat, same autopilot moth, same bat noise. Only the noise-maker changes. This is a <b>classical simulation</b> that runs in your browser on the banks above: the autopilot holds its clicks once the bat is within 330 px, flies across the bat's path and dives late.</p>
+    <p class="lede">Same rule, same bat, same autopilot moth, same bat noise. Only the click jitter changes. This is a <b>classical simulation</b> that runs in your browser on the banks above: the autopilot holds its clicks once the bat is within 330 px, flies across the bat's path and dives late.</p>
     <div class="row">
       <span class="label">Rounds per source</span>
       <div class="seg" role="group" aria-label="Rounds per source" id="n-seg"></div>
@@ -346,7 +370,8 @@ details.drawer .body.wide{max-width:none}
     <div class="chip">
       <div class="panel">
         <span class="label" id="grid-label">P(1) per qubit</span>
-        <svg id="grid" viewBox="0 0 470 430" role="img" aria-label="The chip drawn as a package: one cell per qubit, shaded by the measured probability of reading 1"></svg>
+        <svg id="grid" viewBox="0 0 470 430" role="img" aria-label="Measured probability of reading 1 on every qubit of the job, drawn as a chip package with one cell per qubit"></svg>
+        <p class="cap">The chip drawn as a package: one cell per qubit, shaded by the measured probability of reading 1. Point at a cell or use the slider.</p>
         <label class="label" for="qsel">Inspect qubit</label>
         <input type="range" id="qsel" min="0" max="155" value="0">
         <p class="srcnote" id="qread">-</p>
@@ -357,32 +382,50 @@ details.drawer .body.wide{max-width:none}
         <p class="honesty" id="s-note"></p>
       </div>
     </div>
-    <details class="drawer"><summary>All four job records</summary><div class="body wide">
-      <div class="scroll"><table class="tbl" id="jobs"></table></div>
-    </div></details>
   </section>
 
-  <section class="more">
-    <details class="drawer"><summary>Why a tiger moth?</summary><div class="body">
-      <p>Grote's tiger moth, <i>Bertholdia trigona</i>, answers an attacking big brown bat with bursts of ultrasonic clicks. Corcoran, Barber &amp; Conner (Science 325:325-327, 2009) filmed and recorded these duels and showed the clicks jam the bat's sonar. In the field, bats caught more than ten times as many moths with their sound organs silenced as clicking moths (Corcoran &amp; Conner, J. Exp. Biol. 215:4278-4287, 2012).</p>
-      <p>A hunting bat moves through three phases: a slow search call, an approach where calls speed up, and a terminal buzz just before the strike (Griffin, Webster &amp; Michael, Animal Behaviour 8:141-154, 1960). The bat in this game follows the same three phases.</p>
-      <p>The rest is a game. These papers do not show that bats learn a moth's click rhythm. That part is our cartoon, so that the quality of your randomness can matter. Real calls and clicks are ultrasonic. Here they're pitched down so you can hear them, and time is stretched so a human can play. The striped pixel moth is a cartoon too.</p>
-    </div></details>
-    <details class="drawer"><summary>What the quantum engine did</summary><div class="body" id="engine-body">
+  <section class="block" id="made">
+    <div class="ink-bar"><span>How it was made</span><span>comet-qrng-v1, then classical code</span></div>
+    <h2>What the quantum engine did</h2>
+    <div class="prose" id="engine-body">
       <p>Atlas <b>comet-qrng-v1</b> puts every register qubit in |+&#x27E9; and measures it 10,000 times. On IBM hardware it used <b>148 register qubits + 8 Bell-witness qubits = 156</b>, every qubit on the chip (the count comes from the job's own provenance record). It reads only counts, so the order of the shots is lost. It estimates a conservative per-bit min-entropy with NIST SP 800-90B estimators, subtracts log2(10,000!) &asymp; 118,458 bits for the lost shot order, and runs a Toeplitz extractor whose output is 2<sup>-64</sup>-close to uniform <i>given</i> that budget.</p>
       <p>Each click's jitter is the next 3 bits of those bytes, a slot from 0 to 7, which adds 0 to 84 ms to the gap. Cutting bytes into 3-bit slots is a classical step. Nothing else is done to the bits. The three lights on the pixel chip and the emulator screen show exactly those 3 bits for the click just fired.</p>
       <p>The emulator bank is the same pipeline on the Qiskit Aer simulator, which the engine caps at 20 qubits. A 12 + 8 run (12 register qubits plus the 8 witness qubits) returned <b>0 bytes</b>: 12 qubits &times; 10,000 shots carry less entropy than the shot-order penalty takes away. A 20 + 0 run fills the emulator bank instead, and the 12 + 8 run supplies the emulator's ideal S value.</p>
-    </div></details>
-    <details class="drawer"><summary>The game rule</summary><div class="body">
-      <p>While you hold, gaps between clicks are 70 ms + slot &times; 12 ms. The bat turns each gap into one of 12 symbols (8 slots, plus 4 lengths of pause) and predicts the next one with an <b>order-3 n-gram</b>: counts of what followed your last three symbols, backing off to shorter contexts until one has at least 4 examples, with add-half smoothing. The meter shows the probability it gives its best guess.</p>
-      <p>A click the bat predicted is tuned out (the bat swoops). A click it got wrong jams every echo for the next 160 ms (a zap, and its sonar arcs break up). Clean echoes give it your position and tighten its fix. Jammed echoes leave it flying at a stale guess (the ghost moth in the dotted ring). In the terminal buzz it strikes at that guess. It catches you if you're within 24 px, and it breaks off if its fix falls below 20%. Clicks cost breath, and breath only comes back after 250 ms of silence.</p>
-      <p>With the seed leaked, the bat replays your PRNG: it has the seed and counts your clicks, so it knows every next slot and only guesses whether you'll keep holding. The flight, the bat, the sprites and the tournament are all classical code.</p>
-    </div></details>
-    <details class="drawer"><summary>What this does not claim</summary><div class="body">
+    </div>
+  </section>
+
+  <section class="block" id="science">
+    <div class="ink-bar"><span>The science</span><span>Sonar jamming, in the lab and the field</span></div>
+    <h2>Why a tiger moth?</h2>
+    <div class="prose">
+      <p>Grote's tiger moth, <i>Bertholdia trigona</i>, answers an attacking big brown bat with bursts of ultrasonic clicks. Corcoran, Barber &amp; Conner (Science 325:325-327, 2009) filmed and recorded these duels and showed the clicks jam the bat's sonar. In the field, bats caught more than ten times as many moths with their sound organs silenced as clicking moths (Corcoran &amp; Conner, J. Exp. Biol. 215:4278-4287, 2012).</p>
+      <p>A hunting bat moves through three phases: a slow search call, an approach where calls speed up, and a terminal buzz just before the strike (Griffin, Webster &amp; Michael, Animal Behaviour 8:141-154, 1960). The bat in this game follows the same three phases.</p>
+      <p>The rest is a game. These papers do not show that bats learn a moth's click rhythm. That part is our cartoon, so that the quality of your randomness can matter. Real calls and clicks are ultrasonic. Here they're pitched down so you can hear them, and time is stretched so a human can play. The striped pixel moth is a cartoon too.</p>
+    </div>
+  </section>
+
+  <section class="block" id="claims">
+    <div class="ink-bar"><span>Honesty</span><span>Read this before the numbers</span></div>
+    <h2>What this does not claim</h2>
+    <div class="prose">
       <p class="honesty">The hardware bank does not beat the emulator or a secret-seed PRNG in this game, and it shouldn't. An n-gram can't tell good sources apart, and the tournament shows them level within error. What loses is predictability: a metronome, or a seed the bat has read.</p>
       <p class="honesty" id="no-claim-s"></p>
       <p class="honesty">The hardware bytes are accounted, not certified. Their entropy budget assumes no dependence between qubits beyond pairwise correlations. The engine names that assumption and tests it only by collision counts. Its assumption-free budget is 0 bits. The bytes are also public: they ship inside this page. A bat that read the page source could replay them exactly like the leaked seed. The emulator bank is classical pseudo-randomness, an uncertified baseline.</p>
-    </div></details>
+    </div>
+  </section>
+
+  <section class="block" id="jobs-credits">
+    <div class="ink-bar"><span>Jobs and credits</span><span>Atlas job records, papers, art</span></div>
+    <h2>Jobs and credits</h2>
+    <span class="label">All four job records</span>
+    <div class="scroll"><table class="tbl" id="jobs"></table></div>
+    <h3>Credits</h3>
+    <ul class="credits">
+      <li><b>Engine.</b> Moth Quantum Atlas comet-qrng-v1: Born-rule sampling on IBM Quantum hardware (ibm_fez, ibm_marrakesh) or the Qiskit Aer simulator, NIST SP 800-90B min-entropy estimate, Toeplitz extractor, CHSH witness.</li>
+      <li><b>Papers.</b> Corcoran, Barber &amp; Conner, "Tiger moth jams bat sonar", Science 325:325-327 (2009). Corcoran &amp; Conner, "Sonar jamming in the field", J. Exp. Biol. 215:4278-4287 (2012). Griffin, Webster &amp; Michael, "The echolocation of flying insects by bats", Animal Behaviour 8:141-154 (1960), for the search, approach and terminal phases. Clauser, Horne, Shimony &amp; Holt, Phys. Rev. Lett. 23:880-884 (1969), for the CHSH inequality. Pironio et al., Nature 464:1021-1024 (2010), cited only for what this piece is not: device-independent certification. NIST SP 800-90B (2018), the estimators the engine reports using.</li>
+      <li><b>Code, art and sound.</b> The game, the tournament simulation, tests and scripts were written for this piece; mulberry32 is re-implemented from its published description. The cast is original ink pixel art drawn for this piece. Sounds are synthesised in the page (Web Audio). No third-party images or audio.</li>
+      <li><b>Fonts.</b> Geist and IBM Plex Mono via Google Fonts (SIL Open Font License).</li>
+    </ul>
   </section>
   <style>
 .wtnr-nav{margin-top:2.5rem;border-top:1px solid var(--ink,#19238E);padding-top:1.1rem;display:grid;gap:1rem}
@@ -399,7 +442,7 @@ details.drawer .body.wide{max-width:none}
 .wtnr-nav ol a b{font:500 .78rem/1.6 var(--mono,monospace);min-width:1.6rem}
 .wtnr-nav ol a[aria-current="page"]{font-weight:600}
 .wtnr-nav ol a small{color:var(--ink-2,#545BA9);font-size:.72rem}
-</style><nav class="wtnr-nav" aria-label="All pieces"><div class="wn-row"><a class="wn-btn" href="../04-magic-angle/index.html" rel="prev">&larr; 04 Magic Angle</a><a class="wn-btn wn-hub" href="../../index.html">All 22 pieces</a><a class="wn-btn" href="../06-tweezer/index.html" rel="next">06 Tweezer &rarr;</a></div><details><summary>Jump to any piece (22)</summary><ol><li><a href="../01-penrose-hole/index.html"><b>01</b><span>The Hole in the Penrose</span></a></li><li><a href="../02-coda-reservoir/index.html"><b>02</b><span>Coda Reservoir</span></a></li><li><a href="../03-moth-eye/index.html"><b>03</b><span>Moth Eye</span></a></li><li><a href="../04-magic-angle/index.html"><b>04</b><span>Magic Angle</span></a></li><li><a href="../05-jam-the-bat/index.html" aria-current="page"><b>05</b><span>Jam the Bat</span></a></li><li><a href="../06-tweezer/index.html"><b>06</b><span>Tweezer</span></a></li><li><a href="../07-flavour/index.html"><b>07</b><span>FLAVOUR</span></a></li><li><a href="../08-pbit-or-qubit/index.html"><b>08</b><span>p-bit or qubit?</span></a></li><li><a href="../09-syndrome-loom/index.html"><b>09</b><span>Syndrome Loom</span></a></li><li><a href="../10-squeezed-chirp/index.html"><b>10</b><span>Squeezed Chirp</span></a></li><li><a href="../11-maxwells-ribbon/index.html"><b>11</b><span>Maxwell&#x27;s Ribbon</span></a></li><li><a href="../12-chirp-instrument/index.html"><b>12</b><span>Chirp Instrument <small>bonus</small></span></a></li><li><a href="../13-moth-to-flame/index.html"><b>13</b><span>Moth to Flame <small>bonus</small></span></a></li><li><a href="../14-hemibrain-ising/index.html"><b>14</b><span>Fly Brain Metro <small>bonus</small></span></a></li><li><a href="../15-tissue-blur/index.html"><b>15</b><span>Tissue Blur <small>bonus</small></span></a></li><li><a href="../16-busy-beaver-score/index.html"><b>16</b><span>Busy Beaver Score <small>bonus</small></span></a></li><li><a href="../17-quantum-lenia/index.html"><b>17</b><span>Quantum Lenia <small>bonus</small></span></a></li><li><a href="../18-oldest-light/index.html"><b>18</b><span>Oldest Light <small>bonus</small></span></a></li><li><a href="../19-frog-chorus/index.html"><b>19</b><span>Frog Chorus <small>bonus</small></span></a></li><li><a href="../20-antimatter-drop/index.html"><b>20</b><span>Antimatter Drop <small>bonus</small></span></a></li><li><a href="../21-quantum-nose/index.html"><b>21</b><span>The Quantum Nose Test <small>bonus</small></span></a></li><li><a href="../22-scroll-unroll/index.html"><b>22</b><span>Scroll Unroll <small>bonus</small></span></a></li></ol></details></nav>
+</style><nav class="wtnr-nav" aria-label="All pieces"><div class="wn-row"><a class="wn-btn" href="../04-magic-angle/index.html" rel="prev">&larr; 04 Magic Angle</a><a class="wn-btn wn-hub" href="../../index.html">All 22 pieces</a><a class="wn-btn" href="../06-tweezer/index.html" rel="next">06 Tweezer &rarr;</a></div><details><summary>Jump to any piece (22)</summary><ol><li><a href="../01-penrose-hole/index.html"><b>01</b><span>The Hole in the Penrose</span></a></li><li><a href="../02-coda-reservoir/index.html"><b>02</b><span>Coda Reservoir</span></a></li><li><a href="../03-moth-eye/index.html"><b>03</b><span>Moth Eye</span></a></li><li><a href="../04-magic-angle/index.html"><b>04</b><span>Magic Angle</span></a></li><li><a href="../05-jam-the-bat/index.html" aria-current="page"><b>05</b><span>Jam the Bat</span></a></li><li><a href="../06-tweezer/index.html"><b>06</b><span>Tweezer</span></a></li><li><a href="../07-flavour/index.html"><b>07</b><span>FLAVOUR</span></a></li><li><a href="../08-pbit-or-qubit/index.html"><b>08</b><span>p-bit or qubit?</span></a></li><li><a href="../09-syndrome-loom/index.html"><b>09</b><span>Syndrome Loom</span></a></li><li><a href="../10-squeezed-chirp/index.html"><b>10</b><span>Squeezed Chirp</span></a></li><li><a href="../11-maxwells-ribbon/index.html"><b>11</b><span>Maxwell&#x27;s Ribbon</span></a></li><li><a href="../12-chirp-instrument/index.html"><b>12</b><span>Chirp Instrument</span></a></li><li><a href="../13-moth-to-flame/index.html"><b>13</b><span>Moth to Flame</span></a></li><li><a href="../14-hemibrain-ising/index.html"><b>14</b><span>Fly Brain Metro</span></a></li><li><a href="../15-tissue-blur/index.html"><b>15</b><span>Tissue Blur</span></a></li><li><a href="../16-busy-beaver-score/index.html"><b>16</b><span>Busy Beaver Score</span></a></li><li><a href="../17-quantum-lenia/index.html"><b>17</b><span>Quantum Lenia</span></a></li><li><a href="../18-oldest-light/index.html"><b>18</b><span>Oldest Light</span></a></li><li><a href="../19-frog-chorus/index.html"><b>19</b><span>Frog Chorus</span></a></li><li><a href="../20-antimatter-drop/index.html"><b>20</b><span>Antimatter Drop</span></a></li><li><a href="../21-quantum-nose/index.html"><b>21</b><span>The Quantum Nose Test</span></a></li><li><a href="../22-scroll-unroll/index.html"><b>22</b><span>Scroll Unroll</span></a></li></ol></details></nav>
   <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -787,7 +830,7 @@ const HW = BANKS.filter(b=>b.mode==='qpu');
 const HERO = BANK.fez || BANK.mar || null;
 const SRC = [
   {id:'none', name:'Metronome', where:'classical', tag:'classical', note:()=>'<b>Classical.</b> No jitter: every in-train gap is exactly 70 ms. The metronome ticks the same beat every click.'},
-  {id:'prng', name:'Leaked seed', where:'classical', tag:'classical', note:()=>`<b>Classical.</b> mulberry32 seeded with <b>${seedHex()}</b>. The seed is printed right here, like the number on a seed packet, so ${st.seedKnown?'the packet leaks: the bat has it and replays every slot.':'anyone could read it; this bat has been told not to (the packet is sealed).'}`},
+  {id:'prng', name:'Leaked seed', where:'classical', tag:'classical', note:()=>`<b>Classical.</b> mulberry32 seeded with <b>${seedHex()}</b>. The seed is printed right here, so ${st.seedKnown?'the bat has it and replays every slot.':'anyone could read it; this bat has been told not to.'} ${st.seedKnown?'On the stage the seed packet is open: it leaks.':'On the stage the seed packet is sealed.'}`},
 ];
 if (BANK.emu) SRC.push({id:'emu', name:'Emulator', where:'Aer simulator', tag:'Aer sim', note:()=>`<b>Atlas comet-qrng-v1 on the Aer simulator</b>, ${BANK.emu.total} qubits &times; ${fmt(BANK.emu.shots)} shots, ${fmt(BANK.emu.bytes)} bytes. An uncertified classical baseline. Its screen shows each click's 3-bit slot.`});
 for (const b of HW) SRC.push({id:b.id, name:b.backend, where:'IBM hardware', tag:'IBM QPU', note:()=>`<b>Atlas comet-qrng-v1 on IBM ${b.backend}</b>: ${b.reg} + ${b.total-b.reg} = ${b.total} qubits &times; ${fmt(b.shots)} shots, ${fmt(b.bytes)} bytes. Real hardware, CHSH S = ${b.S.toFixed(3)}. Entropy accounted under a stated assumption, not certified. The chip's three lights show each click's 3-bit slot.`});
@@ -1043,14 +1086,8 @@ function castList(){
   ];
   $('cast').innerHTML = items.map(([cls, ics, t, d]) => `<li${cls?` class="${cls}"`:''}><span class="ic">${ics.map(([n,f,k])=>iconHTML(n,f,k)).join('')}</span><span><b>${t}</b><span>${d}</span></span></li>`).join('');
 }
-const vseg = $('view-seg');
-function setView(v){
-  [...vseg.children].forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.v===v)));
-  $('v-scene').hidden = v!=='scene'; $('v-data').hidden = v!=='data';
-  $('view-label').textContent = v==='scene' ? 'Who\'s who in the sky' : 'Your clicks and the job behind them';
-  if (v==='data'){ sizeTape(); drawTape(); }
-}
-[...vseg.children].forEach(b=>b.addEventListener('click', ()=>setView(b.dataset.v)));
+// the legend under the tape: the same sprites the stage draws (the ring swatch is plain CSS)
+document.querySelectorAll('#legend [data-sp]').forEach(el=>{ const [n, f] = el.dataset.sp.split(':'); if (SP[n]) el.innerHTML = iconHTML(n, +f, 1); });
 
 // ---------- HUD ----------
 const PH = {search:'Search', approach:'Approach', buzz:'Terminal buzz', breakoff:'Break-off'};
@@ -1327,7 +1364,7 @@ function staticCopy(){
   $('proof').innerHTML = proof.join('');
   if (HERO) $('sub-hw').textContent = `${HERO.total} qubits of IBM's ${HERO.backend}`;
   const hw = HW.map(b=>`${b.backend} (${b.reg} + ${b.total-b.reg} = ${b.total} qubits, ${fmt(b.bytes)} bytes, S = ${b.S.toFixed(3)} &#xB1; ${b.sS.toFixed(3)})`).join(' and ');
-  $('chip-lede').innerHTML = `Every number here is read from the job records embedded in this page. Hardware runs: ${hw}. Each one used every qubit on the chip, drawn below as one cell per qubit inside the package. Shading shows how far each register qubit's P(1) sits from 50%. The engine flagged ${HW.map(b=>b.n_biased+' qubits on '+b.backend).join(' and ')} as biased (p &lt; 10<sup>-6</sup>), and the worst qubit sets the conservative min-entropy per bit.`;
+  $('chip-lede').innerHTML = `Every number here is read from the job records embedded in this page. Hardware runs: ${hw}. Each one used every qubit on the chip. Shading shows how far each register qubit's P(1) sits from 50%. The engine flagged ${HW.map(b=>b.n_biased+' qubits on '+b.backend).join(' and ')} as biased (p &lt; 10<sup>-6</sup>), and the worst qubit sets the conservative min-entropy per bit.`;
   const sn = HW.map(b=>`${b.backend}: S = ${b.S.toFixed(3)} &#xB1; ${b.sS.toFixed(3)}, ${b.zS.toFixed(0)} &#x3C3; above 2`).join('; ');
   $('s-note').innerHTML = `${sn}. Whiskers span &#xB1;3&#x3C3;. No local hidden-variable model gets past 2, but only if the test closes loopholes this one leaves open. The settings were fixed in the circuit, all the qubits sat on one chip with no space-like separation, and fair sampling is assumed. So read it as a fidelity witness: during the job the chip entangled and read out well. It is not device-independent certification. The emulator's ${BANK.emu12?BANK.emu12.S.toFixed(3):''} is the noiseless ideal of 2&#x221A;2 plus sampling error.`;
   $('no-claim-s').innerHTML = `The CHSH value does not certify the 148 register qubits. ${sn}: four separate Bell pairs on the same chip, with fixed measurement settings, no space-like separation and fair sampling assumed. That's what the engine itself says in the job's caveat. It shows the chip was behaving quantum-mechanically, not that any particular byte is unpredictable.`;

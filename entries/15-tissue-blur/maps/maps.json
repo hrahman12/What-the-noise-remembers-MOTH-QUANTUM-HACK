@@ -1,0 +1,104 @@
+{
+ "section": "C57BL6J-4.003",
+ "cells": 95104,
+ "um_per_px": 10.865345498427748,
+ "composites": {
+  "A": {
+   "name": "Three territories",
+   "file": "maps/composite_A.png",
+   "channels": [
+    {
+     "gene": "Satb2",
+     "channel": "R",
+     "cells_expressing": 16183,
+     "p995": 0.7775802909756304
+    },
+    {
+     "gene": "Gpr88",
+     "channel": "G",
+     "cells_expressing": 13626,
+     "p995": 0.8194956038718564
+    },
+    {
+     "gene": "Gabra6",
+     "channel": "B",
+     "cells_expressing": 20994,
+     "p995": 3.6981372555169707
+    }
+   ]
+  },
+  "B": {
+   "name": "Folds and tracts",
+   "file": "maps/composite_B.png",
+   "channels": [
+    {
+     "gene": "Fezf2",
+     "channel": "R",
+     "cells_expressing": 11327,
+     "p995": 0.584146010194619
+    },
+    {
+     "gene": "C1ql2",
+     "channel": "G",
+     "cells_expressing": 6424,
+     "p995": 2.1526894683693225
+    },
+    {
+     "gene": "Mog",
+     "channel": "B",
+     "cells_expressing": 15418,
+     "p995": 1.2658182093398687
+    }
+   ]
+  }
+ },
+ "masks": {
+  "lens_282": {
+   "kind": "lens",
+   "x": 282,
+   "y": 512,
+   "r": 270,
+   "bbox": [
+    541,
+    541
+   ],
+   "qubits": 20
+  },
+  "lens_512": {
+   "kind": "lens",
+   "x": 512,
+   "y": 512,
+   "r": 270,
+   "bbox": [
+    541,
+    541
+   ],
+   "qubits": 20
+  },
+  "lens_742": {
+   "kind": "lens",
+   "x": 742,
+   "y": 512,
+   "r": 270,
+   "bbox": [
+    541,
+    541
+   ],
+   "qubits": 20
+  },
+  "section": {
+   "kind": "section",
+   "bbox": [
+    1012,
+    575
+   ],
+   "box": [
+    4,
+    225,
+    1015,
+    799
+   ],
+   "qubits": 20
+  }
+ }
+}

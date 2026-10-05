@@ -1,0 +1,66 @@
+<!doctype html><meta charset="utf-8">
+<!-- UI smoke test: open with headless Chrome (see tests/run_ui.sh). Drives web/index.html in a 375 px iframe. -->
+<body style="margin:0">
+<iframe id="f" src="../web/index.html" style="width:375px;height:900px;border:0"></iframe>
+<pre id="out">pending</pre>
+<script>
+const out = document.getElementById('out'), res = {checks: [], errors: []};
+const f = document.getElementById('f');
+f.contentWindow.addEventListener('error', e => res.errors.push(String(e.message)));
+f.onload = () => setTimeout(() => {
+  const w = f.contentWindow, d = w.document, $ = id => d.getElementById(id);
+  w.addEventListener('error', e => res.errors.push(String(e.message)));
+  const check = (name, cond) => res.checks.push((cond ? 'ok   ' : 'FAIL ') + name);
+  const vis = el => !!el && !el.hidden && el.getBoundingClientRect().height > 0;
+  const click = el => el.dispatchEvent(new w.MouseEvent('click', {bubbles: true}));
+  const key = k => d.dispatchEvent(new w.KeyboardEvent('keydown', {key: k, bubbles: true}));
+  try {
+    const dialKey = k => $('j-dial').dispatchEvent(new w.KeyboardEvent('keydown', {key: k, bubbles: true}));
+    check('16 tiles drawn', d.querySelectorAll('#tiles .tile canvas').length === 16);
+    check('no horizontal scroll at 375 px', d.documentElement.scrollWidth <= d.documentElement.clientWidth);
+    check('scene first: the duel is shown, the data view is closed', vis($('duel')) && $('fp').hidden);
+    check('sauna and fridge canvases use an integer scale', ['cv-sauna', 'cv-fridge', 'cv-env'].every(id => $(id).width % ($(id).id === 'cv-env' ? 40 : 64) === 0 && $(id).width > 0));
+    check('guess buttons enabled, next hidden', vis($('b-pbit')) && !$('b-pbit').disabled && !$('b-qubit').disabled && !vis($('b-next')));
+    check('batch source hidden before guessing', $('r-batch').textContent === 'hidden until you guess' && /sealed/.test($('env-no').textContent));
+    check('artifact build carries no live panel', !$('live'));
+    click($('b-pbit'));
+    check('guess reveals the answer and the source', /These were/.test($('verdict').textContent) && !/hidden/.test($('r-batch').textContent) && /opened/.test($('env-no').textContent));
+    check('score counts one round', $('sc-num').textContent.endsWith('/ 1') && d.querySelectorAll('#sc-dots img').length === 1);
+    check('next shown after a guess, guess buttons locked', vis($('b-next')) && $('b-pbit').disabled && $('b-pbit').getAttribute('aria-pressed') === 'true');
+    key('n');
+    check('N key starts a new sealed envelope', $('r-batch').textContent === 'hidden until you guess' && /Envelope 2/.test($('env-no').textContent));
+    key('f');
+    check('F key guesses the fridge', $('sc-num').textContent.endsWith('/ 2'));
+    key('n'); key('q');
+    check('Q key still guesses qubits', $('sc-num').textContent.endsWith('/ 3'));
+    click([...$('g-graph').children].find(b => b.dataset.v === 'ladder'));
+    dialKey('ArrowLeft');
+    check('graph and the J dial switch the problem', /ladder .* J = 0\.4/.test($('r-prob').textContent) && /0\.4/.test($('j-val').textContent));
+    click($('j-dial'));
+    check('clicking the dial turns it to the next coupling', /J = 1\.0/.test($('r-prob').textContent) && /1\.0/.test($('j-dial').getAttribute('aria-label')));
+    check('score survives a problem switch', $('sc-num').textContent.endsWith('/ 3'));
+    click([...$('g-tile').children].find(b => b.dataset.v === 'bars'));
+    check('board style toggles', [...$('g-tile').children].find(b => b.dataset.v === 'bars').getAttribute('aria-pressed') === 'true');
+    click([...$('g-view').children].find(b => b.dataset.v === 'data'));
+    check('Data opens the fingerprints and hides the scene', !$('fp').hidden && $('duel').hidden && $('stats').children.length === 5 && $('why').textContent.length > 200);
+    const before = $('stats').textContent;
+    click([...$('g-n').children].find(b => b.dataset.v === '4096'));
+    check('p-bit sample size switch redraws the numbers', $('stats').textContent !== before);
+    $('t-tomo').click();
+    check('tomography overlay toggles', !$('lg-tomo').hidden);
+    click([...$('g-graph').children].find(b => b.dataset.v === 'random'));
+    dialKey('ArrowRight');
+    const src = [...$('g-src').children];
+    check('source buttons exist; disabled only when no run exists', src.length === 2);
+    const qb = src.find(b => b.dataset.v === 'qpu');
+    if (!qb.disabled) { click(qb); check('ibm_fez source selectable', /ibm_fez/.test(d.querySelector('.qname').textContent)); }
+    click([...$('g-view').children].find(b => b.dataset.v === 'scene'));
+    check('Scene brings the duel back', vis($('duel')) && $('fp').hidden);
+    click($('b-reset'));
+    check('reset clears the score', $('sc-num').textContent === '0 / 0' && parseFloat($('merc').style.width) === 0);
+    click($('b-share'));
+    check('share writes a valid #token', /^#(ring|ladder|random)\.\d+p\d+\.(emu|qpu)\.(graph|bars)$/.test(w.location.hash));
+  } catch (e) { res.errors.push('harness: ' + e.message); }
+  setTimeout(() => { out.textContent = JSON.stringify(res, null, 1); }, 300);
+}, 1200);
+</script>

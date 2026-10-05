@@ -1,0 +1,8 @@
+frame 0
+[vost#0:0/libx264 @ 00000200fa758700] Multiple -pix_fmt options specified for stream 0, only the last option '-pix_fmt yuv420p' will be used.
+frame 150
+frame 300
+frame 450
+frame 600
+frame 750
+wrote C:\Users\Rahma\OneDrive\Desktop\MOTH QUANTUM\entries\17-quantum-lenia\quantum_lenia.mp4

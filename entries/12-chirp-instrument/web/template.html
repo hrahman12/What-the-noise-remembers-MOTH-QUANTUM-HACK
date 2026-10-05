@@ -1,0 +1,1742 @@
+<title>Chirp Instrument</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+/*BRAND*/
+/* Layout, scene first: the headline, then the stage (an illustrated pixel scene of the source, the ripples and the
+   two detectors, with the piano roll and strain one click away under "Data"), the deck, the keys, the cast list,
+   then the renders and the science drawers. Paper/ink only: no glows, gradients or shadows. */
+:root{--v1:#19238E;--v2:#7A80C8}
+.wrap{max-width:78rem;margin-inline:auto}
+.top{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);grid-template-areas:"hl side" "inst inst";gap:1.2rem clamp(1rem,3vw,2.5rem);align-items:end;padding-top:1.4rem}
+.hl{grid-area:hl;min-width:0}.side{grid-area:side}.inst{grid-area:inst}
+.kicker{font:500 .74rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink);margin-bottom:.7rem}
+h1{font-size:clamp(2rem,3.7vw,3.1rem);line-height:1.02;letter-spacing:-.02em}
+.sub{font-size:1.02rem;color:var(--ink-2);max-width:54ch;margin-top:.8rem}
+.side{display:grid;gap:.9rem;min-width:0}
+.steps{display:grid;gap:.45rem;counter-reset:s;margin:0;padding:0;list-style:none}
+.steps li{display:grid;grid-template-columns:1.9rem minmax(0,1fr);gap:.55rem;align-items:baseline;font-size:.92rem}
+.steps li::before{counter-increment:s;content:counter(s);font:500 .8rem/1.6 var(--mono);color:var(--on-ink);background:var(--ink);border-radius:99px;width:1.6rem;height:1.6rem;display:grid;place-items:center}
+kbd{font:500 .72rem/1 var(--mono);border:1px solid var(--rule);border-bottom-width:2px;border-radius:2px;padding:.1rem .3rem;color:var(--ink);background:var(--panel)}
+.inst{display:grid;gap:.8rem;min-width:0}
+.stage{position:relative;overflow:hidden;border:1px solid var(--ink);background:var(--panel)}
+.toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem;padding:.6rem;border-bottom:1px solid var(--ink);background:var(--paper)}
+.toolbar .grp{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.view[hidden]{display:none}
+/* the scene: a low-resolution pixel canvas scaled up by a whole number, smoothing off */
+#scene{display:block;width:100%;height:464px;background:var(--paper);image-rendering:pixelated;touch-action:manipulation}
+.scene-read{margin:0;padding:.4rem .6rem;border-top:1px solid var(--ink);font:500 .78rem/1.45 var(--mono);color:var(--ink);background:var(--paper);font-variant-numeric:tabular-nums}
+.scene-read[hidden]{display:none}
+#scene.hot{cursor:pointer}
+#track{display:block;width:100%;height:46px;border-top:1px solid var(--ink);background:var(--paper);image-rendering:pixelated;touch-action:none;cursor:crosshair}
+.roll-wrap{position:relative}
+#roll,#roll-fig{display:block;width:100%;height:clamp(240px,40vh,440px);touch-action:none;cursor:crosshair;background:var(--paper)}
+#strip,#strip-fig{display:block;width:100%;height:64px;border-top:1px solid var(--rule);background:var(--paper);touch-action:none;cursor:crosshair}
+#strip-fig{border-top:0}
+.hud{position:absolute;left:44px;top:26px;font:500 .72rem/1.35 var(--mono);color:var(--ink);background:rgba(251,250,249,.94);border:1px solid var(--ink);padding:.4rem .55rem;pointer-events:none;font-variant-numeric:tabular-nums;max-width:calc(100% - 1.4rem)}
+.hud b{font-weight:500}
+.hud span{color:var(--ink-2)}
+.foot{display:flex;flex-wrap:wrap;gap:.5rem .9rem;align-items:center;padding:.55rem .6rem;border-top:1px solid var(--ink);background:var(--paper)}
+.foot .hint{flex:1 1 18rem}
+.empty{margin:0;padding:.5rem .6rem;border-top:1px dashed var(--ink);font:500 .74rem/1.45 var(--mono);color:var(--ink);background:var(--paper)}
+.empty[hidden]{display:none}
+.deck{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1fr);gap:.8rem;align-items:stretch}
+.card{background:var(--panel);border:1px solid var(--rule);padding:.85rem .95rem;display:grid;gap:.6rem;align-content:start;min-width:0}
+.pad{min-width:10.5rem;min-height:100%;border:1px solid var(--ink);background:var(--tint);color:var(--ink);border-radius:0;cursor:pointer;display:grid;justify-items:center;align-content:center;gap:.35rem;padding:.9rem;touch-action:manipulation;user-select:none}
+.pad:hover{background:rgba(25,35,142,.12)}
+.pad canvas{display:block;width:102px;height:66px;image-rendering:pixelated;pointer-events:none}
+.pad b{font:400 1.6rem/1 var(--display);letter-spacing:-.02em}
+.pad small{font:500 .66rem/1.2 var(--mono);color:var(--ink-2);letter-spacing:.08em;text-transform:uppercase}
+.pad.hit{background:var(--ink);color:var(--on-ink)}
+.pad.hit small{color:var(--on-ink)}
+.row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.row.split{justify-content:space-between}
+.ticks{display:grid;grid-template-columns:repeat(4,1fr);font:500 .66rem/1.2 var(--mono);color:var(--ink-2);text-align:center;margin-top:-.2rem}
+.ticks span:first-child{text-align:left}.ticks span:last-child{text-align:right}
+.ticks .na{color:var(--ink-3);text-decoration:line-through}
+.ticks .cur{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.val{font:500 .72rem/1 var(--mono);color:var(--ink);font-variant-numeric:tabular-nums}
+/* the keyboard: square ink keys with a tint lip, and a strip above where played notes fly up as pixel notes */
+.keys-wrap{overflow-x:auto;border:1px solid var(--rule);background:var(--panel-2);padding:.4rem .5rem .5rem}
+.keys-in{position:relative}
+#keyfx{display:block;width:100%;height:26px;image-rendering:pixelated;pointer-events:none}
+.keys{position:relative;height:112px;display:flex;touch-action:none;user-select:none}
+.k{flex:1 1 0;min-width:22px;border:2px solid var(--ink);background:var(--panel);position:relative;margin-right:2px;overflow:hidden}
+.k::before{content:"";position:absolute;left:0;right:0;bottom:0;height:6px;background:var(--rule);pointer-events:none}
+.k::after{content:"";position:absolute;left:0;right:0;bottom:6px;height:calc(var(--u,0) * 32%);background:rgba(25,35,142,.2);pointer-events:none}
+.k.b{position:absolute;top:0;height:62%;min-width:0;z-index:2;background:var(--ink);border-color:var(--ink);margin:0}
+.k.b::before{background:var(--ink-2);height:5px}
+.k.b::after{background:rgba(251,250,249,.42);bottom:5px}
+.k.on{background:var(--ink);border-color:var(--ink)}
+.k.on::before{background:var(--ink-2)}
+.k.on::after{background:rgba(251,250,249,.28)}
+.k.b.on{background:var(--ink-3);border-color:var(--ink)}
+.k.b.on::after{background:rgba(25,35,142,.3)}
+.k i{position:absolute;bottom:.55rem;left:0;right:0;text-align:center;font:500 .6rem/1 var(--mono);color:var(--ink-2);font-style:normal;pointer-events:none;z-index:1}
+.k.on i{color:var(--on-ink)}
+.hint{font:400 .74rem/1.5 var(--mono);color:var(--ink-2)}
+/* the cast: who is who in the scene, with the sprites themselves as icons */
+.cast{display:grid;gap:.6rem;margin-top:.4rem}
+.cast-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,19rem),1fr));gap:.6rem}
+.cast-i{display:grid;grid-template-columns:10.5rem minmax(0,1fr);gap:.9rem;align-items:center;background:var(--panel);border:1px solid var(--rule);padding:.7rem .8rem}
+.cast-i .ic{display:grid;place-items:center;min-height:4.4rem}
+.cast-i img{image-rendering:pixelated;max-width:100%;height:auto}
+.cast-i p{font-size:.84rem;line-height:1.45;color:var(--ink-2)}
+.cast-i p b{color:var(--ink);font-weight:500}
+.cast-i.big{grid-column:1/-1;grid-template-columns:minmax(0,max-content) minmax(0,1fr);gap:1.1rem}
+@media (max-width:760px){.cast-i.big{grid-template-columns:minmax(0,1fr)}.cast-i.big .ic{justify-content:start}}
+.panel{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:1rem;background:var(--panel);border:1px solid var(--rule);padding:1rem 1.1rem;margin-top:1.2rem}
+.readout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.25rem .9rem;font:400 .78rem/1.5 var(--mono);color:var(--ink-2);margin:0}
+.readout dd{margin:0}
+.readout b{color:var(--ink);font-weight:500;overflow-wrap:anywhere}
+.actions{display:grid;gap:.6rem;align-content:start;justify-items:start}
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:var(--ink);color:var(--on-ink);font:500 .8rem/1.4 var(--mono);padding:.75rem 1rem;opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100% - 32px);width:max-content;text-align:center;z-index:9}
+.toast.on{opacity:1}
+.renders{margin-top:1.6rem;display:grid;gap:.8rem}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,16.5rem),1fr));gap:.8rem}
+.rcard{background:var(--panel);border:1px solid var(--rule);padding:.95rem 1rem;display:grid;gap:.6rem;align-content:start;min-width:0}
+.rcard.on{border-color:var(--ink)}
+.rcard .rh{display:flex;gap:.7rem;align-items:center}
+.rcard .rh img{image-rendering:pixelated;flex:none}
+.rcard h3{font-size:1.2rem;line-height:1.15}
+.rcard .meta{font:400 .72rem/1.5 var(--mono);color:var(--ink-2);overflow-wrap:anywhere}
+.rcard .meta b{color:var(--ink);font-weight:500}
+.rcard .tag{justify-self:start;font:500 .66rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:.35rem .6rem;border:1px solid var(--ink);border-radius:999px;color:var(--ink)}
+.rcard .tag.q{background:var(--ink);color:var(--on-ink)}
+.rcard .btn{padding:.6rem 1rem;font-size:.85rem}
+/* the titled sections below the instrument: a solid-ink bar, then the content, always visible */
+.steps small{color:var(--ink-2);font-size:.86rem}
+.steps a,.sec a{color:var(--ink);text-underline-offset:3px}
+.toc{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:2.5rem}
+.toc a{font:500 .68rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);text-decoration:none;border:1px solid var(--rule);border-radius:999px;padding:.6rem .85rem;background:var(--panel)}
+.toc a:hover{background:var(--tint)}
+.sec{margin-top:2.25rem;display:grid;gap:1.1rem;scroll-margin-top:1rem;min-width:0}
+.sec>.ink-bar{flex-wrap:wrap}
+.sec>.ink-bar h2{font:inherit;letter-spacing:inherit;color:inherit;margin:0}
+.sec>.ink-bar span{opacity:.82;text-align:right}
+.sec h3{font-size:1.3rem;line-height:1.2}
+.sec .prose{display:grid;gap:.75rem;max-width:72ch;color:var(--ink-2);align-content:start;min-width:0}
+.sec .prose p b{color:var(--ink);font-weight:500}
+.sec .cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem 2.5rem}
+.sec .cols .prose{max-width:none}
+.lede{color:var(--ink-2);max-width:72ch;margin:0}
+.howto{display:grid;grid-template-columns:minmax(10rem,auto) minmax(0,1fr);margin:0;border-top:1px solid var(--rule)}
+.howto dt,.howto dd{padding:.65rem 0;border-bottom:1px solid var(--rule);margin:0}
+.howto dt{font:500 .72rem/1.5 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink);padding-right:1.5rem}
+.howto dd{color:var(--ink-2);font-size:.95rem}
+.howto dd b{color:var(--ink);font-weight:500}
+.fig{margin:0;display:grid;gap:.8rem;border:1px solid var(--rule);background:var(--panel);padding:1rem;min-width:0}
+.fig-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:.6rem 1rem}
+.fig-head h3{margin-top:.25rem}
+.fig .cap{display:grid;gap:.45rem;font-size:.88rem;line-height:1.5;color:var(--ink-2);max-width:80ch}
+.fig .cap b{color:var(--ink);font-weight:500}
+.plot{border:1px solid var(--ink);background:var(--paper);min-width:0}
+.plot-label{margin:0;display:flex;flex-wrap:wrap;gap:.2rem .7rem;align-items:baseline;padding:.4rem .6rem;border-top:1px solid var(--rule);font:500 .74rem/1.3 var(--mono);color:var(--ink)}
+.plot-label b{font-weight:500}
+.legend{display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;margin:0;padding:0;list-style:none;font:400 .72rem/1.4 var(--mono);color:var(--ink-2)}
+.legend li{display:flex;align-items:center;gap:.4rem}
+.legend .sw{display:inline-block;width:.9rem;height:.6rem;border:1px solid var(--ink)}
+.legend .sw.dash{border-style:dashed;background:transparent}
+.legend .sw.wash{background:rgba(25,35,142,.18);border-color:var(--rule)}
+.legend .sw.head{width:2px;height:.9rem;background:var(--ink);border:0}
+.takes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
+.take{display:grid;gap:.45rem;align-content:start;text-align:left;font:inherit;color:inherit;background:var(--paper);border:1px solid var(--rule);border-radius:0;padding:.5rem;cursor:pointer;min-width:0}
+.take:hover{border-color:var(--ink-2)}
+.take[aria-pressed="true"]{border-color:var(--ink);outline:1px solid var(--ink)}
+.take .tw{position:relative}
+.take canvas{display:block;width:100%;height:118px}
+.take .ph{position:absolute;top:0;bottom:0;width:2px;background:var(--ink);pointer-events:none}
+.take .ph[hidden]{display:none}
+.take .tt{font:400 .7rem/1.45 var(--mono);color:var(--ink-2);overflow-wrap:anywhere}
+.take .tt b{color:var(--ink);font-weight:500}
+.tbl{overflow-x:auto}
+.jobs-t{width:100%;border-collapse:collapse;font:400 .74rem/1.45 var(--mono);color:var(--ink-2)}
+.jobs-t th{text-align:left;font-weight:500;color:var(--ink);border-bottom:1px solid var(--ink);padding:.45rem .6rem .45rem 0}
+.jobs-t td{border-bottom:1px solid var(--rule);padding:.5rem .6rem .5rem 0;vertical-align:top}
+.jobs-t td b{color:var(--ink);font-weight:500}
+.jobs-t .id{overflow-wrap:anywhere;word-break:break-all}
+.jobs-t small{display:block;font-size:.66rem;color:var(--ink-3)}
+.jobs-t .btn{padding:.45rem .7rem;font-size:.72rem;white-space:nowrap}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:900px){.sec .cols{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){.howto{grid-template-columns:minmax(0,1fr)}.howto dt{border-bottom:0;padding-bottom:0}.takes{grid-template-columns:minmax(0,1fr)}.fig{padding:.75rem}
+  /* the jobs table becomes one labelled card per planned setting */
+  .jobs-t thead{display:none}
+  .jobs-t,.jobs-t tbody,.jobs-t tr{display:block;width:100%}
+  .jobs-t tr{border-bottom:1px solid var(--rule);padding:.5rem 0}
+  .jobs-t td{display:grid;grid-template-columns:5.2rem minmax(0,1fr);gap:.6rem;border:0;padding:.12rem 0}
+  .jobs-t td::before{content:attr(data-l);color:var(--ink-3);font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;padding-top:.1rem}
+  .jobs-t td.act{display:block;padding-top:.4rem}
+  .jobs-t td.act::before{content:none}
+  .jobs-t td.act:empty{display:none}}
+.seg button:disabled{opacity:.4;cursor:not-allowed}
+.seg button[data-na="true"]{opacity:.5;text-decoration:line-through}
+.btn[data-na="true"]{opacity:.55}
+.na-note{margin:0;font:500 .66rem/1.35 var(--mono);color:var(--ink-2)}
+.na-note[hidden]{display:none}
+.seg button.voice[aria-pressed="false"]{text-decoration:line-through}
+.swatch{display:inline-block;width:.7rem;height:.7rem;margin-right:.35rem;vertical-align:-1px;border:1px solid var(--on-ink)}
+.seg button.voice[aria-pressed="false"] .swatch{border-color:var(--ink)}
+@media (max-width:960px){.deck{grid-template-columns:minmax(0,1fr)}.pad{min-height:0;grid-template-columns:auto auto;justify-content:center;column-gap:1.1rem}.pad canvas{grid-row:span 2}.pad b{align-self:end}.pad small{align-self:start}.panel{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:760px){.top{grid-template-columns:minmax(0,1fr);grid-template-areas:"hl" "inst" "side";align-items:start}.hud{left:.4rem;font-size:.66rem}.hud .x{display:none}.ink-bar{flex-wrap:wrap}}
+@media (max-width:560px){.toolbar{padding:.45rem}.toolbar .seg button{padding:.5rem .62rem;font-size:.7rem;letter-spacing:0}.foot .seg button{padding:.5rem .62rem;font-size:.7rem}.sub{font-size:.96rem}.cast-i{grid-template-columns:minmax(0,1fr);gap:.5rem}.cast-i .ic{justify-content:start;min-height:0}}
+@media (prefers-reduced-motion:reduce){.pad.hit{background:rgba(25,35,142,.18);color:var(--ink)}.pad.hit small{color:var(--ink-2)}}
+</style>
+
+<div class="wrap">
+  <nav class="wtnr-bar"><a href="https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa">What the Noise Remembers</a><span class="count">Challenge <b>02</b></span></nav>
+
+  <div class="top">
+    <header class="hl">
+      <p class="kicker">Challenge 02 &middot; Make it audible</p>
+      <h1>Play the last fifth of a second of two black holes.</h1>
+      <p class="sub">Real LIGO strain from GW150914, tracked half-wave by half-wave into MIDI. A quantum blur on a simulated 20-qubit register then scatters it. Tap through it, scrub the blur, loop the merger, and jam over it.</p>
+    </header>
+    <div class="side">
+      <div class="proof" id="proof"></div>
+      <ol class="steps">
+        <li><span><b>Tap</b> the pad (or <kbd>Z</kbd>/<kbd>X</kbd>) to play the chirp one half-wave at a time, at your own speed. Or press <b>Play</b>. <small>In the scene, the black holes tap too.</small></span></li>
+        <li><span><b>Scrub</b> the quantum blur's reach and hear the merger smear into its neighbours. <small>Its cloud of real notes spreads across the take.</small></span></li>
+        <li><span><b>Loop</b> any stretch by dragging across <a href="#fig-roll">the roll</a>, then <b>jam</b> on the keys over it. <small>The tape under the scene loops the same way.</small></span></li>
+      </ol>
+    </div>
+
+    <section class="inst" aria-label="Chirp instrument">
+      <div class="stage">
+        <div class="toolbar">
+          <div class="grp">
+            <div class="seg" role="group" aria-label="View" id="g-view">
+              <button type="button" data-view="scene" aria-pressed="true">Scene</button>
+              <button type="button" data-view="data" aria-pressed="false">Data</button>
+            </div>
+            <div class="seg" role="group" aria-label="Event" id="g-event"></div>
+          </div>
+          <div class="grp">
+            <div class="seg" role="group" aria-label="Loop region" id="g-preset">
+              <button type="button" data-preset="whole" aria-pressed="true">Whole</button>
+              <button type="button" data-preset="inspiral" aria-pressed="false">Inspiral</button>
+              <button type="button" data-preset="merger" aria-pressed="false">Merger</button>
+            </div>
+          </div>
+        </div>
+        <div class="view" id="view-scene">
+          <canvas id="scene" role="img" aria-label="Pixel scene as a labelled plate. Above, on the night sky: the two black holes drawn as their shadows with photon rings, bending the background starlight; each real half-wave leaves them as a ripple. Below: aerial engravings of LIGO Hanford (left, or lower on a phone) and LIGO Livingston (right, or upper on a phone), each corner station with its roof cut away to show the laser, the beam splitter, the input test masses and the photodetector. Each ripple lands there, Livingston first, and lights the arms. Between them: the real strain at each site, and the quantum blur as a cloud of the real blurred notes. Tap the black holes to play the next half-wave, an observatory to mute its voice, or the blur cloud to change its reach."></canvas>
+          <p class="scene-read" id="scene-read" aria-live="off" hidden></p>
+          <canvas id="track" tabindex="0" aria-label="The tape: one pip per real half-wave, Livingston on top and Hanford below, with the blurred notes between them. Click to move the playhead, drag sideways to set a loop. Arrow keys move the playhead."></canvas>
+        </div>
+        <div class="view" id="view-data" hidden>
+          <div class="roll-wrap">
+            <canvas id="roll" tabindex="0" aria-label="Piano roll of the chirp over the real detector scalogram. Click to move the playhead, drag sideways to set a loop. Arrow keys move the playhead."></canvas>
+            <div class="hud" id="hud" aria-live="off"></div>
+          </div>
+          <canvas id="strip" aria-hidden="true"></canvas>
+        </div>
+        <div class="foot">
+          <div class="seg" role="group" aria-label="Detector voices">
+            <button type="button" class="voice" id="v-0" aria-pressed="true" title="Hanford, panned left"><span class="swatch" style="background:var(--v1)"></span>H1 Hanford</button>
+            <button type="button" class="voice" id="v-1" aria-pressed="true" title="Livingston, panned right"><span class="swatch" style="background:var(--v2)"></span>L1 Livingston</button>
+          </div>
+          <p class="hint" id="view-hint">In the scene, tap the black holes for the next half-wave, an observatory to mute its voice, or the blur cloud to change its reach.</p>
+        </div>
+        <p class="empty" id="empty" hidden></p>
+      </div>
+
+      <div class="deck">
+        <button type="button" class="pad" id="pad" aria-label="Tap: play the next note of the chirp"><canvas id="padc" aria-hidden="true"></canvas><b>Tap</b><small id="pad-sub">next half-wave &middot; Z / X</small></button>
+        <div class="card">
+          <div class="row split">
+            <div class="row">
+              <button type="button" class="btn" id="play" aria-pressed="false">Play</button>
+              <button type="button" class="btn ghost" id="loop" aria-pressed="false">Loop off</button>
+              <button type="button" class="btn ghost" id="rewind" aria-label="Back to the start">&#8676;</button>
+            </div>
+            <span class="val" id="pos">0.0 s</span>
+          </div>
+          <div class="row split"><span class="label">Speed</span><span class="val" id="speed-val">1.00&times;</span></div>
+          <input type="range" id="speed" min="0.25" max="2" step="0.05" value="1" aria-label="Playback speed">
+          <div class="row split"><span class="label">Volume</span><span class="val" id="vol-val">70%</span></div>
+          <input type="range" id="vol" min="0" max="1" step="0.01" value="0.7" aria-label="Volume">
+        </div>
+        <div class="card">
+          <div class="row split"><span class="label">Quantum blur &middot; reach</span><span class="val" id="reach-val">unblurred</span></div>
+          <input type="range" id="reach" min="0" max="3" step="1" value="0" aria-label="Blur reach: unblurred, 0 local, 0.5, 1 non-local">
+          <div class="ticks" id="reach-ticks"><span>off</span><span>0 local</span><span>0.5</span><span>1 global</span></div>
+          <div class="row split">
+            <span class="label">Strength</span>
+            <div class="seg" role="group" aria-label="Blur strength" id="g-strength"></div>
+          </div>
+          <p class="na-note" id="str-note" hidden></p>
+          <label class="row hint" style="gap:.4rem"><input type="checkbox" id="ghost" checked> show the unblurred chirp as outlines</label>
+        </div>
+      </div>
+
+      <div class="keys-wrap"><div class="keys-in" id="keys-in"><canvas id="keyfx" aria-hidden="true"></canvas><div class="keys" id="keys" role="group" aria-label="Keyboard: click or use A W S E D F T G Y H U J K O L P ; on your computer keyboard"></div></div></div>
+      <p class="hint">Keys: <kbd>Space</kbd> play/pause &middot; <kbd>Z</kbd> <kbd>X</kbd> tap &middot; <kbd>A</kbd>&ndash;<kbd>;</kbd> piano (DAW layout) &middot; <kbd>-</kbd> <kbd>=</kbd> octave &middot; <kbd>,</kbd> <kbd>.</kbd> reach &middot; <kbd>L</kbd> is a note, so the loop is on the button. Drag across the roll to loop a stretch. The tape under the scene loops the same way.</p>
+    </section>
+  </div>
+
+  <section class="panel" aria-label="Live readout">
+    <dl class="readout">
+      <dt>Engine</dt><dd><b>blur-midi-v1</b> &middot; Atlas quantum simulator (its docs list no hardware mode)</dd>
+      <dt>Params</dt><dd><b id="r-params">&ndash;</b></dd>
+      <dt>Register</dt><dd><b id="r-reg">&ndash;</b></dd>
+      <dt>Job</dt><dd><b id="r-job">&ndash;</b></dd>
+      <dt>Notes</dt><dd><b id="r-notes">&ndash;</b></dd>
+      <dt>Data</dt><dd><b id="r-data">&ndash;</b></dd>
+    </dl>
+    <div class="actions">
+      <button type="button" class="btn" id="hear">Hear the detector (real speed)</button>
+      <button type="button" class="btn ghost" id="share">Copy link to this view</button>
+      <p class="hint" id="hear-note">The actual whitened, band-passed H1 (left) and L1 (right) strain around the merger, played at real speed: <span id="hear-len">0.31</span> s. Headphones help below 100 Hz.</p>
+    </div>
+  </section>
+
+  <section class="renders" aria-label="The rendered audio files">
+    <div class="ink-bar"><span>The renders</span><span id="r-count">WAV deliverables, played here</span></div>
+    <p class="hint">Every MIDI file in this piece, rendered offline to audio by <b>render_wav.py</b> (a classical numpy synth with the same voice as the instrument above) and encoded to MP3 for the page. The instrument plays the same MIDI notes live; these are the fixed takes. Nothing plays until you press Play.</p>
+    <div class="rgrid" id="rgrid"></div>
+  </section>
+
+
+  <nav class="toc" aria-label="Sections on this page">
+    <a href="#how-to-play">How to play</a><a href="#data">The data</a><a href="#made">How it was made</a><a href="#science">The science</a><a href="#claims">What this does not claim</a><a href="#credits">Jobs and credits</a>
+  </nav>
+
+  <section class="sec" id="how-to-play" aria-labelledby="h-play">
+    <div class="ink-bar"><h2 id="h-play">How to play</h2><span>Every control, and what it does</span></div>
+    <div class="prose">
+      <h3>In the scene</h3>
+      <ol class="steps">
+        <li><span><b>Tap</b> the black holes (or the pad, or <kbd>Z</kbd>/<kbd>X</kbd>): each tap sends out the next real half-wave, at your own speed, and you watch it land on the two LIGO observatories. Or press <b>Play</b>.</span></li>
+        <li><span><b>Scrub</b> the quantum blur's reach and watch its cloud of real notes spread across the take.</span></li>
+        <li><span><b>Loop</b> a stretch by dragging along the tape under the scene, then <b>jam</b> on the keys over it.</span></li>
+      </ol>
+    </div>
+    <h3>Every control</h3>
+    <dl class="howto">
+      <dt>Tap &middot; <kbd>Z</kbd> <kbd>X</kbd></dt><dd>The pad, or the black holes in the scene, plays the <b>next half-wave</b> of the real signal (for GW170817 the next 16 cycles) with every note the blur put inside it. You are the clock, so speed up into the merger.</dd>
+      <dt>Play &middot; <kbd>Space</kbd></dt><dd>Runs the chirp from the playhead at the chosen speed. <b>&#8676;</b> goes back to the start, or to the start of the loop. The <b>Play</b> button on Figure 1 does the same.</dd>
+      <dt>Loop &middot; Whole, Inspiral, Merger</dt><dd><b>Loop on</b> repeats the loop region: the last one you set, or else the merger. <b>Inspiral</b> and <b>Merger</b> pick a region; <b>Whole</b> plays everything.</dd>
+      <dt>The roll and the tape</dt><dd>Click to move the playhead, drag sideways to loop a stretch. With focus, the arrow keys move the playhead by 1 s (5 s with Shift), Home and End jump to the ends. The strain under the roll (Figure 2) takes clicks and drags the same way.</dd>
+      <dt>Speed &middot; Volume</dt><dd>Speed runs from 0.25&times; to 2&times;. Volume also sets the renders.</dd>
+      <dt>Quantum blur &middot; reach</dt><dd>off, 0 local, 0.5, 1 global. A stop with no completed job is struck through: the slider snaps back to the nearest one and says why. <kbd>,</kbd> and <kbd>.</kbd> step it; in the scene, tap the blur cloud.</dd>
+      <dt>Strength</dt><dd>0.5 or 1.0. A struck-through strength has no completed job; pressing it says why.</dd>
+      <dt>Outlines</dt><dd><b>show the unblurred chirp as outlines</b> draws the plain chirp as dashed boxes under a blurred take, on the roll.</dd>
+      <dt>H1 Hanford &middot; L1 Livingston</dt><dd>Mutes or unmutes one detector's voice (Hanford left, Livingston right) in the sound, the roll, the strain and the scene. In the scene, tap an observatory.</dd>
+      <dt>Event</dt><dd><b>GW150914</b> (measured track) or <b>GW170817</b> (model-guided track, no blur).</dd>
+      <dt>Scene &middot; Data</dt><dd>The stage shows the pixel scene, or the roll and strain of Figures 1 and 2. Those two figures are always open in <a href="#data">The data</a>.</dd>
+      <dt>Keys</dt><dd>Click or drag the on-screen keys, or play <kbd>A W S E D F T G Y H U J K O L P ;</kbd> (DAW layout); <kbd>-</kbd> and <kbd>=</kbd> change octave. Each key's tint shows how much its pitch sounds in the current take.</dd>
+      <dt>Hear the detector</dt><dd>The real whitened strain around GW150914's merger, at real speed.</dd>
+      <dt>The renders</dt><dd>Each WAV deliverable plays on the page. <b>Show this MIDI on the roll</b> loads it into the instrument.</dd>
+      <dt>Figure 3 &middot; the jobs table</dt><dd>Click a take, or <b>Show on the roll</b> on a completed job, to put it on the roll.</dd>
+      <dt>Copy link to this view</dt><dd>Copies a link that reopens this event, take, speed, voices and loop.</dd>
+    </dl>
+  </section>
+
+  <section class="sec" id="data" aria-labelledby="h-data">
+    <div class="ink-bar"><h2 id="h-data">The data</h2><span>3 graphs &middot; real LIGO strain &middot; real blurred notes</span></div>
+
+    <figure class="fig" id="fig-roll" aria-labelledby="fig-roll-h">
+      <div class="fig-head">
+        <div><span class="label">Figure 1 &middot; live, from the MIDI files</span><h3 id="fig-roll-h">The chirp as notes, over the real scalogram</h3></div>
+        <div class="row"><span class="val" id="fig-take">&ndash;</span><button type="button" class="btn" id="play-fig" aria-pressed="false">Play</button></div>
+      </div>
+      <div class="plot">
+        <div class="roll-wrap">
+          <canvas id="roll-fig" tabindex="0" aria-label="Piano roll of the chirp over the real detector scalogram. Click to move the playhead, drag sideways to set a loop. Arrow keys move the playhead."></canvas>
+          <div class="hud" id="hud-fig" aria-live="off"></div>
+        </div>
+        <p class="plot-label"><span class="label">Figure 2 &middot; live</span><b id="fig-strip-h">The real strain, on the same clock</b></p>
+        <canvas id="strip-fig" role="img" aria-label="The real detector data under the roll, on the same clock: H1 above, L1 below. Click to move the playhead, drag sideways to set a loop."></canvas>
+      </div>
+      <p class="empty" id="empty-fig" hidden></p>
+      <ul class="legend" aria-label="Key to Figures 1 and 2">
+        <li><span class="sw" style="background:var(--v1)"></span>H1 Hanford</li>
+        <li><span class="sw" style="background:var(--v2)"></span>L1 Livingston</li>
+        <li><span class="sw dash"></span>the unblurred chirp, under a blurred take</li>
+        <li><span class="sw wash"></span>real wavelet scalogram</li>
+        <li><span class="sw head"></span>playhead</li>
+      </ul>
+      <figcaption class="cap">
+        <p><b>Figure 1.</b> Every bar is one note of the take on the instrument. Across is music time (GW150914: the real signal stretched &times;100; GW170817: one 0.3 s note per 16 wave cycles), up is MIDI pitch (the frequency &times;4). Dark ink is H1 Hanford and pale ink L1 Livingston, and the stronger the ink, the louder the note. Behind the notes is the event's real wavelet scalogram as a light ink wash. The box at the top left maps the playhead back to real detector time and frequency. Click to move the playhead, drag sideways to set a loop.</p>
+        <p><b>Figure 2.</b> <span id="fig-strip-cap">For GW150914, the real whitened, band-passed strain at H1 (top) and L1 (bottom), drawn where its half-waves sit in the music. For GW170817, whose signal is too faint to see, the measured along-track power of each 16-cycle note (H1 up, L1 down, log scale).</span> A muted voice's trace is hidden. It shares Figure 1's clock, so a click on it moves the playhead and a sideways drag sets a loop.</p>
+      </figcaption>
+    </figure>
+
+    <figure class="fig" id="fig-takes" aria-labelledby="fig-takes-h">
+      <div class="fig-head">
+        <div><span class="label">Figure 3 &middot; hero.png, drawn live</span><h3 id="fig-takes-h">Every take, side by side</h3></div>
+        <span class="val" id="takes-n"></span>
+      </div>
+      <div class="takes" id="takes" role="group" aria-label="The takes: click one to put it on the roll"></div>
+      <figcaption class="cap"><p><b>Figure 3.</b> The README's hero figure, drawn here from the same note lists the instrument plays: every take that exists, each over its event's real scalogram, with both voices on and the unblurred chirp as dashed outlines under the blurred takes. Across is music time, up is MIDI pitch. The take on the roll is boxed in ink and carries the playhead. Click a take to put it on the roll.</p></figcaption>
+    </figure>
+  </section>
+
+  <section class="sec" id="made" aria-labelledby="h-made">
+    <div class="ink-bar"><h2 id="h-made">How it was made</h2><span>classical tracking &middot; one quantum step</span></div>
+    <div class="cols">
+      <div class="prose">
+        <h3>Where the notes come from</h3>
+        <p><b>GW150914 (measured track).</b> We whiten 32 s of real H1 and L1 strain and build a wavelet scalogram (the glow behind the notes). Then we follow its ridge with a path that may only rise in frequency. The ridge phase is cut into half-cycles: <b>one note per half-wave of the real signal</b>. Each note's pitch is the ridge frequency &times;4 (two octaves up, so 30&ndash;175 Hz lands in a piano range). Its loudness is that half-wave's peak whitened strain, separately for each detector. Time is stretched &times;100: 0.22 s becomes 22 s.</p>
+        <p>Livingston recorded the wave <b id="d-lag">7.3</b> ms before Hanford (we measured this by cross-correlation; the sign flips because the two detectors' arms are rotated). Stretched &times;100, that becomes a 0.73 s canon between the left and right voices. The rising pitch and quickening rhythm are the chirp itself. A leading-order fit to the ridge gives a chirp mass near <b id="d-mc">35</b> M&#9737; (detector frame). It's a crude check: the catalogue value is 27.9 M&#9737; in the source frame, about 31 M&#9737; in the detector frame.</p>
+        <p><b>GW170817 (model-guided track).</b> The neutron-star signal is too faint to follow cycle by cycle, so its pitch line uses the leading-order chirp law with GWOSC's catalogue chirp mass (1.186 M&#9737;, z = 0.01). Only the merger time is fitted to the data. There is one note per 16 wave cycles, and each note's loudness is the real detector power along that stretch of the track. Along the track the power averages <b id="d-on">6.8</b>&times; the off-track level; the same test with the merger time shifted by &plusmn;2 s gives <b id="d-ctrl">1.65</b>&times;. L1's well-known glitch 1.1 s before the merger is gated out.</p>
+        <p><b>The scene.</b> What it draws from the data: one ripple per real half-wave (or per 16-cycle note for GW170817), its ink from the measured strain, its arrival at each detector exactly when that voice's note sounds, which arm stretches (it flips every half-wave), the orbit turning a quarter turn per half-wave, the separation from the ridge frequency (r &prop; f<sup>&minus;2/3</sup>) and the Newtonian km and v/c readouts from it, the merger at the measured peak, the strain traces between the observatories, every dot in the blur cloud, and one grain per blurred note that starts. What is real-world geometry: the shadows' 36&nbsp;:&nbsp;29&nbsp;:&nbsp;62 sizes; each observatory's arms at their true bearings, 3994.5&nbsp;m long, with the end stations at 4&nbsp;km (and Hanford's mid stations at 2&nbsp;km), projected through a camera over the site; and at Hanford the two named summits of the Rattlesnake Hills at their real bearings and heights. What is drawn: the lensing strength, the stars, band and galaxy, the ringdown shape (its 251&nbsp;Hz, 4&nbsp;ms timing is GR's prediction), the neutron stars' fields and beams, the flash, the grains' paths, the buildings' footprints and their enlargement (the corner stations 1.6&times;, the mid and end stations 3.5&times;), the cut-away optics (a schematic), the light in the tubes, the 2-pixel stretch, the hills' height (&times;2.5), the ground and forest textures, and every distance between the source and the Earth. The ripple speed is chosen so that the 0.73 s canon fits between the two observatories on your screen.</p>
+      </div>
+      <div class="prose">
+        <h3>What the quantum engine did</h3>
+        <p>Atlas <b>blur-midi-v1</b> (Quantum Blur for MIDI) turns each MIDI track into a piano roll (pitch &times; time) and blurs it as a height map with a quantum circuit on Atlas's simulator. It then rebuilds notes wherever the blurred velocity rises above a noise gate (threshold 0.1 of the loudest). In the engine's own words, <b>reach</b> 0 is "fully local: only neighbouring pitches/times mix" and reach 1 is "fully non-local: any pitch can mix with any other". The engine describes the blur as unitary and information-preserving; the noise gate that turns it back into notes is not.</p>
+        <p>We asked for <b>qubits = 20</b>, the engine's maximum per pass, and a step of 2 MIDI ticks. Quantum Blur stores a w &times; h grid in &lceil;log&#8322; w&rceil; + &lceil;log&#8322; h&rceil; qubits (the rule Atlas documents for blur-v1). Each of our tracks is about 42 pitch rows (the 32-semitone span plus the engine's 15% margin) &times; 11,600 steps, so that is 6 + 14 = <b>20 qubits</b>. This is our calculation; the engine doesn't report the width. The archived job records show qubits = 20 and resolution = 2 were sent, and the reach-0.5 output spans exactly MIDI 41&ndash;82, the 42 rows we assumed.</p>
+        <p>What you hear at reach 0: every half-wave becomes a two-note cluster with a neighbouring semitone, plus faint 2&ndash;6 ms pre-echoes just before each onset. At reach 0.5 the merger's notes scatter across the whole 25 s, before and after the event, as a cloud of 9,444 mostly tiny notes. Notes shorter than 40 ms are too short to hear, so the synth plays them as 40 ms grains, capped at 96 voices at once.</p>
+        <p class="honesty" id="d-missing"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="science" aria-labelledby="h-sci">
+    <div class="ink-bar"><h2 id="h-sci">The science</h2><span>Who is who in the scene &middot; data or decoration</span></div>
+    <p class="lede">Each card is one thing in the scene: what it is in the real event, and which parts of its drawing come from the data.</p>
+    <div class="cast" aria-label="Who is who in the scene">
+        <div class="cast-grid">
+        <div class="cast-i"><span class="ic"><img data-sp="mascot" data-k="2" alt=""></span><p><b>The black holes</b> of GW150914, drawn as what you would see: each dark disc is a shadow, &radic;27&nbsp;GM/c&sup2; in radius, so the two are sized by mass, <b>36&nbsp;:&nbsp;29&nbsp;M&#9737;</b> (Abbott et al., PRL 116, 061102). A thin photon ring edges each one, and the background sky is bent around them: the page ray-traces two point-mass lenses for every pixel, every frame (the lensing strength is chosen for the eye). They turn a quarter orbit per real half-wave and close in as r&nbsp;&prop;&nbsp;f<sup>&minus;2/3</sup>; the km and fraction-of-c readouts are Newtonian Kepler estimates from the ridge frequency. The orbit is drawn 1.4&times; wider than the shadows' own scale, so the two stay apart until the last few half-waves, when they flow into one outline.</p></div>
+        <div class="cast-i"><span class="ic"><img data-sp="remnant" data-k="2" alt=""></span><p><b>After the peak,</b> one 62&nbsp;M&#9737; hole, its shadow on the same scale. Its outline rings at the remnant's l=m=2 quasi-normal mode, 251&nbsp;Hz with a 4.0&nbsp;ms decay (Abbott et al., PRL 116, 221101), slowed &times;100 like the music: GR's prediction for the measured remnant, drawn, not measured here. The missing 3&nbsp;M&#9737; left as the waves you are hearing.</p></div>
+        <div class="cast-i"><span class="ic"><img data-sp="ns" data-k="3" alt=""></span><p><b>GW170817's neutron stars</b>, 1.46 and 1.27&nbsp;M&#9737; (GWTC-1). Each is about 24&nbsp;km across (a neutron star's radius barely depends on its mass), so they are drawn the same size: small bright spheres, darkening to the limb, three times the orbit's own scale so that they show, in front of their host galaxy NGC 4993, 40&nbsp;Mpc away. They turn a quarter orbit per note (really 8 orbits per note) and close in as r&nbsp;&prop;&nbsp;f<sup>&minus;2/3</sup> along the model frequency. The flash is decoration: gamma rays arrived 1.7&nbsp;s after the merger and the kilonova was seen about 11 hours later.</p></div>
+        <div class="cast-i big"><span class="ic"><img data-sp="obsH" data-k="auto" alt=""></span><p><b>LIGO Hanford, H1</b>, from the air: the camera hangs behind the outside corner of the L and looks along the bisector of the two arms, which run 4&nbsp;km NW (324&deg;) and SW (234&deg;) across the sagebrush steppe. Each arm is a 1.2&nbsp;m steel beam tube under an arched concrete cover, with a mid station at 2&nbsp;km (it held an end mirror of Hanford's former second, 2&nbsp;km interferometer) and an end station at 4&nbsp;km. On the skyline are the Rattlesnake Hills, with Rattlesnake Mountain (1,076&nbsp;m) 17.6&nbsp;km away at its real bearing; the arrow on the ground points north. The corner station's roof is cut away. Inside, the laser feeds the beam splitter, which sends the light through the two input test masses, down the arms to the end test masses (40&nbsp;kg fused-silica mirrors, 34&nbsp;cm across) and back; any difference in arm length leaks light to the photodetector at the dark port. Drawn, not measured: the building footprints (approximate), the corner station at 1.6&times; and the outer stations at 3.5&times; their size, the optics' layout (a schematic), and the hills' height (&times;2.5).</p></div>
+        <div class="cast-i big"><span class="ic"><img data-sp="obsL" data-k="auto" alt=""></span><p><b>LIGO Livingston, L1</b>: the same instrument, seen the same way along its own arms, which run WSW (252.3&deg;) and SSE (162.3&deg;) through cleared strips in loblolly pine forest. Its buildings stand at the corner and the two ends only: it never had Hanford's 2&nbsp;km interferometer, so it has no mid stations. When a real half-wave lands, light runs through the corner station and out along both arms, one arm stretches while the other squeezes (its end station shifts 2&nbsp;px), and which one flips every half-wave because the strain changes sign; the photodetector flashes. At GW150914's peak (strain 10<sup>&minus;21</sup>) the real change was about 4&times;10<sup>&minus;18</sup>&nbsp;m on a 4&nbsp;km arm, and the light is infrared and hidden inside the tubes, so the stretch and the light are both drawn. Between the two sites run their real whitened strain traces. Tap a site to mute its voice: its laser goes off.</p></div>
+        <div class="cast-i"><span class="ic"><img data-sp="ripple" data-k="2" alt=""></span><p><b>A ripple</b> is one real half-wave leaving the pair. Its ink is the measured strain: on the sky the lighter, and on the ground the darker, the louder. It lands on Livingston 7.3&nbsp;ms (0.73&nbsp;s here) before Hanford, as it did at 09:50:45 UTC on 14 September 2015, when it was night at both sites.</p></div>
+        <div class="cast-i"><span class="ic"><img data-sp="cloud" data-f="0.5" data-k="2" alt=""></span><p><b>The quantum blur</b> (blur-midi-v1, Atlas simulator, 20 qubits) is not a character: it is a cloud, and every dot in it is a real note of the current setting within 1.5&nbsp;s of the playhead (across: time; up: pitch). At reach&nbsp;0 the half-waves become tight clusters; at reach&nbsp;0.5 the merger's notes scatter across the whole take. One grain flies per blurred note that starts (a real count; the flight and the one-pixel shimmer are decoration). Tap the cloud to change the reach.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="claims" aria-labelledby="h-claims">
+    <div class="ink-bar"><h2 id="h-claims">What this does not claim</h2><span>honesty notes</span></div>
+    <div class="prose">
+      <p class="honesty">This is a classical sonification of public LIGO data. The tracking, the MIDI, the synth and the WAV renders are all classical. Only the blur is a quantum circuit, and it ran on Atlas's simulator, not on quantum hardware. Nothing here detects, measures or improves anything about gravitational waves, and the blur has no physical link to them: it is an audio effect. There is no quantum advantage. GW170817's pitch comes from a textbook model, not from tracking. The &times;100 time stretch and &times;4 pitch shift are artistic choices, so this is not what the wave "sounds like". For the real thing, press <i>Hear the detector</i>.</p>
+      <p class="honesty">The scene is classical too, and it is a labelled plate, not a simulation: the lensing is a thin-lens sketch through two point masses (a real binary's shadow is more intricate), the separations are Newtonian estimates, the observatories are drawn from published geometry but with their buildings enlarged and the optics as a schematic, and the source, the Earth and the detectors are not drawn to one scale.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="credits" aria-labelledby="h-credits">
+    <div class="ink-bar"><h2 id="h-credits">Jobs and credits</h2><span id="jobs-sum">blur-midi-v1 &middot; Atlas simulator</span></div>
+    <figure class="fig" id="fig-jobs" aria-labelledby="jobs-h">
+      <div class="fig-head"><div><span class="label">From out/jobs.csv</span><h3 id="jobs-h">The Atlas jobs</h3></div></div>
+      <div class="tbl"><table class="jobs-t"><thead><tr><th scope="col">Event</th><th scope="col">Setting</th><th scope="col">Outcome</th><th scope="col">Job</th><th scope="col"><span class="sr">Action</span></th></tr></thead><tbody id="jobs"></tbody></table></div>
+      <figcaption class="cap"><p id="jobs-note"></p></figcaption>
+    </figure>
+    <div class="prose">
+      <h3>Data and credits</h3>
+      <p>Strain data from the Gravitational Wave Open Science Center (gwosc.org), licensed CC BY 4.0. "This research has made use of data or software obtained from the Gravitational Wave Open Science Center (gwosc.org), a service of the LIGO Scientific Collaboration, the Virgo Collaboration, and KAGRA." Catalogue parameters come from GWTC-2.1 (GW150914) and GWTC-1 (GW170817) via the GWOSC event API. The masses on the scene's cast cards (36, 29 and 62 M&#9737;, 3 M&#9737; radiated) are from the discovery paper below.</p>
+      <p>Abbott et al. (LIGO/Virgo), &ldquo;Observation of Gravitational Waves from a Binary Black Hole Merger&rdquo;, PRL 116, 061102 (2016). Abbott et al., &ldquo;GW170817: Observation of Gravitational Waves from a Binary Neutron Star Inspiral&rdquo;, PRL 119, 161101 (2017). Abbott et al., &ldquo;The basic physics of the binary black hole merger GW150914&rdquo;, Annalen der Physik 529, 1600209 (2017). Abbott et al., &ldquo;Open data from the first and second observing runs of Advanced LIGO and Advanced Virgo&rdquo;, SoftwareX 13, 100658 (2021).</p>
+      <p>Pixel art: drawn for this piece in the shared ink palette (make_sprites.py writes web/sprites.json; it projects each observatory's geometry through a camera, and the page ray-traces the lensed sky itself), animated with the shared InkSprite helper. No photographs were traced or embedded. Site vertices and arm bearings: Abbott et al., Nucl. Instrum. Meth. A 517, 154 (2004), site table (x-arms 324.0&deg; and 252.3&deg;; each y-arm 90&deg; anticlockwise of it). Arm length 3994.5&nbsp;m and the 40&nbsp;kg, 34&nbsp;cm test masses: Aasi et al., &ldquo;Advanced LIGO&rdquo;, Class. Quantum Grav. 32, 074001 (2015). The 1.2&nbsp;m beam tubes under arched concrete enclosures, and the white and blue buildings: Abbott et al., &ldquo;LIGO: the Laser Interferometer Gravitational-Wave Observatory&rdquo;, Rep. Prog. Phys. 72, 076901 (2009). Rattlesnake Mountain (1,076&nbsp;m) and Lookout Summit (1,106&nbsp;m), positions and heights: their Wikipedia articles, checked 5 Oct 2026. Hanford's corner, mid and end stations, and Livingston's corner and end stations only: Daw et al., &ldquo;Long term study of the seismic environment at LIGO&rdquo;, Class. Quantum Grav. 21, 2255 (2004), Fig.&nbsp;1. The building footprints are approximate. Ringdown: Abbott et al., &ldquo;Tests of General Relativity with GW150914&rdquo;, PRL 116, 221101 (2016). GW170817 masses: Abbott et al., &ldquo;GWTC-1&rdquo;, Phys. Rev. X 9, 031040 (2019).</p>
+    </div>
+  </section>
+  <!--NAV-->
+  <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+// ===== pure logic (no DOM): unit-tested with node =====
+const EVENTS = /*EVENTS*/[];
+const REACHES = [null, 0, 0.5, 1];
+const STRENGTHS = [0.5, 1];
+const NAMES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+function midiName(p){return NAMES[((p%12)+12)%12]+(Math.floor(p/12)-1);}
+function setFor(ev, strength, ri){
+  if(ri===0) return ev.sets[0];
+  return ev.sets.find(s=>s.reach===REACHES[ri]&&s.strength===strength)||null;
+}
+function availability(ev, strength){return REACHES.map((_,i)=>!!setFor(ev,strength,i));}
+function nearestAvailable(ev, strength, ri){
+  const av=availability(ev,strength); if(av[ri]) return ri;
+  for(let d=1;d<4;d++){if(av[ri-d])return ri-d; if(av[ri+d])return ri+d;}
+  return 0;
+}
+function strengthsWithData(ev){return STRENGTHS.filter(s=>ev.sets.some(x=>x.strength===s));}
+// the tap grid: onsets of the UNBLURRED chirp (one per half-wave) for the voices that are on
+function tapGrid(orig, voiceOn){
+  const g=[]; for(const n of orig){ if(!voiceOn[n[4]]) continue; if(!g.length||n[0]-g[g.length-1]>0.03) g.push(n[0]); }
+  return g;
+}
+// one tap = the next half-wave after `pos`, and every note of the current setting that starts in it
+// (from 20 ms before its onset, to catch the blur's pre-echoes, up to the next half-wave); loudest `cap` kept
+function tapWindow(grid, notes, pos, voiceOn, lo, hi, cap){
+  cap=cap||16; let i=grid.findIndex(t=>t>pos+1e-6&&t>=lo-1e-6);
+  if(i<0||grid[i]>=hi) i=grid.findIndex(t=>t>=lo-1e-6);
+  if(i<0||grid[i]>=hi) return null;
+  const t=grid[i], t2=i+1<grid.length?Math.min(grid[i+1],hi):hi;
+  const out=notes.filter(n=>voiceOn[n[4]]&&n[0]>=t-0.02&&n[0]<t2-0.02).sort((a,b)=>b[3]-a[3]).slice(0,cap);
+  return {t, t2, k:i, notes:out};
+}
+// first index with onset >= t (notes sorted by onset)
+function lowerBound(notes, t){let lo=0,hi=notes.length;while(lo<hi){const m=(lo+hi)>>1;if(notes[m][0]<t)lo=m+1;else hi=m;}return lo;}
+function sounding(notes, pos, voiceOn, minDur){
+  minDur=minDur||0.04; const out=[];
+  for(const n of notes){if(n[0]>pos)break; if(voiceOn[n[4]]&&pos<n[0]+Math.max(n[1],minDur))out.push(n);}
+  return out;
+}
+function lerpMap(map, m){
+  if(!map.length||m<map[0][0]||m>map[map.length-1][0]) return null;
+  let i=1; while(i<map.length&&map[i][0]<m) i++;
+  if(i>=map.length) return [map[map.length-1][1], map[map.length-1][2]];
+  const a=map[i-1], b=map[i], u=b[0]===a[0]?0:(m-a[0])/(b[0]-a[0]);
+  return [a[1]+u*(b[1]-a[1]), a[2]+u*(b[2]-a[2])];
+}
+function clampLoop(a,b,T){a=Math.max(0,Math.min(T,a));b=Math.max(0,Math.min(T,b));if(b<a){const s=a;a=b;b=s;}if(b-a<0.2)b=Math.min(T,a+0.2);return [+a.toFixed(2),+b.toFixed(2)];}
+function velGain(v){return 0.22*Math.pow(v/127,1.6);}
+function usage(notes, pmin, pmax){
+  const u={}; let mx=0;
+  for(const n of notes){u[n[2]]=(u[n[2]]||0)+n[3]*Math.max(n[1],0.04); mx=Math.max(mx,u[n[2]]);}
+  for(const k in u) u[k]=mx?u[k]/mx:0;
+  return u;
+}
+function keyLayout(pmin, pmax){
+  const lo=pmin-((pmin%12)+12)%12, black=[1,3,6,8,10];
+  let hi=pmax+(11-((pmax%12)+12)%12);
+  const keys=[]; let w=0;
+  for(let p=lo;p<=hi;p++){const b=black.includes(((p%12)+12)%12); keys.push({p,black:b,white:b?null:w}); if(!b)w++;}
+  return {keys, whites:w, lo, hi};
+}
+// shareable state in #token: letters, digits . _ ~ - only
+function encodeHash(s){
+  let h=`e${s.ev}_r${s.ri}_s${s.si}_v${Math.round(s.speed*100)}_m${(s.voices[0]?1:0)+(s.voices[1]?2:0)}`;
+  if(s.loop) h+=`_l${s.loopA.toFixed(2)}-${s.loopB.toFixed(2)}`;
+  return h;
+}
+function decodeHash(h){
+  const m=String(h||'').replace(/^#/,'').match(/^e(\d)_r(\d)_s(\d)_v(\d+)_m(\d)(?:_l([\d.]+)-([\d.]+))?$/);
+  if(!m) return null;
+  const mask=+m[5];
+  return {ev:+m[1], ri:+m[2], si:+m[3], speed:Math.max(0.25,Math.min(2,+m[4]/100)), voices:[!!(mask&1),!!(mask&2)],
+          loop:m[6]!==undefined, loopA:m[6]!==undefined?+m[6]:0, loopB:m[7]!==undefined?+m[7]:0};
+}
+// why a planned blur setting has no data. plan[].failed lists the ledgered attempts the engine failed
+// ("did not respond in time"); a plan entry with no failed attempts was never submitted (credit cap reached).
+function planLabel(p){return `s${p.strength}/r${p.reach}`;}
+function missing(ev){
+  const done=[], timedOut=[], never=[];
+  for(const p of ev.plan){
+    if(p.status==='completed') done.push(planLabel(p));
+    else if(p.failed&&p.failed.length) timedOut.push({label:planLabel(p), n:p.failed.length});
+    else never.push(planLabel(p));
+  }
+  return {done, timedOut, never};
+}
+function missReason(ev, strength, reach){
+  const p=ev.plan.find(q=>q.strength===strength&&q.reach===reach);
+  if(!p) return 'not in the plan';
+  if(p.status==='completed') return '';
+  return p.failed&&p.failed.length?`submitted ${p.failed.length} times, and every attempt failed with an engine timeout`:'never submitted, because the credit cap was reached first';
+}
+function missingSentence(ev){
+  const m=missing(ev), parts=[];
+  if(m.timedOut.length) parts.push(`submitted but failed with engine timeouts: ${m.timedOut.map(x=>`${x.label} (${x.n} attempts)`).join(', ')}`);
+  if(m.never.length) parts.push(`never submitted (credit cap reached): ${m.never.join(', ')}`);
+  return `${ev.id}: completed ${m.done.length?m.done.join(', '):'none'}`+(parts.length?'; '+parts.join('; '):'')+'.';
+}
+function emptyNote(ev){
+  const m=missing(ev); if(m.done.length) return '';
+  const bits=m.timedOut.map(x=>`${x.label} was submitted ${x.n} times and every attempt failed with an engine timeout.`);
+  if(m.never.length) bits.push(`${m.never.join(' and ')} ${m.never.length===1?'was':'were'} never submitted (credit cap reached).`);
+  return `No quantum blur for ${ev.id}. ${bits.join(' ')} You are hearing the classical sonification only.`;
+}
+// DAW-style computer keyboard: semitone offsets from the base C
+const KEYMAP={a:0,w:1,s:2,e:3,d:4,f:5,t:6,g:7,y:8,h:9,u:10,j:11,k:12,o:13,l:14,p:15,';':16};
+// ----- the scene's bookkeeping (pure). One ripple per real half-wave (GW150914) or per 16-cycle note (GW170817),
+// with the music time at which it reaches each detector (= when that voice's unblurred note starts) and its strain.
+function rippleList(ev){
+  const orig=ev.sets[0].notes;
+  const velAt=(t,v)=>{let best=0,bd=1e9; for(const n of orig){ if(n[4]!==v) continue; const d=Math.abs(n[0]-t); if(d<bd){bd=d;best=n[3];} } return bd<0.05?best:0;};
+  const src=ev.notes_meta?ev.notes_meta.map(n=>({tH:n[0],tL:n[1],f:n[3]})):ev.map.map(m=>({tH:m[0],tL:m[0],f:m[2]}));
+  return src.map(r=>Object.assign(r,{vH:velAt(r.tH,0),vL:velAt(r.tL,1)}));
+}
+// fractional index of time t on a sorted grid s (linear extrapolation before the first and after the last point)
+function fracIndex(s,t){
+  const n=s.length; if(n<2) return 0;
+  if(t<=s[0]) return (t-s[0])/((s[1]-s[0])||1);
+  if(t>=s[n-1]) return n-1+(t-s[n-1])/((s[n-1]-s[n-2])||1);
+  let lo=0,hi=n-1; while(hi-lo>1){const m=(lo+hi)>>1; if(s[m]<=t) lo=m; else hi=m;}
+  return lo+(t-s[lo])/((s[hi]-s[lo])||1);
+}
+// a half-wave of the wave is a quarter turn of the orbit: gravitational waves run at twice the orbital frequency
+function orbitAngle(s,t){return fracIndex(s,t)*Math.PI/2;}
+// the wave frequency leaving the pair at time t (held flat outside the tracked stretch)
+function freqAt(rips,s,t){
+  const k=fracIndex(s,t), n=rips.length; if(k<=0) return rips[0].f; if(k>=n-1) return rips[n-1].f;
+  const i=Math.floor(k), u=k-i; return rips[i].f+u*(rips[i+1].f-rips[i].f);
+}
+// Kepler's third law: separation r is proportional to f^(-2/3); normalised to the first ripple and clamped for drawing
+function separation(f,f0){return Math.max(0.25,Math.min(1.08,Math.pow(f/f0,-2/3)));}
+// the ripple speed (scene px per music second) that lands it on the far detector exactly `lag` after the near one;
+// with no lag (GW170817's voices are simultaneous) it takes 1 s to reach them
+// (with no measured lag, as for GW170817, the ripple takes 1 s to cross; quick, 0.25 s, when the maps are stacked on a
+// phone, so it reaches both within a few hundredths of a second, as the two notes do)
+function rippleSpeed(dNear,dFar,lag,quick){return lag>0.05&&dFar-dNear>4?(dFar-dNear)/lag:Math.max(dNear,dFar,1)/(quick?0.25:1.0);}
+// music time (on the H1 clock) of the merger: the measured peak for GW150914, the end of the model track for GW170817
+function mergeTime(ev){
+  if(ev.t_peak!=null) return ev.lead_in+(ev.t_peak-ev.t0_real)*ev.stretch;
+  const last=ev.map[ev.map.length-1]; return last[0]+ev.note_s;
+}
+// the last unblurred onset of voice v at or before t, and how long ago it was (for a detector's ping)
+function lastOnset(notes,t,v){
+  for(let i=lowerBound(notes,t+1e-6)-1,k=0;i>=0&&k<400;i--,k++){const n=notes[i]; if(n[4]===v) return {n,age:t-n[0]};}
+  return null;
+}
+// how many notes of a set start in (a, b] for the voices that are on
+function startsIn(notes,a,b,voiceOn){let c=0; for(let i=lowerBound(notes,a+1e-9);i<notes.length&&notes[i][0]<=b;i++) if(voiceOn[notes[i][4]]) c++; return c;}
+// ----- the source, for the scene's sizes and readouts. Source-frame masses (Msun) and redshift: GW150914 from Abbott et al.,
+// PRL 116, 061102 (36 + 29 -> 62, z = 0.09); GW170817 from GWTC-1 (1.46 + 1.27, low-spin prior; z = 0.0099).
+// The l=m=2 ringdown of GW150914's remnant: 251 Hz, 4.0 ms (Abbott et al., PRL 116, 221101).
+const SOURCE={GW150914:{m:[36,29],mf:62,z:0.09,fq:251,tq:0.004,dist:'410 MPC, 1.3 BILLION LY',utc:'14 SEP 2015, 09:50:45 UTC'},
+              GW170817:{m:[1.46,1.27],z:0.0099,dist:'40 MPC, 130 MILLION LY',utc:'17 AUG 2017, 12:41:04 UTC'}};
+const GM_SUN=1.32712e20, C_LIGHT=2.99792458e8, KM_PER_MSUN=1.4766;   // GM/c^2 of the Sun is 1.4766 km
+// Newtonian Kepler for a circular binary from the detector-frame wave frequency: the orbital angular frequency is
+// pi f (1+z) in the source frame; separation a = (GM/w^2)^(1/3), relative speed v = (GM w)^(1/3)
+function kepler(fGW,Mtot,z){const w=Math.PI*fGW*(1+z); return {km:Math.cbrt(GM_SUN*Mtot/(w*w))/1e3, v:Math.cbrt(GM_SUN*Mtot*w)/C_LIGHT};}
+// the radius of a non-spinning black hole's shadow, sqrt(27) GM/c^2 (2.6 Schwarzschild radii), in km: proportional to mass
+function shadowKm(M){return Math.sqrt(27)*KM_PER_MSUN*M;}
+</script>
+<script>
+// the cast: pixel art from web/sprites.json (written by make_sprites.py) and the shared helper common/inksprite.js,
+// both inlined at build time
+const SPRITES=/*SPRITES*/{};
+/*INKSPRITE*/
+</script>
+<script>
+// ===== the instrument =====
+const $=id=>document.getElementById(id);
+const st={ev:0, ri:0, si:0, voices:[true,true], playing:false, pos:0, speed:1, loop:false, loopA:0, loopB:0,
+          ghost:true, base:48, held:new Map(), lit:[], preset:'whole'};
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const toast=(msg)=>{const t=$('toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),Math.max(2200,60*msg.length));};
+const EV=()=>EVENTS[st.ev];
+const SET=()=>setFor(EV(), STRENGTHS[st.si], st.ri)||EV().sets[0];
+const T=()=>EV().t_total;
+
+// ---------- audio ----------
+let ctx=null, bus=null, master=null, voicesLive=0;
+function ensureAudio(){
+  if(ctx){if(ctx.state==='suspended')ctx.resume();return ctx;}
+  const AC=window.AudioContext||window.webkitAudioContext; if(!AC){toast('Web Audio is not available in this browser');return null;}
+  ctx=new AC();
+  master=ctx.createGain(); master.gain.value=+$('vol').value;
+  const comp=ctx.createDynamicsCompressor(); comp.threshold.value=-14; comp.ratio.value=4;
+  const dl=ctx.createDelay(1), fb=ctx.createGain(), wet=ctx.createGain();
+  dl.delayTime.value=0.27; fb.gain.value=0.28; wet.gain.value=0.2;
+  bus=ctx.createGain();
+  bus.connect(master); bus.connect(dl); dl.connect(fb); fb.connect(dl); dl.connect(wet); wet.connect(master);
+  master.connect(comp); comp.connect(ctx.destination);
+  return ctx;
+}
+function grain(p, v, t, dur, pan){   // notes under 0.1 s: one oscillator, short envelope
+  const f=440*Math.pow(2,(p-69)/12), o=ctx.createOscillator(), env=ctx.createGain();
+  o.type='triangle'; o.frequency.value=f; o.connect(env);
+  let out=env; if(ctx.createStereoPanner){const pn=ctx.createStereoPanner(); pn.pan.value=pan; env.connect(pn); out=pn;}
+  out.connect(bus);
+  const peak=velGain(v), end=t+Math.max(dur,0.04);
+  env.gain.setValueAtTime(0,t); env.gain.linearRampToValueAtTime(peak,t+0.006); env.gain.setValueAtTime(peak,end); env.gain.setTargetAtTime(0,end,0.015);
+  voicesLive++; o.onended=()=>{voicesLive--;}; o.start(t); o.stop(end+0.1);
+}
+function voice(p, v, t, dur, pan, sustain){
+  if(!ctx||voicesLive>96) return null;
+  if(!sustain&&dur<0.1){grain(p,v,t,dur,pan); return null;}
+  const f=440*Math.pow(2,(p-69)/12);
+  const o1=ctx.createOscillator(), o2=ctx.createOscillator(), g2=ctx.createGain(), lp=ctx.createBiquadFilter(), env=ctx.createGain();
+  o1.type='triangle'; o1.frequency.value=f; o2.type='sine'; o2.frequency.value=2*f; g2.gain.value=0.25;
+  lp.type='lowpass'; lp.frequency.value=Math.min(6*f,8000); lp.Q.value=0.3;
+  o1.connect(lp); o2.connect(g2); g2.connect(lp); lp.connect(env);
+  let out=env; if(ctx.createStereoPanner){const pn=ctx.createStereoPanner(); pn.pan.value=pan; env.connect(pn); out=pn;}
+  out.connect(bus);
+  const peak=velGain(v), a=t+0.008, dEnd=t+0.128;
+  env.gain.setValueAtTime(0,t); env.gain.linearRampToValueAtTime(peak,a);
+  voicesLive++; o1.onended=()=>{voicesLive--;};
+  o1.start(t); o2.start(t);
+  const stopAt=(end)=>{env.gain.setTargetAtTime(0,end,0.0625); o1.stop(end+0.45); o2.stop(end+0.45);};
+  if(sustain){env.gain.linearRampToValueAtTime(peak*0.55,dEnd);
+    return {release(){const now=ctx.currentTime; env.gain.cancelScheduledValues(now); env.gain.setValueAtTime(Math.max(env.gain.value,0.0001),now); stopAt(now);}};}
+  const end=t+Math.max(dur,0.04);
+  if(end>dEnd){env.gain.linearRampToValueAtTime(peak*0.55,dEnd); env.gain.setValueAtTime(peak*0.55,end);}
+  else env.gain.linearRampToValueAtTime(peak*(1-0.45*(end-a)/0.12),end);
+  stopAt(end); return null;
+}
+const PAN=[-0.45,0.45];
+
+// ---------- transport (look-ahead scheduler) ----------
+let anchors=[], schedPos=0, timer=null;
+function posNow(){
+  if(!st.playing||!ctx) return st.pos;
+  const now=ctx.currentTime; let a=anchors[0];
+  for(const x of anchors) if(x.c<=now) a=x;
+  return a.p+(now-a.c)*st.speed;
+}
+function bounds(){return st.loop?[st.loopA,st.loopB]:[0,T()];}
+function tick(){
+  const now=ctx.currentTime, horizon=now+0.12, [A,B]=bounds();
+  let guard=0;
+  while(guard++<4){
+    const last=anchors[anchors.length-1];
+    const pH=last.p+(horizon-last.c)*st.speed;
+    const upto=Math.min(pH,B), notes=SET().notes;
+    for(let i=lowerBound(notes,schedPos);i<notes.length&&notes[i][0]<upto;i++){
+      const n=notes[i]; if(!st.voices[n[4]]) continue;
+      const tAt=last.c+(n[0]-last.p)/st.speed;
+      voice(n[2],n[3],Math.max(now,tAt),Math.min(n[1],4)/st.speed,PAN[n[4]],false);
+    }
+    if(pH>=B){
+      const tw=last.c+(B-last.p)/st.speed;
+      if(st.loop){anchors.push({c:tw,p:A}); schedPos=A; if(anchors.length>6)anchors.shift(); continue;}
+      schedPos=B; setTimeout(()=>{if(st.playing){stop();st.pos=T();draw();}},Math.max(0,(tw-now)*1000)); break;
+    }
+    schedPos=upto; break;
+  }
+}
+function play(){
+  if(!ensureAudio()) return;
+  pauseRenders(null); tapAnim=null;
+  const [A,B]=bounds(); if(st.pos<A||st.pos>=B-0.01) st.pos=A;
+  st.playing=true; anchors=[{c:ctx.currentTime+0.03,p:st.pos}]; schedPos=st.pos;
+  tick(); timer=setInterval(tick,25); setPlayUI(); loop();
+}
+function stop(){ if(st.playing){st.pos=posNow();} st.playing=false; clearInterval(timer); timer=null; setPlayUI(); draw(); }
+function seek(p){
+  const [A,B]=st.loop?[st.loopA,st.loopB]:[0,T()]; p=Math.max(0,Math.min(T(),p)); tapAnim=null;
+  if(st.playing){ if(p<A||p>=B) p=A; anchors=[{c:ctx.currentTime,p}]; schedPos=p; } else st.pos=p;
+  draw();
+}
+function setPlayUI(){for(const b of [$('play'),$('play-fig')]){b.textContent=st.playing?'Pause':'Play'; b.setAttribute('aria-pressed',String(st.playing));}}
+
+// ---------- tap: the user is the clock ----------
+function tap(){
+  if(!ensureAudio()) return;
+  if(st.playing) stop();
+  const [A,B]=bounds(), grid=tapGrid(EV().sets[0].notes,st.voices);
+  const g=tapWindow(grid,SET().notes,st.pos,st.voices,A,B,16);
+  if(!g){toast('No half-waves in this stretch for the voices that are on');return;}
+  const now=ctx.currentTime, grp=g.notes;
+  for(const n of grp) voice(n[2],n[3],now,Math.min(Math.max(n[1],0.04),1.6),PAN[n[4]],false);
+  st.pos=g.t; st.lit=grp.map(n=>({n,until:performance.now()+1000*Math.min(Math.max(n[1],0.12),1.6)}));
+  // the scene's clock runs on from this half-wave and parks just before the next one, waiting for the next tap
+  const w=performance.now(), until=Math.max(g.t,g.t2-0.03);
+  tapAnim=reduce?null:{t:g.t, w, until, end:w+1000*(until-g.t)/st.speed+400};
+  padHit=w;
+  const pad=$('pad'); pad.classList.add('hit'); clearTimeout(pad._h); pad._h=setTimeout(()=>pad.classList.remove('hit'),110);
+  loop();
+}
+let tapAnim=null, padHit=-1e9;
+// the time the scene shows: the transport while playing; after a tap, a short run from that half-wave towards the next
+function visPos(){
+  if(st.playing) return posNow();
+  if(tapAnim) return Math.min(tapAnim.t+(performance.now()-tapAnim.w)/1000*st.speed, tapAnim.until);
+  return st.pos;
+}
+
+// ---------- keyboard ----------
+let layout=null;
+function buildKeys(){
+  const ev=EV(); layout=keyLayout(ev.pmin-2, ev.pmax+2);
+  const el=$('keys'); el.innerHTML=''; $('keys-in').style.minWidth=(layout.whites*24)+'px';
+  const ww=100/layout.whites;
+  for(const k of layout.keys){
+    const d=document.createElement('div'); d.className='k'+(k.black?' b':''); d.dataset.p=k.p;
+    if(k.black){let prevW=0; for(const q of layout.keys){if(q.p>=k.p)break; if(!q.black)prevW=q.white;}
+      d.style.left=`calc(${(prevW+1)*ww}% - ${ww*0.3}%)`; d.style.width=(ww*0.6)+'%';}
+    if(!k.black&&k.p%12===0){const i=document.createElement('i');i.textContent=midiName(k.p);d.appendChild(i);}
+    el.appendChild(d);
+  }
+  st.base=Math.max(layout.lo, Math.min(layout.hi-16, 12*Math.floor(((ev.pmin+ev.pmax)/2)/12)));
+  shadeKeys();
+}
+function shadeKeys(){
+  const u=usage(SET().notes.filter(n=>st.voices[n[4]]));
+  for(const d of $('keys').children) d.style.setProperty('--u',(u[d.dataset.p]||0).toFixed(3));
+}
+function noteOn(p, id){
+  if(!ensureAudio()) return; if(st.held.has(id)) return;
+  const h=voice(p,96,ctx.currentTime,0,0,true); st.held.set(id,{p,h}); keyFx(p,true); loop();
+}
+function noteOff(id){const x=st.held.get(id); if(x){x.h&&x.h.release(); st.held.delete(id); draw();}}
+(function keysPointer(){
+  const el=$('keys'); let cur=null, pid=null;
+  const at=(e)=>{const t=document.elementFromPoint(e.clientX,e.clientY); return t&&t.closest?t.closest('.k'):null;};
+  el.addEventListener('pointerdown',e=>{pid=e.pointerId; el.setPointerCapture(pid); const k=at(e); if(k){cur=k; noteOn(+k.dataset.p,'ptr');}});
+  el.addEventListener('pointermove',e=>{if(pid!==e.pointerId)return; const k=at(e); if(k&&k!==cur){noteOff('ptr'); cur=k; noteOn(+k.dataset.p,'ptr');}});
+  const up=()=>{noteOff('ptr'); cur=null; pid=null;};
+  el.addEventListener('pointerup',up); el.addEventListener('pointercancel',up);
+})();
+
+// ---------- drawing ----------
+// paper/ink palette for every canvas (matches common/brand.css tokens)
+const PAPER='#FBFAF9', INK='#19238E', INK2='#545BA9', RULE='#D3D3E6', VOICE_RGB=[[25,35,142],[122,128,200]], VOICE_CSS=['#19238E','#7A80C8'];
+// The roll and its strain strip are drawn in two places: the stage's Data view and Figure 1-2 in "The data", which is
+// always open. Each place is a view with its own canvases, geometry G and cached layer; useView() points the drawing
+// globals at one of them (saving the other's G and layer key), so the same drawing code serves both.
+let roll, rctx, strip, sctx, G={}, layer, layerKey='', hudEl=null, CUR=null;
+const RV=[];
+function rollView(r,s,h){const V={roll:r,rctx:r.getContext('2d'),strip:s,sctx:s.getContext('2d'),hud:h,G:{},layer:document.createElement('canvas'),layerKey:''}; RV.push(V); return V;}
+function useView(V){ if(CUR===V) return; if(CUR){CUR.G=G; CUR.layerKey=layerKey;} CUR=V; roll=V.roll; rctx=V.rctx; strip=V.strip; sctx=V.sctx; G=V.G; layer=V.layer; layerKey=V.layerKey; hudEl=V.hud; }
+const VSTAGE=rollView($('roll'),$('strip'),$('hud')), VFIG=rollView($('roll-fig'),$('strip-fig'),$('hud-fig'));
+useView(VSTAGE);
+function geomAll(){const c=CUR; for(const V of RV){useView(V); geom();} useView(c);}
+// Figure 1 is drawn while it is on screen (and always where IntersectionObserver is missing)
+let figOn=true;
+if('IntersectionObserver' in window) new IntersectionObserver(es=>{const was=figOn; figOn=es.some(e=>e.isIntersecting); if(figOn&&!was) draw();}).observe($('fig-roll'));
+const imgs={}; function img(src){if(!imgs[src]){const i=new Image(); i.decoding='async'; i.onload=()=>{draw(); drawTakes();}; i.src=src; imgs[src]=i;} return imgs[src];}
+function geom(){
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  for(const c of [roll,strip]){const w=Math.round(c.clientWidth*dpr), h=Math.round(c.clientHeight*dpr); if(c.width!==w||c.height!==h){c.width=w;c.height=h;}}
+  const ev=EV(), pTop=ev.pmax+2, pBot=ev.pmin-2;
+  G={dpr, x0:38*dpr, x1:roll.width-8*dpr, y0:20*dpr, y1:roll.height-6*dpr, pTop, pBot};
+  G.rh=(G.y1-G.y0)/(pTop-pBot+1);
+}
+const tx=t=>G.x0+t/T()*(G.x1-G.x0), ty=p=>G.y0+(G.pTop-p)*G.rh, xt=x=>(x-G.x0)/(G.x1-G.x0)*T();
+function drawStatic(){
+  const ev=EV(), set=SET(), d=G.dpr, W=roll.width, H=roll.height, bg=img(ev.bg);
+  const key=[st.ev,set.key,st.voices.join(),st.ghost,W,H,bg.complete&&bg.naturalWidth].join('|');
+  if(key===layerKey) return; layerKey=key;
+  layer.width=W; layer.height=H; const c=layer.getContext('2d');
+  c.fillStyle=PAPER; c.fillRect(0,0,W,H);
+  if(bg.complete&&bg.naturalWidth){
+    const ihi=ev.img_pitch[1], sy=(ihi-G.pTop-0.5)*4, sh=(G.pTop-G.pBot+1)*4;
+    c.drawImage(bg,0,sy,bg.naturalWidth,sh,G.x0,G.y0,G.x1-G.x0,G.y1-G.y0);
+  }
+  c.font=`500 ${10*d}px IBM Plex Mono, monospace`; c.textBaseline='middle'; c.textAlign='left';
+  for(let p=G.pBot;p<=G.pTop;p++) if(p%12===0){c.fillStyle='rgba(25,35,142,.16)';c.fillRect(G.x0,ty(p)+G.rh,G.x1-G.x0,Math.max(1,d*0.6));c.fillStyle=INK2;const ly=ty(p)+G.rh/2; if(ly>G.y0+6*d) c.fillText(midiName(p),4*d,ly);}
+  c.fillStyle=PAPER; c.fillRect(0,0,W,G.y0); c.fillStyle=RULE; c.fillRect(0,G.y0-Math.max(1,d*0.5),W,Math.max(1,d*0.5)); c.fillStyle=INK2; c.textBaseline='top';
+  // time labels sit right of their tick; one that would overflow the canvas is right-aligned instead,
+  // and dropped if that would crowd the previous label (the tick stays)
+  let labEnd=-1e9;
+  for(let s=0;s<=T();s+=5){const x=tx(s), lab=s+' s', w=c.measureText(lab).width;
+    c.fillRect(x,G.y0-5*d,Math.max(1,d),5*d);
+    let lx=x+3*d; if(lx+w>W-2*d) lx=x-3*d-w;
+    if(lx>=labEnd+8*d){c.fillText(lab,lx,3*d); labEnd=lx+w;}}
+  const minW=Math.max(2*d,1);
+  if(st.ghost&&set.key!=='orig'){c.lineWidth=Math.max(1,d); c.strokeStyle='rgba(25,35,142,.6)'; c.setLineDash([3*d,2*d]);
+    for(const n of ev.sets[0].notes){if(!st.voices[n[4]])continue; c.strokeRect(tx(n[0]),ty(n[2])+0.5,Math.max(minW,tx(n[0]+n[1])-tx(n[0])),G.rh-1);} c.setLineDash([]);}
+  const COL=VOICE_RGB;
+  for(const n of set.notes){ if(!st.voices[n[4]]) continue;
+    const col=COL[n[4]], a=(0.22+0.78*n[3]/127).toFixed(3);
+    c.fillStyle=`rgba(${col[0]},${col[1]},${col[2]},${a})`;
+    c.fillRect(tx(n[0]),ty(n[2])+1,Math.max(minW,tx(n[0]+Math.max(n[1],0.04))-tx(n[0])),Math.max(1,G.rh-2));}
+}
+function draw(){
+  const set=SET(), pos=posNow(), now=performance.now();
+  st.lit=st.lit.filter(x=>x.until>now);
+  const on=st.playing?sounding(set.notes,pos,st.voices):st.lit.map(x=>x.n);
+  if(view==='data'){useView(VSTAGE); drawRoll(pos,on);} else drawScene(on);
+  if(figOn){useView(VFIG); drawRoll(pos,on);}
+  takesHead(pos);
+  drawPad();
+  // keys lit; a key that lights up throws a little pixel note into the strip above the keyboard
+  const litP=new Set(on.map(n=>n[2])); for(const x of st.held.values()) litP.add(x.p);
+  let thrown=0;
+  for(const k of $('keys').children){const p=+k.dataset.p, isOn=litP.has(p); if(isOn&&!k.classList.contains('on')&&thrown<4){keyFx(p,false); thrown++;} k.classList.toggle('on',isOn);}
+  drawKeyFx();
+  $('pos').textContent=pos.toFixed(1)+' s';
+}
+function drawRoll(pos,on){
+  if(!G.dpr||!roll.width||!roll.height||Math.abs(roll.clientWidth*G.dpr-roll.width)>1) geom();
+  if(!roll.width||!roll.height) return;
+  const ev=EV(), set=SET(), d=G.dpr, W=roll.width, H=roll.height;
+  drawStatic(); rctx.drawImage(layer,0,0);
+  // loop region
+  if(st.loop){rctx.fillStyle='rgba(251,250,249,.8)';rctx.fillRect(G.x0,G.y0,tx(st.loopA)-G.x0,G.y1-G.y0);rctx.fillRect(tx(st.loopB),G.y0,G.x1-tx(st.loopB),G.y1-G.y0);
+    rctx.fillStyle=INK;rctx.fillRect(tx(st.loopA)-d,G.y0,2*d,G.y1-G.y0);rctx.fillRect(tx(st.loopB)-d,G.y0,2*d,G.y1-G.y0);}
+  if(st.drag){rctx.fillStyle='rgba(25,35,142,.1)';const a=Math.min(st.drag.a,st.drag.b),b=Math.max(st.drag.a,st.drag.b);rctx.fillRect(tx(a),G.y0,tx(b)-tx(a),G.y1-G.y0);}
+  const minW=Math.max(2*d,1);
+  // sounding notes: solid ink with a hairline ring (no glow)
+  rctx.save(); rctx.fillStyle=INK; rctx.strokeStyle=INK; rctx.lineWidth=Math.max(1,d);
+  for(const n of on){const x=tx(n[0]), w=Math.max(minW*1.5,tx(n[0]+Math.max(n[1],0.04))-x);
+    rctx.fillRect(x,ty(n[2]),w,G.rh); rctx.strokeRect(x-2.5*d,ty(n[2])-2.5*d,w+5*d,G.rh+5*d);}
+  rctx.restore();
+  // playhead
+  rctx.fillStyle=INK; rctx.fillRect(tx(pos)-d,G.y0-6*d,2*d,G.y1-G.y0+6*d);
+  drawStrip(pos);
+  hud(pos);
+}
+function drawStrip(pos){
+  const ev=EV(), d=G.dpr, W=strip.width, H=strip.height, mid=H/2;
+  sctx.fillStyle=PAPER; sctx.fillRect(0,0,W,H);
+  sctx.fillStyle='rgba(25,35,142,.18)'; sctx.fillRect(G.x0,mid,G.x1-G.x0,Math.max(1,d*0.5));
+  sctx.font=`500 ${9*d}px IBM Plex Mono, monospace`; sctx.textBaseline='top'; sctx.fillStyle=INK2;
+  if(ev.strain){
+    sctx.fillText('H1',4*d,4*d); sctx.fillText('L1',4*d,mid+4*d);
+    const s=ev.strain, n=s.H1.length;
+    sctx.save(); sctx.beginPath(); sctx.rect(G.x0,0,G.x1-G.x0,H); sctx.clip();
+    [['H1',mid*0.5,VOICE_CSS[0]],['L1',mid*1.5,VOICE_CSS[1]]].forEach(([k,y0,c])=>{
+      sctx.strokeStyle=c; sctx.lineWidth=Math.max(1,d); sctx.beginPath();
+      for(let i=0;i<n;i++){const t=s.t_start+i/s.fs, m=ev.lead_in+(t-ev.t0_real)*ev.stretch; const x=tx(m), y=y0-(s[k][i]/127)*(mid*0.48);
+        if(st.voices[k==='H1'?0:1]){ if(i===0)sctx.moveTo(x,y); else sctx.lineTo(x,y);} }
+      sctx.stroke();});
+    sctx.restore();
+  } else if(ev.bars){
+    sctx.fillText('H1',4*d,4*d); sctx.fillText('L1',4*d,mid+4*d);
+    const rmax=Math.max(...ev.bars.map(b=>Math.max(b[1],b[2]))), bw=Math.max(2*d,(tx(ev.note_s)-tx(0))*0.8);
+    for(const b of ev.bars){
+      const h1=Math.log1p(b[1])/Math.log1p(rmax)*(mid-3*d), h2=Math.log1p(b[2])/Math.log1p(rmax)*(mid-3*d);
+      if(st.voices[0]){sctx.fillStyle=VOICE_CSS[0]; sctx.fillRect(tx(b[0]),mid-h1,bw,h1);}
+      if(st.voices[1]){sctx.fillStyle=VOICE_CSS[1]; sctx.fillRect(tx(b[0]),mid,bw,h2);}
+    }
+  }
+  sctx.fillStyle=INK; sctx.fillRect(tx(pos)-d,0,2*d,H);
+}
+function hud(pos){
+  const ev=EV(), r=lerpMap(ev.map,pos);
+  let s;
+  if(ev.id==='GW150914'){
+    const k=ev.notes_meta.filter(n=>n[0]<=pos+1e-6).length;
+    s=r?`real time <b>${r[0]>=0?'+':''}${r[0].toFixed(3)} s</b> <span class="x">(H1 clock, 0 = GPS 1126259462.4)</span><br>ridge <b>${r[1].toFixed(0)} Hz</b> &middot; half-wave <b>${k}/${ev.notes_meta.length}</b><span class="x"> &middot; time &times;${ev.stretch}, pitch &times;${ev.transpose}</span>`
+       :`<span>${pos<ev.lead_in?'lead-in: L1 enters first, 7.3 ms (0.73 s here) before H1':'after the peak'}</span>`;
+  } else {
+    const k=ev.map.filter(n=>n[0]<=pos+1e-6).length;
+    s=r?`real time <b>${r[0].toFixed(2)} s</b> <span class="x">from GPS 1187008882.4</span><br>model <b>${r[1].toFixed(0)} Hz</b> &middot; note <b>${k}/${ev.map.length}</b><span class="x"> &middot; 16 cycles per note</span>`
+       :`<span>${pos<ev.lead_in?'lead-in':'end of the tracked chirp (350 Hz)'}</span>`;
+  }
+  if(hudEl&&hudEl._s!==s){hudEl._s=s; hudEl.innerHTML=s;}
+}
+let raf=null;
+function loop(){ if(raf) return; const f=()=>{raf=null; draw(); if(st.playing||st.lit.length||st.held.size||(tapAnim&&performance.now()<tapAnim.end)) raf=requestAnimationFrame(f);}; raf=requestAnimationFrame(f); }
+
+// ---------- the scene ----------
+// A scientific plate in pixels: a low-resolution "art" canvas in the shared ink palette, scaled up by a whole number with
+// smoothing off, with hairline leader lines and labels drawn on top at the finer screen resolution.
+// Above: the source on the night sky. GW150914's black holes are drawn as their shadows (radius sqrt(27) GM/c^2, so in
+// proportion to mass, 36 : 29, then 62), each edged by its photon ring, with the background sky bent around them by
+// thin-lens ray shooting through two point masses, every frame. Below: LIGO Hanford and Livingston as oblique aerial
+// engravings (sprites from make_sprites.py: a camera over each site's real geometry, the arms at their true azimuths, the
+// LVEA's roof cut away to show the optics), the real whitened strain at each site, and the quantum blur as a cloud of the
+// real blurred notes around the playhead.
+// What is data: one ripple per real half-wave (per 16-cycle note for GW170817), its ink from the measured strain, landing
+// on each detector exactly when that voice's note sounds; the orbit's quarter turn per half-wave; the separation from the
+// ridge frequency (r ~ f^-2/3) and the km / v readouts from it (Newtonian Kepler); the merger at the measured peak; which
+// arm stretches (it flips every half-wave); the strain traces; every dot in the blur cloud; one grain per blurred note
+// that starts. What is drawn: the lensing strength, the stars and band, the ringdown shape (its frequency and decay are
+// GR's prediction for the measured remnant), the neutron stars' fields and beams, the kilonova flash, grain paths, and
+// every distance between the source and the detectors (the ripple speed is chosen so the 0.73 s canon fits on screen).
+let view='scene';
+const SP={}; for(const k in SPRITES) if(SPRITES[k].frames) SP[k]=InkSprite.make(SPRITES[k]);
+const FONT=SPRITES.font, PAL=InkSprite.PALETTE;
+const PK={}; for(const k in PAL){const h=PAL[k]; PK[k]=(0xff000000|(parseInt(h.slice(5,7),16)<<16)|(parseInt(h.slice(3,5),16)<<8)|parseInt(h.slice(1,3),16))>>>0;}
+const scn=$('scene'), sg=scn.getContext('2d'), art=document.createElement('canvas');
+let ag=art.getContext('2d'), U=2, AW=0, AH=0, skyImg=null, sky32=null;
+const SC={key:'', L:null, grains:[], prevT:null, lastSpawn:-1e9, lastWall:0, fx:[], ripCache:{}, frame:0, read:''};
+const ORBIT_X=1.4;    // the orbit is drawn 1.4x wider than the shadows' own scale, so the pair stays apart until the last half-waves
+const TILT=0.7;       // the orbit is seen about 45 degrees from face-on (drawn; GW150914's inclination is poorly known)
+// The stage has four arrangements by width (art pixels, about two CSS px each): 'wide' (the two observatories in full,
+// with the blur cloud and the strain scopes between them), 'mid' (the small engravings side by side, the cloud between),
+// 'pair' (the small engravings side by side under a blur strip) and 'stack' (phones: Livingston above Hanford). Its
+// height follows the arrangement.
+const SCENE_H={wide:232,mid:192,pair:202,stack:276};
+function modeFor(aw){return aw>=556?'wide':aw>=440?'mid':aw>=326?'pair':'stack';}
+function fitScene(){
+  const dpr=window.devicePixelRatio||1; let r=scn.getBoundingClientRect();
+  if(r.width<10) return false;
+  U=Math.max(1,Math.round(2*dpr)); SC.k=2;
+  const dw=Math.round(r.width*dpr), aw=Math.ceil(dw/U), want=SCENE_H[modeFor(aw)]*U/dpr;
+  if(Math.abs(r.height-want)>0.5){scn.style.height=want+'px'; r=scn.getBoundingClientRect();}
+  const dh=Math.round(r.height*dpr);
+  if(scn.width!==dw||scn.height!==dh){scn.width=dw;scn.height=dh;}
+  const ah=Math.ceil(dh/U);
+  if(art.width!==aw||art.height!==ah){art.width=aw;art.height=ah;ag=art.getContext('2d');}
+  AW=aw; AH=ah; return true;
+}
+// sprite at a whole-pixel top-left corner, k device pixels per art pixel (odd sizes get a half-pixel nudge)
+function drawSp(ctx,sp,f,x0,y0,k,o){
+  const w=sp.w*k, h=sp.h*k; ctx.save(); ctx.translate(w&1?.5:0,h&1?.5:0);
+  InkSprite.draw(ctx,sp,f,x0+(w-(w&1))/2,y0+(h-(h&1))/2,k,o); ctx.restore();
+}
+const put=(name,f,x,y,flip,alpha)=>drawSp(ag,SP[name],f,Math.round(x),Math.round(y),1,{flipX:!!flip,alpha});
+const putC=(name,f,cx,cy,flip,alpha)=>{const sp=SP[name]; put(name,f,Math.round(cx-sp.w/2),Math.round(cy-sp.h/2),flip,alpha);};
+const rect=(x,y,w,h,c,ctx)=>{ctx=ctx||ag; ctx.fillStyle=PAL[c]||c; ctx.fillRect(x,y,w,h);};
+const textW=s=>String(s).length*(FONT.w+1)-1;
+function text(s,x,y,c,ctx,k){   // the 3x5 pixel font from sprites.json
+  ctx=ctx||ag; k=k||1; ctx.fillStyle=PAL[c]||c; s=String(s).toUpperCase();
+  for(let i=0;i<s.length;i++){const gi=FONT.chars.indexOf(s[i]); if(gi<0) continue;
+    for(let j=0;j<FONT.h;j++) for(let q=0;q<FONT.w;q++) if(FONT.rows[j][gi*FONT.w+q]!=='.') ctx.fillRect(x+(i*(FONT.w+1)+q)*k,y+j*k,k,k);}
+}
+function pring(cx,cy,r,c,dith,ctx){   // a 1-px pixel circle (midpoint algorithm); dith 1 or 2 drops pixels as it fades
+  ctx=ctx||ag; r=Math.round(r); if(r<1) return; ctx.fillStyle=PAL[c]||c;
+  const m=(dith||0)+1, P=(x,y)=>{if(dith&&(((x+y)%m)+m)%m) return; ctx.fillRect(x,y,1,1);};
+  let x=r,y=0,e=1-r;
+  while(x>=y){P(cx+x,cy+y);P(cx+y,cy+x);P(cx-y,cy+x);P(cx-x,cy+y);P(cx-x,cy-y);P(cx-y,cy-x);P(cx+y,cy-x);P(cx+x,cy-y);
+    y++; if(e<0) e+=2*y+1; else {x--; e+=2*(y-x)+1;}}
+}
+// the same circle written straight into the sky's pixel buffer (rows above gy only)
+function pringSky(cx,cy,r,col,dith,gy){
+  r=Math.round(r); if(r<1) return; const m=(dith||0)+1;
+  const P=(x,y)=>{if(x<0||x>=AW||y<0||y>=gy) return; if(dith&&(((x+y)%m)+m)%m) return; sky32[y*AW+x]=col;};
+  let x=r,y=0,e=1-r;
+  while(x>=y){P(cx+x,cy+y);P(cx+y,cy+x);P(cx-y,cy+x);P(cx-x,cy+y);P(cx-x,cy-y);P(cx-y,cy-x);P(cx+y,cy-x);P(cx+x,cy-y);
+    y++; if(e<0) e+=2*y+1; else {x--; e+=2*(y-x)+1;}}
+}
+function pellipse(cx,cy,rx,ry,c,step){
+  ag.fillStyle=PAL[c]; const n=Math.max(16,Math.round((rx+ry)*3));
+  for(let i=0;i<n;i+=step||1){const a=i/n*2*Math.PI; ag.fillRect(Math.round(cx+rx*Math.cos(a)),Math.round(cy+ry*Math.sin(a)),1,1);}
+}
+// scene text and hairlines are queued in art coordinates and drawn after the upscale at a finer pixel, with a halo so a
+// passing ripple never cuts through the letters (paper halo on the ground, ink halo on the sky)
+const TXT=[], HL=[], TCACHE=new Map();
+const fontPx=()=>Math.max(1,Math.round(2*(window.devicePixelRatio||1)));
+function stext(lines,x,y,c,align,strike,halo){TXT.push({lines:[].concat(lines).map(q=>String(q).toUpperCase()),x,y,c,align,strike,halo:halo||'W'});}
+function hair(x1,y1,x2,y2,c,dot){HL.push({x1,y1,x2,y2,c:c||'K',dot});}
+function flushText(){
+  const F=fontPx(), lh=7*F, HALO=[[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[1,1],[-1,1],[1,-1]];
+  const t=Math.max(1,Math.round(window.devicePixelRatio||1));
+  for(const h of HL){   // 1-CSS-px hairlines (Bresenham at device resolution), with a dot at the anchored end
+    let x0=Math.round(h.x1*U/t), y0=Math.round(h.y1*U/t); const x1=Math.round(h.x2*U/t), y1=Math.round(h.y2*U/t);
+    sg.fillStyle=PAL[h.c]; const dx=Math.abs(x1-x0), dy=-Math.abs(y1-y0), sx=x0<x1?1:-1, sy=y0<y1?1:-1; let err=dx+dy, guard=0;
+    if(h.dot) sg.fillRect((x0-1)*t,(y0-1)*t,3*t,3*t);
+    while(guard++<4000){ sg.fillRect(x0*t,y0*t,t,t); if(x0===x1&&y0===y1) break;
+      const e2=2*err; if(e2>=dy){err+=dy; x0+=sx;} if(e2<=dx){err+=dx; y0+=sy;} }
+  }
+  HL.length=0;
+  for(const q of TXT) q.lines.forEach((ln,j)=>{
+    const w=textW(ln)*F; let X=Math.round(q.x*U), Y=Math.round(q.y*U)+j*lh;
+    if(q.align==='r') X-=w; else if(q.align==='c') X-=Math.round(w/2);
+    // each label is rendered once (with its halo) into a small bitmap and reused while it stays the same
+    const key=ln+'|'+q.c+'|'+q.halo+'|'+F; let bm=TCACHE.get(key);
+    if(!bm){ if(TCACHE.size>500) TCACHE.clear(); bm=document.createElement('canvas'); bm.width=w+2*F; bm.height=7*F; const bg=bm.getContext('2d');
+      for(const [ox,oy] of HALO) text(ln,F+ox*F,F+oy*F,q.halo,bg,F); text(ln,F,F,q.c,bg,F); TCACHE.set(key,bm); }
+    sg.drawImage(bm,X-F,Y-F);
+    if(q.strike){sg.fillStyle=PAL.B; sg.fillRect(X-F,Y+2*F,w+2*F,F);}
+  });
+  TXT.length=0;
+}
+// ----- the sky: the same integer hash, value noise and dither as make_sprites.py
+function skyHash(x,y,s){let h=(Math.imul(x,374761393)+Math.imul(y,668265263)+Math.imul(s,2246822519))|0; h=Math.imul(h^(h>>>13),1274126177); h^=h>>>16; return (h>>>0)/4294967296;}
+const BAYER=[0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5];
+function vnoise(u,v){const x=u/7,y=v/7,xi=Math.floor(x),yi=Math.floor(y); let fx=x-xi,fy=y-yi; fx=fx*fx*(3-2*fx); fy=fy*fy*(3-2*fy);
+  const a=skyHash(xi,yi,5),b=skyHash(xi+1,yi,5),c=skyHash(xi,yi+1,5),d=skyHash(xi+1,yi+1,5); return (a*(1-fx)+b*fx)*(1-fy)+(c*(1-fx)+d*fx)*fy;}
+// the unlensed sky at source position (u, v), dithered at screen pixel (sx, sy): stars, a Milky-Way-like band (GW150914) or
+// the host galaxy NGC 4993 (GW170817)
+function skyAt(u,v,sx,sy,L){
+  const r=skyHash(Math.floor(u),Math.floor(v),7);
+  if(r<0.006) return PK.W; if(r<0.02) return PK.T; if(r<0.05) return PK.L;
+  let I=0; const g=L.glow;
+  if(g.kind==='band'){const d=(u-g.x)*g.n0+(v-g.y)*g.n1; if(Math.abs(d)<3*g.w) I=Math.exp(-(d/g.w)*(d/g.w))*(.35+.9*vnoise(u,v))*2.6;}
+  else {const dx=u-g.x, dy=v-g.y, p=(dx*g.c+dy*g.s)/g.a, q=(-dx*g.s+dy*g.c)/g.b, r2=p*p+q*q; if(r2<9) I=Math.exp(-r2)*(.75+.35*vnoise(u,v))*3.2+(r2<0.04?2:0);}
+  if(I>0){I+=BAYER[(sy&3)*4+(sx&3)]/16; if(I>=3) return PK.T; if(I>=2) return PK.L; if(I>=1) return PK.B;}
+  return r<0.21?PK.B:PK.K;
+}
+// the unlensed sky, cached per layout over the canvas plus a margin: star class (0 none, 1 faint, 2 L, 3 T, 4 W) and
+// the diffuse light's intensity per source cell; the dither is still applied at the screen pixel
+function skyCache(L){
+  if(L.cache) return L.cache;
+  const M=56, w=AW+2*M, h=L.gy+2*M, cls=new Uint8Array(w*h), bi=new Float32Array(w*h), g=L.glow;
+  for(let j=0;j<h;j++) for(let i=0;i<w;i++){const u=i-M, v=j-M, r=skyHash(u,v,7), k=j*w+i;
+    cls[k]=r<0.006?4:r<0.02?3:r<0.05?2:r<0.21?1:0;
+    const uc=u+.5, vc=v+.5; let I=0;
+    if(g.kind==='band'){const d=(uc-g.x)*g.n0+(vc-g.y)*g.n1; if(Math.abs(d)<3*g.w) I=Math.exp(-(d/g.w)*(d/g.w))*(.35+.9*vnoise(uc,vc))*2.6;}
+    else {const dx=uc-g.x, dy=vc-g.y, p=(dx*g.c+dy*g.s)/g.a, q=(-dx*g.s+dy*g.c)/g.b, r2=p*p+q*q; if(r2<9) I=Math.exp(-r2)*(.75+.35*vnoise(uc,vc))*3.2+(r2<0.04?2:0);}
+    bi[k]=I;}
+  return (L.cache={M,w,h,cls,bi});
+}
+const STARPK=()=>[0,PK.B,PK.L,PK.T,PK.W];
+// the lenses at time t: two shadows on their orbit before the merger, then the remnant ringing down
+function holesAt(L,t){
+  if(L.ns) return [];
+  if(t<L.sm){
+    const ang=orbitAngle(L.s,t), f=freqAt(L.rips,L.s,t), R=L.Rmax*separation(f,L.f0), ca=Math.cos(ang), sa=Math.sin(ang);
+    const a=R*L.q[1], b=R*L.q[0];       // the heavier hole sits nearer the centre of mass
+    const sum=L.rs[0]+L.rs[1], blend=Math.max(0,Math.min(1,(1.2*sum-R)/(0.45*sum)));
+    return [{x:L.px-a*ca,y:L.py-a*sa*TILT,rs:L.rs[0],E:L.E[0],blend},{x:L.px+b*ca,y:L.py+b*sa*TILT,rs:L.rs[1],E:L.E[1],blend}];
+  }
+  const since=t-L.sm, src=SOURCE[EV().id], fq=src.fq/EV().stretch, tq=src.tq*EV().stretch;
+  const eps=reduce?0:0.24*Math.exp(-since/tq), psi=2*Math.PI*fq*since+2*L.endAng;
+  return [{x:L.px+0.31,y:L.py+0.27,rs:L.rsM,E:L.EM,eps,c:Math.cos(psi),s:Math.sin(psi)}];
+}
+// thin-lens ray shooting, one ray per art pixel: shadow where sum (r_i/d_i)^4 >= 1 (close shadows merge smoothly), the
+// photon ring just outside it, otherwise the sky at beta = theta - sum E_i^2 (theta - c_i)/|theta - c_i|^2
+function renderSky(L,holes){
+  const W=AW, H=L.gy;
+  if(!skyImg||skyImg.width!==W||skyImg.height!==H){skyImg=ag.createImageData(W,H); sky32=new Uint32Array(skyImg.data.buffer);}
+  let rmax=0; for(const h of holes) rmax=Math.max(rmax,h.rs);
+  const ringS=rmax?Math.pow(rmax/(rmax+1.1),4):2, C=skyCache(L), SPK=STARPK();
+  for(let y=0;y<H;y++){ const py=y+.5;
+    for(let x=0;x<W;x++){ const px=x+.5; let s=0,smax=0,bx=px,by=py,near=false;
+      for(let i=0;i<holes.length;i++){const h=holes[i], dx=px-h.x, dy=py-h.y, d2=dx*dx+dy*dy+1e-6; let r2=h.rs*h.rs;
+        if(h.eps){const k=1+h.eps*((dx*dx-dy*dy)*h.c+2*dx*dy*h.s)/d2; r2*=k*k;}
+        else if(d2<(h.rs+1)*(h.rs+1)) near=true;
+        const q=r2/d2, q2=q*q; s+=q2; if(q2>smax) smax=q2; const f=h.E*h.E/d2; bx-=dx*f; by-=dy*f;}
+      if(holes.length>1) s=smax+holes[0].blend*(s-smax);   // two discs while apart; one smooth outline as they merge
+      if(s>=1){sky32[y*W+x]=PK.K; continue;} if(near||s>=ringS){sky32[y*W+x]=PK.W; continue;}
+      const ui=Math.floor(bx)+C.M, vi=Math.floor(by)+C.M;
+      if(ui<0||vi<0||ui>=C.w||vi>=C.h){sky32[y*W+x]=skyAt(bx,by,x,y,L); continue;}
+      const k=vi*C.w+ui, c=C.cls[k];
+      if(c>=2){sky32[y*W+x]=SPK[c]; continue;}
+      let I=C.bi[k]; if(I>0){I+=BAYER[(y&3)*4+(x&3)]/16; if(I>=3){sky32[y*W+x]=PK.T; continue;} if(I>=2){sky32[y*W+x]=PK.L; continue;} if(I>=1){sky32[y*W+x]=PK.B; continue;}}
+      sky32[y*W+x]=c===1?PK.B:PK.K;
+    }
+  }
+}
+function sceneMode(){return modeFor(AW);}
+function sceneLayout(){
+  const ev=EV(), mode=sceneMode(), key=st.ev+'|'+AW+'|'+AH+'|'+mode;
+  if(SC.key===key) return SC.L;
+  const L={mode}, sfx=mode==='wide'?'':'n';
+  const mk=(k,v,name)=>({k,v,sp:'obs'+k+sfx,m:SPRITES['obs'+k+sfx].meta,name});
+  const H=mk('H',0,mode==='wide'?'H1 LIGO HANFORD, WASHINGTON':'H1 HANFORD, WA'), Lv=mk('L',1,mode==='wide'?'L1 LIGO LIVINGSTON, LOUISIANA':'L1 LIVINGSTON, LA');
+  const pw=H.m.w, ph=H.m.h;
+  if(mode==='wide'||mode==='mid'){
+    const wide=mode==='wide'; H.x=3; Lv.x=AW-3-pw; H.y=Lv.y=AH-3-ph;
+    const x0=H.x+pw+5, mw=Lv.x-5-x0, sw=Math.floor((mw-6)/2);
+    L.blur={x:x0,y:H.y+(wide?16:9),w:mw,h:wide?40:22}; L.scope={w:sw,h:wide?20:13};
+    H.sx=x0; Lv.sx=x0+mw-sw; H.sy=Lv.sy=L.blur.y+L.blur.h+(wide?19:16);
+    L.gy=H.y-12;
+  } else if(mode==='pair'){
+    H.x=Math.round(AW/2)-3-pw; Lv.x=Math.round(AW/2)+3; H.y=Lv.y=AH-3-ph;
+    L.blur={x:3,y:H.y-31,w:AW-6,h:15}; L.gy=L.blur.y-4;
+  } else {   // phones: Livingston, where the wave arrived first, above Hanford
+    const x=Math.round((AW-pw)/2); H.x=Lv.x=x; H.y=AH-3-ph; Lv.y=H.y-11-ph;
+    L.blur={x:3,y:Lv.y-31,w:AW-6,h:15}; L.gy=L.blur.y-4;
+  }
+  L.plates=[H,Lv];
+  for(const p of L.plates){p.hx=p.x+p.m.V[0]; p.hy=p.y+p.m.V[1]; p.ty=p.y-8;}   // the beam splitter: where a ripple lands
+  L.Rmax=Math.max(20,Math.min(40,Math.round(AW*0.14)));
+  L.py=Math.round(L.gy*0.52);
+  const rips=SC.ripCache[st.ev]||(SC.ripCache[st.ev]=rippleList(ev));
+  const lag=rips[0].tH-rips[0].tL;   // H1 minus L1 in music time: 0.73 s for GW150914 (Livingston first), 0 for GW170817
+  const fit=AW-8-Math.ceil(0.9*L.Rmax);
+  L.px=mode==='stack'?Math.round(AW*0.6):lag>0.05?Math.round(Math.min(AW*(mode==='pair'?0.66:0.62),fit)):Math.round((H.hx+Lv.hx)/2);
+  const dH=Math.hypot(H.hx-L.px,H.hy-L.py), dL=Math.hypot(Lv.hx-L.px,Lv.hy-L.py);
+  L.v=rippleSpeed(Math.min(dH,dL),Math.max(dH,dL),Math.abs(lag),mode==='stack'); L.dH=dH; L.dL=dL;
+  L.s=rips.map(r=>r.tL-dL/L.v);        // when each ripple leaves the pair (the same as tH - dH/v)
+  L.sm=mergeTime(ev)-dH/L.v;           // the merger, timed so its peak lands on H1 at the measured moment
+  L.rips=rips; L.f0=rips[0].f; L.ns=!ev.notes_meta;
+  L.onsets=[rips.map(r=>r.tH),rips.map(r=>r.tL)];
+  L.maxR=Math.hypot(Math.max(L.px,AW-L.px),Math.max(L.py,AH-L.py))+3;
+  // sizes on one scale: the Rmax-px orbit at the first ripple is the Newtonian (Kepler) separation in km
+  const src=SOURCE[ev.id], M=src.m[0]+src.m[1];
+  L.q=[src.m[0]/M,src.m[1]/M]; L.a0=kepler(L.f0,M,src.z).km; L.kmPx=L.Rmax/L.a0;
+  if(!L.ns){
+    const k=L.kmPx/ORBIT_X; L.rs=[shadowKm(src.m[0])*k, shadowKm(src.m[1])*k]; L.rsM=shadowKm(src.mf)*k;
+    L.E=[1.35*L.rs[0],1.35*L.rs[0]*Math.sqrt(src.m[1]/src.m[0])]; L.EM=1.35*L.rsM;
+    L.endAng=orbitAngle(L.s,L.sm);
+    const a=-0.24; L.glow={kind:'band',x:L.px,y:L.py+3,n0:-Math.sin(a),n1:Math.cos(a),w:Math.max(6,L.Rmax*0.2)};
+  } else {
+    const a=-0.3; L.glow={kind:'gal',x:L.px-0.8*L.Rmax,y:L.py-3,c:Math.cos(a),s:Math.sin(a),a:1.5*L.Rmax,b:0.8*L.Rmax};
+  }
+  SC.key=key; SC.L=L; SC.grains=[]; SC.prevT=null; skyImg=null; return L;
+}
+// the voice's latest unblurred half-wave at or before t: its index (which sets the sign of the strain), age and loudness
+function lastWave(L,t,v){
+  const s=L.onsets[v]; let i=-1; for(let k=0;k<s.length&&s[k]<=t+1e-6;k++) i=k;
+  if(i<0) return null; const r=L.rips[i]; return {i, age:t-s[i], amp:(v?r.vL:r.vH)/127};
+}
+// a neutron star: a small sphere, brightest at the centre and darkening to the limb, with a thin halo of bent light
+const NS_X=3;
+function nstar(cx,cy,r){
+  const R=Math.ceil(r+2);
+  for(let y=-R;y<=R;y++) for(let x=-R;x<=R;x++){const d=Math.hypot(x+0.5-(cx-Math.floor(cx)),y+0.5-(cy-Math.floor(cy)));
+    const X=Math.floor(cx)+x, Y=Math.floor(cy)+y; if(Y>=SC.L.gy) continue;
+    if(d<=r) rect(X,Y,1,1,d<r*0.5?'W':d<r*0.85?'T':'L');
+    else if(d<=r+1) rect(X,Y,1,1,'K');                          // an engraved outline, so it reads on the galaxy's glow
+    else if(d<=r+2&&((X+Y)&1)) rect(X,Y,1,1,'L');}            // a faint halo of light bent around it
+}
+function drawSourceSprites(L,t,wall,holes){
+  if(!L.ns){   // orbit tracks of the two holes (drawn), behind nothing: the sky is already lensed
+    if(t<L.sm){const f=freqAt(L.rips,L.s,t), R=L.Rmax*separation(f,L.f0);
+      pellipse(L.px,L.py,R*L.q[1],R*L.q[1]*TILT,'B',3); pellipse(L.px,L.py,R*L.q[0],R*L.q[0]*TILT,'B',3);}
+    return;
+  }
+  if(t<L.sm){   // GW170817: two neutron stars, the same size (a neutron star's radius barely depends on its mass)
+    const ang=orbitAngle(L.s,t), f=freqAt(L.rips,L.s,t), R=L.Rmax*separation(f,L.f0), ca=Math.cos(ang), sa=Math.sin(ang);
+    const a=R*L.q[1], b=R*L.q[0];
+    pellipse(L.px,L.py,a,a*TILT,'B',3); pellipse(L.px,L.py,b,b*TILT,'B',3);
+    const A={x:L.px-a*ca,y:L.py-a*sa*TILT}, B={x:L.px+b*ca,y:L.py+b*sa*TILT};
+    // the farther star first; each is drawn NS_X times the orbit's own scale (radius ~12 km), or it would be a pixel
+    const r=Math.max(1.6,12*L.kmPx/ORBIT_X*NS_X);
+    for(const S of (sa>0?[A,B]:[B,A])) nstar(S.x,S.y,r);
+    SC.nsAt=[A,B]; return;
+  }
+  const since=t-L.sm;   // the flash is decoration: the kilonova was seen by telescopes about 11 hours later
+  if(since<0.5) putC('flash',Math.min(3,Math.floor(since/0.125)),L.px,L.py);
+  else if(since<3) putC('flash',3,L.px,L.py,false,Math.max(0.08,1-(since-0.5)/2.5));
+}
+// the blur cloud: every dot is a real note within 1.5 s of the playhead (x: time, y: pitch), drawn as its duration;
+// a sounding note is solid ink. Quiet blurred notes shimmer by a pixel (decoration).
+function cloudDots(ctx,x0,y0,w,h,notes,t,Wt,p0,p1,blurred,jit){
+  const cx=x0+Math.floor(w/2), xs=(w/2-1)/Wt, R=(x,y,ww,c)=>{if(x+ww<x0||x>=x0+w) return; const a=Math.max(x,x0),b=Math.min(x+ww,x0+w); rect(a,y,b-a,1,c,ctx);};
+  for(let i=Math.max(0,lowerBound(notes,t-Wt-4));i<notes.length&&notes[i][0]<=t+Wt;i++){const n=notes[i]; if(!st.voices[n[4]]) continue;
+    const d=Math.max(n[1],0.04); if(n[0]+d<t-Wt) continue;
+    let x=Math.round(cx+(n[0]-t)*xs); const y=Math.round(y0+h-1-(n[2]-p0)/(p1-p0)*(h-1)), ww=Math.max(1,Math.round(d*xs));
+    if(jit&&n[3]<50){const r=skyHash(i,SC.frame,3); if(r<0.22) x+=r<0.11?-1:1;}
+    const live=n[0]<=t&&t<n[0]+d;
+    const c=live?'K':!blurred?'B':n[3]>=90?'K':n[3]>=55?'B':n[3]>=28?'L':'T';
+    R(x,y,ww,c); if(live) R(x,y-1,ww,'K');
+  }
+}
+function drawCloud(L,t,set,blurred,hasBlur){
+  const B=L.blur, ev=EV(), notes=blurred?set.notes:ev.sets[0].notes, cx=B.x+Math.floor(B.w/2), col=L.mode==='wide'||L.mode==='mid';
+  for(let y=B.y;y<B.y+B.h;y+=2) rect(cx,y,1,1,'L');                // the playhead
+  for(const [x,y] of [[B.x,B.y],[B.x+B.w-2,B.y],[B.x,B.y+B.h-1],[B.x+B.w-2,B.y+B.h-1]]) rect(x,y,2,1,'L');
+  cloudDots(ag,B.x,B.y,B.w,B.h,notes,t,1.5,ev.pmin-1,ev.pmax+1,blurred,blurred&&!reduce);
+  if(!col) stext(!hasBlur?'NO BLUR RUN FOR '+ev.id:!blurred?'BLUR OFF':'QUANTUM BLUR, REACH '+set.reach,B.x+1,B.y+1,blurred?'K':'B','l');
+  else{
+    const l1=!hasBlur?'NO BLUR RUN':!blurred?'BLUR OFF':'QUANTUM BLUR', l2=!hasBlur?'FOR '+ev.id:!blurred?'THE PLAIN CHIRP':'REACH '+set.reach+'  STRENGTH '+set.strength;
+    stext([l1,l2],cx,B.y-15,blurred?'K':'B','c');
+    if(L.mode==='wide') stext(blurred?'ATLAS SIMULATOR, 20 QUBITS':'EACH DOT IS A REAL NOTE',cx,B.y+B.h+2,'B','c');
+  }
+}
+// a strip-chart of the real whitened strain at one site, the last 40 ms of detector time (GW150914); for GW170817 the
+// measured along-track power of each 16-cycle note so far
+function drawScope(L,p,t,ev){
+  const x0=p.sx, y0=p.sy, w=L.scope.w, h=L.scope.h, mid=y0+(h>>1), on=st.voices[p.v], wide=L.mode==='wide', id=p.v?'L1':'H1';
+  for(let x=x0;x<x0+w;x+=2){rect(x,y0,1,1,'L'); rect(x,y0+h-1,1,1,'L');}
+  for(let x=x0;x<x0+w;x+=4) rect(x,mid,1,1,'T');
+  rect(x0+w-1,y0,1,h,'B');                                            // "now"
+  if(ev.strain){
+    const s=ev.strain, arr=s[id], n=arr.length, tau=ev.t0_real+(t-ev.lead_in)/ev.stretch, i1=(tau-s.t_start)*s.fs, span=0.04*s.fs;
+    let py=null;
+    for(let x=0;x<w-1;x++){const i=Math.round(i1-span+span*x/(w-2)); if(i<0||i>=n){py=null; continue;}
+      const y=Math.max(y0+1,Math.min(y0+h-2,Math.round(mid-arr[i]/127*(h/2-2)*1.6)));
+      if(py!==null){const a=Math.min(py,y),b=Math.max(py,y); rect(x0+x,a,1,b-a+1,on?'K':'L');} else rect(x0+x,y,1,1,on?'K':'L'); py=y;}
+    stext(id+(wide?' STRAIN, REAL':' STRAIN'),x0,y0-7,on?'K':'L','l');
+    if(wide) stext('LAST 40 MS',x0,y0+h+2,'B','l');
+  } else if(ev.bars){
+    const k=lowerBound(ev.bars.map(b=>[b[0]]),t+1e-6), rmax=Math.max(...ev.bars.map(b=>Math.max(b[1],b[2])));
+    for(let j=Math.max(0,k-Math.floor(w/2));j<k;j++){const b=ev.bars[j], hh=Math.max(1,Math.round(Math.log1p(b[p.v?2:1])/Math.log1p(rmax)*(h-3)));
+      rect(x0+w-2-2*(k-1-j),y0+h-1-hh,1,hh,on?'K':'L');}
+    stext(id+(wide?' POWER, REAL':' POWER'),x0,y0-7,on?'K':'L','l');
+    if(wide) stext('PER NOTE',x0,y0+h+2,'B','l');
+  }
+}
+// labelled parts, with hairline leaders to the engraving's own anchor points (make_sprites.py). The LVEA's roof is cut
+// away, so the optics show: the laser, the beam splitter, the input test masses and the photodetector; the end test
+// masses hang in the end stations, 4 km out.
+const CARD=['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+const cardinal=az=>CARD[Math.round((((az%360)+360)%360)/22.5)%16];
+function obsCallouts(L,p,fr){
+  const m=p.m, A=v=>[p.x+v[0],p.y+v[1]], P=m.parts, E=m.ends_f[fr], c=st.voices[p.v]?'K':'L', sd=SPRITES.sites[p.k];
+  // a label with a hairline from its nearest edge to the anchor
+  const lab=(txt,anc,lx,ly,al)=>{
+    const [ax,ay]=A(anc), tw=textW(txt), x0=al==='r'?lx-tw:al==='c'?lx-tw/2:lx, x1=x0+tw, y0=ly, y1=ly+5;
+    let hx,hy;
+    if(ax>=x0&&ax<=x1){hx=ax; hy=ay<y0?y0-1.5:y1+1.5;}
+    else{hx=ax<x0?x0-1.5:x1+1.5; hy=ay<y0-3?y0+1:ay>y1+3?y1:y0+2.5;}
+    hair(ax,ay,hx,hy,c,true); stext(txt,lx,ly,c,al);
+  };
+  const armAt=(k,f)=>{const a=m.arms_f[fr][k]; return a[Math.min(a.length-1,Math.floor(a.length*f))];};
+  if(L.mode==='wide'){
+    lab('BEAM SPLITTER',P.bs,p.x+64,p.y+86,'r');
+    lab('LASER',P.laser,p.x+64,p.y+104,'r');
+    lab('INPUT TEST MASS',P.itmx,p.x+m.w-64,p.y+78,'l');
+    lab('PHOTODETECTOR',P.pd,p.x+m.w-64,p.y+101,'l');
+    lab('END STATION: END TEST MASS',E.x,p.x+m.w-4,p.y+3,'r');
+    if(m.mids) lab('MID STATION, 2 KM',m.mids.x,p.x+m.w-24,p.y+12,'r');                // Hanford only
+    else lab('1.2 M BEAM TUBE UNDER CONCRETE',armAt('x',0.72),p.x+m.w-24,p.y+12,'r');
+    const ax=armAt('x',0.5), ay=armAt('y',0.5);
+    lab('X ARM 4 KM, '+cardinal(sd.xaz),ax,p.x+ax[0]-14,p.y+ax[1]-14,'c');
+    lab('Y ARM 4 KM, '+cardinal(sd.yaz),ay,p.x+ay[0]+14,p.y+ay[1]-14,'c');
+    if(m.peak) lab('RATTLESNAKE MTN, 1,076 M',m.peak,p.x+28,p.y+m.hz+3,'l');
+  } else {
+    const [bx]=A(P.bs), ax=armAt('x',0.45);
+    lab('BEAM SPLITTER',P.bs,bx-26,p.y+2,'l');
+    lab('END STATION',E.x,p.x+m.w-3,p.y+2,'r');
+    lab('LASER',P.laser,p.x+42,p.y+m.h-9,'r');
+    lab('DETECTOR',P.pd,p.x+m.w-42,p.y+m.h-9,'l');
+    lab('4 KM',ax,p.x+ax[0]-9,p.y+ax[1]-12,'c');
+  }
+}
+// a muted detector: its laser is off, so the plate is half-toned with paper (an ordered dither, no new colours)
+const DIM={};
+function dimPanel(p){
+  const k=p.m.w+'x'+p.m.h; let c=DIM[k];
+  if(!c){c=DIM[k]=document.createElement('canvas'); c.width=p.m.w; c.height=p.m.h; const g=c.getContext('2d'); g.fillStyle=PAL.W;
+    for(let y=1;y<p.m.h-1;y++) for(let x=1+(y&1);x<p.m.w-1;x+=2) g.fillRect(x,y,1,1);}
+  ag.drawImage(c,p.x,p.y);
+}
+function drawScene(on){
+  if(view!=='scene'||!fitScene()) return;
+  const L=sceneLayout(), ev=EV(), set=SET(), t=visPos(), wall=performance.now()/1000, src=SOURCE[ev.id];
+  const blurred=set.key!=='orig', hasBlur=ev.sets.length>1, wide=L.mode==='wide'||L.mode==='mid';
+  const dt=Math.min(0.1,Math.max(0,wall-(SC.lastWall||wall))); SC.lastWall=wall; SC.frame++;
+  // live ripples: each grows at L.v from the moment its half-wave leaves the pair
+  const live=[]; for(let i=0;i<L.s.length;i++){const r=(t-L.s[i])*L.v; if(r>=0&&r<L.maxR) live.push({r,a:Math.max(L.rips[i].vH,L.rips[i].vL)/127});}
+  const far=Math.max(L.dH,L.dL);
+  // the sky, lensed, with the ripples written in (light ink on the night: the louder, the lighter)
+  const holes=holesAt(L,t); renderSky(L,holes);
+  for(const R of live){const col=R.a>0.75?PK.T:R.a>0.5?PK.L:PK.B; pringSky(L.px,L.py,R.r,col,R.r>far?1:0,L.gy);}
+  ag.putImageData(skyImg,0,0);
+  drawSourceSprites(L,t,wall,holes);
+  // the ground: map paper with a faint dotted grid
+  rect(0,L.gy,AW,AH-L.gy,'W');
+  for(let y=L.gy+3;y<AH;y+=6) for(let x=3;x<AW;x+=6) rect(x,y,1,1,'T');
+  // the detectors: when this voice's real half-wave lands, one arm stretches while the other squeezes (its end station
+  // shifts 2 px along the arm: frames 1 and 2 of the engraving), and which one flips every half-wave because the strain
+  // changes sign; light runs through the cut-away corner station and out along both arms, and a little leaks to the
+  // photodetector at the dark port. The light is drawn: it is infrared, and inside the tubes.
+  const pings=[];
+  for(const p of L.plates){
+    const vOn=st.voices[p.v], w=vOn?lastWave(L,t,p.v):null, age=w?w.age:9, amp=w?w.amp:0;
+    const ping=vOn&&age>=0&&age<0.16+0.3*amp, fr=ping?1+(w.i&1):0, m=p.m;
+    put(p.sp,fr,p.x,p.y); p.fr=fr;
+    if(!vOn){dimPanel(p); stext('MUTED: LASER OFF',p.x+Math.round(m.w/2),p.y+3,'K','c');}
+    if(ping){ pings.push({p,age,amp});
+      if(age<0.16+0.2*amp){
+        for(const k of ['in','x','y','out']) for(const [x,y] of m.beams[k]) rect(p.x+x,p.y+y,1,1,'O');
+        const run=reduce?1:Math.min(1,age/0.1), arms=m.arms_f[fr];
+        for(const k of ['x','y']){const a=arms[k], n=Math.round(a.length*run); for(let i=0;i<n;i++) rect(p.x+a[i][0],p.y+a[i][1],1,1,'O');}
+      }
+      const pd=m.parts.pd, X=Math.floor(p.x+pd[0]), Y=Math.floor(p.y+pd[1]);
+      if(age<0.1+0.3*amp){rect(X-1,Y,3,1,'O'); rect(X,Y-1,1,3,'O'); rect(X,Y,1,1,'W');}
+    }
+    stext(p.name,p.x,p.ty,vOn?'K':'L','l',!vOn);
+    // the measured arrival order, as each half-wave lands (GW150914: Livingston first, Hanford 7.32 ms later)
+    if(ping&&L.mode==='wide'&&!L.ns&&age<0.6) stext(p.v?'ARRIVED FIRST':'+'+ev.lag_ms+' MS AFTER L1',p.x+m.w,p.ty,'W','r',false,'K');
+    if(vOn) obsCallouts(L,p,fr);
+    if(p.sx!=null) drawScope(L,p,t,ev);
+  }
+  // ripples over the ground (dithered where they cross the maps), then each landing's ring at the vertex
+  for(const R of live){ if(R.r<L.py-L.gy+2) continue; const c=R.a>0.75?'K':R.a>0.5?'B':'L';
+    ag.save(); ag.beginPath(); ag.rect(0,L.gy,AW,AH-L.gy); ag.clip(); pring(L.px,L.py,R.r,c,R.r>far+8?2:1); ag.restore(); }
+  for(const q of pings) pring(q.p.hx,q.p.hy,3+q.age*34,q.amp>0.6?'B':'L',1);
+  // the quantum blur: its cloud (real notes), and one grain per blurred note that starts (a real count; the paths are drawn)
+  drawCloud(L,t,set,blurred,hasBlur);
+  const B=L.blur, gx=B.x+Math.floor(B.w/2), gyy=B.y+Math.floor(B.h/2);
+  if(blurred){
+    if(SC.prevT==null||t<SC.prevT||t-SC.prevT>1) SC.prevT=t;
+    const n=startsIn(set.notes,SC.prevT,t,st.voices); SC.prevT=t;
+    if(n&&!reduce){ SC.lastSpawn=wall; const wideR=(set.reach||0)>0;
+      for(let i=0;i<Math.min(n,6);i++){ const a=-Math.PI*(0.06+0.88*Math.random()), sp=wideR?30+60*Math.random():8+9*Math.random();
+        SC.grains.push({x:gx,y:gyy,vx:Math.cos(a)*sp*(wideR?1.7:1),vy:Math.sin(a)*sp,age:0,life:wideR?0.9+0.6*Math.random():0.4+0.3*Math.random()}); } }
+  } else SC.prevT=null;
+  if(SC.grains.length>180) SC.grains.splice(0,SC.grains.length-180);
+  for(const g of SC.grains){g.age+=dt; g.x+=g.vx*dt; g.y+=g.vy*dt; g.vy+=10*dt;}
+  SC.grains=SC.grains.filter(g=>g.age<g.life&&g.x>-3&&g.x<AW+3&&g.y>-3&&g.y<AH+3);
+  for(const g of SC.grains) put('grain',g.age>g.life*0.6?1:0,g.x-1,g.y-1);
+  // readouts: Newtonian estimates from the ridge (or model) frequency, the merger, the blur
+  const k=L.rips.filter(r=>Math.min(r.tH,r.tL)<=t+1e-6).length, merged=t>=L.sm, fNow=freqAt(L.rips,L.s,t);
+  const kp=kepler(fNow,src.m[0]+src.m[1],src.z);
+  const l1=(L.ns?'NOTE ':'HALF-WAVE ')+k+'/'+L.rips.length;
+  const l2=merged?(L.ns?'MERGER: TWO NEUTRON STARS MEET':'MERGED: ONE 62 MSUN HOLE'):(L.ns?'MODEL ':'RIDGE ')+Math.round(fNow)+' HZ, ORBIT '+Math.round(fNow/2)+' HZ';
+  const l3=merged?(L.ns?'LIGHT CAME LATER: GAMMA RAYS 1.7 S, KILONOVA HOURS':'3 MSUN LEFT AS GRAVITATIONAL WAVES'):'~'+Math.round(kp.km)+' KM APART, '+kp.v.toFixed(2)+' C (NEWTONIAN)';
+  const l4=blurred?'BLUR NOTES NOW '+on.length:'';
+  if(wide){ stext(l1,3,3,'W','l',false,'K'); stext(l2,3,10,merged?'W':'T','l',false,'K'); stext(l3,3,17,'T','l',false,'K'); if(l4) stext(l4,3,24,'L','l',false,'K');
+    stext(['NOT TO SCALE',src.dist,src.utc],AW-3,3,'L','r',false,'K'); }
+  else stext('NOT TO SCALE',AW-3,3,'L','r',false,'K');
+  const rd=[l1,l2,l3,l4].filter(Boolean).join(' · ').toLowerCase().replace(/msun/g,'M☉').replace(/ hz/g,' Hz').replace(/ km/g,' km').replace(/ ms/g,' ms').replace(/(\d) c /,'$1 c ');
+  if(rd!==SC.read){SC.read=rd; $('scene-read').textContent=rd;}
+  $('scene-read').hidden=wide;
+  // callouts on the source
+  if(!L.ns&&holes.length){
+    if(wide){
+      const lx=Math.round(L.px-L.Rmax*0.95-16);
+      if(holes.length===2){const [A,Bh]=holes;
+        hair(A.x-A.rs*0.7,A.y-A.rs*0.7,lx+1,L.py-17.5,'W',true); stext('SHADOW, 36 MSUN',lx,L.py-20,'W','r',false,'K');
+        hair(A.x-A.rs-0.6,A.y+1,lx+1,L.py-7.5,'L',true); stext('PHOTON RING',lx,L.py-10,'T','r',false,'K');
+        hair(Bh.x-Bh.rs*0.6,Bh.y+Bh.rs*0.75,lx+1,L.py+8.5,'W',true); stext('SHADOW, 29 MSUN',lx,L.py+6,'W','r',false,'K');
+      } else {const h=holes[0], since=t-L.sm;
+        hair(h.x-h.rs*0.7,h.y-h.rs*0.7,lx+1,L.py-12.5,'W',true); stext('REMNANT, 62 MSUN',lx,L.py-15,'W','r',false,'K');
+        if(since<2.5) stext(['RINGING DOWN AT 251 HZ,','4 MS DECAY (SHOWN X100)'],lx,L.py-5,'T','r',false,'K'); }
+      const ex=Math.round(L.px+L.Rmax*0.95+14), Eh=holes[holes.length-1];
+      hair(Eh.x+Eh.E*0.75,Eh.y+Eh.E*0.55,ex-1,L.py+12.5,'L',true); stext('LENSED STARLIGHT',ex,L.py+10,'T','l',false,'K');
+    } else if(holes.length===2){ holes.forEach((h,i)=>{const out=h.x>=L.px; stext(i?'29':'36',out?h.x+h.rs+2:h.x-h.rs-2,h.y-2,'W',out?'l':'r',false,'K');}); }
+  }
+  if(L.ns&&wide){
+    if(t<L.sm&&SC.nsAt){const [A,B2]=SC.nsAt, lx=Math.round(L.px-L.Rmax*0.95-16);
+      hair(A.x-3,A.y-2,lx+1,L.py-14.5,'W',true); stext('NEUTRON STAR, 1.46 MSUN',lx,L.py-17,'W','r',false,'K');
+      hair(B2.x-2,B2.y+3,lx+1,L.py+9.5,'W',true); stext('NEUTRON STAR, 1.27 MSUN',lx,L.py+7,'W','r',false,'K');
+      stext(['EACH ~24 KM ACROSS,','DRAWN '+NS_X+'X THE ORBIT\'S SCALE'],Math.round(L.px+L.Rmax*0.95+14),L.py-4,'T','l',false,'K');}
+    else if(t>=L.sm) stext(['KILONOVA FLASH (DRAWN)','SEEN BY TELESCOPES ~11 H LATER'],Math.round(L.px+16),L.py+8,'T','l',false,'K');
+    const g=L.glow, lx=Math.round(L.px-L.Rmax*0.95-16); hair(g.x-3,g.y+4,lx+1,L.py+24.5,'L',true); stext('HOST GALAXY NGC 4993',lx,L.py+22,'L','r',false,'K');
+  }
+  sg.imageSmoothingEnabled=false; sg.clearRect(0,0,scn.width,scn.height); sg.drawImage(art,0,0,AW*U,AH*U);
+  flushText();
+  drawTrack(t);
+}
+// the tape under the scene: one pip per real half-wave per voice (Livingston on top, Hanford below; filled once
+// heard), the blurred notes as a density band between them, the loop and the playhead. Click to seek, drag to loop.
+const trk=$('track'), tkg=trk.getContext('2d'), tart=document.createElement('canvas');
+let tag=tart.getContext('2d'), TU=2, TW=0, TH=0;
+const TRK={key:'', dens:null};
+function fitTrack(){
+  const r=trk.getBoundingClientRect(), dpr=window.devicePixelRatio||1; if(r.width<10||r.height<10) return false;
+  TU=Math.max(1,Math.round(2*dpr)); const dw=Math.round(r.width*dpr), dh=Math.round(r.height*dpr);
+  if(trk.width!==dw||trk.height!==dh){trk.width=dw;trk.height=dh;}
+  const aw=Math.ceil(dw/TU), ah=Math.ceil(dh/TU);
+  if(tart.width!==aw||tart.height!==ah){tart.width=aw;tart.height=ah;tag=tart.getContext('2d');}
+  TW=aw; TH=ah; return true;
+}
+const ttx=t=>2+Math.round(t/T()*(TW-5)), txt=x=>Math.max(0,Math.min(T(),(x-2)/(TW-5)*T()));
+function drawTrack(t){
+  if(!fitTrack()) return;
+  const ev=EV(), set=SET(), orig=ev.sets[0].notes, R=(x,y,w,h,c)=>rect(x,y,w,h,c,tag), yL=9, yH=TH-4, yB=Math.round((yL+yH)/2);
+  const dpr=window.devicePixelRatio||1, big=TW*TU/dpr<560;   // on a phone the tick numbers are drawn larger, after the upscale
+  R(0,0,TW,TH,'W');
+  for(let s=0;s<=T()+1e-6;s+=5){const x=ttx(s); R(x,0,1,3,'L'); if(!big) text(String(s)+(s?'':' S'),x+2,0,'B',tag);}
+  if(st.loop||st.drag){
+    const a=st.drag?Math.min(st.drag.a,st.drag.b):st.loopA, b=st.drag?Math.max(st.drag.a,st.drag.b):st.loopB, xa=ttx(a), xb=ttx(b);
+    for(let y=6;y<TH;y++) for(let x=y&1;x<TW;x+=2) if(x<xa||x>xb) R(x,y,1,1,'T');
+    for(const x of [xa,xb]){R(x,6,1,TH-6,'K');} R(xa,6,3,1,'K'); R(xa,TH-1,3,1,'K'); R(xb-2,6,3,1,'K'); R(xb-2,TH-1,3,1,'K');
+  }
+  if(set.key!=='orig'){
+    const key=st.ev+set.key+'|'+TW+'|'+st.voices.join();
+    if(TRK.key!==key){const c=new Float32Array(TW+2); for(const n of set.notes) if(st.voices[n[4]]) c[ttx(n[0])]++; TRK.key=key; TRK.dens=c;}
+    const xt0=ttx(t);
+    for(let x=0;x<TW;x++){const c=TRK.dens[x]; if(!c) continue; const h=Math.min(5,1+Math.floor(Math.log2(c))); R(x,yB-(h>>1),1,h,x<=xt0?'B':'L');}
+  }
+  const gap=(TW-5)*0.27/T();
+  for(const n of orig){
+    const v=n[4], x=ttx(n[0]), y=v?yL:yH, heard=n[0]<=t+1e-6, c=!st.voices[v]?'T':n[3]>=90?'K':n[3]>=60?'B':'L';
+    if(gap>=4){ if(heard) R(x-1,y-1,3,3,c); else {R(x-1,y-1,3,1,c); R(x-1,y+1,3,1,c); R(x-1,y,1,1,c); R(x+1,y,1,1,c);} }
+    else R(x,y-1,1,3,heard?c:'T');
+  }
+  const px=ttx(t); R(px,5,1,TH-5,'K'); R(px-1,5,3,2,'K');
+  tkg.imageSmoothingEnabled=false; tkg.clearRect(0,0,trk.width,trk.height); tkg.drawImage(tart,0,0,TW*TU,TH*TU);
+  if(big){const F=Math.max(1,Math.round(2.5*dpr)); for(let s=0;s<=T()+1e-6;s+=5){const x=ttx(s)*TU+2*TU; text(String(s)+(s?'':' S'),x,Math.round(dpr),'B',tkg,F);}}
+}
+// the pad: the pair on a patch of night sky; a tap (or each half-wave landing while playing) sends a ring across it
+const padc=$('padc'), pg=padc.getContext('2d');
+function drawPad(){
+  const dpr=window.devicePixelRatio||1, k=Math.max(1,Math.round(3*dpr)), sp=SP.pad;
+  if(padc.width!==sp.w*k){padc.width=sp.w*k; padc.height=sp.h*k; padc._f=-1;}
+  let age=(performance.now()-padHit)/1000;
+  if(st.playing){const ev=EV(), t=posNow(); for(let v=0;v<2;v++) if(st.voices[v]){const lo=lastOnset(ev.sets[0].notes,t,v); if(lo) age=Math.min(age,lo.age/st.speed);}}
+  const f=!reduce&&age>=0&&age<0.3?1+Math.min(2,Math.floor(age/0.1)):0;
+  if(padc._f===f) return; padc._f=f;
+  pg.clearRect(0,0,padc.width,padc.height); drawSp(pg,sp,f,0,0,k);
+}
+// the keyboard strip: a key that lights up throws a pixel note (darker when you played it yourself)
+const kfx=$('keyfx'), kg=kfx.getContext('2d');
+function keyFx(p,jam){
+  if(reduce) return;
+  const el=$('keys').querySelector('.k[data-p="'+p+'"]'); if(!el) return;
+  const r=el.getBoundingClientRect(), r0=kfx.getBoundingClientRect();
+  SC.fx.push({x:r.left+r.width/2-r0.left, t:performance.now(), jam}); if(SC.fx.length>40) SC.fx.shift();
+}
+function drawKeyFx(){
+  const r=kfx.getBoundingClientRect(); if(r.width<10) return;
+  const dpr=window.devicePixelRatio||1, k=Math.max(1,Math.round(2*dpr)), dw=Math.round(r.width*dpr), dh=Math.round(r.height*dpr);
+  if(kfx.width!==dw||kfx.height!==dh){kfx.width=dw;kfx.height=dh;}
+  const now=performance.now(); SC.fx=SC.fx.filter(f=>now-f.t<750);
+  if(!SC.fx.length&&!kfx._dirty) return; kfx._dirty=SC.fx.length>0;
+  kg.clearRect(0,0,dw,dh); const sp=SP.note, h=sp.h*k;
+  for(const f of SC.fx){const u=(now-f.t)/750, x0=Math.round(f.x*dpr/k)*k-2*k, y0=Math.round((dh-h)*(1-u)/k)*k;
+    drawSp(kg,sp,0,x0,y0,k,{alpha:(f.jam?1:0.55)*(u<0.7?1:1-(u-0.7)/0.3)});}
+}
+// the scene answers clicks: the pair taps, a detector mutes its voice, the blur cloud steps its reach
+function sceneHit(e){
+  const L=SC.L; if(!L||!AW) return null;
+  const r=scn.getBoundingClientRect(), dpr=window.devicePixelRatio||1, x=(e.clientX-r.left)*dpr/U, y=(e.clientY-r.top)*dpr/U;
+  if(y<L.gy&&Math.abs(x-L.px)<L.Rmax*0.75+14&&Math.abs(y-L.py)<L.Rmax*0.5+14) return 'pair';
+  for(const p of L.plates) if(x>=p.x-2&&x<=p.x+p.m.w+2&&y>=p.ty-2&&y<=p.y+p.m.h+1) return 'v'+p.v;
+  const B=L.blur; if(x>=B.x-4&&x<=B.x+B.w+4&&y>=B.y-9&&y<=B.y+B.h+8) return 'blur';
+  return null;
+}
+function cycleReach(){
+  const ev=EV(), av=availability(ev,STRENGTHS[st.si]);
+  if(av.filter(Boolean).length<2){toast(emptyNote(ev)||'No other blur setting has data'); return;}
+  let r=st.ri; do{r=(r+1)%4;}while(!av[r]);
+  setReach(r); toast(r===0?'Blur off: the plain chirp':`Blur at reach ${REACHES[r]}: every dot in the cloud is a real blurred note`);
+}
+scn.addEventListener('pointermove',e=>scn.classList.toggle('hot',!!sceneHit(e)));
+scn.addEventListener('pointerleave',()=>scn.classList.remove('hot'));
+scn.addEventListener('click',e=>{
+  const h=sceneHit(e); if(!h) return;
+  if(h==='pair') tap();
+  else if(h==='blur') cycleReach();
+  else {const i=+h[1]; st.voices[i]=!st.voices[i]; if(!st.voices[0]&&!st.voices[1]) st.voices[1-i]=true; refresh(); toast(`${i?'L1 Livingston':'H1 Hanford'} ${st.voices[i]?'on: laser locked':'muted: laser off'}`);}
+});
+function setView(v){
+  view=v; press('#g-view button',b=>b.dataset.view===v);
+  $('view-scene').hidden=v!=='scene'; $('view-data').hidden=v!=='data';
+  $('view-hint').textContent=v==='scene'?'In the scene, tap the black holes for the next half-wave, an observatory to mute its voice, or the blur cloud to change its reach.'
+    :'The piano roll over the real wavelet scalogram, then the real strain (GW150914) or the along-track power (GW170817). Drag across the roll to loop.';
+  if(v==='data'){useView(VSTAGE); geom(); layerKey='';}
+  draw();
+}
+document.querySelectorAll('#g-view button').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
+// a gentle idle loop while the scene is on screen (the neutron stars' beams, the cloud's shimmer, grains settling); off
+// for reduced motion
+let idleOn=true, idleLast=0;
+if('IntersectionObserver' in window) new IntersectionObserver(es=>{idleOn=es.some(e=>e.isIntersecting);}).observe($('view-scene'));
+function idle(ts){
+  requestAnimationFrame(idle);
+  if(reduce||raf||document.hidden||!idleOn||ts-idleLast<70) return; idleLast=ts;
+  if(view==='scene') drawScene(st.lit.filter(x=>x.until>performance.now()).map(x=>x.n));
+  drawPad(); drawKeyFx();
+}
+// icons for the cast list and the render cards: sprites, a ripple, and a real slice of the blur cloud
+function rippleIcon(k){
+  const c=document.createElement('canvas'), n=27; c.width=c.height=n*k; const g=c.getContext('2d'); g.scale(k,k);
+  pring(13,13,4,'K',0,g); pring(13,13,8,'B',0,g); pring(13,13,12,'L',1,g); rect(12,12,3,3,'K',g); return c.toDataURL();
+}
+function cloudIcon(k,reach){   // GW150914 at a given reach (0.5 by default), the 3 s around the merger: the real blurred notes, as in the scene
+  const ev=EVENTS[0], set=ev.sets.find(s=>s.reach===(reach==null?0.5:reach))||ev.sets[ev.sets.length-1], w=72, h=40, c=document.createElement('canvas');
+  c.width=w*k; c.height=h*k; const g=c.getContext('2d'); g.scale(k,k); rect(0,0,w,h,'W',g);
+  const vs=st.voices; st.voices=[true,true];
+  cloudDots(g,0,0,w,h,set.notes,mergeTime(ev),1.5,ev.pmin-1,ev.pmax+1,set.key!=='orig',false); st.voices=vs;
+  for(let y=0;y<h;y+=2) rect(w>>1,y,1,1,'L',g); return c.toDataURL();
+}
+function spriteIcon(img,name,f,k){
+  try{
+    if(name==='ripple'){img.src=rippleIcon(k); img.width=img.height=27*k; return;}
+    if(name==='cloud'){img.src=cloudIcon(k,f); img.width=72*k; img.height=40*k; return;}
+    img.src=InkSprite.toDataURL(SP[name],f||0,k); img.width=SP[name].w*k; img.height=SP[name].h*k;
+  }catch(e){}
+}
+
+// ---------- controls ----------
+function press(sel,pred){document.querySelectorAll(sel).forEach(b=>b.setAttribute('aria-pressed',String(pred(b))));}
+function refresh(){
+  const ev=EV(), set=SET(), av=availability(ev,STRENGTHS[st.si]);
+  press('#g-event button',b=>+b.dataset.i===st.ev);
+  press('#g-strength button',b=>+b.dataset.i===st.si);
+  const sw=strengthsWithData(ev);
+  document.querySelectorAll('#g-strength button').forEach(b=>{const na=!sw.includes(STRENGTHS[+b.dataset.i]); b.dataset.na=String(na); b.title=na?'no completed blur at this strength':''; b.setAttribute('aria-label',b.textContent+(na?', no data':''));});
+  $('str-note').hidden=sw.length===2; $('str-note').textContent=sw.length?`Strength ${STRENGTHS.filter(x=>!sw.includes(x)).map(x=>x.toFixed(1)).join(', ')}: no completed job (struck through).`:`No blur was run for ${ev.id}: its jobs timed out or were never submitted.`;
+  [...$('reach-ticks').children].forEach((s,i)=>{s.classList.toggle('na',!av[i]); s.classList.toggle('cur',i===st.ri); s.title=av[i]?'':'not run: see "What the quantum engine did"';});
+  $('reach').value=st.ri;
+  const rv=st.ri===0?'unblurred':`reach ${REACHES[st.ri]} · strength ${STRENGTHS[st.si]}`;
+  $('reach-val').textContent=rv; $('reach').setAttribute('aria-valuetext',rv);
+  press('.voice',b=>st.voices[+b.id.slice(2)]);
+  press('#g-preset button',b=>b.dataset.preset===st.preset);
+  $('loop').textContent=st.loop?'Loop on':'Loop off'; $('loop').setAttribute('aria-pressed',String(st.loop));
+  $('speed').value=st.speed; $('speed-val').textContent=st.speed.toFixed(2)+'×';
+  $('pad-sub').textContent=(ev.id==='GW150914'?'next half-wave':'next 16 cycles')+' · Z / X';
+  // readouts
+  const reg=ev.roll.map(r=>`${r.rows}×${r.steps}`).join(', ');
+  $('r-params').textContent=set.job?`strength ${set.strength} · reach ${set.reach} · qubits 20 · resolution 2 · threshold 0.1 · margin 0.15`:'unblurred: our classical MIDI, no quantum step';
+  $('r-reg').textContent=`20-qubit budget (engine max) · roll per track ${reg} (pitch×steps) → 6 + 14 = 20 qubits, our calculation`;
+  $('r-job').textContent=set.job?`${set.job} · ran ${Math.round(set.seconds)} s`:'none for this setting';
+  $('r-notes').textContent=`${set.notes.length} notes in this setting · ${ev.sets[0].notes.length} in the unblurred chirp`;
+  $('r-data').textContent=ev.id==='GW150914'?`GWOSC H1 + L1, 32 s @ 4096 Hz · measured track · L1 leads by ${ev.lag_ms} ms`:`GWOSC H1 + L1, 32 s @ 4096 Hz · model-guided track (Mc ${ev.mc_det} M☉ det. frame, tc fit +${ev.tc_fit} s) · L1 glitch gated`;
+  $('hear').dataset.na=String(!ev.strain); $('hear').textContent=ev.strain?(hearSrc?'Stop':'Hear the detector (real speed)'):'Hear the detector (GW150914 only)';
+  $('hear-note').hidden=!ev.strain;
+  const none=ev.plan.every(p=>p.status!=='completed');
+  $('empty').hidden=!none;
+  $('empty').textContent=emptyNote(ev);
+  $('empty-fig').hidden=!none; $('empty-fig').textContent=emptyNote(ev);
+  $('reach').disabled=none;
+  // Figures 1-3 follow the instrument
+  $('fig-take').textContent=`${ev.id} · ${rv}`;
+  $('fig-strip-h').textContent=ev.strain?'The real strain, on the same clock':'The measured along-track power, on the same clock';
+  $('strip-fig').setAttribute('aria-label',(ev.strain?'The real whitened strain under the roll, on the same clock: H1 above, L1 below.':'The measured along-track power of each note under the roll, on the same clock: H1 up, L1 down.')+' Click to move the playhead, drag sideways to set a loop.');
+  for(const k of TAKES) k.b.setAttribute('aria-pressed',String(k.ei===st.ev&&k.s===set));
+  $('d-missing').textContent='Planned settings (s = strength, r = reach). '+EVENTS.map(missingSentence).join(' ')+
+     ' Every failed attempt still counted against this piece\'s credit budget, which ran out before the rest could be submitted. The missing settings are absent, not faked.';
+  shadeKeys(); draw();
+}
+function buildSegs(){
+  const ge=$('g-event'); EVENTS.forEach((e,i)=>{const b=document.createElement('button');b.type='button';b.dataset.i=i;b.textContent=e.id;
+    b.addEventListener('click',()=>switchEvent(i)); ge.appendChild(b);});
+  const gs=$('g-strength'); STRENGTHS.forEach((s,i)=>{const b=document.createElement('button');b.type='button';b.dataset.i=i;b.textContent=s.toFixed(1);
+    b.addEventListener('click',()=>{const ev=EV(); if(!strengthsWithData(ev).includes(s)){toast(strengthsWithData(ev).length?`No completed blur job at strength ${s.toFixed(1)} for ${ev.id}: those attempts timed out or were never submitted (see "What the quantum engine did").`:emptyNote(ev)); return;}
+      st.si=i; st.ri=nearestAvailable(ev,s,st.ri); refresh();}); gs.appendChild(b);});
+}
+function switchEvent(i){
+  if(st.ev===i) return; stop(); st.ev=i; st.pos=0; st.loop=false; st.preset='whole'; tapAnim=null; SC.grains=[]; SC.prevT=null;
+  st.si=Math.max(0,STRENGTHS.indexOf(strengthsWithData(EVENTS[i])[0])); st.ri=nearestAvailable(EVENTS[i],STRENGTHS[st.si],st.ri);
+  geomAll(); buildKeys(); refresh();
+}
+function setReach(ri){
+  ri=Math.max(0,Math.min(3,ri)); const ok=nearestAvailable(EV(),STRENGTHS[st.si],ri);
+  if(ok!==ri) toast(`No data for ${EV().id} at reach ${REACHES[ri]}, strength ${STRENGTHS[st.si]}: ${missReason(EV(),STRENGTHS[st.si],REACHES[ri])}. Showing reach ${ok?REACHES[ok]:'off'}.`);
+  if(ok!==st.ri) SC.reach=performance.now();
+  st.ri=ok; refresh();
+}
+$('reach').addEventListener('input',e=>setReach(+e.target.value));
+$('play').addEventListener('click',()=>st.playing?stop():play());
+$('play-fig').addEventListener('click',()=>st.playing?stop():play());
+$('rewind').addEventListener('click',()=>seek(st.loop?st.loopA:0));
+$('loop').addEventListener('click',()=>{st.loop=!st.loop; if(st.loop&&st.loopB-st.loopA<0.2){[st.loopA,st.loopB]=EV().presets.merger; st.preset='merger';} if(!st.loop)st.preset='whole'; if(st.playing) seek(posNow()); refresh();});
+$('pad').addEventListener('pointerdown',e=>{e.preventDefault(); tap();});
+$('pad').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault(); if(!e.repeat) tap();}});
+$('speed').addEventListener('input',e=>{const p=posNow(); st.speed=+e.target.value; if(st.playing){anchors=[{c:ctx.currentTime,p}]; schedPos=Math.max(schedPos,p);} $('speed-val').textContent=st.speed.toFixed(2)+'×';});
+$('vol').addEventListener('input',e=>{$('vol-val').textContent=Math.round(e.target.value*100)+'%'; if(master) master.gain.value=+e.target.value; for(const r of rUI) r.a.volume=+e.target.value;});
+$('ghost').addEventListener('change',e=>{st.ghost=e.target.checked; draw();});
+document.querySelectorAll('.voice').forEach(b=>b.addEventListener('click',()=>{const i=+b.id.slice(2); st.voices[i]=!st.voices[i]; if(!st.voices[0]&&!st.voices[1]) st.voices[1-i]=true; refresh();}));
+document.querySelectorAll('#g-preset button').forEach(b=>b.addEventListener('click',()=>{
+  st.preset=b.dataset.preset;
+  if(st.preset==='whole'){st.loop=false;} else {[st.loopA,st.loopB]=EV().presets[st.preset]; st.loop=true;}
+  seek(st.loop?st.loopA:0); refresh();}));
+// roll: click = seek, drag = loop
+// the roll (Data) and the tape (Scene) scrub the same way: click = seek, drag = loop, arrow keys move the playhead
+function scrubber(el,toT){
+  let down=null;
+  el.addEventListener('pointerdown',e=>{el.setPointerCapture(e.pointerId); down={x:e.clientX,t:toT(e)};});
+  el.addEventListener('pointermove',e=>{if(!down)return; if(Math.abs(e.clientX-down.x)>6){st.drag={a:down.t,b:toT(e)}; draw();}});
+  const up=()=>{if(!down)return;
+    if(st.drag){[st.loopA,st.loopB]=clampLoop(st.drag.a,st.drag.b,T()); st.loop=true; st.preset='custom'; st.drag=null; seek(st.loopA); refresh(); toast(`Looping ${st.loopA.toFixed(1)}–${st.loopB.toFixed(1)} s`);}
+    else seek(down.t);
+    down=null;};
+  el.addEventListener('pointerup',up); el.addEventListener('pointercancel',()=>{down=null;st.drag=null;draw();});
+  el.addEventListener('keydown',e=>{
+    const step=e.shiftKey?5:1;
+    if(e.key==='ArrowRight'){e.preventDefault(); seek(posNow()+step);} else if(e.key==='ArrowLeft'){e.preventDefault(); seek(posNow()-step);}
+    else if(e.key==='Home'){e.preventDefault(); seek(0);} else if(e.key==='End'){e.preventDefault(); seek(T()-0.5);}
+  });
+}
+// the strain strip under each roll shares the roll's time axis, so it scrubs the same way (pointer only; the roll takes the keys)
+for(const V of [VSTAGE,VFIG]){const toT=e=>{useView(V); if(!G.dpr) geom(); const r=V.roll.getBoundingClientRect(); return Math.max(0,Math.min(T(),xt((e.clientX-r.left)*G.dpr)));}; scrubber(V.roll,toT); scrubber(V.strip,toT);}
+scrubber(trk,e=>{const r=trk.getBoundingClientRect(); return txt((e.clientX-r.left)*(window.devicePixelRatio||1)/TU);});
+// computer keyboard
+const isField=t=>t&&t.closest&&t.closest('input,select,textarea,button,summary,a');
+window.addEventListener('keydown',e=>{
+  if(e.ctrlKey||e.metaKey||e.altKey) return;
+  const k=e.key.toLowerCase();
+  if(k===' '&&!isField(e.target)){e.preventDefault(); if(!e.repeat)(st.playing?stop():play()); return;}
+  if(e.target&&e.target.closest&&e.target.closest('input[type=range],textarea')) return;
+  if(k==='z'||k==='x'){e.preventDefault(); if(!e.repeat) tap(); return;}
+  if(k===','||k==='.'){e.preventDefault(); setReach(st.ri+(k==='.'?1:-1)); return;}
+  if(k==='-'||k==='='){e.preventDefault(); st.base=Math.max(layout.lo,Math.min(layout.hi-12,st.base+(k==='='?12:-12))); toast('Keyboard starts at '+midiName(st.base)); return;}
+  if(k in KEYMAP&&!e.repeat){const p=st.base+KEYMAP[k]; if(p>=layout.lo&&p<=layout.hi){e.preventDefault(); noteOn(p,'key'+k);}}
+});
+window.addEventListener('keyup',e=>{const k=e.key.toLowerCase(); if(k in KEYMAP) noteOff('key'+k);});
+window.addEventListener('blur',()=>{for(const id of [...st.held.keys()]) noteOff(id);});
+// hear the real detector data
+let hearSrc=null;
+function stopHear(){ if(!hearSrc) return false; try{hearSrc.stop();}catch(e){} hearSrc=null; $('hear').textContent='Hear the detector (real speed)'; return true; }
+$('hear').addEventListener('click',()=>{
+  const ev=EV(); if(!ev.strain){toast(`No strain clip for ${ev.id} here: its signal is far below the noise by ear, so the page keeps the real-speed clip for GW150914. Switch events to hear it.`); return;}
+  if(!ensureAudio()) return;
+  if(stopHear()) return;
+  pauseRenders(null);
+  const s=ev.strain, n=s.H1.length, sr=ctx.sampleRate, m=Math.floor(n/s.fs*sr), buf=ctx.createBuffer(2,m,sr);
+  ['H1','L1'].forEach((k,ch)=>{const out=buf.getChannelData(ch), x=s[k];
+    for(let i=0;i<m;i++){const u=i/sr*s.fs, j=Math.floor(u), f=u-j; const a=x[Math.min(j,n-1)], b=x[Math.min(j+1,n-1)];
+      const fade=Math.min(1,i/(0.01*sr),(m-i)/(0.01*sr)); out[i]=(a+(b-a)*f)/127*0.6*fade*(st.voices[ch]?1:0);}});
+  const src=ctx.createBufferSource(); src.buffer=buf; src.connect(master); src.start();
+  hearSrc=src; $('hear').textContent='Stop'; src.onended=()=>{if(hearSrc===src){hearSrc=null;$('hear').textContent='Play it again';}};
+  toast(`This is the real data, not the synth: ${(n/s.fs).toFixed(2)} s of whitened strain`);
+});
+// ---------- the renders: WAV deliverables as MP3 in <audio> elements (preload none: nothing loads or sounds before a click) ----------
+const RENDERS=/*RENDERS*/[];
+const fmtT=x=>{x=Math.max(0,x||0); return `${Math.floor(x/60)}:${String(Math.floor(x%60)).padStart(2,'0')}`;};
+const rUI=[];
+function pauseRenders(except){for(const r of rUI) if(r!==except&&!r.a.paused) r.a.pause();}
+function buildRenders(){
+  const g=$('rgrid'); $('r-count').textContent=`${RENDERS.length} WAV deliverables, played here`;
+  RENDERS.forEach(R=>{
+    const card=document.createElement('article'); card.className='rcard';
+    card.innerHTML=`<span class="tag${R.job?' q':''}">${R.job?'quantum blur &middot; Atlas simulator':'classical'}</span><div class="rh"><img alt=""><h3>${R.title}</h3></div>
+      <p class="meta">${R.desc}</p>
+      <p class="meta">MIDI <b>${R.midi}</b><br>WAV <b>${R.wav}</b><br>${R.notes_played===R.notes_total?`${R.notes_total} notes`:`${R.notes_played} of ${R.notes_total} notes sounded (at most 16 per onset)`}${R.job?`<br>job <b>${R.job}</b>`:''}</p>
+      <div class="row"><button type="button" class="btn" data-act="play" aria-pressed="false">Play</button><button type="button" class="btn ghost" data-act="stop">Stop</button><span class="val" data-t>0:00 / ${fmtT(R.seconds)}</span></div>
+      <input type="range" min="0" max="${R.seconds}" step="0.1" value="0" aria-label="Position in the ${R.title} render">
+      <button type="button" class="btn ghost" data-act="open">Show this MIDI on the roll</button>`;
+    spriteIcon(card.querySelector('.rh img'),R.ev===1?'ns':R.job?'cloud':'mascot',R.ev===1?1:R.job?REACHES[R.ri]:0,1);
+    const a=document.createElement('audio'); a.preload='none'; a.src=R.src; card.appendChild(a);
+    const q=sel=>card.querySelector(sel), btn=q('[data-act=play]'), tl=q('[data-t]'), range=q('input[type=range]');
+    const ui={a,card,R}; rUI.push(ui);
+    const show=()=>{range.value=a.currentTime; tl.textContent=`${fmtT(a.currentTime)} / ${fmtT(R.seconds)}`;};
+    const label=(txt,on)=>{btn.textContent=txt; btn.setAttribute('aria-pressed',String(on)); card.classList.toggle('on',on);};
+    btn.addEventListener('click',()=>{
+      if(!a.paused){a.pause(); return;}
+      pauseRenders(ui); if(st.playing) stop(); stopHear();
+      a.volume=+$('vol').value;
+      const p=a.play(); if(p&&p.catch) p.catch(e=>{label('Play',false); toast('Could not play '+R.src+': '+(e&&e.message||e));});
+    });
+    a.addEventListener('play',()=>label('Pause',true));
+    a.addEventListener('pause',()=>label(a.currentTime>0.05&&!a.ended?'Resume':'Play',false));
+    a.addEventListener('ended',()=>{label('Play again',false); show();});
+    a.addEventListener('timeupdate',show);
+    q('[data-act=stop]').addEventListener('click',()=>{a.pause(); try{a.currentTime=0;}catch(e){} label('Play',false); show();});
+    range.addEventListener('input',()=>{try{a.currentTime=+range.value;}catch(e){} tl.textContent=`${fmtT(+range.value)} / ${fmtT(R.seconds)}`;});
+    q('[data-act=open]').addEventListener('click',()=>showOnRoll(R.ev,R.strength,R.ri));
+    g.appendChild(card);
+  });
+}
+// put a take on the roll (render cards, Figure 3 and the jobs table), then bring the roll into view
+function showOnRoll(ei,strength,ri){
+  switchEvent(ei);
+  if(strength!=null){const si=STRENGTHS.indexOf(strength); if(si>=0) st.si=si;}
+  setReach(ri);
+  $(view==='data'?'roll':'roll-fig').scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});
+  toast(`On the roll: ${EV().id}, ${st.ri===0?'unblurred':'reach '+REACHES[st.ri]+', strength '+STRENGTHS[st.si]}. Press Play or tap through it.`);
+}
+// ---------- Figure 3: the README's hero.png, drawn live from the same note lists (every take that exists) ----------
+const TAKES=[];
+function takeTitle(ev,s){
+  if(s.job) return `blur-midi-v1, strength ${s.strength}, reach ${s.reach.toFixed(1)}, qubits 20 (Atlas simulator), job <b>${s.job}</b>`;
+  if(ev.id==='GW150914') return 'GW150914, unblurred: one note per half-wave of the real strain (H1 dark ink, L1 pale ink), &times;100 time, &times;4 pitch. Classical.';
+  if(ev.id==='GW170817') return 'GW170817, unblurred: model-guided track (Newtonian chirp, catalogue chirp mass), loudness = real along-track power.'+(ev.sets.length>1?'':' No blur (jobs timed out or were never submitted).');
+  return `${ev.id}, unblurred.`;
+}
+function buildTakes(){
+  const box=$('takes'); box.innerHTML=''; TAKES.length=0;
+  EVENTS.forEach((ev,ei)=>ev.sets.forEach(s=>{
+    const ri=s.key==='orig'?0:REACHES.indexOf(s.reach), b=document.createElement('button');
+    b.type='button'; b.className='take'; b.setAttribute('aria-pressed','false'); b.title='Put this take on the roll';
+    b.innerHTML=`<span class="tw"><canvas aria-hidden="true"></canvas><span class="ph" hidden></span></span><span class="tt">${takeTitle(ev,s)}</span>`;
+    b.addEventListener('click',()=>showOnRoll(ei,s.strength,ri));
+    box.appendChild(b);
+    TAKES.push({b,ev,ei,s,c:b.querySelector('canvas'),ph:b.querySelector('.ph'),key:'',geo:null});
+  }));
+  const nb=TAKES.filter(k=>k.s.job).length;
+  $('takes-n').textContent=`${TAKES.length} takes · ${nb} blurred on Atlas`;
+}
+function drawTakes(){
+  for(const k of TAKES){
+    const c=k.c, r=c.getBoundingClientRect(); if(r.width<10||r.height<10) continue;
+    const d=Math.min(window.devicePixelRatio||1,2), W=Math.round(r.width*d), H=Math.round(r.height*d), ev=k.ev, bg=img(ev.bg);
+    const key=[W,H,bg.complete&&bg.naturalWidth].join('|'); if(k.key===key) continue; k.key=key;
+    c.width=W; c.height=H; const g=c.getContext('2d');
+    const pTop=ev.pmax+2, pBot=ev.pmin-2, x0=26*d, x1=W-4*d, y0=4*d, y1=H-14*d, rh=(y1-y0)/(pTop-pBot+1), Tt=ev.t_total;
+    const X=t=>x0+t/Tt*(x1-x0), Y=p=>y0+(pTop-p)*rh, minW=Math.max(1.5*d,1);
+    g.fillStyle=PAPER; g.fillRect(0,0,W,H);
+    if(bg.complete&&bg.naturalWidth){const ihi=ev.img_pitch[1]; g.drawImage(bg,0,(ihi-pTop-0.5)*4,bg.naturalWidth,(pTop-pBot+1)*4,x0,y0,x1-x0,y1-y0);}
+    g.font=`500 ${9*d}px IBM Plex Mono, monospace`; g.textBaseline='middle';
+    for(let p=pBot;p<=pTop;p++) if(p%12===0){g.fillStyle='rgba(25,35,142,.16)'; g.fillRect(x0,Y(p)+rh,x1-x0,Math.max(1,d*0.6)); g.fillStyle=INK2; g.fillText(midiName(p),2*d,Y(p)+rh/2);}
+    g.textBaseline='top'; g.fillStyle=INK2;
+    for(let s=0;s<=Tt;s+=10){const x=X(s), lab=s+' s', w=g.measureText(lab).width; g.fillRect(x,y1,Math.max(1,d),3*d); g.fillText(lab,Math.min(x+2*d,W-w-2*d),y1+3*d);}
+    if(k.s.key!=='orig'){g.lineWidth=Math.max(1,d*0.75); g.strokeStyle='rgba(25,35,142,.55)'; g.setLineDash([2*d,1.5*d]);
+      for(const n of ev.sets[0].notes) g.strokeRect(X(n[0]),Y(n[2])+0.5,Math.max(minW,X(n[0]+n[1])-X(n[0])),Math.max(1,rh-1));
+      g.setLineDash([]);}
+    for(const n of k.s.notes){const col=VOICE_RGB[n[4]]; g.fillStyle=`rgba(${col[0]},${col[1]},${col[2]},${(0.22+0.78*n[3]/127).toFixed(3)})`;
+      g.fillRect(X(n[0]),Y(n[2])+rh*0.15,Math.max(minW,X(n[0]+Math.max(n[1],0.04))-X(n[0])),Math.max(1,rh*0.7));}
+    k.geo={x0:x0/d,x1:x1/d,Tt};
+  }
+}
+// the playhead on the take that is on the roll
+function takesHead(pos){
+  const set=SET();
+  for(const k of TAKES){const cur=k.ei===st.ev&&k.s===set&&!!k.geo, h=!cur;
+    if(cur){const v=(k.geo.x0+Math.max(0,Math.min(1,pos/k.geo.Tt))*(k.geo.x1-k.geo.x0)).toFixed(1)+'px'; if(k.ph.style.left!==v) k.ph.style.left=v;}
+    if(k.ph.hidden!==h) k.ph.hidden=h;}
+}
+// ---------- the jobs table: every planned blur setting, from out/jobs.csv (via build_web.py) ----------
+function buildJobs(){
+  const tb=$('jobs'); tb.innerHTML=''; let done=0, failed=0, never=0;
+  EVENTS.forEach((ev,ei)=>ev.plan.forEach(p=>{
+    const s=ev.sets.find(x=>x.job&&x.strength===p.strength&&x.reach===p.reach), ri=REACHES.indexOf(p.reach), tr=document.createElement('tr');
+    let out, job, act='';
+    if(s){done++; out=`<b>completed</b><small>ran ${Math.round(s.seconds)} s &middot; ${s.notes.length} notes returned</small>`; job=`<span class="id">${s.job}</span>`;
+      act='<button type="button" class="btn ghost">Show on the roll</button>';}
+    else if(p.failed&&p.failed.length){failed+=p.failed.length; out=`<b>failed</b><small>engine timeout, ${p.failed.length} attempts</small>`; job=p.failed.map(j=>`<span class="id">${j}</span>`).join('<br>');}
+    else {never++; out='<b>never submitted</b><small>credit cap reached</small>'; job='&ndash;';}
+    tr.innerHTML=`<td data-l="Event"><span><b>${ev.id}</b></span></td><td data-l="Setting"><span>strength ${p.strength.toFixed(1)}<br>reach ${p.reach}</span></td><td data-l="Outcome"><span>${out}</span></td><td data-l="Job"><span>${job}</span></td><td class="act">${act}</td>`;
+    if(s) tr.querySelector('button').addEventListener('click',()=>showOnRoll(ei,p.strength,ri));
+    tb.appendChild(tr);
+  }));
+  $('jobs-sum').textContent=`${done} completed · ${failed} failed attempts · ${never} never submitted`;
+  $('jobs-note').textContent=`Every planned blur-midi-v1 setting (qubits 20, resolution 2). ${done} completed jobs + ${failed} failed attempts = ${done+failed} credits spent, at 1 credit per run; each failed attempt ended with the engine's "did not respond in time". The settings that were never run are absent from this page, not faked.`;
+}
+$('share').addEventListener('click',async()=>{
+  history.replaceState(null,'','#'+encodeHash(st));
+  try{await navigator.clipboard.writeText(location.href); toast('Link copied');}catch(e){toast('Copy failed: the link is in your address bar');}
+});
+window.addEventListener('resize',()=>{geomAll(); draw(); drawTakes();});
+window.addEventListener('hashchange',()=>{if(decodeHash(location.hash)) location.reload();});
+
+// ---------- boot ----------
+(function boot(){
+  const tot=EVENTS.reduce((a,e)=>a+e.sets.length-1,0), qb=Math.max(...EVENTS.flatMap(e=>e.roll.map(r=>r.qubits)));
+  $('proof').innerHTML=`<span class="hot"><b>20</b> qubits per blur pass (engine max)</span><span><b>${tot}</b> completed Atlas job${tot===1?'':'s'}</span><span><b>2</b> LIGO events &middot; real strain</span><span><b>${EVENTS[0].lag_ms}</b> ms Hanford&ndash;Livingston lag, measured</span>`;
+  $('d-lag').textContent=EVENTS[0].lag_ms; $('hear-len').textContent=(EVENTS[0].strain.H1.length/EVENTS[0].strain.fs).toFixed(2); $('d-mc').textContent=EVENTS[0].mc_fit;
+  $('d-on').textContent=EVENTS[1].ratio_on; $('d-ctrl').textContent=EVENTS[1].ratio_ctrl;
+  buildSegs();
+  const h=decodeHash(location.hash);
+  if(h&&EVENTS[h.ev]){st.ev=h.ev; st.si=Math.min(h.si,1); st.speed=h.speed; st.voices=h.voices; if(!st.voices[0]&&!st.voices[1])st.voices=[true,true];
+    if(h.loop){[st.loopA,st.loopB]=clampLoop(h.loopA,h.loopB,EVENTS[h.ev].t_total); st.loop=true; st.preset='custom'; st.pos=st.loopA;}
+    st.ri=nearestAvailable(EVENTS[st.ev],STRENGTHS[st.si],h.ri);}
+  else { st.ri=nearestAvailable(EVENTS[0],0.5,1); }
+  geomAll(); buildKeys(); buildTakes(); buildJobs(); refresh(); buildRenders(); drawTakes();
+  // the observatory plates at 2x where their card has room for it, 1x on a phone
+  document.querySelectorAll('.cast img[data-sp]').forEach(i=>spriteIcon(i,i.dataset.sp,+(i.dataset.f||0),
+    i.dataset.k==='auto'?(i.closest('.cast-i').clientWidth>=760?2:1):+(i.dataset.k||2)));
+  EVENTS.forEach(e=>img(e.bg));
+  requestAnimationFrame(idle);
+})();
+</script>

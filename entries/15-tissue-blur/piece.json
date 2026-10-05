@@ -1,0 +1,36 @@
+{
+  "slug": "15-tissue-blur",
+  "challenge": "01 One image, one engine",
+  "bonus": false,
+  "title": "Tissue Blur",
+  "hook": "Slide a quantum lens across a mouse brain's genes.",
+  "sub": "95,104 measured cells from one real mouse brain section, six genes, 20 qubits per blur. Wipe back to the measurement to see what the blur kept, and hunt the ghosts it made up.",
+  "you_control": [
+    "Pick a gene, or all three genes of a set",
+    "Move the lens: drag the lens or the lab mouse holding it (snaps to computed positions), or pick the whole-section mask",
+    "Wipe to compare blurred vs measured expression",
+    "Catch the ghosts (real pixels where the blur invented expression), probe any pixel, push reach to 0.5, copy a link"
+  ],
+  "engines": [
+    "blur-v1"
+  ],
+  "qubits": 20,
+  "qubits_note": "Every job: 20 qubits from the engine's documented rule ceil(log2 w)+ceil(log2 h); lens disks have a 541x541 px box, the whole-section mask a 1012x575 px box (10+10). The engine does not report a qubit count.",
+  "hardware": null,
+  "jobs": 8,
+  "credits_spent": 8.0,
+  "deliverables": [
+    "hero.png",
+    "jobs.png",
+    "PARAMS.md",
+    "out/",
+    "web/index.html",
+    "README.md",
+    "CREDITS.md"
+  ],
+  "web_entry": "web/index.html",
+  "status": "built",
+  "honesty": "Real CC BY 4.0 MERFISH mouse-brain data; blur-v1 ran on Atlas's classical statevector simulator (no QPU); the blur is a visual effect, not an analysis method, and the page measures the expression it invents.",
+  "blockers": [],
+  "mascot": "web/img/mascot.png"
+}

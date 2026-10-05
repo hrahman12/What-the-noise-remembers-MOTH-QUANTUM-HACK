@@ -1,0 +1,120 @@
+{
+ "piece": "15-tissue-blur",
+ "ok": true,
+ "steps": [
+  {
+   "step": "page opens on the scene: title, hook, real proof chips, default job (A, centre lens, reach 0)",
+   "ok": true
+  },
+  {
+   "step": "audio: the piece makes no sound; no <audio>/<video>, and nothing has started a sound",
+   "ok": true
+  },
+  {
+   "step": "pick the gene set \"Folds and tracts\": job, gene chips and notes switch to set B",
+   "ok": true
+  },
+  {
+   "step": "pick one gene (C1ql2): chip pressed, the mouse and tally speak about that gene only",
+   "ok": true
+  },
+  {
+   "step": "drag the lens from the centre to the front: it snaps to the computed front-lens job",
+   "ok": true
+  },
+  {
+   "step": "step the lens with the arrow keys: right twice reaches the back lens",
+   "ok": true
+  },
+  {
+   "step": "push reach to 0.5: only one such job exists, so the view settles on it and says so",
+   "ok": true
+  },
+  {
+   "step": "\"0 · local\" brings reach 0 back (the dead-control report was the already-selected default)",
+   "ok": true
+  },
+  {
+   "step": "game outcome: catch every ghost in the view (button and C key) until \"all caught\"",
+   "ok": true
+  },
+  {
+   "step": "hold \"Hold: measured\": the measurement shows (no ghosts in it), release returns the blur",
+   "ok": true
+  },
+  {
+   "step": "probe a pixel: pointing inside the lens reads measured and blurred values for all three genes",
+   "ok": true
+  },
+  {
+   "step": "wipe compare: the tool turns on, the divider follows a drag, the Measured tag shows",
+   "ok": true
+  },
+  {
+   "step": "the sprite overlay (#fx, flagged by the dead-control scan) is click-through: its drag moves the wipe on the slide",
+   "ok": true
+  },
+  {
+   "step": "\"Sweep the wipe\" animates the divider and \"Pause\" stops it",
+   "ok": true
+  },
+  {
+   "step": "Scene / Data: Data shows the exact per-gene table from the job and hides the cast; Scene brings it back",
+   "ok": true
+  },
+  {
+   "step": "science drawers open, and their numbers are computed from the job data",
+   "ok": true
+  },
+  {
+   "step": "restored words: no \"Bonus\" anywhere, earlier sub, steps, Mask label and claims text, all under titled sections",
+   "ok": true
+  },
+  {
+   "step": "earlier words kept: every text run of the pre-sprite page (history/template.pre_sprite.html) is on the page now",
+   "ok": true
+  },
+  {
+   "step": "every restored graph renders: the slide, Figure 1 (both panes) and the ghost-signal bars of the per-gene table",
+   "ok": true
+  },
+  {
+   "step": "The data: figure 1 draws measured | blurred for the view, follows the controls, and its probe reads one pixel in both",
+   "ok": true
+  },
+  {
+   "step": "Jobs and credits: one row per job, the slide's job is marked, Show puts another job on the slide",
+   "ok": true
+  },
+  {
+   "step": "share: set a view, copy its link; the hash holds the full state",
+   "ok": true
+  },
+  {
+   "step": "reload with the hash (same tab): the exact view is restored",
+   "ok": true
+  },
+  {
+   "step": "open the shared link in a fresh tab: same view, and sharing again yields the same token",
+   "ok": true
+  },
+  {
+   "step": "navigation: brand bar and nav link to the hub; prev is 14, next is 16; the jump list holds all 22",
+   "ok": true
+  },
+  {
+   "step": "phone width (375 px): no horizontal scroll, the instrument and the nav fit",
+   "ok": true
+  },
+  {
+   "step": "no sound ever started, no page errors, no failed or off-site requests",
+   "ok": true
+  }
+ ],
+ "errors": [],
+ "failed": [],
+ "external": [
+  "fonts.googleapis.com",
+  "fonts.gstatic.com"
+ ]
+}

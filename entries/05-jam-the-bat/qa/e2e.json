@@ -1,0 +1,22 @@
+{
+ "ok": true,
+ "steps": [
+  "loaded: hub link, proof chips (156 qubits on ibm_fez, 4 jobs), silent, control row labelled for pre-flight",
+  "picked the ibm_fez chip: 148 + 8 = 156 qubits",
+  "started a flight with sound: 10 Web Audio sources started",
+  "muted (no new sound while flying) and unmuted (sound back)",
+  "paused (clock and sound frozen) and resumed",
+  "switched noise-maker mid-flight (clicks from: fez, mar)",
+  "flew a full round on the ibm_fez bank: You escaped. 45 clicks, bat guessed 3, 37 bank slots used",
+  "tape, legend, job readout (fez job id) and cast all visible; tape graph drawn (143 colours, 84% marked); read clicks off the tape by pointer and keyboard",
+  "copied the run link (#fez-5eed2009-1-x3.45.3) and reloaded: source, seed and run restored",
+  "ran the tournament at 100 rounds and stopped it part-way (18% done)",
+  "ran the 500-round tournament: 0.0% / 0.0% / 63.6% / 64.6% / 63.2% / 62.6%, identical to out/tournament.json (p = 0.93)",
+  "chip map (156 shaded cells) and CHSH gauge (3 S values = piece.json) drawn; switched to ibm_marrakesh, inspected qubits by slider and by pointer; the job table lists all 4 job ids",
+  "set seed 0x1234ABCD with the bat ignoring it, shared, reloaded: restored",
+  "Start muted (silent), held the click pad (clicks fired), Restart from the pause card and the control row, a hand-typed emulator link, Enter to start and P to pause on the sky",
+  "seven titled sections visible: The game rule | The bat tournament | What came off the chip | What the quantum engine did | Why a tiger moth? | What this does not claim | Jobs and credits; graphs and job table visible",
+  "nav: prev 04, hub, next 06, and a 22-piece jump list",
+  "no page errors; no external requests beyond Google Fonts"
+ ]
+}

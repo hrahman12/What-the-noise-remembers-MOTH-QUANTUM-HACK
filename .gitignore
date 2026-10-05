@@ -41,3 +41,15 @@ reference/
 
 # demo recording scratch
 common/demo_work/
+
+# large raw masters: the pages use the mp3/webp/mp4 copies under each piece's web/ folder
+entries/**/*.wav
+!entries/*/web/**/*.wav
+*.fits
+entries/03-moth-eye/moth_eye.mp4
+entries/04-magic-angle/magic_angle.mp4
+
+# full Atlas job outputs (~100 MB) stay local; cache/ledger.jsonl and cache/jobs_index.json record every job
+cache/*/
+cache/*.bak
+cache/assets.json

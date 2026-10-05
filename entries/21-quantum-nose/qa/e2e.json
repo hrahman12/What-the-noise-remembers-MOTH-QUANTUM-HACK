@@ -1,0 +1,26 @@
+{
+ "ok": true,
+ "steps": [
+  "loaded silent; proof chips \"20 qubits per blur pass9 real Atlas jobs54 chords blurredAtlas simulator · no QPU\"",
+  "picked Exaltone: name, 28 H, track 3 of 6, Plate II and the blind test all follow",
+  "Play: sound started, clock 3.3 / 7.2 s, top line 735 Hz, atoms wobble, loupe names the line",
+  "Swap while playing: top oscillator glided 735 -> 539 Hz (5.35 semitones)",
+  "Pause: chord stopped, no new sound",
+  "Q-blur: 0.5/local, 0.5/halfway, back to local, 1/local, 0.25/local, 0.25/global, 0.5/global: job IDs and notes-out match jobs.csv and PARAMS.md",
+  "played and stopped the 0.5/global engine output (2,323 notes)",
+  "WAV render: played s0.5_r1/exaltone_D, swapped mid-play to exaltone_H, stopped",
+  "scrub: End -> 7.2 s, Home -> 0 s",
+  "Scene/Data: roll drawn (94416 ink px), click -> 3.62 s, ArrowRight, S swaps, Space plays/pauses, back to Scene, where S swaps too",
+  "Sniff: sound, puffs and the mascot",
+  "Plate I: key hover highlights 3; callout 9 names the olfactory bulb",
+  "Plate II: Fig. b binds, Fig. c swaps, Fig. d gap 364 meV matches the CH2 stretch, D goes quiet",
+  "blind test: A/B play and stop, 6 right (p = 0.016), 1 miss (p = 0.063), score dots, both pick buttons used, disguise x1.245, vials, nose, reset",
+  "share: #muscone~D~s0.25_r0.5~data copied; reload restores muscone-d30, 0.25/halfway (job 40b6c6c3), Data view",
+  "Copy my score: message with the link",
+  "opened 11 drawers; Block/Franco/Gane/Keller buttons load molecules and shade bands; job list and line table filled",
+  "tour: chip \"Exaltone · local blur\" plays from 64 s, stops the instrument, pauses",
+  "sections: How to play / The data / The science / How it was made / What this does not claim / Jobs and credits; earlier words verbatim; Graph 1 drawn (3673 ink px), shares playhead and transport; Graph 2 (20386 ink px) loads cells; Table 1 and the jobs table follow; Turin -> Fig. d; index links",
+  "nav: prev 20, hub, next 22, and a 22-piece jump list",
+  "no page errors; no external requests beyond Google Fonts"
+ ]
+}

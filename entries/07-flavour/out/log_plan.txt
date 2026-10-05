@@ -1,0 +1,40 @@
+  aer              n= 1024  job e7da5792-ab90-41b1-8f75-9e3938866666  backend aer  rms 0.0097
+  qpixl-v1: submitted 1f2680c1-b6a6-481a-8907-03fa10dd1b4b
+  qpixl-v1: done 1f2680c1 in 260.5s
+  fake_fez         n=  112  job 1f2680c1-b6a6-481a-8907-03fa10dd1b4b  backend fake_fez  rms 0.0870
+  qpixl-v1: submitted 4596d47b-585a-4a52-9a42-fe143257f1f7
+  qpixl-v1: done 4596d47b in 207.1s
+  fake_marrakesh   n=  112  job 4596d47b-585a-4a52-9a42-fe143257f1f7  backend fake_marrakesh  rms 0.1246
+  qpixl-v1: submitted 3d1fb8d2-9a4f-4cdc-a913-5363fc681927
+  qpixl-v1: done 3d1fb8d2 in 176.3s
+  fake_torino      n=   94  job 3d1fb8d2-9a4f-4cdc-a913-5363fc681927  backend fake_torino  rms 0.0759
+  qpixl-v1: submitted 7d390948-a978-4346-a0e7-9e0fb35164e5
+  qpixl-v1: done 7d390948 in 101.7s
+  fake_brisbane    n=   90  job 7d390948-a978-4346-a0e7-9e0fb35164e5  backend fake_brisbane  rms 0.0863
+  qpixl-v1: submitted 341c48f5-b9bb-40dc-8463-f84cf84f985d
+  qpixl-v1: done 341c48f5 in 167.9s
+  fake_kyiv        n=   90  job 341c48f5-b9bb-40dc-8463-f84cf84f985d  backend fake_kyiv  rms 0.1085
+  qpixl-v1: submitted c9400993-130e-48c9-abbd-f380cd0f4815
+  qpixl-v1: done c9400993 in 263.0s
+  fake_sherbrooke  n=   90  job c9400993-130e-48c9-abbd-f380cd0f4815  backend fake_sherbrooke  rms 0.0856
+  qpixl-v1: submitted 84cd04df-052c-4dfd-9358-b5740203531f
+  qpixl-v1: done 84cd04df in 118.5s
+  fake_kyoto       n=   90  job 84cd04df-052c-4dfd-9358-b5740203531f  backend fake_kyoto  rms 0.2187
+  qpixl-v1: submitted 9bce4ff9-3f95-46b4-96ca-94d817fb0cfe
+  qpixl-v1: done 9bce4ff9 in 134.2s
+  fake_osaka       n=   90  job 9bce4ff9-3f95-46b4-96ca-94d817fb0cfe  backend fake_osaka  rms 0.1098
+  qpixl-v1: submitted e9886b88-c1c2-4807-9120-4811a4883dc8
+  qpixl-v1: done e9886b88 in 271.5s
+  fake_quebec      n=   90  job e9886b88-c1c2-4807-9120-4811a4883dc8  backend fake_quebec  rms 0.0991
+  qpixl-v1: submitted b2be95b8-13b5-4689-b66a-31189286be62
+  qpixl-v1: done b2be95b8 in 126.6s
+  fake_cusco       n=   90  job b2be95b8-13b5-4689-b66a-31189286be62  backend fake_cusco  rms 0.1732
+  qpixl-v1: submitted 463eca1f-a4b8-4694-9b5e-9a5338976957
+  qpixl-v1: done 463eca1f in 102.6s
+  fake_strasbourg  n=   90  job 463eca1f-a4b8-4694-9b5e-9a5338976957  backend fake_strasbourg  rms 0.1128
+  qpixl-v1: submitted 4e283450-69af-4b38-b8a2-be459ec1d931
+  qpixl-v1: done 4e283450 in 100.2s
+  fake_brussels    n=   90  job 4e283450-69af-4b38-b8a2-be459ec1d931  backend fake_brussels  rms 0.1266
+  ibm_fez          n=  112  job df2a8d6a-3fec-4dc4-a825-28375b842090  backend ibm_fez  rms 0.0837
+missing: none
+spent 30 / 45

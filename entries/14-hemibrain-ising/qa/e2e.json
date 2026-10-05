@@ -1,0 +1,514 @@
+{
+ "piece": "14-hemibrain-ising",
+ "ok": true,
+ "passed": 106,
+ "total": 106,
+ "fails": [],
+ "steps": [
+  {
+   "step": "title is the piece title from piece.json",
+   "ok": true,
+   "detail": "Fly Brain Metro"
+  },
+  {
+   "step": "brand bar links to the hub",
+   "ok": true
+  },
+  {
+   "step": "no \"Bonus\" or \"Main entry\" ranking on the page",
+   "ok": true
+  },
+  {
+   "step": "proof chips: qubits and real jobs match piece.json",
+   "ok": true,
+   "detail": "20 qubits per run3 real Atlas jobsIBM ibm_fez hardware · 1 run60 real neurons · hemibrain"
+  },
+  {
+   "step": "hardware chip counts the real ibm_fez runs",
+   "ok": true,
+   "detail": "20 qubits per run3 real Atlas jobsIBM ibm_fez hardware · 1 run60 real neurons · hemibrain"
+  },
+  {
+   "step": "the IBM train is offered only when ibm_fez returned samples",
+   "ok": true
+  },
+  {
+   "step": "nothing sounds or starts on load",
+   "ok": true
+  },
+  {
+   "step": "Depart is not running on load",
+   "ok": true
+  },
+  {
+   "step": "scene canvas draws the plates (FIG. 1A-1C)",
+   "ok": true,
+   "detail": {
+    "w": 771,
+    "h": 607,
+    "frac": 0.3778400288890741,
+    "colours": 104,
+    "sig": 449834
+   }
+  },
+  {
+   "step": "signal and status-line fly sprites drawn",
+   "ok": true
+  },
+  {
+   "step": "Memory pressed on the metro and on the bench",
+   "ok": true
+  },
+  {
+   "step": "Figure 1 tag names the memory circuit",
+   "ok": true,
+   "detail": "Memory · Mushroom body output"
+  },
+  {
+   "step": "Compass works after another network (not a dead control)",
+   "ok": true
+  },
+  {
+   "step": "maglev job ID = compass emulator job in out/runs.json",
+   "ok": true,
+   "detail": "8494a1ad-c8cc-4e1c-a19e-02e6b352cc82"
+  },
+  {
+   "step": "that job ID is a cached graph-v1 job",
+   "ok": true
+  },
+  {
+   "step": "qubits readout = engine-reported num_qubits (20)",
+   "ok": true,
+   "detail": "20 (graph-v1 num_qubits, engine-reported)"
+  },
+  {
+   "step": "runs-on readout says Atlas emulator (Aer), not hardware",
+   "ok": true,
+   "detail": "Atlas emulator: Aer statevector simulator (noiseless baseline)"
+  },
+  {
+   "step": "vs-exact readout = the emulator run against the exact replica",
+   "ok": true,
+   "detail": "TVD 0.011 on its top 20 · those 20 hold 13.3% of shots vs 12.3% exact · all-aligned 3.3% vs 3.3% exact"
+  },
+  {
+   "step": "shots readout = 4,096 from the run",
+   "ok": true,
+   "detail": "4,096 shots, top 20 returned"
+  },
+  {
+   "step": "beta slider locked at 0.7 for the quantum train",
+   "ok": true
+  },
+  {
+   "step": "lamps settle on the real top pattern of the run",
+   "ok": true
+  },
+  {
+   "step": "lines in step = computed from the sample and the 30 bonds",
+   "ok": true,
+   "detail": "30 / 30"
+  },
+  {
+   "step": "service status follows the lines",
+   "ok": true,
+   "detail": "Good service"
+  },
+  {
+   "step": "p readout = shot frequency of that pattern",
+   "ok": true,
+   "detail": "2.42%"
+  },
+  {
+   "step": "slider to departure 5: readouts follow the data",
+   "ok": true,
+   "detail": [
+    "departure 5 of 20 · p 0.78%",
+    "1 / 20"
+   ]
+  },
+  {
+   "step": "bench follows the scene (Figure 1 meter)",
+   "ok": true
+  },
+  {
+   "step": "memory: IBM train job = the ibm_fez run in out/runs.json",
+   "ok": true,
+   "detail": "6469b158-8538-4230-9a6d-ed535173b37c · IBM db1rsijid5ic73erj1k0"
+  },
+  {
+   "step": "memory: runs-on says IBM hardware ibm_fez, 20 qubits",
+   "ok": true,
+   "detail": "IBM quantum hardware: ibm_fez (Heron, 156-qubit chip; this circuit uses 20)"
+  },
+  {
+   "step": "memory: train label names IBM ibm_fez hardware",
+   "ok": true,
+   "detail": "IBM ibm_fez hardware (graph-v1, 20 qubits) at β = 0.7"
+  },
+  {
+   "step": "memory: vs-exact readout = hardware against the exact replica",
+   "ok": true,
+   "detail": "TVD 0.032 on its top 20 · those 20 hold 4.3% of shots vs 9.9% exact · all-aligned 0.8% vs 2.6% exact"
+  },
+  {
+   "step": "memory: drag to departure 3: lamps settle on the third hardware pattern",
+   "ok": true,
+   "detail": "0.27%"
+  },
+  {
+   "step": "Exact blueprint is labelled classical, no Atlas job",
+   "ok": true
+  },
+  {
+   "step": "smell falls back to the Gibbs train",
+   "ok": true
+  },
+  {
+   "step": "smell: maglev explains the missing run and stays on Gibbs",
+   "ok": true,
+   "detail": "No Atlas run for the smell network: the credit budget ran out"
+  },
+  {
+   "step": "smell: bench \"Exact state\" says why (toast) and stays on Gibbs",
+   "ok": true,
+   "detail": "No Exact state run for the smell circuit: the exact replica is only built for networks with a graph-v1 run"
+  },
+  {
+   "step": "beta 1.2 on both sliders",
+   "ok": true
+  },
+  {
+   "step": "readout: Gibbs at beta 1.2 with the THRML sample count",
+   "ok": true,
+   "detail": "16,000 samples (64 chains)"
+  },
+  {
+   "step": "departure 1 = THRML top pattern at beta 1.2",
+   "ok": true
+  },
+  {
+   "step": "Depart rides through samples (Hold shown)",
+   "ok": true,
+   "detail": 3
+  },
+  {
+   "step": "Hold stops the ride",
+   "ok": true
+  },
+  {
+   "step": "tapping the signal departs",
+   "ok": true
+  },
+  {
+   "step": "tapping the signal again holds",
+   "ok": true
+  },
+  {
+   "step": "Journey: slider spans the 160-step Gibbs chain",
+   "ok": true
+  },
+  {
+   "step": "Play Gibbs chain runs the chain; Depart shows the same timer",
+   "ok": true,
+   "detail": 5
+  },
+  {
+   "step": "Pause stops both",
+   "ok": true
+  },
+  {
+   "step": "chain lamps are the real THRML chain sample",
+   "ok": true,
+   "detail": [
+    5,
+    "19 / 20"
+   ]
+  },
+  {
+   "step": "Timetable returns to the top 20",
+   "ok": true
+  },
+  {
+   "step": "tap station 7: station card and Neuron card show that real neuron",
+   "ok": true,
+   "detail": "EPG(PB08)_R7"
+  },
+  {
+   "step": "arrow key walks to the next station",
+   "ok": true
+  },
+  {
+   "step": "first partner row = strongest real partner; tapping it selects that neuron",
+   "ok": true,
+   "detail": [
+    15,
+    15
+   ]
+  },
+  {
+   "step": "tapping the fly on FIG. 1A makes it buzz (decoration)",
+   "ok": true
+  },
+  {
+   "step": "tapping the status-line fly makes it buzz (decoration)",
+   "ok": true
+  },
+  {
+   "step": "Chimes on: Web Audio sound started",
+   "ok": true,
+   "detail": 2
+  },
+  {
+   "step": "each new sample chimes",
+   "ok": true
+  },
+  {
+   "step": "Chimes off: audio suspended and silent on the next sample",
+   "ok": true
+  },
+  {
+   "step": "Data view shows the board and hides the plates",
+   "ok": true
+  },
+  {
+   "step": "departures board lists the 20 real patterns",
+   "ok": true
+  },
+  {
+   "step": "Data view correlation matrix draws",
+   "ok": true
+  },
+  {
+   "step": "board row 02 selects departure 2",
+   "ok": true
+  },
+  {
+   "step": "board row 01 works after another row (not a dead control)",
+   "ok": true
+  },
+  {
+   "step": "pointing at a cell names the pair and its synapses",
+   "ok": true,
+   "detail": "bond ⟨s s⟩, chosen train (30 bonds)0.942bond ⟨s s⟩, reference0.941mean |Δ| over 190 pairs0.003Δ7 L3R6·2 · EPG L3·3 (16 synapses)0.95 / 0.95"
+  },
+  {
+   "step": "the card keeps its height when the pointer leaves (no jitter)",
+   "ok": true
+  },
+  {
+   "step": "Scene returns the plates",
+   "ok": true
+  },
+  {
+   "step": "section button scrolls to sec-play",
+   "ok": true,
+   "detail": 16
+  },
+  {
+   "step": "section button scrolls to sec-data",
+   "ok": true,
+   "detail": 16
+  },
+  {
+   "step": "section button scrolls to sec-made",
+   "ok": true,
+   "detail": 16
+  },
+  {
+   "step": "section button scrolls to sec-science",
+   "ok": true,
+   "detail": 16
+  },
+  {
+   "step": "section button scrolls to sec-claims",
+   "ok": true,
+   "detail": 16
+  },
+  {
+   "step": "section button scrolls to sec-jobs",
+   "ok": true,
+   "detail": 16
+  },
+  {
+   "step": "six drawers, all open",
+   "ok": true
+  },
+  {
+   "step": "a drawer closes and opens",
+   "ok": true
+  },
+  {
+   "step": "earlier words are on the page",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "step": "engine drawer names every completed job ID",
+   "ok": true
+  },
+  {
+   "step": "engine drawer names every failed ibm_fez job",
+   "ok": true
+  },
+  {
+   "step": "Figure 1 wiring graph draws",
+   "ok": true
+  },
+  {
+   "step": "Figure 3 correlation matrix draws",
+   "ok": true
+  },
+  {
+   "step": "Figure 2 lists 20 spin patterns with 20 cells each",
+   "ok": true
+  },
+  {
+   "step": "colour scale has 21 swatches",
+   "ok": true
+  },
+  {
+   "step": "Figure 3 hover lights the pair on Figure 1",
+   "ok": true,
+   "detail": "bond ⟨s s⟩, chosen (30 bonds)0.942bond ⟨s s⟩, reference0.941mean |Δ| over 190 pairs0.003EPG 4 · PEG 9 (133 synapses)1.00 / 1.00"
+  },
+  {
+   "step": "Figure 3 click selects the neuron on the metro too",
+   "ok": true
+  },
+  {
+   "step": "Pattern → steps Figure 2 and the metro",
+   "ok": true
+  },
+  {
+   "step": "← Pattern steps back",
+   "ok": true
+  },
+  {
+   "step": "Figure 2 row selects that pattern",
+   "ok": true
+  },
+  {
+   "step": "Neuron card partner selects that neuron",
+   "ok": true
+  },
+  {
+   "step": "Figure 1 node click selects that neuron",
+   "ok": true
+  },
+  {
+   "step": "jobs table lists every job in out/atlas_jobs.json",
+   "ok": true,
+   "detail": 10
+  },
+  {
+   "step": "every listed job is in the credit ledger; completed ones are cached",
+   "ok": true
+  },
+  {
+   "step": "credit total matches the ledger and piece.json",
+   "ok": true,
+   "detail": "8 jobs, 3 completed\t\t\t\t\tall at β = 0.7\t40 of 40\t"
+  },
+  {
+   "step": "completed jobs = piece.json jobs",
+   "ok": true
+  },
+  {
+   "step": "\"Ride this run\" puts the memory run on the metro",
+   "ok": true
+  },
+  {
+   "step": "ticket writes the view into the URL hash",
+   "ok": true,
+   "detail": "#c.memory.s.exact.b.7.p.3.n.5"
+  },
+  {
+   "step": "hash uses only letters, digits and . _ ~ -",
+   "ok": true
+  },
+  {
+   "step": "ticket copied to the clipboard (or the toast says so)",
+   "ok": true,
+   "detail": "http://127.0.0.1:6214/index.html#c.memory.s.exact.b.7.p.3.n.5"
+  },
+  {
+   "step": "Copy link to this view writes the same hash",
+   "ok": true
+  },
+  {
+   "step": "reload with the hash restores network, train, departure and station",
+   "ok": true,
+   "detail": {
+    "circuit": "memory",
+    "sampler": "exact",
+    "pat": 3,
+    "neuron": 5
+   }
+  },
+  {
+   "step": "restored view shows it (buttons, slider, both cards)",
+   "ok": true
+  },
+  {
+   "step": "a Gibbs ticket restores beta too",
+   "ok": true
+  },
+  {
+   "step": "nav prev = previous piece",
+   "ok": true,
+   "detail": "https://claude.ai/artifact/DBZTD3SBmR9DAbo5cWw92B"
+  },
+  {
+   "step": "nav next = next piece",
+   "ok": true,
+   "detail": "https://claude.ai/artifact/YWrk51Q17oiLArd6imrcWg"
+  },
+  {
+   "step": "nav hub link",
+   "ok": true
+  },
+  {
+   "step": "jump list has every piece and marks this one",
+   "ok": true,
+   "detail": {
+    "prev": "https://claude.ai/artifact/DBZTD3SBmR9DAbo5cWw92B",
+    "next": "https://claude.ai/artifact/YWrk51Q17oiLArd6imrcWg",
+    "hub": "https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa",
+    "items": 22,
+    "cur": "14Fly Brain Metro"
+   }
+  },
+  {
+   "step": "footer disclaimer present",
+   "ok": true
+  },
+  {
+   "step": "no horizontal scroll at 375 px (Scene and Data)",
+   "ok": true,
+   "detail": {
+    "ovS": 0,
+    "ovD": 0
+   }
+  },
+  {
+   "step": "no page or console errors",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "step": "no failed requests",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "step": "only Google Fonts hosts contacted",
+   "ok": true,
+   "detail": [
+    "fonts.googleapis.com",
+    "fonts.gstatic.com"
+   ]
+  }
+ ]
+}

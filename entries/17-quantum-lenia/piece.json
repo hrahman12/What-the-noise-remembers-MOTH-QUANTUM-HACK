@@ -1,0 +1,47 @@
+{
+  "slug": "17-quantum-lenia",
+  "challenge": "04 Moving image",
+  "bonus": true,
+  "title": "Quantum Lenia",
+  "hook": "Paint creatures, then blur their sense of touch with quantum noise.",
+  "sub": "Lenia is a smooth Game of Life. Every cell feels its neighbours through a ring-shaped kernel. We sent that kernel through a quantum blur on an 18-qubit register. Swap it in and watch Orbium slow down, break up or flood the world.",
+  "you_control": [
+    "Paint the petri dish: drag the pipette to aim and drop an Orbium, brush on random soup, or erase (pointer or keyboard)",
+    "Swap the lens: the original kernel or one of three real quantum-blurred kernels (strength 0.25 / 0.5 / 1.0), in four kernel shells, and watch Orbi replay the measured fate",
+    "Play, pause, step, reset or clear the live dish; set speed, brush size and growth mu / sigma",
+    "Seed the dish from a quantum-blurred 528 x 528 snapshot plate (strength 0.25 or 0.5) and see what regrows"
+  ],
+  "engines": [
+    "blur-core-v1"
+  ],
+  "qubits": 20,
+  "qubits_note": "Engine-reported ('Recovered N-qubit grid from measurement'). Snapshot: 528 x 528 world, each axis padded to 1024, so 10 + 10 = 20 qubits (the world fills about 27% of the register). Kernel bank: [4, 256, 256], 2 + 8 + 8 = 18 qubits. Not 24: Atlas rejects request bodies over 1 MiB (413, probed for free), so a 2-D world tops out at 20, and results over the platform payload limit fail (TMPRL1103). At reach 0 only the lower qubits of each axis carry rotation (measured from the output support).",
+  "hardware": null,
+  "jobs": 5,
+  "credits_spent": 8.0,
+  "deliverables": [
+    "quantum_lenia.mp4",
+    "web/index.html",
+    "web/template.html",
+    "build_web.py",
+    "make_sprites.py",
+    "web/files.json",
+    "web/img/mascot.png",
+    "web/sprites.json",
+    "web/media/quantum_lenia_720p.mp4",
+    "web/media/poster.webp",
+    "hero.png",
+    "README.md",
+    "PARAMS.md",
+    "CREDITS.md",
+    "out/kernel_jobs.csv",
+    "out/snapshot_jobs.csv",
+    "out/job_status.json",
+    "out/dynamics.json"
+  ],
+  "web_entry": "web/index.html",
+  "status": "built",
+  "honesty": "The dynamics are classical Lenia (Chan 2019). Only the kernels and a world snapshot went through blur-core-v1, on Atlas's classical statevector simulator (no QPU). There is no quantum-advantage claim.",
+  "blockers": [],
+  "mascot": "web/img/mascot.png"
+}

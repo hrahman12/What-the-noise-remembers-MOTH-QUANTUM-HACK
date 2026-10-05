@@ -1,0 +1,47 @@
+{
+  "slug": "16-busy-beaver-score",
+  "challenge": "02",
+  "bonus": true,
+  "title": "Busy Beaver Score",
+  "hook": "Scrub through the longest run a five-state machine can make.",
+  "sub": "This Turing machine halts after 47,176,870 steps, and in 2024 it was proved that no five-state machine that halts runs longer. Its head is a beaver in a hard hat damming a river one log at a time, every hop plays a note, and a quantum blur, run at the engine's 20-qubit maximum, turns that score into echoes.",
+  "you_control": [
+    "Play, then scrub anywhere in the run: a beaver in a hard hat stands where the machine's head really is, its hat shows the state (A to E), and the river is the tape, a log for every 1",
+    "Flip between the raw score and six quantum-blurred scores (reach 0/1, strength 0.2/0.5, 1/16 or 1/32 grid) and watch the echo pool spread",
+    "Change the tempo from 4 to 40 notes a second, jump to the halt where the dam is finished, or copy a link to this exact moment",
+    "Hear the three full WAV renders on the page, or switch to the Data view for the falling score and the tape's history"
+  ],
+  "engines": [
+    "blur-midi-v1"
+  ],
+  "qubits": 20,
+  "qubits_note": "qubits=20 (engine maximum) on all 6 jobs. The engine reports no qubit count; by QuantumBlur's grid rule (ceil log2 time + ceil log2 pitch) the melody roll needs 14+6 = 20 qubits per pass on the two resolution-60 jobs and 13+6 = 19 on the four auto-resolution jobs (pitch: melody spans 49 semitones + 7-row margin = 56-63 rows = 6 qubits). Computed, not engine-reported.",
+  "hardware": null,
+  "jobs": 6,
+  "credits_spent": 6,
+  "deliverables": [
+    "score_raw.mid",
+    "score_raw.wav",
+    "out/blur_s0.5_r0.mid",
+    "out/blur_s0.5_r1.mid",
+    "out/blur_s0.2_r0.mid",
+    "out/blur_s0.2_r1.mid",
+    "out/blur_s0.2_r0_res60.mid",
+    "out/blur_s0.2_r1_res60.mid",
+    "blur_s0.2_r0_res60.wav",
+    "blur_s0.2_r1_res60.wav",
+    "hero.png",
+    "out/score.json",
+    "web/audio/score_raw.mp3",
+    "web/audio/blur_s0.2_r0_res60.mp3",
+    "web/audio/blur_s0.2_r1_res60.mp3",
+    "web/index.html",
+    "web/sprites.json",
+    "web/img/mascot.png"
+  ],
+  "web_entry": "web/index.html",
+  "status": "built",
+  "honesty": "The machine, score and sound are classical. blur-midi-v1 ran on Atlas's classical statevector simulator (no hardware), computes nothing about the machine and claims no advantage. The qubit count is computed, not reported, and the time compression and pitch mapping are artistic choices documented in the README.",
+  "blockers": [],
+  "mascot": "web/img/mascot.png"
+}

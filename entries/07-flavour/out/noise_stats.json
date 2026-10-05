@@ -1,0 +1,100 @@
+{
+ "aer": {
+  "values": 4096,
+  "lag1_corr": 0.061,
+  "jump_inside_block4": 0.014,
+  "jump_across_block4": 0.0142,
+  "rms_normalised": 0.0139
+ },
+ "fake_brisbane": {
+  "values": 360,
+  "lag1_corr": 0.86,
+  "jump_inside_block4": 0.0318,
+  "jump_across_block4": 0.0435,
+  "rms_normalised": 0.1172
+ },
+ "fake_brussels": {
+  "values": 360,
+  "lag1_corr": 0.908,
+  "jump_inside_block4": 0.0363,
+  "jump_across_block4": 0.0544,
+  "rms_normalised": 0.1592
+ },
+ "fake_cusco": {
+  "values": 360,
+  "lag1_corr": 0.864,
+  "jump_inside_block4": 0.0649,
+  "jump_across_block4": 0.0884,
+  "rms_normalised": 0.2448
+ },
+ "fake_fez": {
+  "values": 448,
+  "lag1_corr": 0.872,
+  "jump_inside_block4": 0.023,
+  "jump_across_block4": 0.0433,
+  "rms_normalised": 0.1125
+ },
+ "fake_kyiv": {
+  "values": 360,
+  "lag1_corr": 0.775,
+  "jump_inside_block4": 0.0394,
+  "jump_across_block4": 0.0677,
+  "rms_normalised": 0.1359
+ },
+ "fake_kyoto": {
+  "values": 360,
+  "lag1_corr": 0.914,
+  "jump_inside_block4": 0.0762,
+  "jump_across_block4": 0.0816,
+  "rms_normalised": 0.3308
+ },
+ "fake_marrakesh": {
+  "values": 448,
+  "lag1_corr": 0.866,
+  "jump_inside_block4": 0.0319,
+  "jump_across_block4": 0.0726,
+  "rms_normalised": 0.1621
+ },
+ "fake_osaka": {
+  "values": 360,
+  "lag1_corr": 0.89,
+  "jump_inside_block4": 0.0361,
+  "jump_across_block4": 0.0646,
+  "rms_normalised": 0.1568
+ },
+ "fake_quebec": {
+  "values": 360,
+  "lag1_corr": 0.828,
+  "jump_inside_block4": 0.0374,
+  "jump_across_block4": 0.0759,
+  "rms_normalised": 0.1594
+ },
+ "fake_sherbrooke": {
+  "values": 360,
+  "lag1_corr": 0.864,
+  "jump_inside_block4": 0.034,
+  "jump_across_block4": 0.0493,
+  "rms_normalised": 0.1271
+ },
+ "fake_strasbourg": {
+  "values": 360,
+  "lag1_corr": 0.826,
+  "jump_inside_block4": 0.0436,
+  "jump_across_block4": 0.065,
+  "rms_normalised": 0.1537
+ },
+ "fake_torino": {
+  "values": 376,
+  "lag1_corr": 0.819,
+  "jump_inside_block4": 0.0448,
+  "jump_across_block4": 0.0393,
+  "rms_normalised": 0.1367
+ },
+ "ibm_fez": {
+  "values": 448,
+  "lag1_corr": 0.881,
+  "jump_inside_block4": 0.0339,
+  "jump_across_block4": 0.0668,
+  "rms_normalised": 0.163
+ }
+}

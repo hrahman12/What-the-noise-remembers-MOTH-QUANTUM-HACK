@@ -1,0 +1,9 @@
+composite,mask,setting,strength,style,reach,qubits,job_id,status,file,seconds
+A,lens_512,plaid,1.0,rx,0.5,20,8c8d7053-f998-4c2d-978f-04da7bbefbae,completed,blur_A_lens_512_plaid.png,14.6
+A,lens_512,echo,1.0,rx,0.0,20,5ca1cb97-104d-48bb-8c2f-6b15c45b1e8f,completed,blur_A_lens_512_echo.png,7.2
+A,lens_282,echo,1.0,rx,0.0,20,13e5e885-80ec-4a4e-a70a-2fc398c3f754,completed,blur_A_lens_282_echo.png,6.6
+A,lens_742,echo,1.0,rx,0.0,20,48faa7e1-1a2e-4001-907f-cc9d766a1b04,completed,blur_A_lens_742_echo.png,7.3
+B,lens_512,echo,1.0,rx,0.0,20,331c8bd0-784b-446e-899c-76a997eb517a,completed,blur_B_lens_512_echo.png,7.5
+B,lens_282,echo,1.0,rx,0.0,20,b1f1a376-280a-4f81-9089-908bb99ef9b9,completed,blur_B_lens_282_echo.png,6.6
+B,lens_742,echo,1.0,rx,0.0,20,09dc9a66-9811-467e-bcee-9483d2681fb6,completed,blur_B_lens_742_echo.png,6.6
+A,section,echo,1.0,rx,0.0,20,0d64fa53-2f42-47e6-83df-5d3294a8e5f9,completed,blur_A_section_echo.png,6.5

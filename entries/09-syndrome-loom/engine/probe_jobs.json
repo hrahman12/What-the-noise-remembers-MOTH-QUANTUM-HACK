@@ -1,0 +1,704 @@
+{
+ "storage_se_p1e-2_n2": {
+  "params": {
+   "n_logical": 2,
+   "shots": 4000,
+   "seed": 7,
+   "actions": [
+    [
+     "X",
+     0
+    ],
+    [
+     "SE",
+     [
+      0,
+      1
+     ]
+    ]
+   ],
+   "noise": {
+    "p_idle": 0.01,
+    "p_meas": 0.01
+   }
+  },
+  "job_id": "185a6cc1-4eda-4566-ac04-82f2c91d4403",
+  "output": {
+   "code": "steane",
+   "corrections_applied": 1020,
+   "logical_error_count": 47,
+   "n_logical": 2,
+   "noise": {
+    "p_1q": 0,
+    "p_gate": 0,
+    "p_idle": 0.01,
+    "p_meas": 0.01
+   },
+   "per_logical": [
+    {
+     "expected": 1,
+     "logical_error_rate": 0.00649999999999995,
+     "logical_qubit": 0,
+     "success_rate": 0.9935
+    },
+    {
+     "expected": 0,
+     "logical_error_rate": 0.005249999999999977,
+     "logical_qubit": 1,
+     "success_rate": 0.99475
+    }
+   ],
+   "shots": 4000,
+   "simulator": {
+    "method": "stabilizer",
+    "transpiled": false
+   },
+   "success_rate": 0.98825,
+   "successful_shots": 3953,
+   "syndromes_detected": 1020
+  }
+ },
+ "storage_nose_p1e-2_n2": {
+  "params": {
+   "n_logical": 2,
+   "shots": 4000,
+   "seed": 7,
+   "actions": [
+    [
+     "X",
+     0
+    ]
+   ],
+   "noise": {
+    "p_idle": 0.01,
+    "p_meas": 0.01
+   }
+  },
+  "job_id": "4986e54c-ee57-403e-bb1c-ea99fb76ff1d",
+  "output": {
+   "code": "steane",
+   "corrections_applied": 0,
+   "logical_error_count": 19,
+   "n_logical": 2,
+   "noise": {
+    "p_1q": 0,
+    "p_gate": 0,
+    "p_idle": 0.01,
+    "p_meas": 0.01
+   },
+   "per_logical": [
+    {
+     "expected": 1,
+     "logical_error_rate": 0.0022499999999999742,
+     "logical_qubit": 0,
+     "success_rate": 0.99775
+    },
+    {
+     "expected": 0,
+     "logical_error_rate": 0.0024999999999999467,
+     "logical_qubit": 1,
+     "success_rate": 0.9975
+    }
+   ],
+   "shots": 4000,
+   "simulator": {
+    "method": "stabilizer",
+    "transpiled": false
+   },
+   "success_rate": 0.99525,
+   "successful_shots": 3981,
+   "syndromes_detected": 0
+  }
+ },
+ "idleonly_nose_n1": {
+  "params": {
+   "n_logical": 1,
+   "shots": 8000,
+   "seed": 7,
+   "actions": [
+    [
+     "I",
+     0
+    ]
+   ],
+   "noise": {
+    "p_idle": 0.05
+   }
+  },
+  "job_id": "4fdb76d3-6f61-43c0-8a12-f58923d21ba2",
+  "output": {
+   "code": "steane",
+   "corrections_applied": 0,
+   "logical_error_count": 104,
+   "n_logical": 1,
+   "noise": {
+    "p_1q": 0,
+    "p_gate": 0,
+    "p_idle": 0.05,
+    "p_meas": 0
+   },
+   "per_logical": [
+    {
+     "expected": 0,
+     "logical_error_rate": 0.013000000000000012,
+     "logical_qubit": 0,
+     "success_rate": 0.987
+    }
+   ],
+   "shots": 8000,
+   "simulator": {
+    "method": "stabilizer",
+    "transpiled": false
+   },
+   "success_rate": 0.987,
+   "successful_shots": 7896,
+   "syndromes_detected": 0
+  }
+ },
+ "idleonly_nose3_n1": {
+  "params": {
+   "n_logical": 1,
+   "shots": 8000,
+   "seed": 7,
+   "actions": [
+    [
+     "I",
+     0
+    ],
+    [
+     "I",
+     0
+    ],
+    [
+     "I",
+     0
+    ]
+   ],
+   "noise": {
+    "p_idle": 0.05
+   }
+  },
+  "job_id": "5ffa3912-3990-43dc-96c9-f4c9b69f16b2",
+  "output": {
+   "code": "steane",
+   "corrections_applied": 0,
+   "logical_error_count": 587,
+   "n_logical": 1,
+   "noise": {
+    "p_1q": 0,
+    "p_gate": 0,
+    "p_idle": 0.05,
+    "p_meas": 0
+   },
+   "per_logical": [
+    {
+     "expected": 0,
+     "logical_error_rate": 0.07337499999999997,
+     "logical_qubit": 0,
+     "success_rate": 0.926625
+    }
+   ],
+   "shots": 8000,
+   "simulator": {
+    "method": "stabilizer",
+    "transpiled": false
+   },
+   "success_rate": 0.926625,
+   "successful_shots": 7413,
+   "syndromes_detected": 0
+  }
+ },
+ "x0_se_p1e-2_n2": {
+  "params": {
+   "n_logical": 2,
+   "shots": 4000,
+   "seed": 7,
+   "actions": [
+    [
+     "X",
+     0
+    ],
+    [
+     "SE",
+     [
+      0,
+      1
+     ]
+    ]
+   ],
+   "noise": {
+    "p_1q": 0.01,
+    "p_gate": 0.01,
+    "p_idle": 0.01,
+    "p_meas": 0.01
+   }
+  },
+  "job_id": "a2ae2fd0-fc13-4f34-8004-d087494dd402",
+  "output": {
+   "code": "steane",
+   "corrections_applied": 4704,
+   "logical_error_count": 706,
+   "n_logical": 2,
+   "noise": {
+    "p_1q": 0.01,
+    "p_gate": 0.01,
+    "p_idle": 0.01,
+    "p_meas": 0.01
+   },
+   "per_logical": [
+    {
+     "expected": 1,
+     "logical_error_rate": 0.09175,
+     "logical_qubit": 0,
+     "success_rate": 0.90825
+    },
+    {
+     "expected": 0,
+     "logical_error_rate": 0.09399999999999997,
+     "logical_qubit": 1,
+     "success_rate": 0.906
+    }
+   ],
+   "shots": 4000,
+   "simulator": {
+    "method": "stabilizer",
+    "transpiled": false
+   },
+   "success_rate": 0.8235,
+   "successful_shots": 3294,
+   "syndromes_detected": 4704
+  }
+ },
+ "x0_nose_p1e-2_n2": {
+  "params": {
+   "n_logical": 2,
+   "shots": 4000,
+   "seed": 7,
+   "actions": [
+    [
+     "X",
+     0
+    ]
+   ],
+   "noise": {
+    "p_1q": 0.01,
+    "p_gate": 0.01,
+    "p_idle": 0.01,
+    "p_meas": 0.01
+   }
+  },
+  "job_id": "7d3ac067-83b7-40be-b29f-5f5ded1d9f05",
+  "output": {
+   "code": "steane",
+   "corrections_applied": 0,
+   "logical_error_count": 351,
+   "n_logical": 2,
+   "noise": {
+    "p_1q": 0.01,
+    "p_gate": 0.01,
+    "p_idle": 0.01,
+    "p_meas": 0.01
+   },
+   "per_logical": [
+    {
+     "expected": 1,
+     "logical_error_rate": 0.04600000000000004,
+     "logical_qubit": 0,
+     "success_rate": 0.954
+    },
+    {
+     "expected": 0,
+     "logical_error_rate": 0.044499999999999984,
+     "logical_qubit": 1,
+     "success_rate": 0.9555
+    }
+   ],
+   "shots": 4000,
+   "simulator": {
+    "method": "stabilizer",
+    "transpiled": false
+   },
+   "success_rate": 0.91225,
+   "successful_shots": 3649,
+   "syndromes_detected": 0
+  }
+ },
+ "x0_se_p1e-2_n1": {
+  "params": {
+   "n_logical": 1,
+   "shots": 4000,
+   "seed": 7,
+   "actions": [
+    [
+     "X",
+     0
+    ],
+    [
+     "SE",
+     0
+    ]
+   ],
+   "noise": {
+    "p_1q": 0.01,
+    "p_gate": 0.01,
+    "p_idle": 0.01,
+    "p_meas": 0.01
+   }
+  },
+  "job_id": "e09f1ad6-e02d-4538-9a2b-aa3e3f2a38fb",
+  "output": {
+   "code": "steane",
+   "corrections_applied": 2435,
+   "logical_error_count": 374,
+   "n_logical": 1,
+   "noise": {
+    "p_1q": 0.01,
+    "p_gate": 0.01,
+    "p_idle": 0.01,
+    "p_meas": 0.01
+   },
+   "per_logical": [
+    {
+     "expected": 1,
+     "logical_error_rate": 0.09350000000000003,
+     "logical_qubit": 0,
+     "success_rate": 0.9065
+    }
+   ],
+   "shots": 4000,
+   "simulator": {
+    "method": "stabilizer",
+    "transpiled": false
+   },
+   "success_rate": 0.9065,
+   "successful_shots": 3626,
+   "syndromes_detected": 2435
+  }
+ },
+ "x0_se2_p1e-2_n1": {
+  "params": {
+   "n_logical": 1,
+   "shots": 4000,
+   "seed": 7,
+   "actions": [
+    [
+     "X",
+     0
+    ],
+    [
+     "SE",
+     0
+    ],
+    [
+     "SE",
+     0
+    ]
+   ],
+   "noise": {
+    "p_1q": 0.01,
+    "p_gate": 0.01,
+    "p_idle": 0.01,
+    "p_meas": 0.01
+   }
+  },
+  "job_id": "5ff946b5-5b66-44e1-a3d5-f57f9dfc747d",
+  "output": {
+   "code": "steane",
+   "corrections_applied": 4741,
+   "logical_error_count": 540,
+   "n_logical": 1,
+   "noise": {
+    "p_1q": 0.01,
+    "p_gate": 0.01,
+    "p_idle": 0.01,
+    "p_meas": 0.01
+   },
+   "per_logical": [
+    {
+     "expected": 1,
+     "logical_error_rate": 0.135,
+     "logical_qubit": 0,
+     "success_rate": 0.865
+    }
+   ],
+   "shots": 4000,
+   "simulator": {
+    "method": "stabilizer",
+    "transpiled": false
+   },
+   "success_rate": 0.865,
+   "successful_shots": 3460,
+   "syndromes_detected": 4741
+  }
+ },
+ "measonly_nose_n1": {
+  "params": {
+   "n_logical": 1,
+   "shots": 8000,
+   "seed": 7,
+   "actions": [
+    [
+     "I",
+     0
+    ]
+   ],
+   "noise": {
+    "p_meas": 0.01
+   }
+  },
+  "job_id": "ec9d1a99-b0f1-4e1f-bd91-200809cf4c84",
+  "output": {
+   "code": "steane",
+   "corrections_applied": 0,
+   "logical_error_count": 15,
+   "n_logical": 1,
+   "noise": {
+    "p_1q": 0,
+    "p_gate": 0,
+    "p_idle": 0,
+    "p_meas": 0.01
+   },
+   "per_logical": [
+    {
+     "expected": 0,
+     "logical_error_rate": 0.00187499999999996,
+     "logical_qubit": 0,
+     "success_rate": 0.998125
+    }
+   ],
+   "shots": 8000,
+   "simulator": {
+    "method": "stabilizer",
+    "transpiled": false
+   },
+   "success_rate": 0.998125,
+   "successful_shots": 7985,
+   "syndromes_detected": 0
+  }
+ },
+ "measonly_se_n1": {
+  "params": {
+   "n_logical": 1,
+   "shots": 8000,
+   "seed": 7,
+   "actions": [
+    [
+     "SE",
+     0
+    ]
+   ],
+   "noise": {
+    "p_meas": 0.01
+   }
+  },
+  "job_id": "96752e57-f5e0-4c96-a9f0-757c77387b75",
+  "output": {
+   "code": "steane",
+   "corrections_applied": 501,
+   "logical_error_count": 31,
+   "n_logical": 1,
+   "noise": {
+    "p_1q": 0,
+    "p_gate": 0,
+    "p_idle": 0,
+    "p_meas": 0.01
+   },
+   "per_logical": [
+    {
+     "expected": 0,
+     "logical_error_rate": 0.003874999999999962,
+     "logical_qubit": 0,
+     "success_rate": 0.996125
+    }
+   ],
+   "shots": 8000,
+   "simulator": {
+    "method": "stabilizer",
+    "transpiled": false
+   },
+   "success_rate": 0.996125,
+   "successful_shots": 7969,
+   "syndromes_detected": 501
+  }
+ },
+ "idleonly_se_n1": {
+  "params": {
+   "n_logical": 1,
+   "shots": 8000,
+   "seed": 7,
+   "actions": [
+    [
+     "SE",
+     0
+    ]
+   ],
+   "noise": {
+    "p_idle": 0.01
+   }
+  },
+  "job_id": "adf02dfe-fa03-4827-b58f-9dc39a6b076e",
+  "output": {
+   "code": "steane",
+   "corrections_applied": 480,
+   "logical_error_count": 5,
+   "n_logical": 1,
+   "noise": {
+    "p_1q": 0,
+    "p_gate": 0,
+    "p_idle": 0.01,
+    "p_meas": 0
+   },
+   "per_logical": [
+    {
+     "expected": 0,
+     "logical_error_rate": 0.0006249999999999867,
+     "logical_qubit": 0,
+     "success_rate": 0.999375
+    }
+   ],
+   "shots": 8000,
+   "simulator": {
+    "method": "stabilizer",
+    "transpiled": false
+   },
+   "success_rate": 0.999375,
+   "successful_shots": 7995,
+   "syndromes_detected": 480
+  }
+ },
+ "gateonly_se_n1": {
+  "params": {
+   "n_logical": 1,
+   "shots": 8000,
+   "seed": 7,
+   "actions": [
+    [
+     "SE",
+     0
+    ]
+   ],
+   "noise": {
+    "p_gate": 0.01
+   }
+  },
+  "job_id": "808484ff-c98e-4a50-b953-18e51a698445",
+  "output": {
+   "code": "steane",
+   "corrections_applied": 3528,
+   "logical_error_count": 625,
+   "n_logical": 1,
+   "noise": {
+    "p_1q": 0,
+    "p_gate": 0.01,
+    "p_idle": 0,
+    "p_meas": 0
+   },
+   "per_logical": [
+    {
+     "expected": 0,
+     "logical_error_rate": 0.078125,
+     "logical_qubit": 0,
+     "success_rate": 0.921875
+    }
+   ],
+   "shots": 8000,
+   "simulator": {
+    "method": "stabilizer",
+    "transpiled": false
+   },
+   "success_rate": 0.921875,
+   "successful_shots": 7375,
+   "syndromes_detected": 3528
+  }
+ },
+ "1qonly_nose_n1": {
+  "params": {
+   "n_logical": 1,
+   "shots": 8000,
+   "seed": 7,
+   "actions": [
+    [
+     "I",
+     0
+    ]
+   ],
+   "noise": {
+    "p_1q": 0.01
+   }
+  },
+  "job_id": "8c38fc43-650c-4a97-942a-a3342d9a2c57",
+  "output": {
+   "code": "steane",
+   "corrections_applied": 0,
+   "logical_error_count": 0,
+   "n_logical": 1,
+   "noise": {
+    "p_1q": 0.01,
+    "p_gate": 0,
+    "p_idle": 0,
+    "p_meas": 0
+   },
+   "per_logical": [
+    {
+     "expected": 0,
+     "logical_error_rate": 0,
+     "logical_qubit": 0,
+     "success_rate": 1
+    }
+   ],
+   "shots": 8000,
+   "simulator": {
+    "method": "stabilizer",
+    "transpiled": false
+   },
+   "success_rate": 1,
+   "successful_shots": 8000,
+   "syndromes_detected": 0
+  }
+ },
+ "measonly_se_p0.5_n1": {
+  "params": {
+   "n_logical": 1,
+   "shots": 2000,
+   "seed": 7,
+   "actions": [
+    [
+     "SE",
+     0
+    ]
+   ],
+   "noise": {
+    "p_meas": 0.5
+   }
+  },
+  "job_id": "adb1f47e-203d-4b43-90bd-dbbb2514d71a",
+  "output": {
+   "code": "steane",
+   "corrections_applied": 3514,
+   "logical_error_count": 998,
+   "n_logical": 1,
+   "noise": {
+    "p_1q": 0,
+    "p_gate": 0,
+    "p_idle": 0,
+    "p_meas": 0.5
+   },
+   "per_logical": [
+    {
+     "expected": 0,
+     "logical_error_rate": 0.499,
+     "logical_qubit": 0,
+     "success_rate": 0.501
+    }
+   ],
+   "shots": 2000,
+   "simulator": {
+    "method": "stabilizer",
+    "transpiled": false
+   },
+   "success_rate": 0.501,
+   "successful_shots": 1002,
+   "syndromes_detected": 3514
+  }
+ }
+}

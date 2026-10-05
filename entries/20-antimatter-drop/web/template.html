@@ -1,0 +1,1083 @@
+<title>Antimatter Drop</title>
+<style>
+/*BRAND*/
+/* Layout: the vertical trap is the hero (left), the controls sit beside it; the escape curve and the
+   verdict sit underneath, then the quiz, then the science drawers. Paper/ink look from brand.css:
+   square panels, hairline rules, pill buttons, solid-ink bars, no glows, gradients or shadows. */
+.wrap{max-width:76rem;margin-inline:auto}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"stage head" "stage rest" "stage panel";grid-template-rows:auto auto 1fr;column-gap:clamp(1.25rem,3vw,2.5rem);row-gap:1.05rem;align-items:start;padding-block:2rem 1rem}
+.hero>.head{grid-area:head}.hero>.rest{grid-area:rest}.hero>.panel{grid-area:panel;margin-top:clamp(.2rem,1.5vw,1.45rem)}
+.stage-cell{grid-area:stage;position:sticky;top:1rem;min-width:0}
+.stage{position:relative;max-width:500px;margin-inline:auto;overflow:hidden;border:1px solid var(--ink);background:var(--panel);touch-action:manipulation;user-select:none}
+#cv{cursor:pointer}
+/* sprite canvases: the backing store is sized to device pixels in JS, so pixel art scales by whole numbers */
+canvas{display:block;width:100%;image-rendering:pixelated}
+#cv{height:auto;aspect-ratio:2/3}
+canvas:focus-visible{outline-offset:-3px}
+#ruler{height:156px}
+.pane[hidden]{display:none}
+.pane{display:grid;gap:.85rem}
+.viewbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.6rem 1rem}
+h3{font-family:var(--display);font-weight:400;font-size:1.25rem;line-height:1.1;margin:0;color:var(--ink)}
+.hud{position:absolute;left:.6rem;right:.6rem;top:.6rem;display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap;pointer-events:none}
+.chip{font:500 .7rem/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:.42rem .7rem;border-radius:999px;background:var(--paper);border:1px solid var(--ink);color:var(--ink)}
+.chip.hot{background:var(--ink);color:var(--on-ink)}
+.meter{position:absolute;left:.6rem;right:.6rem;bottom:.6rem;display:grid;gap:.5rem;background:var(--paper);border:1px solid var(--ink);padding:.6rem .75rem}
+.meter .top{display:flex;justify-content:space-between;gap:.5rem;font:500 .7rem/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.meter .top b{color:var(--ink);font-weight:500}
+.meter .ctl{display:flex;gap:.6rem;align-items:center}
+.meter .ctl .btn{padding:.55rem .8rem;min-width:5.6rem;justify-content:center}
+.copy{display:grid;gap:1.05rem;min-width:0}
+.kicker{font:500 .74rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+h1{font-size:clamp(2.3rem,5vw,4.2rem);line-height:.98;letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,2.6vw,2rem);line-height:1.05}
+.sub{font-size:1.06rem;color:var(--ink-2);max-width:46ch}
+.steps{display:grid;gap:.55rem;counter-reset:s;margin:0;padding:0;list-style:none}
+.steps li{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:.6rem;align-items:baseline;font-size:.95rem}
+.steps li::before{counter-increment:s;content:counter(s);font:500 .8rem/1.6 var(--mono);color:var(--on-ink);background:var(--ink);border-radius:99px;width:1.6rem;height:1.6rem;display:grid;place-items:center}
+.steps b{font-weight:500}
+.panel{display:grid;gap:.9rem;background:var(--panel);border:1px solid var(--rule);padding:1.1rem 1.2rem;min-width:0}
+.panel .grp+.grp{border-top:1px solid var(--rule);padding-top:.85rem}
+.row{display:flex;flex-wrap:wrap;gap:.55rem;align-items:center}
+.row.split{justify-content:space-between}
+.grp{display:grid;gap:.45rem}
+.seg{border-radius:20px}
+.seg.bias button{min-width:2.6rem;padding:.6rem .55rem}
+.readout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.25rem .9rem;font:400 .76rem/1.5 var(--mono);color:var(--ink-2);margin:0;border-top:1px solid var(--rule);padding-top:.85rem}
+.readout dd{margin:0;min-width:0}
+.readout b{color:var(--ink);font-weight:500;overflow-wrap:anywhere}
+.notice{font-size:.85rem;color:var(--ink);background:var(--tint);border:1px solid var(--ink);padding:.6rem .75rem;display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.notice[hidden]{display:none}
+.ink-bar{margin-top:2.5rem}
+.lab{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr);gap:clamp(1rem,2.5vw,2rem);margin-top:1.25rem;align-items:start}
+.card{background:var(--panel);border:1px solid var(--rule);padding:1.1rem 1.2rem;display:grid;gap:.85rem;min-width:0}
+svg.curve{width:100%;height:auto;display:block;border-top:1px solid var(--rule);padding-top:.4rem}
+svg.curve text{font-family:var(--mono);fill:var(--ink-2)}
+svg.curve .col{cursor:pointer}
+svg.curve .col:hover rect{fill:rgba(25,35,142,.05)}
+.legend{display:flex;flex-wrap:wrap;gap:.4rem 1rem;font:400 .74rem/1.3 var(--mono);color:var(--ink-2)}
+.legend i{display:inline-block;width:.8rem;height:.8rem;border-radius:99px;vertical-align:-.1rem;margin-inline-end:.35rem}
+.legend svg{display:inline-block;width:1.6rem;height:.8rem;vertical-align:-.05rem;margin-inline-end:.35rem;overflow:visible}
+.verdict{font-size:.95rem;display:grid;gap:.5rem}
+.verdict .big{font:300 1.6rem/1.15 var(--display);letter-spacing:-.015em;color:var(--ink)}
+.verdict .big em{font-style:normal;color:var(--ink);background:var(--tint);padding-inline:.12em}
+.verdict .why b{color:var(--ink);font-weight:500}
+.dice{font:400 .74rem/1.55 var(--mono);color:var(--ink-2);margin:0;padding:0;list-style:none;display:grid;gap:.1rem;min-height:9.5rem}
+.dice li{overflow-wrap:anywhere}
+.dice b{color:var(--ink);font-weight:500}
+.dice b.dn{background:var(--ink);color:var(--on-ink);padding-inline:.3em}
+.dice b.up{border:1px solid var(--ink);padding-inline:.3em}
+.quiz{margin-top:1.25rem;display:grid;gap:1rem}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:1rem}
+.q{display:grid;gap:.6rem;align-content:start}
+.q p.ask{font-weight:500}
+.opts{display:grid;gap:.4rem}
+.opts button{text-align:left;border:1px solid var(--rule);background:var(--paper);color:var(--ink);padding:.6rem .75rem;cursor:pointer;font:400 .9rem/1.35 var(--body)}
+.opts button:hover:not(:disabled){border-color:var(--ink);background:var(--tint)}
+.opts button.right{border-color:var(--good);color:var(--good);background:rgba(31,122,77,.07)}
+.opts button.wrong{border-color:var(--warn);color:var(--warn);background:rgba(180,84,26,.07)}
+.opts button:disabled{cursor:default}
+.why{font-size:.86rem;color:var(--ink-2)}
+.why[hidden]{display:none}
+.score{font:500 .76rem/1.2 var(--mono);color:inherit;letter-spacing:.1em}
+.more{margin-top:1.25rem}
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:var(--ink);color:var(--on-ink);font:500 .82rem/1.3 var(--mono);padding:.8rem 1.1rem;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100vw - 32px);text-align:center}
+.toast.on{opacity:1}
+code{font:400 .86em/1 var(--mono);color:var(--ink);overflow-wrap:anywhere}
+.hint{font-size:.8rem;color:var(--ink-2)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+table.t1{border-collapse:collapse;font:400 .74rem/1.4 var(--mono);color:var(--ink-2);width:100%}
+table.t1 th,table.t1 td{padding:.3rem .4rem;border-bottom:1px solid var(--rule);text-align:right}
+table.t1 th{color:var(--ink);font-weight:500;border-bottom-color:var(--ink)}
+.tscroll{overflow-x:auto;max-width:100%}
+/* titled sections below the scene: each one opens with an ink bar whose title is a real heading */
+.bar-h{font:inherit;letter-spacing:inherit;color:inherit}
+.sec{margin-top:1.25rem}
+.fig{margin:0}
+.fig figcaption{max-width:72ch}
+svg.bfield{width:100%;max-width:300px;height:auto;display:block;margin-inline:auto;border-top:1px solid var(--rule);padding-top:.4rem}
+svg.bfield text{font-family:var(--mono);fill:var(--ink-2)}
+.keys{display:grid;grid-template-columns:minmax(0,13rem) minmax(0,1fr);gap:.6rem 1.4rem;margin:0}
+.keys dt{font:500 .72rem/1.6 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.keys dd{margin:0;font-size:.93rem;color:var(--ink-2)}
+.claims p{max-width:80ch}
+table.jobs th,table.jobs td{text-align:left;vertical-align:top}
+table.jobs code{font-size:.95em;white-space:nowrap}
+.credit-list{margin:0;padding-inline-start:1.1rem;display:grid;gap:.5rem;font-size:.9rem;color:var(--ink-2);max-width:80ch}
+.credit-list b{color:var(--ink);font-weight:500}
+@media (max-width:620px){.keys{grid-template-columns:minmax(0,1fr);gap:.2rem}.keys dd{margin-bottom:.55rem}}
+@media (max-width:520px){.hud{left:.4rem;right:.4rem;top:.4rem;gap:.3rem}.chip{font-size:.6rem;letter-spacing:.03em;padding:.3rem .5rem}.chip .cal{display:none}.meter{left:.4rem;right:.4rem;bottom:.4rem;padding:.5rem .6rem}#ruler{height:102px}}
+@media (max-width:900px){.hero{grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "stage" "rest" "panel";grid-template-rows:none;row-gap:1.25rem}.hero>.panel{margin-top:0}.stage-cell{position:static}.lab{grid-template-columns:minmax(0,1fr)}}
+</style>
+
+<div class="wrap">
+  <nav class="wtnr-bar"><a href="https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa">What the Noise Remembers</a><span class="count">Challenge <b>11</b></span></nav>
+
+  <div class="hero">
+    <div class="stage-cell"><div class="stage" id="stage">
+      <canvas id="cv" width="600" height="900" tabindex="0" aria-label="Side view of the ALPHA-g antihydrogen trap. Atoms sit between mirror coil G (top) and mirror coil A (bottom); escapes are counted in the up and down regions. Each escape is decided by one roll of the die on the right, and the atom flashes where it annihilates. Click, Space or Enter stacks, ramps or pauses; the right arrow or K steps the ramp forward (it never runs backwards)."></canvas>
+      <div class="hud"><span class="chip hot" id="hud-bias">Bias 0 g</span><span class="chip" id="hud-phase">Trap empty</span></div>
+      <div class="meter">
+        <div class="top"><span>Ramp <b id="m-t">0.0</b> / 20 s</span><span>Mirror current <b id="m-i">100</b>%</span></div>
+        <div class="ctl"><button type="button" class="btn" id="act">Stack</button>
+        <input type="range" id="ramp" min="0" max="200" value="0" step="1" aria-label="Mirror ramp time, 0 to 20 seconds. Drag right to lower the barriers." disabled></div>
+      </div>
+    </div></div>
+
+    <div class="copy head">
+      <p class="kicker">Challenge 11 · FQxI Challenge (educational)</p>
+      <h1>Drop antimatter. See which way it falls.</h1>
+    </div>
+    <div class="copy rest">
+      <p class="sub">Tilt a magnetic trap the way CERN's ALPHA-g experiment did (Nature, 2023), open it, and count where the antihydrogen escapes. Every atom's fate is rolled with the paper's own odds, using random bits measured on all %%FEZ_QUBITS%% qubits of IBM's %%FEZ_BACKEND%%.</p>
+      <div class="proof">
+        <span class="hot"><b>%%FEZ_QUBITS%%</b> qubits on %%FEZ_BACKEND%%</span>
+        <span><b>%%NJOBS%%</b> real Atlas jobs</span>
+        <span><b>%%FEZ_DICE%%</b> hardware dice</span>
+        <span><b>1,722</b> escape events in the paper</span>
+      </div>
+      <ol class="steps">
+        <li><span><b>Set</b> the magnetic bias: tip the trap to push atoms up or down.</span></li>
+        <li><span><b>Stack</b> antihydrogen in the trap, one trial or a full series.</span></li>
+        <li><span><b>Ramp</b> the mirror coils down: drag the slider or press Ramp.</span></li>
+        <li><span><b>Read</b> your escape curve and find where up and down balance.</span></li>
+      </ol>
+    </div>
+
+      <div class="panel">
+        <div class="grp">
+          <span class="label" id="lb-bias">1 · Bias (units of g; + pushes atoms down)</span>
+          <div class="seg bias" role="group" aria-labelledby="lb-bias" id="g-bias"></div>
+          <div class="row"><span class="label" id="lb-cal">Calibration</span><div class="seg bias" role="group" aria-labelledby="lb-cal" id="g-cal"></div></div>
+        </div>
+        <div class="grp">
+          <span class="label" id="lb-size">2 · Atoms to stack</span>
+          <div class="row">
+            <div class="seg" role="group" aria-labelledby="lb-size" id="g-size">
+              <button type="button" data-size="trial" aria-pressed="true" id="sz-trial">1 trial</button>
+              <button type="button" data-size="series" aria-pressed="false" id="sz-series">Full series</button>
+            </div>
+            <button type="button" class="btn" id="stack">Stack atoms</button>
+          </div>
+        </div>
+        <div class="grp">
+          <span class="label" id="lb-ramp">3 · Ramp the mirrors down</span>
+          <div class="row">
+            <button type="button" class="btn" id="play" disabled>Ramp</button>
+            <div class="seg" role="group" aria-labelledby="lb-ramp" id="g-speed">
+              <button type="button" data-speed="fast" aria-pressed="true">Fast · 4 s</button>
+              <button type="button" data-speed="real" aria-pressed="false">Real time · 20 s</button>
+            </div>
+            <button type="button" class="btn ghost" id="dump" disabled>Dump trap</button>
+          </div>
+        </div>
+        <div class="grp">
+          <span class="label" id="lb-src">Dice (the only quantum step)</span>
+          <div class="seg" role="group" aria-labelledby="lb-src" id="g-src">
+            <button type="button" data-src="fez" aria-pressed="true">%%FEZ_BACKEND%% · %%FEZ_QUBITS%% qubits</button>
+            <button type="button" data-src="emu" aria-pressed="false">Emulator · %%EMU_QUBITS%% qubits</button>
+            <button type="button" data-src="cls" aria-pressed="false">Browser (classical)</button>
+          </div>
+          <div class="row"><button type="button" class="btn ghost" id="snd">Hear the dice</button><span class="hint" id="snd-hint">Optional sound: one tone per die as it lands, high for up, low for down.</span></div>
+        </div>
+        <div class="notice" id="exhausted" hidden><span id="exhausted-msg"></span><button type="button" class="btn ghost" id="rewind">Rewind this bank</button></div>
+        <dl class="readout">
+          <dt>Dice</dt><dd><b id="r-src">-</b></dd>
+          <dt>Job</dt><dd><b id="r-job">-</b></dd>
+          <dt>Bank</dt><dd><b id="r-bank">-</b></dd>
+          <dt>Physics</dt><dd><b id="r-phys">-</b></dd>
+        </dl>
+      </div>
+  </div>
+
+  <div class="ink-bar"><h2 id="how-h" class="bar-h">How to play</h2><span>You are in control</span></div>
+  <section class="sec card" aria-labelledby="how-h">
+    <dl class="keys">
+      <dt>Mouse or touch</dt><dd>Click or tap the trap to stack atoms, start the ramp or pause it. Drag the slider under the trap to lower the mirrors by hand.</dd>
+      <dt>Keyboard</dt><dd>Focus the trap: Space or Enter stacks, ramps or pauses; the right arrow or K steps the ramp forward half a second. The ramp never runs backwards, like the real one.</dd>
+      <dt>Beside the trap</dt><dd>Choose the bias, the atoms to stack, the ramp speed and the dice. You can switch the dice mid-ramp. Hear the dice turns on one short tone per die.</dd>
+      <dt>Your data</dt><dd>Click a column of the escape curve to choose that bias. Run the whole campaign to repeat all 11 biases with a full series each, then copy a link that reopens your exact curve.</dd>
+    </dl>
+  </section>
+
+  <div class="ink-bar"><h2 id="res-h" class="bar-h">Your results</h2><span>Classical tally of quantum dice</span></div>
+  <section class="lab" aria-labelledby="res-h">
+    <div class="card">
+      <h2>Where do your atoms balance?</h2>
+      <canvas id="ruler" role="img" aria-label="The antihydrogen mascot stands on a ruler of bias values at your fitted balance point, with a bar for its 68% range. Signposts mark where a falls-down, no-gravity or falls-up world would balance (1-D cartoon); a ring marks the same fit to the paper's Table 1 counts."></canvas>
+      <p class="why" id="ruler-note">Signposts: where a falls-down world (arrow down, −1 g), a no-gravity world (dot, 0 g) or a falls-up world (arrow up, +1 g) would balance, in the naive 1-D picture. The small ring is the same fit to Table 1's raw counts. The bar under the mascot is your 68% range. Your atoms move the mascot; the signs never move.</p>
+      <div class="row">
+        <button type="button" class="btn" id="campaign">Run the whole campaign</button>
+        <button type="button" class="btn ghost" id="clear">Clear my data</button>
+        <button type="button" class="btn ghost" id="share">Copy link to my curve</button>
+      </div>
+      <p class="label" id="cal-line">Calibration (±10 g): no atoms yet</p>
+    </div>
+    <div class="card">
+      <h2>Verdict</h2>
+      <div class="verdict" id="verdict" aria-live="polite"></div>
+      <h2 style="font-size:1.25rem">Last dice</h2>
+      <ul class="dice" id="dice"><li>No atoms have escaped yet.</li></ul>
+    </div>
+  </section>
+
+  <div class="ink-bar"><h2 id="data-h" class="bar-h">The data</h2><span>Live graphs of your atoms</span></div>
+  <section class="lab" aria-labelledby="data-h">
+    <figure class="card fig">
+      <div class="row split"><h2>Your escape curve</h2><span class="label" id="c-n">0 escapes</span></div>
+      <svg class="curve" id="curve" viewBox="0 0 640 380" role="img" aria-label="Probability of escaping downwards versus bias. Click a column to choose that bias."></svg>
+      <div class="legend">
+        <span><i style="background:var(--ink)"></i>your atoms (68% interval)</span>
+        <span><svg viewBox="0 0 26 8" aria-hidden="true"><line x1="0" x2="26" y1="4" y2="4" stroke="var(--ink)" stroke-width="2.5"/></svg>your fit</span>
+        <span><i style="border:1.5px solid var(--ink-2);background:transparent"></i>paper, Table 1 raw counts</span>
+        <span id="lg-worlds" hidden><svg viewBox="0 0 26 8" aria-hidden="true"><line x1="0" x2="26" y1="4" y2="4" stroke="var(--ink-2)" stroke-width="1.5" stroke-dasharray="10 4"/></svg>falls down · <svg viewBox="0 0 26 8" aria-hidden="true"><line x1="0" x2="26" y1="4" y2="4" stroke="var(--ink-2)" stroke-width="1.5" stroke-dasharray="4 4"/></svg>no gravity · <svg viewBox="0 0 26 8" aria-hidden="true"><line x1="0" x2="26" y1="4" y2="4" stroke="var(--ink-2)" stroke-width="2" stroke-dasharray="0.5 4" stroke-linecap="round"/></svg>falls up (1-D cartoon)</span>
+      </div>
+      <div class="row"><button type="button" class="btn ghost" id="worlds" aria-pressed="false">Show other worlds</button></div>
+      <figcaption class="why">Each filled dot is the share of your atoms that escaped downwards at one bias, with its 68% interval; the solid line is the logistic fit to your atoms, and it crosses the dashed 0.50 line at your balance point. The open rings are the same share from the paper's Table 1 raw counts. Click a column to choose that bias.</figcaption>
+    </figure>
+    <figure class="card fig">
+      <div class="row split"><h2>|B| sketch</h2><span class="label">not to scale</span></div>
+      <svg class="bfield" id="bfield" viewBox="0 0 260 392" role="img" aria-label="Schematic of the magnetic field strength along the trap axis, not to scale: two barrier peaks at mirror coils G (top) and A (bottom) that fall as the ramp runs; the bias raises one of them."></svg>
+      <figcaption class="why">Schematic on-axis |B|: the barrier heights at coils G and A fall with the ramp, and the bias raises one of them (exaggerated, as on the trap). The atoms leak out over the lower barrier. It follows the trap as you ramp and change the bias.</figcaption>
+    </figure>
+  </section>
+
+  <div class="ink-bar"><h2 id="quiz-h" class="bar-h">Test yourself</h2><span class="score" id="q-score">0 / 6 answered</span></div>
+  <section class="quiz" aria-labelledby="quiz-h">
+    <div class="qgrid" id="quiz"></div>
+    <div class="row"><button type="button" class="btn ghost" id="q-reset">Reset the quiz</button></div>
+  </section>
+
+  <div class="ink-bar"><h2 id="sci-h" class="bar-h">The science</h2><span>Open a drawer</span></div>
+  <section class="more" aria-labelledby="sci-h">
+    <details class="drawer"><summary>What antimatter is</summary><div class="body">
+      <p>Every kind of particle has an antiparticle with the same mass and the opposite electric charge. Paul Dirac's 1928 theory of the electron led to the prediction of a positively charged twin, and Carl Anderson found that positron in cosmic rays in 1932.</p>
+      <p><b>Antihydrogen</b> is the simplest anti-atom: one antiproton orbited by one positron. It is electrically neutral, which matters here: charged antiparticles are pushed around by stray fields far stronger than gravity. The ALPHA-g paper puts it starkly: gravity on a proton is equivalent to an electric field of only about 10<sup>-7</sup> V/m.</p>
+      <p>When antimatter touches matter, the two annihilate. An antiproton meeting the trap wall turns into a spray of charged pions, and ALPHA-g's time projection chamber tracks those pions back to the spot where the atom died. Each flash in the trap above is one of those annihilations.</p>
+      <p>Antihydrogen can only be held in a vacuum, in a magnetic bottle that grips its tiny magnetic moment. ALPHA-g's bottle is a vertical cylinder 4.4 cm across and 25.6 cm tall, deep enough to hold atoms with energies up to about 0.5 K.</p>
+      <p>Why care which way it falls? General relativity's weak equivalence principle says everything falls the same way, whatever it is made of. Antimatter had never been dropped directly, and some cosmological models assumed matter and antimatter repel.</p>
+    </div></details>
+    <details class="drawer"><summary>How ALPHA-g weighed antimatter</summary><div class="body">
+      <p>About 100 atoms were stacked over 50 production cycles (roughly four hours). A first step released about half of them to count the sample. Then the two mirror coils that cap the trap, G on top and A at the bottom, were ramped down together over 20 seconds. The atoms leaked out over the lower barrier and hit the walls above or below the trap.</p>
+      <p>A small extra current in coil G set a magnetic <b>bias</b>: a field difference between the two barrier peaks, quoted in units of g. A positive bias makes the top barrier higher and pushes atoms out of the bottom. One g of bias is a field difference of just 4.53 × 10<sup>-4</sup> T between peaks of about 1.74 T. In a naive 1-D picture, a bias of −1 g exactly cancels ordinary gravity.</p>
+      <p>The team ran 11 biases from −3 g to +3 g, six or seven trials each, interleaved over about 30 days. They counted escapes between 10 and 20 s of the ramp in fixed up and down regions. Calibration runs at ±10 g sent atoms almost entirely one way.</p>
+      <p>Hydrogen released from a symmetric trap would leave through the bottom about 80% of the time, according to their simulations. Antihydrogen's escape curve crossed 50/50 near −1 g. Comparing it to 3-D trajectory simulations gave an acceleration towards Earth of <b>a = (0.75 ± 0.13 (statistical + systematic) ± 0.16 (simulation)) g</b>, consistent with 1 g. The chance of a result this extreme with no gravity is 2.9 × 10<sup>-4</sup>. Repulsive gravity of 1 g fits with a probability below 10<sup>-15</sup>, so it is ruled out.</p>
+      <div class="tscroll"><table class="t1" id="t1"><caption class="label" style="text-align:left;padding-bottom:.4rem">Table 1 of the paper (background-corrected counts), and the odds this page uses</caption></table></div>
+      <p>Source: E. K. Anderson et al. (ALPHA Collaboration), "Observation of the effect of gravity on the motion of antimatter", <i>Nature</i> 621, 716–722 (2023), doi:10.1038/s41586-023-06527-1, open access under CC BY 4.0.</p>
+    </div></details>
+  </section>
+
+  <div class="ink-bar"><h2 id="made-h" class="bar-h">How it was made</h2><span>The only quantum step</span></div>
+  <section class="more" aria-labelledby="made-h">
+    <details class="drawer"><summary>What the quantum computer did</summary><div class="body">
+      <p>Atlas's <b>comet-qrng-v1</b> engine put %%FEZ_REG%% qubits of IBM's <b>%%FEZ_BACKEND%%</b> into an equal superposition and measured them 10,000 times. It added 8 more qubits as four Bell pairs (CHSH witness S = %%FEZ_S%%, above the classical limit of 2). That is %%FEZ_QUBITS%% qubits, the whole chip. The engine estimated how much unpredictability the raw bits really carried, using NIST SP 800-90B estimators (%%FEZ_HBIT%% bits of min-entropy per raw bit). It then compressed them with a Toeplitz extractor set to ε = 2<sup>-128</sup>, leaving %%FEZ_BYTES%% bytes. Job <code>%%FEZ_JOB%%</code>, IBM job <code>%%FEZ_PJOB%%</code>.</p>
+      <p>Each escaping atom reads the next 16 bits of that bank as a number k from 0 to 65,535. If k is below round(P<sub>dn</sub> × 65,536), the atom goes <b>down</b>; otherwise it goes up. P<sub>dn</sub> comes from Table 1 for the bias you set. The dice log under the verdict shows every comparison. It keeps the last eight. The die beside the trap rolls once per escaping atom and shows that word and its verdict. Press <b>Hear the dice</b> to hear every roll as it lands.</p>
+      <p>The <b>emulator</b> bank is the same engine on a classical Aer simulator: %%EMU_QUBITS%% qubits (the emulator's cap), %%EMU_BYTES%% bytes, job <code>%%EMU_JOB%%</code>. The <b>browser</b> dice come from your browser's crypto random generator. Switch between all three mid-ramp: the curve converges to the same place, because the physics lives in the probabilities, not the dice.</p>
+    </div></details>
+  </section>
+
+  <div class="ink-bar"><h2 id="claim-h" class="bar-h">What this does not claim</h2><span>Honesty notes</span></div>
+  <section class="sec card claims" id="claims" aria-labelledby="claim-h">
+    <p class="honesty">This page does not simulate antihydrogen. Each atom's up or down outcome is a weighted coin, and the weights are Table 1's background-corrected counts. Those counts are not corrected for detector efficiency (the ±10 g calibration rows suggest the up and down regions differ by a few per cent), and the bias labels are the nominal ones. The paper's own escape curve applies both corrections and puts the balance point close to −1 g; our logistic fit to the raw counts gives −0.78 g.</p>
+    <p class="honesty">Everything else here is classical and illustrative: when each atom escapes (spread evenly over 10 to 20 s of the ramp, the window where the paper counts its events), the motion in the trap, the vertex positions, the pion tracks and the |B| sketch. The balance-point fit and the "other worlds" curves are our own logistic cartoon, not the paper's simulation. The real 0.75 g comes from 3-D trajectory simulations we do not reproduce.</p>
+    <p class="honesty">The sprite scene is illustration too: the detector pads lighting up and the barrier "gates" at the mirror coils. The drawing keeps heights to scale but widens the trap and the atoms so you can see them, and the bias on the gates is exaggerated. The characters' faces only react: an atom looks down or up after its die has decided, and the mascot stands wherever your own fit puts it. The signposts on its ruler belong to the same logistic cartoon. The optional "Hear the dice" sound is a classical sonification of the same rolls: one short tone per die, high for up and low for down; in a fast campaign some tones are skipped so they never pile up.</p>
+    <p class="honesty">The quantum computer contributes nothing to the physics: it only supplies dice. The %%FEZ_BACKEND%% bytes are entropy-accounted under the engine's stated assumption that qubits within a shot carry no more than pairwise correlations (grade "%%FEZ_GRADE%%"). That is not device-independent certification: the CHSH value is a fidelity witness. The emulator bank is classical pseudo-randomness.</p>
+  </section>
+
+  <div class="ink-bar"><h2 id="jobs-h" class="bar-h">Jobs and credits</h2><span>%%NJOBS%% real Atlas jobs</span></div>
+  <section class="sec card" aria-labelledby="jobs-h">
+    <div class="tscroll"><table class="t1 jobs" id="jobs"><caption class="label" style="text-align:left;padding-bottom:.4rem">The Atlas comet-qrng-v1 jobs behind the dice (from out/jobs.json)</caption></table></div>
+    <ul class="credit-list">
+      <li><b>Physics data.</b> E. K. Anderson et al. (ALPHA Collaboration), "Observation of the effect of gravity on the motion of antimatter", <i>Nature</i> 621, 716–722 (2023), doi:10.1038/s41586-023-06527-1, open access under CC BY 4.0. Table 1 is transcribed unchanged except for re-ordering; we turn its counts into probabilities and clamp one negative count (−0.1) to 0. No figures or images from the paper are reproduced.</li>
+      <li><b>History.</b> The facts in "What antimatter is" come from the same paper's introduction, which cites P. A. M. Dirac, <i>Proc. R. Soc. A</i> 117, 610–624 (1928) and C. D. Anderson, <i>Phys. Rev.</i> 43, 491–494 (1933), an observation made in 1932.</li>
+      <li><b>Quantum engine.</b> Moth Quantum Atlas, comet-qrng-v1 v%%ENGINE_VER%%, run on IBM Quantum %%FEZ_BACKEND%% and on an Aer simulator. The NIST SP 800-90B estimators and the Toeplitz extractor run inside the engine.</li>
+      <li><b>Fonts.</b> Geist and IBM Plex Mono from Google Fonts (SIL Open Font License).</li>
+      <li><b>Made for this piece.</b> The page code, the trap drawing, the pixel-art cast, the graphs and the sound. No third-party images are used.</li>
+    </ul>
+  </section>
+  <!--NAV-->
+  <p class="wtnr-foot">An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page.</p>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>/*CORE*/</script>
+<script>/*INKSPRITE*/</script>
+<script>
+const TABLE = /*TABLE*/{};
+const BANKS = /*BANKS*/{};
+const SPRITES = /*SPRITES*/{};
+const PAPER_FIT_NOTE = 'our logistic fit, classical';
+const C = window.CORE;
+const $ = id => document.getElementById(id);
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ---- physics table (Table 1) ----
+const ROWS = TABLE.rows.map(r => ({b: r[0], trials: r[1], n_up: r[2], n_dn: r[3], n_loc: r[4]}));
+const MAIN = ROWS.filter(r => Math.abs(r.b) <= 3).sort((a, b) => a.b - b.b);
+const CAL = ROWS.filter(r => Math.abs(r.b) > 3).sort((a, b) => a.b - b.b);
+const BIAS = MAIN.concat(CAL);           // index 0..10 main biases, 11..12 calibration
+BIAS.forEach(r => { r.p = C.pDown(r.n_up, r.n_dn); r.thr = C.threshold(r.p); });
+const ZERO = BIAS.findIndex(r => r.b === 0);
+const PAPER_FIT = C.fitLogistic(MAIN.map(r => ({b: r.b, dn: Math.max(0, r.n_dn), up: Math.max(0, r.n_up)})));
+const BYTES = {fez: C.hexToBytes(BANKS.fez.hex), emu: C.hexToBytes(BANKS.emu.hex)};
+const fmtB = b => (b > 0 ? '+' : b < 0 ? '−' : '') + (Math.abs(b) === 0.5 ? '½' : String(Math.abs(b)));
+const fmtG = b => (b > 0 ? '+' : b < 0 ? '−' : '') + Math.abs(b).toFixed(2);
+const nf = n => n.toLocaleString('en-US');
+
+// ---- state ----
+const st = {bi: ZERO, src: 'fez', off: {fez: 0, emu: 0}, tally: BIAS.map(() => [0, 0]), size: 'trial', speed: 'fast',
+  phase: 'empty', t: 0, atoms: [], up: 0, dn: 0, playing: false, worlds: false, campaign: null, log: [], trialNo: 0,
+  hits: [], fx: [], fit: null, dirty: false,
+  // cosmetic sprite state: it only mirrors what the dice already decided and never feeds back into them
+  pads: new Map(), zaps: [], die: null, bump: {up: -1e9, dn: -1e9}, popT0: 0};
+
+// ---- the cast: pixel sprites from web/sprites.json, drawn by common/inksprite.js ----
+const SP = {};
+for (const k in SPRITES) SP[k] = InkSprite.make(SPRITES[k]);
+const ANIM = !REDUCED && typeof IntersectionObserver === 'function';   // gentle idle loops only while a scene is on screen
+const fr = (sp, now, ph) => REDUCED ? 0 : Math.floor(now / 1000 * sp.fps + (ph || 0)) % sp.frames.length;
+
+// ---- trap geometry (world units 600 x 900; z in cm, 0 = trap centre) ----
+const cv = $('cv'), ctx = cv.getContext('2d'), W = 600, H = 900, PX = 9.2;   // px per cm vertically: heights to scale
+const CXW = 300, TH = 56, WT = 6;        // tube centre, inner half-width (drawn wider than the real 2.2 cm so atoms fit), wall
+const Y = z => 405 - z * PX;             // keeps both z-cut regions clear of the meter
+const ZM = 12.8;                         // mirror peaks at +/-12.8 cm (25.6 cm apart)
+const YG = Y(ZM), YA = Y(-ZM);
+const PAD = {r0: 100, n: 8, pitch: 10, size: 8, y0: 76, rows: 65};   // rTPC readout pads on both sides of the trap
+const REG = [[Y(32.8), Y(12.8)], [Y(-12.8), Y(-32.8)]];             // UP and DOWN counting regions (z-cut 12.8 to 32.8 cm)
+const DX = 540, POP_MS = 420;                                          // the dice column; atoms popping in after Stack
+const PAL = {paper: '#FBFAF9', panel: '#FFFFFF', panel2: '#F0F0F4', ink: '#19238E', ink2: '#545BA9', ink3: '#A1A4CE', rule: '#D3D3E6', warm: '#B4541A'};
+const INK = a => `rgba(25,35,142,${a})`;
+const MONO = '"IBM Plex Mono", ui-monospace, Consolas, monospace', DISP = 'Geist, "Helvetica Neue", Arial, sans-serif';
+let K = 1, FK = 1, bgLayer = null;       // device px per world unit; font boost on narrow screens; cached static layer
+const F = v => v * FK;
+const ax = xo => CXW + xo / 1.8 * (TH - 14);   // atom x (cartoon) from its transverse wobble
+
+// the backing store follows the CSS box in device pixels, so every sprite scales by a whole number
+function fitStage() {
+  const dpr = window.devicePixelRatio || 1, cw = cv.clientWidth;
+  const dw = cw ? Math.max(240, Math.round(cw * dpr)) : W;
+  if (cv.width !== dw) { cv.width = dw; cv.height = Math.round(dw * 1.5); bgLayer = null; }
+  K = cv.width / W;
+  const fk = Math.max(1, Math.min(1.35, 420 / (cw || 500)));
+  if (fk !== FK) { FK = fk; bgLayer = null; }
+}
+function R(c, x, y, w, h) {
+  const x0 = Math.round(x * K), y0 = Math.round(y * K);
+  c.fillRect(x0, y0, Math.max(1, Math.round((x + w) * K) - x0), Math.max(1, Math.round((y + h) * K) - y0));
+}
+function spr(sp, f, x, y, ws, o) { InkSprite.draw(ctx, sp, f, x * K, y * K, Math.max(1, Math.round(ws * K)), o); }
+function txt(c, s, x, y, size, o) {
+  o = o || {};
+  c.save(); c.setTransform(K, 0, 0, K, 0, 0);
+  const font = px => `${o.wt || 500} ${px}px ${o.fam || MONO}`;
+  c.font = font(size);
+  if (o.max) { const m = c.measureText(s), w = m && m.width; if (w > o.max) c.font = font(size * o.max / w); }
+  c.fillStyle = o.col || PAL.ink; c.textAlign = o.align || 'left'; c.textBaseline = o.base || 'alphabetic';
+  if (o.rot) { c.translate(x, y); c.rotate(o.rot); c.fillText(s, 0, 0); } else c.fillText(s, x, y);
+  c.restore();
+}
+function textW(c, s, size) {
+  c.save(); c.setTransform(K, 0, 0, K, 0, 0); c.font = `500 ${size}px ${MONO}`;
+  const m = c.measureText(s); c.restore();
+  return m && m.width ? m.width : s.length * size * 0.6;
+}
+
+// rTPC pads: key = side * 10000 + column * 100 + row
+function padXY(key) {
+  const s = key >= 10000 ? 1 : -1, i = Math.floor((key % 10000) / 100), j = key % 100;
+  return {x: s > 0 ? CXW + PAD.r0 + i * PAD.pitch : CXW - PAD.r0 - i * PAD.pitch - PAD.size, y: PAD.y0 + j * PAD.pitch};
+}
+function lightPad(px, py, tl) {
+  const u = Math.abs(px - CXW) - PAD.r0, i = Math.floor(u / PAD.pitch), j = Math.floor((py - PAD.y0) / PAD.pitch);
+  if (u < 0 || i >= PAD.n || j < 0 || j >= PAD.rows) return;
+  const k = (px >= CXW ? 10000 : 0) + i * 100 + j, old = st.pads.get(k);
+  if (old === undefined || old > tl || old < tl - 300) st.pads.set(k, tl);
+}
+
+function stack() {
+  if (st.phase === 'stacked' || st.phase === 'ramping') return;
+  const row = BIAS[st.bi], n = st.size === 'trial' ? C.trialSize(row) : C.seriesSize(row);
+  st.trialNo++;
+  const rng = C.mulberry32(0x5EED0000 + st.bi * 7919 + st.trialNo * 104729);   // cosmetic only
+  st.atoms = [];
+  for (let i = 0; i < n; i++) {
+    const tEsc = 10 + 10 * rng();         // illustrative: the paper sees its escapes in 10-20 s
+    const E = 1 - tEsc / 20;              // 0..0.5: hotter atoms leave earlier
+    st.atoms.push({tEsc, amp: 2.5 + 17 * E * (0.7 + 0.3 * rng()), w: 2 * Math.PI * (0.35 + 0.5 * rng()),
+      ph: 2 * Math.PI * rng(), xr: (0.4 + 1.4 * rng()) * (rng() < .5 ? -1 : 1), xw: 2 * Math.PI * (0.6 + rng()),
+      zAnn: 14.5 + 16.5 * rng(), side: rng() < .5 ? -1 : 1, tracks: 2 + Math.floor(3 * rng()), seed: rng(),
+      state: 'trapped', dir: null});
+  }
+  st.atoms.sort((a, b) => a.tEsc - b.tEsc);
+  st.t = 0; st.up = 0; st.dn = 0; st.hits = []; st.phase = 'stacked';
+  st.popT0 = ANIM && stageSeen ? performance.now() : 0;          // atoms pop in (decorative), only while on screen
+  sync(); draw(); if (st.popT0) kick();
+}
+
+// one die for one atom, from the chosen source
+function roll(row) {
+  if (st.src === 'cls') {
+    let w;
+    try { w = crypto.getRandomValues(new Uint16Array(1))[0]; } catch (e) { w = Math.floor(Math.random() * 65536); }
+    return {src: 'cls', word: w, off: null, t: row.thr, dir: C.decide(w, row.p)};
+  }
+  const d = C.drawFromBank(BYTES[st.src], st.off[st.src], row.p);
+  if (!d) return null;
+  st.off[st.src] = d.next;
+  return Object.assign({src: st.src}, d);
+}
+
+function advance(t) {
+  t = Math.min(20, Math.max(st.t, t));
+  const row = BIAS[st.bi], now = performance.now();
+  for (const a of st.atoms) {
+    if (a.state !== 'trapped' || a.tEsc > t) continue;
+    const d = roll(row);
+    if (!d) { exhausted(); t = a.tEsc - 1e-6; break; }
+    a.dir = d.dir; a.state = 'flying'; a.t0 = now; a.z0 = zOf(a, a.tEsc); a.x0 = xOf(a, a.tEsc);
+    if (d.dir === 'dn') { st.dn++; st.tally[st.bi][1]++; } else { st.up++; st.tally[st.bi][0]++; }
+    st.log.unshift(d); st.log.length = Math.min(st.log.length, 8); st.dirty = true;
+    st.die = {t: now, dir: d.dir, word: d.word, thr: d.t}; st.bump[d.dir] = now;   // the die shows the word that decided it
+    tone(d.dir);                                                                     // optional sound, off unless the user turns it on
+    if (REDUCED) land(a);
+    else { st.zaps.push({x: ax(a.x0), y: Y(a.z0), t0: now}); if (st.zaps.length > 8) st.zaps.shift(); }
+  }
+  st.t = Math.max(st.t, t);
+  if (st.t >= 20 && st.atoms.every(a => a.state !== 'trapped')) finish();
+}
+function finish() {
+  st.phase = 'done'; st.playing = false;
+  const msg = `Trial done at ${fmtB(BIAS[st.bi].b)} g: ${st.dn} down, ${st.up} up`;
+  if (!st.campaign) toast(msg);
+  refit(); sync(); renderCurve(); renderVerdict(true); renderDice();
+  if (st.campaign && st.campaign.on) setTimeout(campaignNext, REDUCED ? 0 : 350);
+}
+// an atom reaches the wall: annihilation vertex, plus a cosmetic flash, pion tracks and lit pads
+function land(a) {
+  a.state = 'gone';
+  const z = a.dir === 'dn' ? -a.zAnn : a.zAnn;
+  st.hits.push({z, side: a.side});
+  if (REDUCED) return;
+  const t0 = performance.now(), r = C.mulberry32(Math.floor(a.seed * 1e9)), x = CXW + a.side * TH, y = Y(z), tracks = [];
+  for (let i = 0; i < a.tracks; i++) {
+    const ang = (a.side > 0 ? 0 : Math.PI) + (r() - .5) * 2.2, curl = (r() - .5) * 0.9, L = 95 + 55 * r();
+    const c1x = x + Math.cos(ang + curl) * L * .5, c1y = y + Math.sin(ang + curl) * L * .5, ex = x + Math.cos(ang) * L, ey = y + Math.sin(ang) * L;
+    const pts = [];
+    for (let s = 0; s <= 1.0001; s += 3.5 / L) {
+      const u = 1 - s, px = u * u * x + 2 * u * s * c1x + s * s * ex, py = u * u * y + 2 * u * s * c1y + s * s * ey;
+      pts.push([px, py]); lightPad(px, py, t0 + 170 * s);
+    }
+    tracks.push(pts);
+  }
+  st.fx.push({x, y, t0, tracks});
+}
+function zOf(a, t) { const lim = ZM - 0.6; return Math.max(-lim, Math.min(lim, a.amp * Math.sin(a.w * t + a.ph))); }
+function xOf(a, t) { return a.xr * Math.sin(a.xw * t + a.ph * 1.7); }
+
+function exhausted() {
+  st.playing = false;
+  const n = BYTES[st.src].length >> 1;
+  $('exhausted-msg').textContent = `The ${st.src === 'fez' ? BANKS.fez.backend : 'emulator'} bank is used up (${nf(n)} dice). Switch the dice, or rewind (draws will repeat).`;
+  $('exhausted').hidden = false;
+  sync();
+}
+
+// ---- animation: runs while a ramp plays or a flash is in flight; otherwise a slow idle tick while on screen ----
+let raf = null, last = 0, idleT = null, stageSeen = false;
+if (ANIM) {
+  new IntersectionObserver(es => { stageSeen = es.some(e => e.isIntersecting); if (stageSeen) kick(); }, {threshold: 0.05}).observe(cv);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) { kick(); rulerIdle(); } });
+}
+function busyFx(now) {
+  return st.playing || st.fx.length > 0 || st.pads.size > 0 || st.zaps.length > 0 || st.atoms.some(a => a.state === 'flying') ||
+    (st.die && now - st.die.t < 320) || now - Math.max(st.bump.up, st.bump.dn) < 420 || (st.popT0 > 0 && now - st.popT0 < POP_MS + 400);
+}
+function loop(now) {
+  raf = null;
+  const dt = last ? Math.min(0.1, (now - last) / 1000) : 0; last = now;
+  if (st.playing) {
+    const rate = st.campaign && st.campaign.on ? 20 / 1.6 : st.speed === 'real' ? 1 : 5;
+    advance(st.t + dt * rate);
+  }
+  for (const a of st.atoms) if (a.state === 'flying' && now - a.t0 > 550) land(a);
+  st.fx = st.fx.filter(f => now - f.t0 < 1300);
+  st.zaps = st.zaps.filter(z => now - z.t0 < 320);
+  if (st.popT0 && now - st.popT0 > POP_MS + 400) st.popT0 = 0;
+  if (st.dirty) { st.dirty = false; renderCurve(); renderDice(); }
+  sync(); draw(now);
+  if (busyFx(now)) raf = requestAnimationFrame(loop);
+  else { last = 0; if (ANIM && stageSeen && !document.hidden) idleT = setTimeout(() => { idleT = null; kick(); }, 125); }
+}
+function kick() {
+  if (idleT) { clearTimeout(idleT); idleT = null; }
+  if (!raf) { last = 0; raf = requestAnimationFrame(loop); }
+}
+
+// ---- drawing: a static layer (cached) plus the cast ----
+function buildBg() {
+  const c = document.createElement('canvas'); c.width = cv.width; c.height = cv.height;
+  const g = c.getContext('2d'); g.imageSmoothingEnabled = false;
+  g.fillStyle = PAL.paper; g.fillRect(0, 0, c.width, c.height);
+  for (const [ya, yb] of REG) {                       // counting regions
+    g.fillStyle = INK(0.045); R(g, 118, ya, 364, yb - ya);
+    g.fillStyle = INK(0.45); for (let x = 118; x < 482; x += 12) { R(g, x, ya, 6, 1.5); R(g, x, yb - 1.5, 6, 1.5); }
+  }
+  for (let s = 0; s < 2; s++) for (let i = 0; i < PAD.n; i++) for (let j = 0; j < PAD.rows; j++) {   // rTPC readout pads
+    const p = padXY(s * 10000 + i * 100 + j), yc = p.y + PAD.size / 2;
+    g.fillStyle = REG.some(([a, b]) => yc >= a && yc <= b) ? PAL.rule : PAL.panel2;
+    R(g, p.x, p.y, PAD.size, PAD.size);
+  }
+  g.fillStyle = PAL.panel; R(g, CXW - TH, 50, 2 * TH, 740);          // the vacuum tube...
+  for (const s of [-1, 1]) {                                         // ...inside a stack of ring electrodes
+    const x = s < 0 ? CXW - TH - WT : CXW + TH;
+    g.fillStyle = PAL.ink2; R(g, x, 50, WT, 740);
+    g.fillStyle = PAL.ink; for (let y = 50; y < 790; y += 26) R(g, x, y, WT, 2);
+    R(g, s < 0 ? x : x + WT - 1.5, 50, 1.5, 740);
+  }
+  tag(g, 'UP region', CXW, Y(34.4), F(13.5));
+  tag(g, 'DOWN region', CXW, Y(-34.4), F(13.5));
+  txt(g, 'rTPC detector', 108, 405, F(13), {align: 'center', col: PAL.ink2, rot: -Math.PI / 2, base: 'middle'});
+  tag(g, 'coil G', CXW, YG - 24, F(12));
+  tag(g, 'coil A', CXW, YA + 24, F(12));
+  return c;
+}
+// a small paper label with an ink border, so text never sits on the electrode stripes
+function tag(c, s, cx, cy, fs) {
+  const w = textW(c, s, fs) + 14, h = fs + 9;
+  c.fillStyle = PAL.ink; R(c, cx - w / 2, cy - h / 2, w, h);
+  c.fillStyle = PAL.paper; R(c, cx - w / 2 + 1.5, cy - h / 2 + 1.5, w - 3, h - 3);
+  txt(c, s, cx, cy + 0.5, fs, {align: 'center', base: 'middle'});
+}
+function bubble(lines, cx, bottom) {
+  const fs = F(13), lh = fs * 1.35, padY = 7;
+  const w = Math.max(...lines.map(s => textW(ctx, s, fs))) + 22, h = lines.length * lh + 2 * padY;
+  const x = Math.max(4, Math.min(W - 4 - w, cx - w / 2)), y = bottom - h;
+  ctx.fillStyle = PAL.ink; R(ctx, x, y, w, h);
+  for (let i = 0; i < 3; i++) R(ctx, cx - 7 + 2.5 * i, y + h + 3 * i - 1, 14 - 5 * i, 3.5);     // stepped tail
+  ctx.fillStyle = PAL.paper; R(ctx, x + 1.5, y + 1.5, w - 3, h - 3);
+  for (let i = 0; i < 2; i++) R(ctx, cx - 5 + 2.5 * i, y + h - 1.5 + 3 * i, 10 - 5 * i, 3);
+  lines.forEach((s, i) => txt(ctx, s, x + w / 2, y + padY + lh * (i + 0.5), fs, {align: 'center', base: 'middle', col: i ? PAL.ink2 : PAL.ink}));
+}
+function draw(now) {
+  now = now || performance.now();
+  fitStage();
+  if (!bgLayer) bgLayer = buildBg();
+  const sec = now / 1000, cur = 1 - 0.97 * st.t / 20, b = BIAS[st.bi].b;
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(bgLayer, 0, 0);
+  // detector pads lit by pion tracks: a warm flash, then cooling ink
+  for (const [k, tl] of st.pads) {
+    const age = now - tl;
+    if (age < 0) continue;
+    if (age > 1500) { st.pads.delete(k); continue; }
+    const p = padXY(k);
+    ctx.fillStyle = age < 220 ? PAL.warm : age < 700 ? PAL.ink2 : PAL.ink3; R(ctx, p.x, p.y, PAD.size, PAD.size);
+  }
+  // mirror coils G and A, and the barrier 'gates' they make; a positive bias raises G (exaggerated)
+  const gG = Math.min(1, cur + Math.max(0, b) * 0.1), gA = Math.min(1, cur + Math.max(0, -b) * 0.1);
+  for (const [y, lv] of [[YG, gG], [YA, gA]]) {
+    for (const s of [-1, 1]) {
+      const x = CXW + s * (TH + WT + 15);
+      spr(SP.coilOff, 0, x, y, 2.2); spr(SP.coilOn, 0, x, y, 2.2, {alpha: lv});
+    }
+    const lines = 1 + Math.round(lv * 3);
+    ctx.fillStyle = INK(0.15 + 0.85 * lv);
+    for (let i = 0; i < lines; i++) {
+      const yy = y + (i - (lines - 1) / 2) * 5 - 1;
+      for (let x = CXW - TH + 4; x < CXW + TH - 6; x += 10) R(ctx, x, yy, 6, 2);
+    }
+  }
+  // annihilation vertices of this trial
+  ctx.fillStyle = PAL.ink;
+  for (const h of st.hits) R(ctx, CXW + h.side * TH - 2.5, Y(h.z) - 2.5, 5, 5);
+  // pion tracks (cosmetic) and annihilation flashes
+  for (const f of st.fx) {
+    const age = Math.max(0, now - f.t0), grow = Math.min(1, age / 170), fade = Math.max(0, Math.min(1, 1 - (age - 500) / 800));
+    ctx.fillStyle = INK(0.85 * fade);
+    for (const pts of f.tracks) { const n = Math.floor(pts.length * grow); for (let i = 0; i < n; i++) R(ctx, pts[i][0] - 1, pts[i][1] - 1, 2.2, 2.2); }
+    const k = Math.floor(age / 1000 * SP.poof.fps);
+    if (k >= 0 && k < SP.poof.frames.length) spr(SP.poof, k, f.x, f.y, 2.2);   // rAF time can trail an event's t0
+  }
+  // the antihydrogen atoms
+  const crowd = st.atoms.length > 40, nerv = st.phase === 'ramping' && st.t >= 9;
+  const pop = st.popT0 ? now - st.popT0 : -1, gap = Math.min(12, 300 / Math.max(1, st.atoms.length));
+  st.atoms.forEach((a, i) => {
+    if (a.state === 'gone') return;
+    let x, y, sp, ws = 2.4;
+    if (a.state === 'trapped') {
+      x = ax(xOf(a, st.t)); y = Y(zOf(a, st.t));
+      if (ANIM) y += Math.sin(sec * 2.3 + a.ph * 3) * 1.6;              // decorative bob
+      if (pop >= 0) { const k = pop - i * gap; if (k < 0) return; if (k < 110) ws = 1.4; }
+      const blink = ((sec * 0.5 + a.seed * 7) % 3) < 0.12;
+      sp = nerv ? (crowd ? SP.hbarMiniNerv : SP.hbarNerv) : crowd ? SP.hbarMini : blink ? SP.hbarBlink : SP.hbar;
+    } else {
+      const k = Math.max(0, Math.min(1, (now - a.t0) / 550)), zt = a.dir === 'dn' ? -a.zAnn : a.zAnn, x0 = ax(a.x0);
+      x = x0 + (CXW + a.side * (TH - 9) - x0) * k * k; y = Y(a.z0 + (zt - a.z0) * k);
+      sp = a.dir === 'dn' ? SP.hbarDn : SP.hbarUp;
+    }
+    spr(sp, fr(sp, now, a.ph), x, y, ws);
+  });
+  // the host: waits in an empty trap, then reacts to the trial that just finished
+  const settled = st.atoms.every(a => a.state === 'gone');
+  if ((st.phase === 'empty' || (st.phase === 'done' && settled)) && !(st.campaign && st.campaign.on)) {
+    let sp, lines;
+    if (st.phase === 'empty') { sp = SP.mascotWave; lines = FK > 1.1 ? ['trap empty', 'press Stack atoms', '(or tap here)'] : ['trap empty', 'press Stack atoms', '(or Space here)', 'or click the trap']; }
+    else {
+      sp = st.dn > st.up ? SP.mascotDn : st.up > st.dn ? SP.mascotUp : SP.mascotHmm;
+      lines = [`${st.dn} down · ${st.up} up`, st.dn > st.up ? 'mostly down!' : st.up > st.dn ? 'mostly up!' : 'a dead heat', 'Stack again?'];
+    }
+    const ms = Math.max(1, Math.round(3.3 * K)), my = 452;
+    spr(sp, fr(sp, now), CXW, my, 3.3);
+    bubble(lines, CXW, my - 14 * ms / K - 12);
+  }
+  // counters, with a little hop when a die adds to them
+  const hop = t => { const k = (now - t) / 420; return k >= 0 && k < 1 && !REDUCED ? Math.sin(k * Math.PI) * 0.16 : 0; };
+  const big = F(56), base = (y, h) => y + 6 + 0.74 * big * (1 + h);   // under its label; a hop grows downwards
+  const hu = hop(st.bump.up), hd = hop(st.bump.dn);
+  txt(ctx, 'UP', 14, Y(27), F(15), {col: PAL.ink2});
+  txt(ctx, String(st.up), 12, base(Y(27), hu), big * (1 + hu), {fam: DISP, wt: 300, max: 98});
+  txt(ctx, 'DOWN', 14, Y(-17), F(15), {col: PAL.ink2});
+  txt(ctx, String(st.dn), 12, base(Y(-17), hd), big * (1 + hd), {fam: DISP, wt: 300, max: 98});
+  // Earth, for orientation (it turns only while the scene idles on screen)
+  const er = 8 * Math.max(1, Math.round(2.8 * K)) / K;              // Earth's radius in world units
+  spr(SP.earth, ANIM ? fr(SP.earth, now) : 0, 10 + er, 742 - er, 2.8);
+  txt(ctx, '↓ Earth', 16 + 2 * er, 742 - er, F(14), {col: PAL.ink2, base: 'middle'});
+  // the dice: the only quantum step
+  const meta = st.src === 'cls' ? null : BANKS[st.src];
+  const left = meta ? (BYTES[st.src].length - st.off[st.src]) >> 1 : null;
+  const rolling = !!st.die && !REDUCED && Math.abs(now - st.die.t) < 300;
+  txt(ctx, st.src === 'fez' ? 'QUANTUM DICE' : st.src === 'emu' ? 'EMULATED DICE' : 'BROWSER DICE', DX, 252, F(12), {align: 'center', col: PAL.ink2, max: 116});
+  spr(st.src === 'fez' ? SP.chip : st.src === 'emu' ? SP.laptop : SP.browser, st.src === 'fez' && rolling ? 1 : 0, DX, 294, 3);
+  txt(ctx, st.src === 'fez' ? meta.backend : st.src === 'emu' ? 'Aer emulator' : 'crypto RNG', DX, 342, F(13.5), {align: 'center', max: 116});
+  txt(ctx, meta ? `${meta.total} qubits` : 'classical', DX, 360, F(12.5), {align: 'center', col: PAL.ink2, max: 116});
+  const dsp = rolling || !st.die ? SP.dieRoll : st.die.dir === 'dn' ? SP.dieDn : SP.dieUp;
+  const lift = rolling ? Math.sin(Math.max(0, now - st.die.t) / 300 * Math.PI) * 9 : 0;
+  spr(dsp, rolling ? fr(SP.dieRoll, now) : 0, DX, 424 - lift, 3.2, {alpha: left === 0 ? 0.35 : 1});
+  if (st.die) {
+    txt(ctx, '0x' + st.die.word.toString(16).toUpperCase().padStart(4, '0'), DX, 477, F(14.5), {align: 'center', max: 116});
+    txt(ctx, `${st.die.dir === 'dn' ? '<' : '≥'} ${st.die.thr}: ${st.die.dir === 'dn' ? 'DOWN' : 'UP'}`, DX, 495, F(12.5), {align: 'center', max: 116});
+  } else {
+    txt(ctx, 'one roll', DX, 477, F(12.5), {align: 'center', col: PAL.ink2, max: 116});
+    txt(ctx, 'per atom', DX, 495, F(12.5), {align: 'center', col: PAL.ink2, max: 116});
+  }
+  txt(ctx, left === null ? 'fresh bits' : left === 0 ? 'bank used up' : `${nf(left)} left`, DX, 527, F(12), {align: 'center', col: PAL.ink2, max: 116});
+  // a dotted 'zap' from the die to the atom it just decided
+  for (const z of st.zaps) {
+    const k = Math.max(0, (now - z.t0) / 320); if (k >= 1) continue;
+    ctx.fillStyle = INK(0.55 * (1 - k));
+    const x0 = DX - 30, y0 = 424, dx = z.x - x0, dy = z.y - y0, n = Math.max(2, Math.floor(Math.hypot(dx, dy) / 9));
+    for (let i = 1; i < n; i++) R(ctx, x0 + dx * i / n - 1.2, y0 + dy * i / n - 1.2, 2.4, 2.4);
+  }
+}
+
+// ---- escape curve (SVG) ----
+const SV = {x0: 62, x1: 620, y0: 22, y1: 318};
+const sx = b => SV.x0 + (b + 3.4) / 6.8 * (SV.x1 - SV.x0), sy = p => SV.y1 - p * (SV.y1 - SV.y0);
+function renderCurve() {
+  const s = [], svg = $('curve');
+  const narrow = svg.clientWidth > 0 && svg.clientWidth < 520, fs = narrow ? 21 : 12;   // keep labels legible on phones
+  for (const p of [0, .25, .5, .75, 1]) {
+    s.push(`<line x1="${SV.x0}" x2="${SV.x1}" y1="${sy(p)}" y2="${sy(p)}" stroke="${p === .5 ? PAL.ink : PAL.rule}" stroke-dasharray="${p === .5 ? '5 5' : ''}" stroke-opacity="${p === .5 ? .55 : 1}"/>`);
+    s.push(`<text x="${SV.x0 - 8}" y="${sy(p) + fs / 3}" text-anchor="end" font-size="${fs}">${p.toFixed(2)}</text>`);
+  }
+  if (!narrow) s.push(`<text x="16" y="${(SV.y0 + SV.y1) / 2}" font-size="12" transform="rotate(-90 16 ${(SV.y0 + SV.y1) / 2})" text-anchor="middle">P(escape down)</text>`);
+  s.push(`<text x="${(SV.x0 + SV.x1) / 2}" y="374" font-size="${fs}" text-anchor="middle">${narrow ? 'bias (g) · y = P(down)' : 'bias (g) · + pushes atoms down'}</text>`);
+  MAIN.forEach((r, i) => {
+    const x = sx(r.b), sel = i === st.bi;
+    s.push(`<g class="col" data-bi="${i}"><rect x="${x - 22}" y="${SV.y0}" width="44" height="${SV.y1 - SV.y0}" fill="${sel ? INK(.07) : 'transparent'}"/>` +
+      (narrow && r.b % 1 ? '' : `<text x="${x}" y="${SV.y1 + 8 + fs}" text-anchor="middle" font-size="${fs}" fill="${sel ? PAL.ink : PAL.ink2}" font-weight="${sel ? 500 : 400}">${fmtB(r.b)}</text>`) + '</g>');
+  });
+  const curvePath = (f, col, dash, op, sw) => {
+    let d = '';
+    for (let b = -3.4; b <= 3.4001; b += 0.05) d += (d ? 'L' : 'M') + sx(b).toFixed(1) + ' ' + sy(C.logistic(b, f.b0, f.w)).toFixed(1);
+    s.push(`<path d="${d}" fill="none" stroke="${col}" stroke-width="${sw || 2}" stroke-linecap="round" stroke-dasharray="${dash || ''}" stroke-opacity="${op || 1}"/>`);
+  };
+  if (st.worlds && PAPER_FIT) {
+    curvePath({b0: -1, w: PAPER_FIT.w}, PAL.ink2, '10 4', .8, 1.5);     // falls down: long dash
+    curvePath({b0: 0, w: PAPER_FIT.w}, PAL.ink2, '4 4', .8, 1.5);       // no gravity: short dash
+    curvePath({b0: 1, w: PAPER_FIT.w}, PAL.ink2, '0.5 4', .95, 2);      // falls up: dotted
+  }
+  if (st.fit) curvePath(st.fit, PAL.ink, '', 1, 2.5);
+  MAIN.forEach(r => s.push(`<circle cx="${sx(r.b)}" cy="${sy(r.p)}" r="6.5" fill="none" stroke="${PAL.ink2}" stroke-width="1.5" stroke-opacity=".9"/>`));
+  MAIN.forEach((r, i) => {
+    const [u, d] = st.tally[i], n = u + d; if (!n) return;
+    const w = C.wilson(d, n, 1), x = sx(r.b) + 0.5;
+    s.push(`<line x1="${x}" x2="${x}" y1="${sy(w.lo)}" y2="${sy(w.hi)}" stroke="${PAL.ink}" stroke-width="2"/>`);
+    s.push(`<circle cx="${x}" cy="${sy(d / n)}" r="${Math.min(7, 3 + Math.log10(n + 1) * 1.8)}" fill="${PAL.ink}"/>`);
+  });
+  svg.innerHTML = s.join('');
+  const tot = st.tally.reduce((a, r) => a + r[0] + r[1], 0);
+  $('c-n').textContent = nf(tot) + ' escape' + (tot === 1 ? '' : 's');
+  const cl = CAL.map((r, k) => { const [u, d] = st.tally[MAIN.length + k]; return u + d ? `${fmtB(r.b)} g: ${d} down / ${u} up` : `${fmtB(r.b)} g: none yet`; });
+  $('cal-line').textContent = 'Calibration · ' + cl.join(' · ');
+  $('lg-worlds').hidden = !st.worlds;
+}
+function refit() {
+  st.fit = C.fitLogistic(MAIN.map((r, i) => ({b: r.b, up: st.tally[i][0], dn: st.tally[i][1]})));
+}
+let rz = null; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { renderCurve(); draw(); drawRuler(); renderBField(true); }, 150); });
+$('curve').addEventListener('click', e => {
+  const g = e.target.closest('.col'); if (!g) return;
+  chooseBias(+g.dataset.bi);
+});
+
+function renderVerdict(anim) {
+  updateRuler(anim !== false);
+  const f = st.fit, el = $('verdict'), pf = PAPER_FIT;
+  const paper = `<p class="why">Paper (full 3-D simulation): <b>a = 0.75 ± 0.13 ± 0.16 g</b> downwards; 1 g of repulsion ruled out (p &lt; 10<sup>-15</sup>). The same logistic fit on Table 1's raw counts balances at ${fmtG(pf.b0)} g.</p>`;
+  if (!f) {
+    el.innerHTML = `<p class="big">Not enough data yet.</p><p>Run trials at two or more biases (or the whole campaign) and this panel will find where your escape curve crosses 50/50.</p>` + paper;
+    return;
+  }
+  let call;
+  if (f.open) call = 'The balance point is off the chart: add biases on both sides.';
+  else if (f.hi < 0) call = 'To balance it you must push <em>up</em>: something pulls antihydrogen <em>down</em>.';
+  else if (f.lo > 0) call = 'To balance it you must push <em>down</em>: your atoms are falling <em>up</em>.';
+  else call = 'Your interval still includes zero: more atoms needed to tell.';
+  el.innerHTML = `<p class="big">Balance at <em>${fmtG(f.b0)} g</em></p>` +
+    `<p>68% range ${fmtG(f.lo)} to ${fmtG(f.hi)} g, from ${nf(Math.round(f.n))} escapes. ${call}</p>` +
+    `<p class="why">In the naive 1-D picture, a balance at b means gravity of about ${(-f.b0).toFixed(2)} g on antihydrogen (positive = downwards). This is our logistic cartoon, not the paper's analysis.</p>` + paper;
+}
+// ---- results scene: the mascot walks along a ruler of biases to wherever YOUR fit balances ----
+const rv = $('ruler'), rctx = rv.getContext('2d');
+const rs = {cur: null, from: 0, to: null, t0: 0, raf: null, seen: false, idle: null};
+const WALK_MS = 900;
+const clampB = b => Math.max(-3.75, Math.min(3.75, b));
+function updateRuler(anim) {
+  const tgt = st.fit ? clampB(st.fit.b0) : null;
+  const vis = rv.clientWidth > 0;
+  if (anim && ANIM && vis && rs.cur !== null && tgt !== null && Math.abs(tgt - rs.cur) > 0.004) {
+    rs.from = rs.cur; rs.to = tgt; rs.t0 = performance.now();
+    if (!rs.raf) rs.raf = requestAnimationFrame(rulerLoop);
+  } else {
+    if (rs.raf) { cancelAnimationFrame(rs.raf); rs.raf = null; }
+    rs.to = null; rs.cur = tgt; drawRuler();
+  }
+}
+function rulerLoop(now) {
+  rs.raf = null;
+  if (rs.to === null) return;
+  const k = Math.min(1, (now - rs.t0) / WALK_MS), e = k < .5 ? 2 * k * k : 1 - 2 * (1 - k) * (1 - k);
+  rs.cur = rs.from + (rs.to - rs.from) * e;
+  const walking = k < 1;
+  if (!walking) rs.to = null;
+  drawRuler(now, walking);
+  if (walking) rs.raf = requestAnimationFrame(rulerLoop);
+}
+function rulerIdle() {
+  if (!ANIM || rs.idle) return;
+  const tick = () => {
+    rs.idle = null;
+    if (!rs.seen || document.hidden) return;
+    if (!rs.raf) drawRuler();
+    rs.idle = setTimeout(tick, 260);
+  };
+  tick();
+}
+if (ANIM) new IntersectionObserver(es => { rs.seen = es.some(e => e.isIntersecting); if (rs.seen) rulerIdle(); }, {threshold: 0.05}).observe(rv);
+function drawRuler(now, walking) {
+  now = now || performance.now();
+  const dpr = window.devicePixelRatio || 1, cw = rv.clientWidth || 640, narrow = cw < 460;
+  const art = Math.max(1, Math.round((cw >= 560 ? 3 : narrow ? 1.5 : 2) * dpr)), a = art / dpr;   // whole device px per art px
+  const ch = Math.round(36 * a + 48);                                    // tall enough for the signposts
+  if (rv.clientWidth && rv.style.height !== ch + 'px') rv.style.height = ch + 'px';
+  const dw = Math.round(cw * dpr), dh = Math.round(ch * dpr);
+  if (rv.width !== dw) rv.width = dw;
+  if (rv.height !== dh) rv.height = dh;
+  const c = rctx;
+  c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, dw, dh); c.imageSmoothingEnabled = false;
+  const x0 = 14, x1 = cw - 14, yR = ch - 26, xb = b => x0 + (b + 3.75) / 7.5 * (x1 - x0);
+  const D = v => Math.round(v * dpr);
+  const box = (x, y, w, h, col) => { c.fillStyle = col; const X0 = D(x), Y0 = D(y); c.fillRect(X0, Y0, Math.max(1, D(x + w) - X0), Math.max(1, D(y + h) - Y0)); };
+  const put = (sp, f, x, y, o) => InkSprite.draw(c, sp, f, D(x), D(y), art, o);
+  const font = px => `500 ${Math.round(px * dpr)}px ${MONO}`;
+  const write = (s, x, y, px, col) => { c.font = font(px); c.fillStyle = col; c.textAlign = 'center'; c.textBaseline = 'alphabetic'; c.fillText(s, D(x), D(y)); };
+  const width = (s, px) => { c.font = font(px); const m = c.measureText(s); return m && m.width ? m.width / dpr : s.length * px * 0.6; };
+  // signposts: where the 1-D cartoon worlds would balance (they never move)
+  [[-1, SP.signDn], [0, SP.signNo], [1, SP.signUp]].forEach(([b, sp]) => put(sp, 0, xb(b), yR - 18 * a, {alpha: 0.6}));
+  // the ruler: one tick per bias the paper ran
+  box(x0, yR, x1 - x0, a, PAL.ink);
+  for (const r of MAIN) {
+    box(xb(r.b) - 0.5, yR + a, 1, 4, PAL.ink);
+    if (!narrow || r.b % 1 === 0) write(fmtB(r.b), xb(r.b), yR + a + 16, 11, PAL.ink2);
+  }
+  // your fit's 68% range, as a thick bar on the ruler
+  const f = st.fit;
+  if (f && !f.open) { const l = xb(clampB(f.lo)), h = xb(clampB(f.hi)); box(l, yR - a, Math.max(2, h - l), 3 * a, PAL.ink); }
+  // the mascot, with a face that follows the verdict
+  let sp, lines;
+  if (!f || rs.cur === null) { sp = SP.mascotHmm; lines = ['No balance point yet', 'try 2+ biases']; }
+  else if (f.open) { sp = SP.mascotHmm; lines = ['Off the chart', 'add biases both sides']; }
+  else if (f.hi < 0) { sp = SP.mascotDn; lines = [`Balance ${fmtG(f.b0)} g`, "I'm pulled down!"]; }
+  else if (f.lo > 0) { sp = SP.mascotUp; lines = [`Balance ${fmtG(f.b0)} g`, 'I fall up?!']; }
+  else { sp = SP.mascotHmm; lines = [`Balance ${fmtG(f.b0)} g`, "can't tell yet"]; }
+  if (walking) { sp = SP.mascotWalk; lines = null; }
+  const mx = rs.cur === null ? x0 + 14 * a : xb(rs.cur);
+  put(sp, fr(sp, now), mx, yR - 13 * a);
+  // the same logistic fit to the paper's Table 1 counts: a small ring on the ruler
+  if (PAPER_FIT) { const px = xb(PAPER_FIT.b0); box(px - 4.5, yR - 4, 9, 9, PAL.ink); box(px - 3, yR - 2.5, 6, 6, PAL.paper); }
+  if (!lines) return;
+  const fs = narrow ? 11 : 12, lh = fs + 4;
+  const bw = Math.max(...lines.map(s => width(s, fs))) + 18, bh = lines.length * lh + 9;
+  const right = mx < cw * 0.56;
+  const bx = Math.max(2, Math.min(cw - bw - 2, right ? mx + 14 * a + 8 : mx - 14 * a - 8 - bw)), by = Math.max(2, yR - 15 * a - bh / 2);
+  box(bx, by, bw, bh, PAL.ink); box(bx + 1.5, by + 1.5, bw - 3, bh - 3, PAL.paper);
+  const tx = right ? bx : bx + bw, dir = right ? -1 : 1, ty = by + bh / 2;
+  for (let i = 0; i < 3; i++) box(tx + dir * (2 * i) - (dir < 0 ? 2 : 0), ty - 3 + i, 2, 6 - 2 * i, PAL.ink);
+  lines.forEach((s, i) => write(s, bx + bw / 2, by + 5 + lh * i + fs - 1, fs, i ? PAL.ink2 : PAL.ink));
+}
+// ---- |B| sketch (SVG, restored from the first version's trap canvas): schematic on-axis |B| along the trap.
+// Barrier heights fall with the ramp (mirror current 1 - 0.97 t/20); the bias raises one of them (exaggerated,
+// the same levels the coils and gates use in the scene). Not to scale.
+const BF = {x0: 70, bw: 150, yc: 186, k: 5.6};          // |B| baseline x, |B| scale, y of z = 0, px per cm
+const bfY = z => BF.yc - z * BF.k;                      // z from -30 to +30 cm, up = top of the trap
+let bfKey = '';
+function renderBField(force) {
+  const svg = $('bfield'); if (!svg) return;
+  const b = BIAS[st.bi].b, key = st.t.toFixed(1) + '|' + st.bi;
+  if (!force && key === bfKey) return;
+  bfKey = key;
+  const cur = 1 - 0.97 * st.t / 20;
+  const gG = Math.min(1, cur + Math.max(0, b) * 0.1), gA = Math.min(1, cur + Math.max(0, -b) * 0.1);
+  const s = [], x1 = 252;
+  // the UP and DOWN counting regions (z-cut 12.8 to 32.8 cm, clipped to the sketch)
+  for (const [za, zb, name, ty] of [[30, 12.8, 'UP region', bfY(30) + 15], [-12.8, -30, 'DOWN region', bfY(-30) - 7]]) {
+    s.push(`<rect x="${BF.x0}" y="${bfY(za)}" width="${x1 - BF.x0}" height="${(bfY(zb) - bfY(za)).toFixed(1)}" fill="${INK(.045)}"/>`);
+    s.push(`<text x="${x1 - 4}" y="${ty.toFixed(1)}" text-anchor="end" font-size="11">${name}</text>`);
+  }
+  s.push(`<line x1="${BF.x0}" x2="${BF.x0}" y1="${bfY(-30)}" y2="${bfY(30)}" stroke="${PAL.rule}" stroke-width="1.5"/>`);
+  let d = '';
+  for (let z = -30; z <= 30.0001; z += 0.5) {
+    const pk = zz => Math.exp(-((z - zz) ** 2) / (2 * 3.2 * 3.2));
+    const v = 0.04 + gG * pk(ZM) + gA * pk(-ZM);
+    d += (d ? 'L' : 'M') + (BF.x0 + v * BF.bw).toFixed(1) + ' ' + bfY(z).toFixed(1);
+  }
+  s.push(`<path d="${d}" fill="none" stroke="${PAL.ink}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`);
+  for (const [z, name] of [[ZM, 'G'], [-ZM, 'A']]) {
+    s.push(`<line x1="${BF.x0 - 7}" x2="${BF.x0}" y1="${bfY(z)}" y2="${bfY(z)}" stroke="${PAL.ink}" stroke-width="1.5"/>`);
+    s.push(`<text x="${BF.x0 - 12}" y="${(bfY(z) + 5).toFixed(1)}" text-anchor="end" font-size="15" style="fill:${PAL.ink}">${name}</text>`);
+  }
+  s.push(`<text x="10" y="${(bfY(-30) + 2).toFixed(1)}" font-size="11">↓ Earth</text>`);
+  s.push(`<text x="${BF.x0 + 2}" y="12" font-size="11">|B| →</text>`);
+  s.push(`<text x="${x1}" y="${(bfY(-30) + 20).toFixed(1)}" text-anchor="end" font-size="11">ramp ${st.t.toFixed(1)} s · bias ${fmtB(b)} g</text>`);
+  svg.innerHTML = s.join('');
+}
+function renderDice() {
+  const el = $('dice');
+  if (!st.log.length) { el.innerHTML = '<li>No atoms have escaped yet.</li>'; return; }
+  el.innerHTML = st.log.map(d => {
+    const where = d.src === 'cls' ? 'browser' : `${d.src === 'fez' ? BANKS.fez.backend : 'emulator'} @${d.off.toString(16).padStart(5, '0')}`;
+    const hex = d.word.toString(16).padStart(4, '0');
+    return `<li>${where} <b>${hex}</b> = ${d.word} ${d.dir === 'dn' ? '&lt;' : '≥'} ${d.t} → <b class="${d.dir}">${d.dir === 'dn' ? 'DOWN' : 'UP'}</b></li>`;
+  }).join('');
+}
+
+// ---- controls ----
+function press(sel, attr, val) { document.querySelectorAll(sel).forEach(b => b.setAttribute('aria-pressed', String(b.dataset[attr] === val))); }
+function busy() { return st.phase === 'stacked' || st.phase === 'ramping'; }
+function chooseBias(i) {
+  if (busy()) { toast('Finish the ramp or dump the trap before changing the bias'); return; }
+  st.bi = i; st.phase = 'empty'; st.atoms = []; st.hits = []; st.up = 0; st.dn = 0; st.t = 0;
+  sync(); draw(); renderCurve();
+}
+function buildBiasButtons() {
+  const mk = (host, list, off) => list.forEach((r, k) => {
+    const b = document.createElement('button'); b.type = 'button'; b.dataset.bi = String(k + off);
+    b.textContent = fmtB(r.b); b.setAttribute('aria-label', `Bias ${r.b} g`);
+    b.addEventListener('click', () => chooseBias(k + off)); host.appendChild(b);
+  });
+  mk($('g-bias'), MAIN, 0); mk($('g-cal'), CAL, MAIN.length);
+}
+function sync() {
+  const row = BIAS[st.bi], b = busy();
+  document.querySelectorAll('[data-bi]').forEach(x => { if (x.tagName === 'BUTTON') { x.setAttribute('aria-pressed', String(+x.dataset.bi === st.bi)); x.disabled = b && +x.dataset.bi !== st.bi; } });
+  $('hud-bias').innerHTML = `Bias ${fmtB(row.b)} g` + (Math.abs(row.b) > 3 ? '<span class="cal"> · calibration</span>' : '');
+  const left = st.atoms.filter(a => a.state === 'trapped').length;
+  $('hud-phase').textContent = st.phase === 'empty' ? 'Trap empty' : st.phase === 'done' ? `Done: ${st.dn} down · ${st.up} up` : `${left} of ${st.atoms.length} atoms trapped`;
+  $('m-t').textContent = st.t.toFixed(1); $('m-i').textContent = Math.round(100 * (1 - 0.97 * st.t / 20));
+  const ramp = $('ramp'); ramp.disabled = !(st.phase === 'stacked' || st.phase === 'ramping'); ramp.value = String(Math.round(st.t * 10));
+  $('play').disabled = !(st.phase === 'stacked' || st.phase === 'ramping');
+  $('act').textContent = b ? (st.playing ? 'Pause' : st.t > 0 ? 'Resume' : 'Ramp') : st.phase === 'done' ? 'Stack again' : 'Stack';
+  $('play').textContent = st.playing ? 'Pause' : st.t > 0 ? 'Resume ramp' : 'Ramp';
+  $('stack').disabled = b;
+  $('stack').textContent = st.phase === 'done' ? 'Stack again' : 'Stack atoms';
+  $('dump').disabled = !b;
+  $('sz-trial').textContent = `1 trial · ${C.trialSize(row)}`;
+  $('sz-series').textContent = `Full series · ${C.seriesSize(row)}`;
+  $('campaign').textContent = st.campaign ? (st.campaign.on ? 'Pause campaign' : 'Resume campaign') : 'Run the whole campaign';
+  const meta = st.src === 'cls' ? null : BANKS[st.src];
+  $('r-src').textContent = st.src === 'fez' ? `comet-qrng-v1 ${meta.version} · IBM hardware ${meta.backend} · ${meta.reg} + ${meta.total - meta.reg} Bell = ${meta.total} qubits`
+    : st.src === 'emu' ? `comet-qrng-v1 ${meta.version} · Aer emulator (classical) · ${meta.total} qubits` : 'crypto.getRandomValues · classical, not reproducible';
+  $('r-job').textContent = meta ? meta.job_id : '-';
+  $('r-bank').textContent = meta ? `${nf(BYTES[st.src].length)} bytes = ${nf(BYTES[st.src].length >> 1)} dice · ${nf(st.off[st.src] >> 1)} used` : 'fresh 16 bits per atom';
+  $('r-phys').textContent = `Table 1, ${fmtB(row.b)} g: ${row.trials} trials, ${row.n_up} up, ${row.n_dn} down → P(down) ${row.p.toFixed(3)}, threshold ${row.thr} / 65536`;
+  renderBField();                                   // the |B| sketch follows the ramp and the bias
+}
+document.querySelectorAll('[data-size]').forEach(b => b.addEventListener('click', () => { st.size = b.dataset.size; press('[data-size]', 'size', st.size); }));
+document.querySelectorAll('[data-speed]').forEach(b => b.addEventListener('click', () => { st.speed = b.dataset.speed; press('[data-speed]', 'speed', st.speed); }));
+document.querySelectorAll('[data-src]').forEach(b => b.addEventListener('click', () => { st.src = b.dataset.src; press('[data-src]', 'src', st.src); $('exhausted').hidden = true; sync(); }));
+$('stack').addEventListener('click', () => { if (st.campaign) stopCampaign(); stack(); });
+function togglePlay() {
+  if (!(st.phase === 'stacked' || st.phase === 'ramping')) return;
+  st.playing = !st.playing; st.phase = 'ramping';
+  if (st.playing && REDUCED) { st.playing = false; advance(20); sync(); draw(); return; }
+  sync(); kick();
+}
+$('play').addEventListener('click', () => { if (st.campaign && st.campaign.on) { st.campaign.on = false; } togglePlay(); sync(); });
+$('act').addEventListener('click', () => { if (busy()) $('play').click(); else $('stack').click(); });
+$('ramp').addEventListener('input', e => {
+  const t = +e.target.value / 10;
+  if (t < st.t) { e.target.value = String(Math.round(st.t * 10)); return; }   // the ramp only goes one way
+  st.phase = 'ramping'; st.playing = false; advance(t); sync(); draw(); kick();
+});
+$('dump').addEventListener('click', () => {
+  st.playing = false; if (st.campaign) stopCampaign();
+  const lost = st.atoms.filter(a => a.state === 'trapped').length;
+  st.atoms = st.atoms.filter(a => a.state === 'flying'); st.atoms.forEach(land); st.atoms = [];
+  st.phase = 'empty'; st.t = 0; refit(); sync(); draw(); renderCurve(); renderVerdict(); renderDice();
+  if (st.fx.length) kick();
+  toast(lost ? `Dumped ${lost} atoms (no dice used for them)` : 'Trap emptied');
+});
+$('rewind').addEventListener('click', () => { if (st.src !== 'cls') st.off[st.src] = 0; $('exhausted').hidden = true; sync(); toast('Bank rewound: draws now repeat from the start'); });
+cv.addEventListener('keydown', e => {
+  if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); $('act').click(); return; }
+  const fwd = {ArrowRight: 1, ArrowUp: 1, k: 1, K: 1}[e.key], back = {ArrowLeft: 1, ArrowDown: 1, j: 1, J: 1}[e.key];
+  if (!(fwd || back) || !busy()) return;
+  e.preventDefault();
+  if (back) { toast('The ramp only runs forward, like the real one. Dump the trap to start over.'); return; }
+  st.phase = 'ramping'; st.playing = false; advance(st.t + 0.5); sync(); draw(); kick();
+});
+cv.addEventListener('click', () => $('act').click());        // the trap itself is the big button: stack, ramp, pause
+
+// ---- the whole campaign: every main bias, a full series each, like the paper's 75 trials ----
+function campaignNext() {
+  const c = st.campaign; if (!c || !c.on) return;
+  if (!c.queue.length) { st.campaign = null; sync(); toast('Campaign complete: compare your curve with the rings'); return; }
+  st.phase = 'empty'; st.bi = c.queue.shift();
+  const keep = st.size; st.size = 'series'; stack(); st.size = keep;
+  st.phase = 'ramping'; st.playing = true;
+  if (REDUCED) { st.playing = false; advance(20); return; }
+  sync(); kick();
+}
+function stopCampaign() { st.campaign = null; st.playing = false; sync(); }
+$('campaign').addEventListener('click', () => {
+  if (!st.campaign) {
+    if (busy()) { toast('Finish the ramp or dump the trap first'); return; }
+    st.campaign = {on: true, queue: MAIN.map((r, i) => i)}; campaignNext();
+  } else if (st.campaign.on) { st.campaign.on = false; st.playing = false; }
+  else { st.campaign.on = true; if (st.phase === 'ramping' || st.phase === 'stacked') { st.playing = true; kick(); } else campaignNext(); }
+  sync();
+});
+$('worlds').addEventListener('click', () => { st.worlds = !st.worlds; $('worlds').setAttribute('aria-pressed', String(st.worlds)); $('worlds').textContent = st.worlds ? 'Hide other worlds' : 'Show other worlds'; renderCurve(); });
+$('clear').addEventListener('click', () => { if (busy()) { toast('Finish the ramp or dump the trap first'); return; } st.tally = BIAS.map(() => [0, 0]); st.log = []; refit(); renderCurve(); renderVerdict(); renderDice();
+  if (location.hash) history.replaceState(null, '', location.pathname + location.search);   // a reload must not bring the old curve back
+  toast('Your data is cleared (the banks keep their place)'); });
+$('share').addEventListener('click', async () => {
+  const tok = C.encodeToken(st);
+  history.replaceState(null, '', '#' + tok);
+  try { await navigator.clipboard.writeText(location.href); toast('Link copied: it reopens your exact curve'); }
+  catch (e) { toast('Copy failed: the link is in your address bar'); }
+});
+// ---- "Hear the dice": optional classical sonification, one short tone per die (high = up, low = down) ----
+const snd = {on: false, ctx: null, out: null, next: 0};
+function audioCtx() {
+  if (!snd.ctx) {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    try { snd.ctx = new AC(); snd.out = snd.ctx.createGain(); snd.out.gain.value = 0.2; snd.out.connect(snd.ctx.destination); }
+    catch (e) { snd.ctx = null; return null; }
+  }
+  if (snd.ctx.state === 'suspended') snd.ctx.resume().catch(() => {});
+  return snd.ctx;
+}
+function tone(dir, at) {
+  const c = snd.ctx; if (!snd.on || !c) return;
+  const t = Math.max(at || c.currentTime, snd.next);
+  if (t - c.currentTime > 0.2) return;            // a fast campaign skips tones instead of queueing a backlog
+  snd.next = t + 0.024;
+  const o = c.createOscillator(), g = c.createGain(), up = dir === 'up';
+  o.type = 'triangle';
+  o.frequency.setValueAtTime(up ? 660 : 330, t);
+  o.frequency.exponentialRampToValueAtTime(up ? 990 : 196, t + 0.07);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(1, t + 0.005);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
+  o.connect(g); g.connect(snd.out); o.start(t); o.stop(t + 0.1);
+}
+function setSound(on) {
+  if (on && !audioCtx()) { toast('This browser has no Web Audio'); return; }
+  snd.on = on;
+  $('snd').textContent = on ? 'Mute the dice' : 'Hear the dice';
+  if (on) { const t = snd.ctx.currentTime + 0.02; snd.next = 0; tone('up', t); tone('dn', t + 0.12); toast('Sound on: high tone = up, low tone = down'); }
+  else if (snd.ctx) snd.ctx.suspend().catch(() => {});
+}
+$('snd').addEventListener('click', () => setSound(!snd.on));
+const toast = msg => { const t = $('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 2200); };
+
+// ---- Table 1 in the drawer ----
+(function () {
+  const t = $('t1'), h = ['bias (g)', 'trials', 'N up', 'N down', 'P(down) used', '16-bit threshold'];
+  let s = '<thead><tr>' + h.map(x => `<th scope="col">${x}</th>`).join('') + '</tr></thead><tbody>';
+  for (const r of BIAS) s += `<tr><td>${fmtB(r.b)}</td><td>${r.trials}</td><td>${r.n_up}</td><td>${r.n_dn}</td><td>${r.p.toFixed(4)}</td><td>${r.thr}</td></tr>`;
+  t.insertAdjacentHTML('beforeend', s + '</tbody>');
+})();
+
+// ---- the Atlas jobs behind the dice, in "Jobs and credits" (straight from out/jobs.json via build_web.py) ----
+(function () {
+  const t = $('jobs'), h = ['dice bank', 'Atlas job', 'provider job', 'backend', 'qubits', 'bytes (dice)', 'grade', 'CHSH S'];
+  let s = '<thead><tr>' + h.map(x => `<th scope="col">${x}</th>`).join('') + '</tr></thead><tbody>';
+  for (const k of ['fez', 'emu']) {
+    const m = BANKS[k];
+    const q = m.total > m.reg ? `${m.reg} + ${m.total - m.reg} Bell = ${m.total}` : String(m.total);
+    const chsh = typeof m.S === 'number' ? `${m.S.toFixed(3)} ± ${m.sigma_S.toFixed(3)}` : '-';
+    s += `<tr><td>${k === 'fez' ? 'IBM hardware' : 'emulator (classical)'}</td><td><code>${m.job_id}</code></td><td><code>${m.provider_job_id}</code></td>` +
+      `<td>${m.backend}</td><td>${q}</td><td>${nf(m.bytes)} (${nf(m.bytes >> 1)})</td><td>${m.grade}</td><td>${chsh}</td></tr>`;
+  }
+  t.insertAdjacentHTML('beforeend', s + '</tbody>');
+})();
+
+// ---- quiz ----
+const QUIZ = [
+  {q: 'What is an antihydrogen atom made of?', o: ['An antiproton and a positron', 'A proton and a positron', 'An antiproton and an electron', 'Two positrons'], a: 0,
+   why: 'Hydrogen with every particle swapped for its antiparticle. The pair is neutral overall, which is what lets gravity show through.'},
+  {q: 'Why not simply drop charged antiprotons and watch them fall?', o: ['They are too heavy to fall noticeably', 'A stray electric field of about 10⁻⁷ V/m pushes as hard as gravity', 'Gravity does not act on charged particles', 'They annihilate instantly in a vacuum'], a: 1,
+   why: 'The ALPHA-g paper gives that number: stray fields that tiny are impossible to rule out, so a neutral anti-atom is needed.'},
+  {q: 'With no bias (a symmetric trap), where would ordinary hydrogen mostly leave?', o: ['Out of the top', 'Out of the bottom, about 80% of the time', 'Exactly half and half', 'It would stay trapped'], a: 1,
+   why: 'That is the paper\'s simulation for hydrogen. Antihydrogen at 0 g: 94.5 of 131.2 counted escapes went down in Table 1.'},
+  {q: 'In ALPHA-g\'s simple 1-D picture, which bias cancels ordinary gravity?', o: ['+1 g', '0 g', '−1 g', '+3 g'], a: 2,
+   why: 'A negative bias lowers the top barrier relative to the bottom one and pushes atoms up. The measured curve crossed 50/50 close to −1 g.'},
+  {q: 'What acceleration towards Earth did ALPHA-g measure for antihydrogen?', o: ['(0.75 ± 0.13 ± 0.16) g', 'Exactly −1 g (it falls up)', 'Zero', 'About 10 g'], a: 0,
+   why: 'Consistent with 1 g. Repulsive gravity of 1 g fits the data with a probability below 10⁻¹⁵.'},
+  {q: 'On this page, what does the IBM quantum computer decide?', o: ['How antimatter falls', 'Only the dice: random bits that pick up or down with the paper\'s odds', 'The atoms\' temperature', 'The magnetic bias'], a: 1,
+   why: 'Switch to the emulator or browser dice and the curve lands in the same place. The physics is in Table 1; the qubits only roll the dice.'}
+];
+const qs = QUIZ.map(() => null);
+function renderQuiz() {
+  const host = $('quiz'); host.innerHTML = '';
+  QUIZ.forEach((item, i) => {
+    const d = document.createElement('div'); d.className = 'card q';
+    d.innerHTML = `<p class="ask" id="q${i}">${i + 1}. ${item.q}</p><div class="opts" role="group" aria-labelledby="q${i}"></div><p class="why" hidden></p>`;
+    const opts = d.querySelector('.opts'), why = d.querySelector('.why');
+    item.o.forEach((txt, k) => {
+      const b = document.createElement('button'); b.type = 'button'; b.textContent = txt;
+      if (qs[i] !== null) { b.disabled = true; if (k === item.a) b.classList.add('right'); else if (k === qs[i]) b.classList.add('wrong'); }
+      b.addEventListener('click', () => { qs[i] = k; renderQuiz(); const n = document.querySelectorAll('.q')[i].querySelector('.why'); n.focus && n.focus(); });
+      opts.appendChild(b);
+    });
+    if (qs[i] !== null) { why.hidden = false; why.tabIndex = -1; why.textContent = (qs[i] === item.a ? 'Right. ' : 'Not quite. ') + item.why; }
+    host.appendChild(d);
+  });
+  const done = qs.filter(x => x !== null).length, right = qs.filter((x, i) => x === QUIZ[i].a).length;
+  $('q-score').textContent = done ? `${right} right of ${done} answered` : `0 / ${QUIZ.length} answered`;
+}
+$('q-reset').addEventListener('click', () => { qs.fill(null); renderQuiz(); });
+
+// ---- start: restore a shared curve from #token, otherwise an empty trap at 0 g ----
+(function () {
+  const tok = C.decodeToken(location.hash.slice(1), BIAS.length, {fez: BYTES.fez.length, emu: BYTES.emu.length});
+  if (tok) { st.src = tok.src; st.bi = tok.bi; st.off = tok.off; st.tally = tok.tally; press('[data-src]', 'src', st.src); }
+})();
+buildBiasButtons(); refit(); sync(); draw(); renderCurve(); renderVerdict(false); renderDice(); renderQuiz();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { bgLayer = null; draw(); drawRuler(); });
+</script>

@@ -1,0 +1,4 @@
+  graph-v1: submitted 6f175600-338d-4814-946d-b1da067312af
+  graph-v1: done 6f175600 in 83.5s
+  turns20_ibm_fez: 6f175600-338d-4814-946d-b1da067312af  backend ibm_fez  ibm job db1q0d9b694s73dslgv0  (83.5 s)
+ledgered spend for 19-frog-chorus: 16 of 22 credits

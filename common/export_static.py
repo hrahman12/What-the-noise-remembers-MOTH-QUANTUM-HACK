@@ -1,4 +1,4 @@
-"""Export the whole set as a static website for GitHub Pages: python common/export_static.py [out_dir]
+"""Export the whole set as a static website for GitHub Pages: python common/export_static.py [out_dir] [--pieces=a,b]
 
 Default out_dir is ./docs (GitHub Pages can serve a repo's /docs folder). Layout:
   docs/index.html                     the hub
@@ -15,7 +15,11 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-OUT = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else ROOT / "docs"
+ARGS = [a for a in sys.argv[1:] if not a.startswith("--")]
+OUT = Path(ARGS[0]).resolve() if ARGS else ROOT / "docs"
+# --pieces a,b: re-export only these pieces into an existing site (hub and other pieces untouched)
+ONLY = next((a.split("=", 1)[1].split(",") for a in sys.argv[1:] if a.startswith("--pieces=")), None)
+KEEP = {"demos"}  # README demo clips live here and are made separately
 HUB = "https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa"
 urls = json.loads((ROOT / "site" / "urls.json").read_text(encoding="utf-8"))
 
@@ -63,20 +67,27 @@ def copy_files(src_web, dst, files_json):
 
 
 def main():
-    if OUT.exists():
-        shutil.rmtree(OUT)
-    OUT.mkdir(parents=True)
-    (OUT / ".nojekyll").write_text("", encoding="ascii")
     total = 0
-    # hub
-    hub = (ROOT / "site" / "index.html").read_text(encoding="ascii")
-    (OUT / "index.html").write_text(wrap(rewrite(hub, None)), encoding="ascii")
-    hub_files = json.loads((ROOT / "site" / "files.json").read_text(encoding="utf-8"))
-    copy_files(ROOT / "site", OUT, hub_files)
+    if ONLY is None:
+        OUT.mkdir(parents=True, exist_ok=True)
+        for f in OUT.iterdir():
+            if f.name in KEEP:
+                continue
+            shutil.rmtree(f) if f.is_dir() else f.unlink()
+        (OUT / ".nojekyll").write_text("", encoding="ascii")
+        # hub
+        hub = (ROOT / "site" / "index.html").read_text(encoding="ascii")
+        (OUT / "index.html").write_text(wrap(rewrite(hub, None)), encoding="ascii")
+        hub_files = json.loads((ROOT / "site" / "files.json").read_text(encoding="utf-8"))
+        copy_files(ROOT / "site", OUT, hub_files)
     # pieces
     for slug in sorted(urls):
+        if ONLY is not None and slug not in ONLY:
+            continue
         web = ROOT / "entries" / slug / "web"
         dst = OUT / "pieces" / slug
+        if dst.exists():
+            shutil.rmtree(dst)
         dst.mkdir(parents=True)
         html = (web / "index.html").read_text(encoding="ascii")
         (dst / "index.html").write_text(wrap(rewrite(html, slug)), encoding="ascii")

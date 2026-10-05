@@ -1,0 +1,466 @@
+{
+ "piece": "01-penrose-hole",
+ "ok": true,
+ "passed": 69,
+ "total": 69,
+ "fails": [],
+ "steps": [
+  {
+   "step": "loads with the centre hole and its scrambled job",
+   "ok": true,
+   "detail": [
+    "(512, 512) · r 270 px · 20 qubits",
+    "30eddfc5-1db4-42d2-b373-b89a0bbdb8fe"
+   ]
+  },
+  {
+   "step": "meter starts at 0 restored of a non-empty hole",
+   "ok": true,
+   "detail": {
+    "done": 0,
+    "total": 860
+   }
+  },
+  {
+   "step": "Re-erase is disabled while nothing is restored",
+   "ok": true
+  },
+  {
+   "step": "scene view: cast visible, Data note hidden, job table visible in The data",
+   "ok": true
+  },
+  {
+   "step": "scene view: the moths are drawn on the overlay",
+   "ok": true
+  },
+  {
+   "step": "Move hole tool selects",
+   "ok": true
+  },
+  {
+   "step": "Repair brush tool selects",
+   "ok": true
+  },
+  {
+   "step": "painting restores tiles",
+   "ok": true,
+   "detail": {
+    "done": 94,
+    "total": 860
+   }
+  },
+  {
+   "step": "Re-erase is enabled once tiles are back",
+   "ok": true
+  },
+  {
+   "step": "brush size slider goes to 140 px",
+   "ok": true
+  },
+  {
+   "step": "a bigger brush restores more tiles",
+   "ok": true,
+   "detail": [
+    94,
+    522
+   ]
+  },
+  {
+   "step": "\"Restore the rest\" turns into \"Pause\" while it runs",
+   "ok": true
+  },
+  {
+   "step": "all tiles restored, celebration toast shown, button resets and disables",
+   "ok": true,
+   "detail": "Pattern restored from the rim inward. The nibbler flew off."
+  },
+  {
+   "step": "Re-erase clears the repair and disables itself",
+   "ok": true,
+   "detail": {
+    "done": 0,
+    "total": 860
+   }
+  },
+  {
+   "step": "dragging the hole snaps it to (724, 300) and loads that job",
+   "ok": true,
+   "detail": [
+    "(724, 300) · r 270 px · 20 qubits",
+    "d6e5cc43-31c0-4ccd-8e9f-0529db92b3d2"
+   ]
+  },
+  {
+   "step": "arrow key steps the hole to (512, 300)",
+   "ok": true,
+   "detail": "(512, 300) · r 270 px · 20 qubits"
+  },
+  {
+   "step": "Faint memory loads the strength 0.3 job",
+   "ok": true,
+   "detail": "strength 0.3 · rx · reach 0"
+  },
+  {
+   "step": "Scrambled switches back",
+   "ok": true
+  },
+  {
+   "step": "Compare wipe changes the picture",
+   "ok": true
+  },
+  {
+   "step": "holding Space shows the original, releasing restores the view",
+   "ok": true
+  },
+  {
+   "step": "sweep opens: panel shown and button relabelled",
+   "ok": true
+  },
+  {
+   "step": "sweep uses the original hole at (580, 440) and disables Move",
+   "ok": true,
+   "detail": "(580, 440) · r 270 px · 20 qubits"
+  },
+  {
+   "step": "sweep hides the Scrambled / Faint memory group (it does not apply there)",
+   "ok": true
+  },
+  {
+   "step": "sweep defaults to the hero job",
+   "ok": true,
+   "detail": "c868dccb-e0e4-4b14-a101-943fb3d5d2d8"
+  },
+  {
+   "step": "Move hole explains why it is disabled in the sweep",
+   "ok": true
+  },
+  {
+   "step": "all 12 sweep jobs load from the buttons, buttons show the selection",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "step": "each sweep job repaints the hole",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "step": "Gate rx is live: from ry it loads the rx job; re-clicking the selected rx keeps it",
+   "ok": true,
+   "detail": [
+    "991947d2-7401-47f8-8ccf-a4ecc9681ce0",
+    "c868dccb-e0e4-4b14-a101-943fb3d5d2d8"
+   ]
+  },
+  {
+   "step": "strength 0.6 / ry / reach 0 loads its job",
+   "ok": true,
+   "detail": "a9799da5-622a-451f-8184-538b21d14f73"
+  },
+  {
+   "step": "share writes the sweep view into the hash and copies it",
+   "ok": true,
+   "detail": "#t6ry0"
+  },
+  {
+   "step": "Data view: note shown, cast hidden, toggle pressed",
+   "ok": true
+  },
+  {
+   "step": "Data view takes the moths off the canvas",
+   "ok": true
+  },
+  {
+   "step": "job table lists all 30 jobs with the right IDs",
+   "ok": true,
+   "detail": 30
+  },
+  {
+   "step": "job table marks the job on screen",
+   "ok": true
+  },
+  {
+   "step": "picking a hole job in the table leaves the sweep and loads it",
+   "ok": true,
+   "detail": "09765451-683d-4a0e-89be-37297bd9f986"
+  },
+  {
+   "step": "picking a sweep job in the table opens the sweep on it",
+   "ok": true,
+   "detail": "293d1eab-c60e-45c6-861c-0ca577bc6600"
+  },
+  {
+   "step": "share link carries the hole, setting and Data view",
+   "ok": true,
+   "detail": "http://127.0.0.1:6210/index.html#p300-724-memory-data"
+  },
+  {
+   "step": "reloading the shared link restores hole, setting and Data view",
+   "ok": true,
+   "detail": {
+    "hole": "(300, 724) · r 270 px · 20 qubits",
+    "job": "09765451-683d-4a0e-89be-37297bd9f986",
+    "data": "data",
+    "mem": "true",
+    "tune": true
+   }
+  },
+  {
+   "step": "a sweep link (#t10rx1) opens the hero job in the sweep, scene view",
+   "ok": true,
+   "detail": {
+    "job": "c868dccb-e0e4-4b14-a101-943fb3d5d2d8",
+    "tune": false,
+    "view": "scene"
+   }
+  },
+  {
+   "step": "changing the hash in place loads that view too",
+   "ok": true
+  },
+  {
+   "step": "Scene view: cast back, note hidden, table still in The data, moths back on the canvas",
+   "ok": true,
+   "detail": {
+    "cast": true,
+    "note": false,
+    "table": true,
+    "ink": 6417
+   }
+  },
+  {
+   "step": "six titled sections, all visible",
+   "ok": true,
+   "detail": [
+    {
+     "id": "how-to-play",
+     "h2": "How to play",
+     "shown": true
+    },
+    {
+     "id": "data",
+     "h2": "The data",
+     "shown": true
+    },
+    {
+     "id": "made",
+     "h2": "How it was made",
+     "shown": true
+    },
+    {
+     "id": "science",
+     "h2": "The science",
+     "shown": true
+    },
+    {
+     "id": "claims",
+     "h2": "What this does not claim",
+     "shown": true
+    },
+    {
+     "id": "credits",
+     "h2": "Jobs and credits",
+     "shown": true
+    }
+   ]
+  },
+  {
+   "step": "every earlier paragraph and step is on the page, word for word",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "step": "brand bar reads \"Challenge 01\", and the page never says Bonus",
+   "ok": true
+  },
+  {
+   "step": "Figure 1: panel 2 is the hero job image, panel 3 holds the rebuilt tiles, caption is the hero job by default",
+   "ok": true,
+   "detail": {
+    "f1": {
+     "crop": "img/sweep_s1.0_rx_r1.0.webp",
+     "cx": "580",
+     "thick": 11988,
+     "thin": 19795,
+     "rings": 4
+    },
+    "cap": "Panel 2: Atlas blur-v1 v1.1.9, 1024 px image + disk mask (r=270 px, 20 qubits), strength=1.0, style=rx, reach=1.0, size=1024 (default).  job_id c868dccb-e0e4-4b14-a101-943fb3d5d2d8"
+   }
+  },
+  {
+   "step": "Figure 2: 12 cells, the sweep jobs in jobs.csv order, every image loaded",
+   "ok": true,
+   "detail": 12
+  },
+  {
+   "step": "Figure 1 follows the job on screen when asked",
+   "ok": true,
+   "detail": "Panel 2: Atlas blur-v1 v1.1.9, 1024 px image + disk mask (r=270 px, 20 qubits), strength=0.3, style=rx, reach=0.0, size=1024 (default).  job_id 09765451-683d-4a0e-89be-37297bd9f986"
+  },
+  {
+   "step": "a Figure 2 cell loads its job in the scene, marks itself, and Figure 1 follows",
+   "ok": true,
+   "detail": "c9ea8972-b017-4a07-9fb2-ab024b316a41"
+  },
+  {
+   "step": "\"Load this job in the scene\" loads the hero job",
+   "ok": true,
+   "detail": "c868dccb-e0e4-4b14-a101-943fb3d5d2d8"
+  },
+  {
+   "step": "the scene canvas renders the tiling and the job image",
+   "ok": true,
+   "detail": 322
+  },
+  {
+   "step": "Figure 1: all three panels render",
+   "ok": true,
+   "detail": [
+    86,
+    212,
+    203
+   ]
+  },
+  {
+   "step": "Figure 1: panel 2 (blur-v1) differs from panel 1 (intact); panel 3 (rebuilt) is far closer to panel 1 than panel 2 is",
+   "ok": true,
+   "detail": {
+    "d12": 4.49,
+    "d13": 1.05,
+    "d23": 4.78
+   }
+  },
+  {
+   "step": "Figure 2: all 12 cells render, each a different job image",
+   "ok": true,
+   "detail": {
+    "colors": [
+     207,
+     246,
+     231,
+     223,
+     214,
+     240,
+     240,
+     233,
+     209,
+     216,
+     239,
+     205
+    ],
+    "uniq": 12
+   }
+  },
+  {
+   "step": "the cast pictures render",
+   "ok": true,
+   "detail": [
+    true,
+    true
+   ]
+  },
+  {
+   "step": "Restored meter bar width tracks the tile count",
+   "ok": true,
+   "detail": {
+    "w": 45.9837,
+    "want": 45.9837019790454
+   }
+  },
+  {
+   "step": "section links (6 in the row, plus \"The data\" in step 4 and \"Table 1\" in Jobs and credits) scroll to their sections",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "step": "a section link does not change the view on screen",
+   "ok": true,
+   "detail": "c868dccb-e0e4-4b14-a101-943fb3d5d2d8"
+  },
+  {
+   "step": "nav present before the footer",
+   "ok": true
+  },
+  {
+   "step": "prev -> 22, next -> 02, hub and brand bar -> hub",
+   "ok": true,
+   "detail": {
+    "prev": "https://claude.ai/artifact/593BgJqW14p8chTNNwkbYn",
+    "next": "https://claude.ai/artifact/9fomZzSdPWphHBK6WwkMC8",
+    "hub": "https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa"
+   }
+  },
+  {
+   "step": "\"Jump to any piece\" lists all 22, every link known, this page marked",
+   "ok": true,
+   "detail": 22
+  },
+  {
+   "step": "\"Jump to any piece\" opens",
+   "ok": true
+  },
+  {
+   "step": "no audio files and no sound started anywhere in the journey (silent piece)",
+   "ok": true,
+   "detail": {
+    "audioFiles": [],
+    "q": {
+     "sources": 0,
+     "media": 0,
+     "ctx": 0
+    }
+   }
+  },
+  {
+   "step": "proof chips match piece.json (qubits, jobs)",
+   "ok": true,
+   "detail": {
+    "chips": [
+     20,
+     30,
+     0
+    ],
+    "qubits": 20,
+    "jobs": 30
+   }
+  },
+  {
+   "step": "web/img holds exactly the files in files.json, all present",
+   "ok": true,
+   "detail": {
+    "onDisk": 32,
+    "listed": 32
+   }
+  },
+  {
+   "step": "every image the page loads is listed in files.json",
+   "ok": true
+  },
+  {
+   "step": "no horizontal scroll at 375 px in Data or Scene view",
+   "ok": true,
+   "detail": {
+    "ovD": 0,
+    "ovS": 0
+   }
+  },
+  {
+   "step": "no page or console errors",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "step": "no failed requests",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "step": "only Google Fonts hosts contacted",
+   "ok": true,
+   "detail": [
+    "fonts.googleapis.com",
+    "fonts.gstatic.com"
+   ]
+  }
+ ]
+}

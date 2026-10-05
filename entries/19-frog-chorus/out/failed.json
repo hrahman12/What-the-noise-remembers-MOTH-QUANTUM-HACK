@@ -1,0 +1,27 @@
+[
+ {
+  "name": "alt20_ibm_fez",
+  "attempt": 1,
+  "error": "qdrive-api-v1 35c1e8df-5bb1-491f-a41a-c7ebc53d8462 failed: {\"$schema\": \"https://api.mothquantum.com/schemas/JobStatusOutputBody.json\", \"job_id\": \"35c1e8df-5bb1-491f-a41a-c7ebc53d8462\", \"engine_id\": \"qdrive-api-v1\", \"status\": \"failed\", \"progress\": {}, \"error\": {\"message\": \"machine 'ibm_fez' is reserved for a future IBM Quantum Runtime backend (qiskit_ibm_runtime.QiskitRuntimeService + EstimatorV2/SamplerV2 in job mode); not wired up yet\", \"retryable\": false, \"type\": \"invalid_machine\"}, \"warnings\": [], \"submitted_at\": \"2026-10-05T05:41:00Z\", \"updated_at\": \"2026-10-05T05:41:00Z\"}"
+ },
+ {
+  "name": "alt20_ibm_fez",
+  "attempt": 2,
+  "error": "qdrive-api-v1 fa5a9846-b5b4-4d32-aff2-60287d9a5c2a failed: {\"$schema\": \"https://api.mothquantum.com/schemas/JobStatusOutputBody.json\", \"job_id\": \"fa5a9846-b5b4-4d32-aff2-60287d9a5c2a\", \"engine_id\": \"qdrive-api-v1\", \"status\": \"failed\", \"progress\": {}, \"error\": {\"message\": \"machine 'ibm_fez' is reserved for a future IBM Quantum Runtime backend (qiskit_ibm_runtime.QiskitRuntimeService + EstimatorV2/SamplerV2 in job mode); not wired up yet\", \"retryable\": false, \"type\": \"invalid_machine\"}, \"warnings\": [], \"submitted_at\": \"2026-10-05T05:41:05Z\", \"updated_at\": \"2026-10-05T05:41:05Z\"}"
+ },
+ {
+  "name": "alt24",
+  "attempt": 1,
+  "error": "qdrive-api-v1 b622182d-99d7-461f-bc98-f9384088ffe3 failed: {\"$schema\": \"https://api.mothquantum.com/schemas/JobStatusOutputBody.json\", \"job_id\": \"b622182d-99d7-461f-bc98-f9384088ffe3\", \"engine_id\": \"qdrive-api-v1\", \"status\": \"failed\", \"progress\": {\"detail\": \"Running two-qubit tomography\", \"step\": \"run\"}, \"error\": {\"message\": \"The engine did not respond in time \\u2014 retry the job\", \"retryable\": true, \"type\": \"engine_timeout\"}, \"warnings\": [], \"submitted_at\": \"2026-10-05T05:42:15Z\", \"updated_at\": \"2026-10-05T05:42:18Z\"}"
+ },
+ {
+  "name": "alt24",
+  "attempt": 2,
+  "error": "qdrive-api-v1 f2ee8aa2-5ebd-406d-95b1-0838f49a3272 failed: {\"$schema\": \"https://api.mothquantum.com/schemas/JobStatusOutputBody.json\", \"job_id\": \"f2ee8aa2-5ebd-406d-95b1-0838f49a3272\", \"engine_id\": \"qdrive-api-v1\", \"status\": \"failed\", \"progress\": {\"detail\": \"Processing target 39/59\", \"step\": \"run\"}, \"error\": {\"message\": \"The engine did not respond in time \\u2014 retry the job\", \"retryable\": true, \"type\": \"engine_timeout\"}, \"warnings\": [], \"submitted_at\": \"2026-10-05T05:48:05Z\", \"updated_at\": \"2026-10-05T05:48:18Z\"}"
+ },
+ {
+  "name": "alt22_build_ibm_fez",
+  "attempt": 1,
+  "error": "qdrive-api-v1 b4a7e89a-2ffd-41c8-a7b2-79e8500b7924 failed: {\"$schema\": \"https://api.mothquantum.com/schemas/JobStatusOutputBody.json\", \"job_id\": \"b4a7e89a-2ffd-41c8-a7b2-79e8500b7924\", \"engine_id\": \"qdrive-api-v1\", \"status\": \"failed\", \"progress\": {}, \"error\": {\"message\": \"machine 'ibm_fez' is reserved for a future IBM Quantum Runtime backend (qiskit_ibm_runtime.QiskitRuntimeService + EstimatorV2/SamplerV2 in job mode); not wired up yet\", \"retryable\": false, \"type\": \"invalid_machine\"}, \"warnings\": [], \"submitted_at\": \"2026-10-05T13:00:15Z\", \"updated_at\": \"2026-10-05T13:00:15Z\"}"
+ }
+]

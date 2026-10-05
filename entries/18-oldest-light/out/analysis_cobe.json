@@ -1,0 +1,7 @@
+{
+ "name": "cobe_7deg_classical",
+ "sigma_px": 15.691,
+ "equiv_beam_deg": 7.0,
+ "detail_kept": 0.109,
+ "std_ratio": 0.588
+}

@@ -1,0 +1,11 @@
+020ebd3dbcc6f22005ec7f707dcbacb8 *out/world.npy
+60c58d9acc407bf8d7303d6de52456ff *out/world_attempt1.npy
+79806d596a1ca1e46f4b733a03669c53 *orbium.npy
+2f2a24973dc82923070e243ac5258593 *out/kernels/bank_input.npy
+29420a0fad8c1e13b563cfb277585ee9 *out/kernels/k_s0.25_r0.0.npy
+a340382736105fc16786a754ed1e6760 *out/kernels/k_s0.5_r0.0.npy
+080b51e1e20af3039bd4c9f93a45e64a *out/kernels/k_s1.0_r0.0.npy
+0708d3b360e6897dca529997a261d257 *out/snapshot/w_s0.25.npy
+c9c64b3efa40d856443748ece490814b *out/snapshot/w_s0.5.npy
+1b6c60e62489c58571792d9d585111cb *out/dynamics.json
+d04a9e9aaf6af8bcc4b8c765416c6833 *out/stamps.json

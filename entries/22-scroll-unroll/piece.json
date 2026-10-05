@@ -1,0 +1,41 @@
+{
+  "slug": "22-scroll-unroll",
+  "challenge": "01 One image, one engine",
+  "bonus": true,
+  "title": "Scroll Unroll",
+  "hook": "Unroll the scroll. Find the line hidden at its core.",
+  "sub": "A synthetic papyrus, rolled almost eight turns tight. A 20-qubit quantum blur plays the damage and scrambles its ink. Flatten it, slide the reading window, and see how much damage a line of Greek survives.",
+  "you_control": [
+    "Unroll the scroll: push the roll on the desk or in the CT slice, the slider, or a pausable 'Unroll it'",
+    "Send the archaeologist moth (the reading window) along the sheet: tap the desk or the CT slice, drag the strip, slider, arrow keys",
+    "Step through nine blur-v1 damage jobs (slider or the ink-moved bars); flip blurred vs clean ink; view the raw ink layer",
+    "Find the hidden Greek line, then share a link to the exact view"
+  ],
+  "engines": [
+    "blur-v1"
+  ],
+  "qubits": 20,
+  "qubits_note": "Every job: 20 qubits from the engine's documented rule ceil(log2 w)+ceil(log2 h) on the mask disk's 1001x1001 px bounding box (10+10), size 1024 so no downscaling or tiling. The engine does not report a qubit count.",
+  "hardware": null,
+  "jobs": 9,
+  "credits_spent": 9.0,
+  "deliverables": [
+    "hero.png",
+    "ladder.png",
+    "PARAMS.md",
+    "out/",
+    "ink_clean.png",
+    "mask.png",
+    "scan_clean.png",
+    "web/index.html",
+    "web/sprites.json",
+    "web/img/mascot.png",
+    "README.md",
+    "CREDITS.md"
+  ],
+  "web_entry": "web/index.html",
+  "status": "built",
+  "honesty": "Synthetic scroll and ink, no real scroll data; blur-v1 ran on Atlas's classical statevector simulator (no QPU) and only stands in for damage; the unwrapping is classical and knows the spiral exactly; this is not the Vesuvius Challenge method.",
+  "blockers": [],
+  "mascot": "web/img/mascot.png"
+}

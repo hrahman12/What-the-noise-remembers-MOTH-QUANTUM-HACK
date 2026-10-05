@@ -1,0 +1,29 @@
+  aer             1024 shots  job 4f418b13-3d51-48ef-8f91-699cf271d566  backend aer  477.7s
+  qpixl-v1: submitted b8047462-44cf-4581-8c89-8369a17fd7ef
+  qpixl-v1: done b8047462 in 153.4s
+  ibm_fez         1024 shots  job b8047462-44cf-4581-8c89-8369a17fd7ef  backend ibm_fez  153.4s
+  qpixl-v1: submitted 2c82757a-3253-44a7-8108-24cc4656ff38
+  qpixl-v1: done 2c82757a in 333.8s
+  fake_fez        1024 shots  job 2c82757a-3253-44a7-8108-24cc4656ff38  backend fake_fez  333.8s
+  qpixl-v1: submitted a9c90236-9247-4536-be77-d74204bd3f92
+  qpixl-v1: done a9c90236 in 243.3s
+  aer               16 shots  job a9c90236-9247-4536-be77-d74204bd3f92  backend aer  243.3s
+  qpixl-v1: submitted 31506f31-f67a-4925-aafc-0dd131857126
+  qpixl-v1: done 31506f31 in 148.8s
+  aer              128 shots  job 31506f31-f67a-4925-aafc-0dd131857126  backend aer  148.8s
+  qpixl-v1: submitted de133a15-9408-4316-8a83-7f171baa5970
+  qpixl-v1: done de133a15 in 267.7s
+  fake_fez          16 shots  job de133a15-9408-4316-8a83-7f171baa5970  backend fake_fez  267.7s
+  qpixl-v1: submitted b236408f-8cb6-46ca-b415-b69d5668a485
+  qpixl-v1: done b236408f in 290.6s
+  fake_fez         128 shots  job b236408f-8cb6-46ca-b415-b69d5668a485  backend fake_fez  290.6s
+  qpixl-v1: submitted 7a5f4e68-ce5f-4f67-ad4f-a9f26a69dbb0
+  qpixl-v1: done 7a5f4e68 in 101.3s
+  fake_brisbane   1024 shots  job 7a5f4e68-ce5f-4f67-ad4f-a9f26a69dbb0  backend fake_brisbane  101.3s
+  qpixl-v1: submitted 8d89f3d0-4c97-4b2a-bb8d-d955e8ba507c
+  qpixl-v1: done 8d89f3d0 in 81.9s
+  fake_brisbane    128 shots  job 8d89f3d0-4c97-4b2a-bb8d-d955e8ba507c  backend fake_brisbane  81.9s
+  qpixl-v1: submitted 8b434c38-8df9-4b13-8cbe-34d40edd2aa5
+  qpixl-v1: done 8b434c38 in 80.6s
+  fake_brisbane     16 shots  job 8b434c38-8df9-4b13-8cbe-34d40edd2aa5  backend fake_brisbane  80.6s
+ledgered spend 15 / 15

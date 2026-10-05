@@ -1,0 +1,48 @@
+[
+ {
+  "job_id": "43503eaa-594b-493c-a914-8491c9f116db",
+  "grid": [
+   640,
+   640
+  ],
+  "qubits": 20,
+  "strength": 0.5,
+  "reach": 0,
+  "style": "x",
+  "max_qubits": 24,
+  "status": "failed",
+  "progress": {
+   "detail": "Recovered 20-qubit grid from measurement",
+   "step": "done"
+  },
+  "error": {
+   "message": "[TMPRL1103] Attempted to upload payloads with size that exceeded the error limit.",
+   "retryable": true,
+   "type": "internal_error"
+  },
+  "submitted_at": "2026-10-05T05:09:27Z"
+ },
+ {
+  "job_id": "02b057fb-6aae-4279-b456-d2801753f44d",
+  "grid": [
+   640,
+   640
+  ],
+  "qubits": 20,
+  "strength": 0.5,
+  "reach": 0,
+  "style": "x",
+  "max_qubits": 24,
+  "status": "failed",
+  "progress": {
+   "detail": "Recovered 20-qubit grid from measurement",
+   "step": "done"
+  },
+  "error": {
+   "message": "[TMPRL1103] Attempted to upload payloads with size that exceeded the error limit.",
+   "retryable": true,
+   "type": "internal_error"
+  },
+  "submitted_at": "2026-10-05T05:10:22Z"
+ }
+]

@@ -96,7 +96,9 @@ details.drawer .body{padding-bottom:1.25rem;color:var(--ink-2);max-width:68ch;di
 .wtnr-foot{margin-top:2.5rem;border-top:1px solid var(--rule);padding-top:1rem;font:400 .72rem/1.5 var(--mono);letter-spacing:.04em;color:var(--ink-2)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
-/* Layout: the illustrated loom is the hero; the dial and copy controls sit beside it, the chart is one toggle away.
+/* Layout: the illustrated loom is the hero; the dial and copy controls sit beside it. Below it, titled sections
+   (ink bars) hold How to play, The data (the chart, always visible), The science, How it was made, What this
+   does not claim, and Jobs and credits. The stage's Data toggle shows a live copy of the chart beside the dial.
    --syn is the syndrome red the brief asks for: the only colour besides the brand ink, used for data only
    (red stitches, the inspector's flags and the red weft). */
 :root{--syn:#C62D2D}
@@ -151,16 +153,32 @@ h1{font-size:clamp(2.2rem,4.2vw,3.6rem);line-height:1;letter-spacing:-.025em;fon
 .toast.on{opacity:1}
 .manual{display:grid;gap:.5rem}
 .manual textarea{width:100%;min-height:8rem;background:var(--panel);color:var(--ink);border:1px solid var(--rule);font:400 .7rem/1.4 var(--mono);padding:.5rem}
-.more{margin-top:1rem;display:grid;gap:0}
+.more{display:grid;gap:0}
 .datawrap{display:grid;gap:.8rem;border:1px solid var(--ink);background:var(--panel);padding:1rem 1.1rem}
-.datawrap h2{font-size:clamp(1.5rem,2.6vw,2.1rem)}
 .datawrap p{color:var(--ink-2);max-width:62ch;font-size:.95rem}
+.datawrap p.aside{font:400 .72rem/1.5 var(--mono)}
+/* titled sections below the loom: a solid ink bar names each one, like the brief pages */
+.sect{display:grid;gap:0;margin-top:2.25rem;scroll-margin-top:1rem}
+.ink-bar h2{font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;margin:0}
+.ink-bar span{text-align:end}
+.jump{display:flex;flex-wrap:wrap;gap:.35rem .9rem;font:500 .7rem/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);margin:0}
+.jump a{color:var(--ink);text-underline-offset:3px}
+.sect .steps{padding-block:1.25rem .25rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));gap:.9rem 1.75rem}
+.chartwrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.5rem;align-items:center;padding-block:1.5rem .5rem}
+.chartwrap h2{font-size:clamp(1.6rem,3vw,2.3rem)}
+.chartwrap p{color:var(--ink-2);max-width:52ch}
+.chartwrap>div{display:grid;gap:.8rem}
+.claims{display:grid;gap:.8rem;padding-block:1.25rem .25rem;max-width:74ch}
+.credits{display:grid;gap:.9rem;padding-block:1.25rem 0;min-width:0}
+.credits>p,.credits li{color:var(--ink-2);font-size:.9rem;max-width:74ch}
+.credits h3{font-size:1.15rem}
+.creditlist{margin:0;padding-left:1.1rem;display:grid;gap:.4rem}
 figure.fig{margin:0;display:grid;gap:.6rem;min-width:0}
-svg#chart{width:100%;height:auto;display:block;background:var(--panel);border:1px solid var(--rule)}
+svg.chartsvg{width:100%;height:auto;display:block;background:var(--panel);border:1px solid var(--rule)}
 .legend{display:flex;flex-wrap:wrap;gap:.35rem 1.1rem;font:400 .72rem/1.3 var(--mono);color:var(--ink-2)}
 .legend span{display:inline-flex;align-items:center;gap:.4rem}
 .legend svg{flex:none;display:block}
-svg#chart text{font-family:var(--mono);fill:var(--ink-2)}
+svg.chartsvg text{font-family:var(--mono);fill:var(--ink-2)}
 table.jobs{border-collapse:collapse;font:400 .72rem/1.4 var(--mono);color:var(--ink-2);width:100%}
 table.jobs th,table.jobs td{border-bottom:1px solid var(--rule);padding:.35rem .5rem;text-align:left;vertical-align:top}
 table.jobs td b{color:var(--ink);font-weight:500}
@@ -177,11 +195,11 @@ table.jobs tr.top td{border-bottom:0;padding-bottom:.1rem}
   .panel .row.split{gap:.5rem}
   .datawrap{padding:.8rem}
   .stagecol>.scenewrap,.stagecol>.datawrap{order:0}.stagecol>.scrub{order:1}.stagecol>.toolbar{order:2}.stagecol>.scenekey{order:3;margin-top:0}.stagecol>.meter{order:4}.stagecol>.inspect{order:5}}
-@media (max-width:960px){.hero{grid-template-columns:minmax(0,1fr);grid-template-areas:"copy" "stage" "panel" "info";grid-template-rows:auto}}
+@media (max-width:960px){.hero{grid-template-columns:minmax(0,1fr);grid-template-areas:"copy" "stage" "panel" "info";grid-template-rows:auto}.chartwrap{grid-template-columns:minmax(0,1fr)}}
 </style>
 
 <div class="wrap">
-  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count"><b>09</b> / 11 &#183; Lose</span></nav>
+  <nav class="wtnr-bar"><a href="../../index.html">What the Noise Remembers</a><span class="count"><b>Challenge 09</b> &#183; Lose</span></nav>
 
   <div class="hero">
     <div class="copy">
@@ -209,13 +227,12 @@ table.jobs tr.top td{border-bottom:0;padding-bottom:.1rem}
       <p class="scenekey" id="scene-key"><b>Ada</b> the silk moth weaves. <b>Inspector Hamming</b> the silkworm flags each row whose syndrome pick caught a flip (<span class="r">red flags</span>). Sparks on flipped threads, flags, heddle lifts and punch cards replay this cloth's draws; grey fizz only marks where the profile puts noise.</p>
       <div class="datawrap" id="data-wrap" hidden>
         <span class="label">Logical vs physical &#183; 12 grid jobs, 1,792 data qubits each</span>
-        <h2 id="chart-h">When does the code earn its keep?</h2>
-        <p>Every point is a completed tamagotchi-v1 job: 256 Steane blocks (1,792 data qubits) under noise p. Filled points ran one syndrome-extraction round; hollow points skipped it. Below the diagonal, a coded bit fails less often than the physical noise rate p. When only the stored thread is noisy, every filled point sits below it, so the code helps. When every gate is noisy too, every point sits above it. This round isn't fault tolerant, so its own gates and ancilla readouts add more errors than the round removes.</p>
         <figure class="fig">
-          <svg id="chart" viewBox="0 0 520 380" role="img" aria-label="Logical error rate against physical noise p for both noise profiles"></svg>
-          <figcaption class="legend" id="legend"></figcaption>
+          <svg id="chart-live" class="chartsvg" viewBox="0 0 520 380" role="img" aria-label="Logical error rate against physical noise p for both noise profiles (live copy beside the dial)"></svg>
+          <figcaption class="legend" id="legend-live"></figcaption>
         </figure>
-        <p id="chart-note"></p>
+        <p id="chart-note-live"></p>
+        <p class="aside">A live copy of the chart in <a href="#the-data">The data</a>, below the loom, where its caption is. Turn the dial or switch the profile and the ring moves.</p>
       </div>
       <div class="scrub" id="scrub">
         <button type="button" class="btn" id="weave">Weave from the top</button>
@@ -247,7 +264,7 @@ table.jobs tr.top td{border-bottom:0;padding-bottom:.1rem}
       <div class="row split">
         <span class="label">Codewords</span>
         <div class="seg" role="group" aria-label="Codewords">
-          <button type="button" data-cw="plain" aria-pressed="true">Plain</button>
+          <button type="button" data-cw="plain" aria-pressed="true">Plain codewords</button>
           <button type="button" data-cw="measured" aria-pressed="false">As a Z readout returns</button>
         </div>
       </div>
@@ -282,22 +299,48 @@ table.jobs tr.top td{border-bottom:0;padding-bottom:.1rem}
 
     <div class="info">
       <div class="proof" id="proof"></div>
-      <ol class="steps">
-        <li><span><b>Turn</b> the noise dial. Each notch replays a real tamagotchi-v1 job, and the gauge on the loom follows it.</span></li>
-        <li><span><b>Weave</b> from the top, or drag through the picks. Watch the shuttle, the sparks and the inspector's flags, then switch to the threads after correction.</span></li>
-        <li><span><b>Click</b> any block: the inspector rides up and reads its syndrome. Change the width to re-weave the moth, or load your own image, woven in your browser from the engine's recorded rates.</span></li>
-        <li><span><b>Copy</b> the WIF 1.1 draft and open it in any weaving program. The chart is under <b>Data</b>.</span></li>
-      </ol>
+      <nav class="jump" aria-label="Sections on this page"><a href="#how-to-play">How to play</a><a href="#the-data">The data</a><a href="#the-science">The science</a><a href="#how-it-was-made">How it was made</a><a href="#no-claims">What this does not claim</a><a href="#jobs-credits">Jobs and credits</a></nav>
     </div>
   </div>
 
-  <div class="ink-bar"><span>How it works</span><span>30 real Atlas jobs &#183; Aer stabilizer simulator</span></div>
-  <section class="more">
-    <details class="drawer"><summary>Why weave a quantum code?</summary><div class="body">
-      <p>Jacquard looms read punched cards: one hole per lifted thread, one card per pick. Babbage later borrowed those cards for his Analytical Engine, and Ada Lovelace compared that engine to a Jacquard loom weaving flowers and leaves. Here a loom reads a quantum error-correcting code instead. The weaver moth is named for her.</p>
+  <section class="sect" id="how-to-play" aria-labelledby="h-play">
+    <div class="ink-bar"><h2 id="h-play">How to play</h2><span>You are at the loom</span></div>
+    <ol class="steps">
+      <li><span><b>Turn</b> the noise dial. Each notch replays a real tamagotchi-v1 job. The gauge on the loom follows it.</span></li>
+      <li><span><b>Weave</b> from the top, or drag through the picks, and switch between the threads as read and after correction. Watch the shuttle, the sparks and the inspector's flags, and switch the loom sound on to hear each pick.</span></li>
+      <li><span><b>Click</b> any block: the inspector rides up and reads its syndrome, and the block inspector shows its seven threads.</span></li>
+      <li><span><b>Load</b> your own image. It's woven in your browser from the engine's recorded rates. Change the width to re-weave the moth or your image.</span></li>
+      <li><span><b>Copy</b> the WIF 1.1 draft and open it in any weaving program.</span></li>
+      <li><span><b>Read</b> the chart in <a href="#the-data">The data</a>, or switch the stage to <b>Data</b> to watch it beside the dial.</span></li>
+    </ol>
+  </section>
+
+  <section class="sect" id="the-data" aria-labelledby="h-data">
+    <div class="ink-bar"><h2 id="h-data">The data &#183; Logical vs physical</h2><span>12 grid jobs, 1,792 data qubits each</span></div>
+    <div class="chartwrap">
+      <div>
+        <h2 id="chart-h">When does the code earn its keep?</h2>
+        <p>Every point is a completed tamagotchi-v1 job: 256 Steane blocks (1,792 data qubits) under noise p. Filled points ran one syndrome-extraction round; hollow points skipped it. Below the diagonal, a coded bit fails less often than the physical noise rate p. When only the stored thread is noisy, every filled point sits below it, so the code helps. When every gate is noisy too, every point sits above it. This round isn't fault tolerant, so its own gates and ancilla readouts add more errors than the round removes.</p>
+        <p id="chart-note"></p>
+      </div>
+      <figure class="fig">
+        <svg id="chart" class="chartsvg" viewBox="0 0 520 380" role="img" aria-label="Logical error rate against physical noise p for both noise profiles"></svg>
+        <figcaption class="legend" id="legend"></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="sect more" id="the-science" aria-labelledby="h-science">
+    <div class="ink-bar"><h2 id="h-science">The science</h2><span>Steane 1996 &#183; Hamming 1950</span></div>
+    <details class="drawer" open><summary>Why weave a quantum code?</summary><div class="body">
+      <p>Jacquard looms read punched cards: one hole per lifted thread, one card per pick. Babbage later borrowed those cards for his Analytical Engine. Here a loom reads a quantum error-correcting code instead. Ada Lovelace compared that engine to a Jacquard loom weaving flowers and leaves, and the weaver moth is named for her.</p>
       <p>The Steane code (Steane, 1996) spreads one logical qubit over seven physical ones. Its bit-flip checks are the three parity checks of the classical [7,4] Hamming code (Hamming, 1950). A single flipped thread gives a 3-bit syndrome that spells out the thread's number in binary. That's the red stitch, and the decoder flips that thread back. The inspector silkworm is named for him.</p>
       <p>Two flips in one block fool the decoder. It &#8220;corrects&#8221; the wrong thread, and the pixel comes out inverted. That's a logical error, and it's what the engine counts. The inspector can't see it either: its syndrome looks normal.</p>
     </div></details>
+  </section>
+
+  <section class="sect more" id="how-it-was-made" aria-labelledby="h-made">
+    <div class="ink-bar"><h2 id="h-made">How it was made</h2><span>30 real Atlas jobs &#183; Aer stabilizer simulator</span></div>
     <details class="drawer"><summary>What the quantum engine did</summary><div class="body">
       <p>Atlas <b>tamagotchi-v1</b> builds a Qiskit circuit on a CSS code (Steane), runs it on the Aer <b>stabilizer simulator</b> under a noise model, and reports how often each logical qubit ends up in the expected state. For every notch of the dial, one job stored 256 logical bits (X on every odd-indexed logical, so 0s and 1s side by side), ran one syndrome-extraction round with in-circuit correction, and read them out. A twin job skipped the syndrome round. Each grid job ran 64 shots, which gives 16,384 block samples per job.</p>
       <p>In both profiles the twin without a syndrome round failed less often. It skips the round's idle step and its noisy ancilla readouts, and the engine's final readout is Hamming-decoded anyway: a probe with readout noise only gave 15 errors in 8,000 shots, about 21p&#178;, not 7p. One round of extraction only pays off if errors pile up between rounds, and these jobs store each bit for a single step.</p>
@@ -315,11 +358,32 @@ table.jobs tr.top td{border-bottom:0;padding-bottom:.1rem}
         <tr><td>The loom scene, its characters and sounds</td><td>classical illustration in your browser, driven by the sampled cloth</td></tr>
       </table></div>
     </div></details>
-    <details class="drawer"><summary>What this does not claim</summary><div class="body">
+  </section>
+
+  <section class="sect" id="no-claims" aria-labelledby="h-claims">
+    <div class="ink-bar"><h2 id="h-claims">What this does not claim</h2><span>Simulated, not hardware</span></div>
+    <div class="claims">
       <p class="honesty">No circuit runs per pixel, and no quantum hardware was used. The engine returns aggregate counts, not per-shot records. So the loom draws each pixel's syndrome event and logical flip independently from the measured marginal rates, which drops the real correlation between them. The engine counts bit-flip and phase-flip syndromes as separate events. The loom draws bit-flip syndromes at half that count, which assumes both types are equally likely. That assumption is ours, not an engine output. Which thread flipped is drawn uniformly, because the engine doesn't report it. &#8220;Plain codewords&#8221; shows 0000000/1111111 so you can see the picture. A real Z readout returns any of the 8 codewords in the right coset, and you can switch to that view. Your own image never leaves your browser, and no new job runs for it.</p>
       <p class="honesty">This circuit's syndrome round isn't fault tolerant. Under noise on every gate it makes things worse at all three noise levels here. That's a real result from the jobs, not a flaw in the weave.</p>
       <p class="honesty">The loom scene is an illustration, not a picture of the circuit. Its sparks, flags, heddle lifts and punch cards replay this cloth's sampled draws, and Ada's cheer or sigh follows the measured verdict (logical flip rate below or above p). The grey fizz on the machinery or on the warp only marks where the chosen profile puts noise; it isn't a count.</p>
-    </div></details>
+    </div>
+  </section>
+
+  <section class="sect" id="jobs-credits" aria-labelledby="h-jobs">
+    <div class="ink-bar"><h2 id="h-jobs">Jobs and credits</h2><span id="jobs-count">Atlas tamagotchi-v1</span></div>
+    <div class="credits">
+      <p>The 12 grid jobs behind the noise dial and the chart, as returned by Atlas <b>tamagotchi-v1</b> on the Aer stabilizer simulator. Each stored 256 Steane blocks (1,792 data qubits) for 64 shots.</p>
+      <div class="tablewrap"><table class="jobs" id="gridjobs"></table></div>
+      <p id="jobs-more"></p>
+      <h3>Credits</h3>
+      <ul class="creditlist">
+        <li><b>Engine:</b> Moth Quantum Atlas, tamagotchi-v1 (Qiskit QEC engine: Steane code, Aer stabilizer simulator). Every error statistic on this page comes from its completed jobs.</li>
+        <li><b>Art:</b> the loom cast (Ada the weaver moth, Inspector Hamming the silkworm, the shuttle, heddles, flags, gauge, card cylinder, spools and sparks) is original pixel art made for this piece. The demo moth is drawn by our own code. No third-party images are used.</li>
+        <li><b>Names:</b> homages to Ada Lovelace, who compared Babbage's Analytical Engine to a Jacquard loom, and Richard Hamming, whose [7,4] parity checks are the code's bit-flip checks.</li>
+        <li><b>Papers and formats:</b> A. M. Steane, Physical Review Letters 77, 793 (1996); R. W. Hamming, Bell System Technical Journal 29(2), 147&#8211;160 (1950); N. Otsu, IEEE Transactions on Systems, Man, and Cybernetics 9(1), 62&#8211;66 (1979), used to binarise images; WIF, Weaving Information File, version 1.1 (1997).</li>
+        <li><b>Software:</b> mulberry32, a small public-domain PRNG by Tommy Ettinger, shared by the page and the Python CLI. Fonts: Geist and IBM Plex Mono (SIL Open Font License 1.1).</li>
+      </ul>
+    </div>
   </section>
   <style>
 .wtnr-nav{margin-top:2.5rem;border-top:1px solid var(--ink,#19238E);padding-top:1.1rem;display:grid;gap:1rem}
@@ -748,6 +812,7 @@ function finishWeave(tms){
   anim.bubW={text:c.failed+(c.failed===1?' pixel':' pixels')+' slipped through',until:tms+2800};
   anim.bubI={text:c.flagged+' caught',until:tms+2800};
   play(ok?'up':'down');
+  toast(c.flagged+' red stitches caught, '+c.failed+' pixels lost');
 }
 $('weave').addEventListener('click',()=>{
   if(anim.weaving){anim.weaving=false;$('weave').textContent='Keep weaving';readouts();kick();return;}
@@ -816,7 +881,7 @@ function inspect(){
    '<span>Threads read '+wordHtml(b.received,b.syn)+'</span>'+
    '<span>Syndrome <b style="color:'+(b.syn?'var(--syn)':'var(--ink)')+'">'+sb+'</b> '+(b.syn?'\u2192 thread '+b.syn+' flipped back':'\u2192 nothing to fix')+'</span>'+
    '<span>Corrected '+wordHtml(b.corrected,0)+' \u2192 parity '+b.decoded+'</span>'+
-   '<span>'+(b.failed?'<b style="color:var(--ink)">Logical flip: this pixel comes out inverted, and its syndrome can\'t show it.</b>':'Pixel survives.')+'</span>';
+   '<span>'+(b.failed?'<b style="color:var(--ink)">Logical flip: this pixel comes out inverted.</b> Its syndrome can\'t show it.':'Pixel survives.')+'</span>';
 }
 function refresh(opts={}){
   if(opts.flash&&cur)prevCells=cur.cells;
@@ -846,7 +911,7 @@ document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',(
   anim.ins={pose:'look',until:now()+1200};anim.bubI={text:st.view==='received'?'threads as read':'flipped back',until:now()+1400};kick();}));
 document.querySelectorAll('[data-cw]').forEach(b=>b.addEventListener('click',()=>{st.cw=b.dataset.cw;refresh({flash:true});}));
 document.querySelectorAll('[data-prof]').forEach(b=>b.addEventListener('click',()=>{st.profile=b.dataset.prof;refresh({flash:true,react:true});}));
-$('reroll').addEventListener('click',()=>{st.seed=st.seed%9999+1;refresh({flash:true,react:'new shot: seed '+st.seed});});
+$('reroll').addEventListener('click',()=>{st.seed=st.seed%9999+1;refresh({flash:true,react:'new shot: seed '+st.seed});toast('New shot: seed '+st.seed);});
 function select(s){
   st.sel=s;inspect();const b=cur.blocks[s.y][s.x], t=now();
   anim.ins={pose:'look',until:t+1800};
@@ -950,16 +1015,32 @@ function chart(){
         '<circle cx="'+x+'" cy="'+y+'" r="'+(key==='se'?4.5:3)+'" fill="'+(key==='se'?col:'#FFFFFF')+'" stroke="'+col+'" stroke-width="1.5"/>');}
     leg.push('<span><svg width="26" height="12" viewBox="0 0 26 12" aria-hidden="true"><line x1="1" x2="25" y1="6" y2="6" stroke="'+col+'" stroke-width="2"'+dash+'/><circle cx="13" cy="6" r="'+(key==='se'?4:3)+'" fill="'+(key==='se'?col:'#FFFFFF')+'" stroke="'+col+'" stroke-width="1.5"/></svg>'+label+'</span>');
   });
-  s.push('<g id="mark"></g>');
-  $('chart').innerHTML=s.join('');
+  // one drawing, two places: The data section (always visible) and the live copy in the stage's Data view
+  const body=s.join('');
+  $('chart').innerHTML=body+'<g id="mark"></g>';
+  $('chart-live').innerHTML=body+'<g id="mark-live"></g>';
   leg.push('<span><svg width="26" height="12" viewBox="0 0 26 12" aria-hidden="true"><path d="M8 2 L18 2 L13 11 Z" fill="none" stroke="#545BA9" stroke-width="1.5"/></svg>no flips seen: 95% upper bound, 3/n</span>'+
     '<span><svg width="26" height="14" viewBox="0 0 26 14" aria-hidden="true"><circle cx="13" cy="7" r="5.5" fill="none" stroke="#B4541A" stroke-width="2"/></svg>now on the loom</span>');
   $('legend').innerHTML=leg.join('');
+  $('legend-live').innerHTML=leg.join('');
 }
-function chartMark(){const g=document.getElementById('mark');if(!g)return;const lv=cur.lv, v=lv.se.logical_error_rate, n=lv.n_logical*lv.shots;
-  const x=cx(lv.p), y=cy(v===0?3/n:v);g.innerHTML='<circle cx="'+x+'" cy="'+y+'" r="10" fill="none" stroke="#B4541A" stroke-width="2.5"/>';
+function chartMark(){const lv=cur.lv, v=lv.se.logical_error_rate, n=lv.n_logical*lv.shots;
+  const x=cx(lv.p), y=cy(v===0?3/n:v), ring='<circle cx="'+x+'" cy="'+y+'" r="10" fill="none" stroke="#B4541A" stroke-width="2.5"/>';
+  for(const id of ['mark','mark-live']){const g=document.getElementById(id);if(g)g.innerHTML=ring;}
   const verdict=v<lv.p?'the code helps':'the code hurts';
-  $('chart-note').innerHTML='<b style="color:var(--ink)">Now on the loom:</b> p = '+lv.p+', '+(st.profile==='loom'?'noise on the whole loom':'noise only in the thread')+'. Logical flip rate '+fmtPct(v)+' against p = '+fmtPct(lv.p)+': '+verdict+'.';}
+  const note='<b style="color:var(--ink)">Now on the loom:</b> p = '+lv.p+', '+(st.profile==='loom'?'noise on the whole loom':'noise only in the thread')+'. Logical flip rate '+fmtPct(v)+' against p = '+fmtPct(lv.p)+': '+verdict+'.';
+  $('chart-note').innerHTML=note;$('chart-note-live').innerHTML=note;}
+// Jobs and credits: the 12 grid jobs from the inlined calibration (the same numbers the dial and chart use)
+(function(){
+  const where={loom:'the whole loom',thread:'only the thread'}, rows=[];
+  for(const prof of ['loom','thread'])for(const l of CAL.profiles[prof].levels)for(const key of ['se','bare'])
+    rows.push('<tr class="top"><td>'+where[prof]+'</td><td>'+l.p+'</td><td class="nw">'+(key==='se'?'1 round':'none')+'</td><td class="nw">'+fmtPct(l[key].logical_error_rate)+'</td></tr>'+
+      '<tr><td colspan="4" class="id">job '+l[key].job_id+'</td></tr>');
+  $('gridjobs').innerHTML='<tr><th>noise lives in</th><th>p</th><th>SE round</th><th>logical flips</th></tr>'+rows.join('');
+  const nGrid=rows.length, nLad=(CAL.ladder||[]).length, nAll=CAL.jobs_completed||0, nProbe=Math.max(0,nAll-nGrid-nLad);
+  $('jobs-count').textContent=nAll+' completed jobs \u00b7 0 credits';
+  $('jobs-more').textContent='All '+nAll+' completed jobs are counted: these '+nGrid+' grid jobs, the '+nLad+' size-ladder jobs listed in How it was made, and '+nProbe+' small probe jobs that checked how the engine counts syndromes and errors. Every job ID is listed in PARAMS.md.';
+})();
 chart();
 demoSrc();
 refresh();

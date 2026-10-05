@@ -1,0 +1,52 @@
+{
+ "GW150914": {
+  "gps": 1126259462.4,
+  "files": {
+   "H1": {
+    "file": "H-H1_LOSC_4_V1-1126256640-4096.hdf5",
+    "url": "https://gwosc.org/archive/data/O1/1126170624/H-H1_LOSC_4_V1-1126256640-4096.hdf5"
+   },
+   "L1": {
+    "file": "L-L1_LOSC_4_V1-1126256640-4096.hdf5",
+    "url": "https://gwosc.org/archive/data/O1/1126170624/L-L1_LOSC_4_V1-1126256640-4096.hdf5"
+   }
+  },
+  "catalog_id": "GW150914-v4",
+  "catalog": "GWTC-2.1-confident",
+  "GPS": 1126259462.4,
+  "chirp_mass_source": 27.9,
+  "chirp_mass_source_lower": -1.5,
+  "chirp_mass_source_upper": 1.7,
+  "redshift": 0.1,
+  "mass_1_source": 34.6,
+  "mass_2_source": 30.0,
+  "luminosity_distance": 470.0,
+  "network_matched_filter_snr": 26.0,
+  "event_url": "https://gwosc.org/eventapi/html/GWTC-2.1-confident/GW150914/"
+ },
+ "GW170817": {
+  "gps": 1187008882.4,
+  "files": {
+   "H1": {
+    "file": "H-H1_GWOSC_4KHZ_R1-1187008867-32.hdf5",
+    "url": "https://gwosc.org/eventapi/json/GWTC-1-confident/GW170817/v3/H-H1_GWOSC_4KHZ_R1-1187008867-32.hdf5"
+   },
+   "L1": {
+    "file": "L-L1_GWOSC_4KHZ_R1-1187008867-32.hdf5",
+    "url": "https://gwosc.org/eventapi/json/GWTC-1-confident/GW170817/v3/L-L1_GWOSC_4KHZ_R1-1187008867-32.hdf5"
+   }
+  },
+  "catalog_id": "GW170817-v3",
+  "catalog": "GWTC-1-confident",
+  "GPS": 1187008882.4,
+  "chirp_mass_source": 1.186,
+  "chirp_mass_source_lower": -0.001,
+  "chirp_mass_source_upper": 0.001,
+  "redshift": 0.01,
+  "mass_1_source": 1.46,
+  "mass_2_source": 1.27,
+  "luminosity_distance": 40.0,
+  "network_matched_filter_snr": 33.0,
+  "event_url": "https://gwosc.org/eventapi/html/GWTC-1-confident/GW170817/"
+ }
+}
