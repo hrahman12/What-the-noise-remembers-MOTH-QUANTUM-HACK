@@ -11,7 +11,7 @@ const ROOT = 'C:\\Users\\Rahma\\OneDrive\\Desktop\\MOTH QUANTUM'
 const C = args.challenge
 const W = `${ROOT}\\submission\\challenge-${C.n}\\video_work`
 const OUTMP4 = `${ROOT}\\submission\\challenge-${C.n}\\Challenge${C.n}_demo_video.mp4`
-const SITE = 'https://hrahman12.github.io/What-the-noise-remembers-MOTH-QUANTUM-HACK/'
+const SITE = 'https://what-the-noise-remembers.vercel.app/'
 const REPO = 'https://github.com/hrahman12/What-the-noise-remembers-MOTH-QUANTUM-HACK'
 const ASK = `CONTEXT: the user is submitting "What the Noise Remembers" (22 playable quantum pieces for Moth Hack 2026, built on Moth Quantum's Atlas engines; one idea: a signal hides, gets lost in noise, and is rebuilt) to the Moth Hack form, one submission per challenge. For Challenge ${C.n} · ${C.name} (pieces: ${C.pieces.join(', ')}) the form REQUIRES a demo video: "Give us a YouTube, Vimeo, or other link ... Even if your project is a single image, a good demo video contains your idea pitch, a description of the techniques used, and showcases the results. If we cannot watch the video, we cannot mark your work. (Maximum, 3 minutes.)" The user asked, verbatim, "wheres the stuff for challenge 1 based on all this?". We make the MP4; the user uploads it to YouTube themselves. Judging: quality of execution, depth of quantum and Atlas usage, originality.
 FACTS RULE: every number, name, job id, qubit count and claim must come from entries/<slug>/README.md, piece.json, PARAMS.md, CREDITS.md and ${ROOT}\\cache\\jobs_index.json. Never invent a result. Simulator runs are called simulator runs. Never show the Moth Quantum logo or wordmark. End card: "An independent entry to Moth Hack 2026, built on Moth Quantum's Atlas engines. Not an official Moth Quantum page."

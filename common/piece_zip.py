@@ -16,7 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SCR = Path(os.environ["TEMP"]) / "claude" / "C--Users-Rahma-OneDrive-Desktop-MOTH-QUANTUM" / "abc1849e-0bb4-4519-a365-7fdd300b83b2" / "scratchpad"
-SITE = "https://hrahman12.github.io/What-the-noise-remembers-MOTH-QUANTUM-HACK/"
+SITE = "https://what-the-noise-remembers.vercel.app/"
 REPO = "https://github.com/hrahman12/What-the-noise-remembers-MOTH-QUANTUM-HACK"
 
 

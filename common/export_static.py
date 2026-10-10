@@ -20,7 +20,7 @@ OUT = Path(ARGS[0]).resolve() if ARGS else ROOT / "docs"
 # --pieces a,b: re-export only these pieces into an existing site (hub and other pieces untouched)
 ONLY = next((a.split("=", 1)[1].split(",") for a in sys.argv[1:] if a.startswith("--pieces=")), None)
 KEEP = {"demos", "og"}  # README demo clips and link-preview cards live here and are made separately
-SITE = "https://hrahman12.github.io/What-the-noise-remembers-MOTH-QUANTUM-HACK/"
+SITE = "https://what-the-noise-remembers.vercel.app/"
 HUB = "https://claude.ai/artifact/UTchAtGeAarh4D9Sw57UWa"
 urls = json.loads((ROOT / "site" / "urls.json").read_text(encoding="utf-8"))
 

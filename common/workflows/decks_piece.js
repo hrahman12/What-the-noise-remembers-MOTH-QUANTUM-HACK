@@ -11,7 +11,7 @@ const ROOT = 'C:\\Users\\Rahma\\OneDrive\\Desktop\\MOTH QUANTUM'
 const SCR = args.scratch
 const SLIDES_TYPE = 'https://claude.ai/artifact/8jTsAFQMFDb2oA8MsPJ2eL'
 const COVER = `${SCR}\\decks\\c01\\project\\slides\\cover.html`
-const SITE = 'https://hrahman12.github.io/What-the-noise-remembers-MOTH-QUANTUM-HACK/'
+const SITE = 'https://what-the-noise-remembers.vercel.app/'
 const REPO = 'https://github.com/hrahman12/What-the-noise-remembers-MOTH-QUANTUM-HACK'
 const ASK = `CONTEXT: the user asked, verbatim: "i want a whole presentation dedicated to each challenge respetitcely ... fill with science and eng and everything", "u need to be quicker than that for present just be quick pls we have to do this 11 times", "i have 2 hours", "everuthing else except demo vids", "just want for each challenge: hero image , 5 other images, presentation thats it", and then "sorry i meant for all 22 cause thats how many we did right?". So: one full presentation per PIECE (22 pieces) for "What the Noise Remembers" (22 playable quantum pieces on Moth Quantum's Atlas engines; one idea: a signal hides, gets lost in noise, and is rebuilt). SPEED MATTERS: read only what you need, write in one go, never render, screenshot or re-read your output.
 FACTS: every number, name, job id, qubit count, parameter, backend and claim comes from the piece files (entries/<slug>/README.md, piece.json, PARAMS.md, CREDITS.md, ENGINES.md), ${ROOT}\\reference\\engines.txt (engine descriptions) and ${ROOT}\\cache\\jobs_index.json (every job: engine, qubits, target, reported_backends, piece). Never invent a statistic, quote or result. Simulator runs are simulator runs; call something real IBM hardware only if jobs_index shows a completed job reporting that ibm_ backend. No Moth Quantum logo.`
